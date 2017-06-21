@@ -109,17 +109,8 @@
     #----------------------------------------------------
     # renderUI - Data Table - See http://rstudio.github.io/DT/
     #----------------------------------------------------
-    output$datavalues <- DT::renderDataTable({
-       DT::datatable( data[, input$show_vars, drop = FALSE],  selection='none', filter = 'top', rownames = FALSE, options= list( pageLength = 25, autoWidth=TRUE ) )
-       #DT::datatable(data[, input$show_vars, drop = FALSE], selection='none', extensions = c('Buttons','Scroller'), filter = 'top', options= list(
-       #     dom='Brtp', buttons = list('copy','excel'), pageLength = dim(data)[1], autoWidth=TRUE,  deferRender = FALSE,  scrollY = 750,  scroller = TRUE
-       #))
-    #}, server=FALSE )
-    })
-
     output$datavalues <- DT::renderDataTable(
-       data[, input$show_vars, drop = FALSE],  selection='none', filter = 'top', rownames = FALSE,  
-       #options= list( pageLength = 25, autoWidth=TRUE ), server=TRUE
+       unique( data[, input$show_vars, drop = FALSE] ),  selection='none', filter = 'top', rownames = FALSE, 
        extensions = c('Buttons','Scroller'), options= list(
               dom='Bfrtip', buttons = list('copy','excel'), pageLength = dim(data)[1], autoWidth=TRUE,  deferRender = FALSE,  scrollY = 750,  scroller = TRUE
        ), server=FALSE

@@ -8,7 +8,7 @@ Give an open access to your data and make them ready to be mined - A data explor
 See [presentation](http://fr.slideshare.net/danieljacob771282/odam-open-data-access-and-mining) on fr.slideshare.net
 
 ------
-**Maintainer**: Daniel Jacob UMR 1332 BAP – Metabolism Group Bordeaux Metabolomics Facility MetaboHUB 2017
+**Maintainer**: Daniel Jacob - INRA - UMR 1332 BFP - 2017
 
 
 ### Installation

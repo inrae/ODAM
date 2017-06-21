@@ -1,3 +1,5 @@
+![Logo](odam-logo.png)
+
 # ODAM
 ### Open Data, Access and Mining
 

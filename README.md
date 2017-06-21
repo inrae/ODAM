@@ -45,7 +45,7 @@ Or you may prefer getting directly the docker images from the official [docker r
 ```
 
   * Create / add a dataset into your data repository (see [presentation](http://fr.slideshare.net/danieljacob771282/odam-open-data-access-and-mining))
-  * To prepare your own data subsets, see the [tutorial on metadata files](https://github.com/djacob65/ODAM/blob/master/doc/tutorial_on_metadata_files.pdf)
+  * To prepare your own data subsets, see the [tutorial on metadata files](https://github.com/INRA/ODAM/blob/master/doc/tutorial_on_metadata_files.pdf)
 
 ### Get the complete FRIM dataset as an example
 

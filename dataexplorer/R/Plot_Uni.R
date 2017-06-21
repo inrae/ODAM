@@ -66,9 +66,8 @@
         if (bsmooth) G2 <- G2 + geom_smooth(aes(group = 1), span=0.75, method="loess", size=2, se = FALSE )
         G2 <- G2 + labs(x=xname, y=yname, colour=colorname)
         G2 <- G2 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"))
-        #gg <- ggplotly(G2)
-        #gg
-        G2
+        ggplotly(G2)
+        #G2
     }
 
     # Two factors
@@ -142,16 +141,14 @@
         yname     <- as.character(LABELS[LABELS[,1]==yid,2])
         if (blog) yname  <- paste("Log10[",yname,"]")
         colorname <- as.character(LABELS[LABELS[,1]==colorid,2])
-        colorcond <- as.vector(dat[ ,colorid]);
 
         # plot
         G2 <- ggplot(aes(y=y, x=x, colour=colour), data = df, family="Times", lineheight=.8, fontface="bold") + geom_boxplot()
         G2 <- G2 + labs(x=xname, y=yname, colour=colorname)
         G2 <- G2 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"))
         if (bsmooth) G2 <- G2 + stat_smooth(aes(group=colour), size=2, se = FALSE )
-        #gg <- ggplotly(G2)
-        #gg
-        G2
+        ggplotly(G2)
+        #G2
     }
 
     #----------------------------------------------------
@@ -184,7 +181,7 @@
            levelFac <- .C( levels(as.factor(facvals)) )
            l_options <- c( 1:length(levelFac) )
            names(l_options) <- c(as.character(c(levelFac)))
-           updateSelectInput(session, "SelFacX", choices = l_options, selected=paste0(names(l_options)))
+           updateSelectInput(session, "SelFacX", choices = l_options, selected=l_options)
        }
     })
     observe({
@@ -197,14 +194,14 @@
            levelFac <- .C( levels(as.factor(facvals)) )
            l_options <- c( 1:length(levelFac) )
            names(l_options) <- c(as.character(c(levelFac)))
-           updateSelectInput(session, "SelFacY", choices = l_options, selected=paste0(names(l_options)))
+           updateSelectInput(session, "SelFacY", choices = l_options, selected=l_options)
        }
     })
 
     #----------------------------------------------------
     # renderUI - Univariate : BoxPlot
     #----------------------------------------------------
-    output$BoxPlot <- renderPlot ({
+    output$BoxPlot <- renderPlotly ({
         if (input$inDSelect==0) return( NULL )
         input$SelFacX
         input$SelFacY

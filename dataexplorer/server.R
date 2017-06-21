@@ -31,11 +31,6 @@ shinyServer(function(input, output, session) {
     # Display the Dataset Name 
     output$datasetname <- renderText({ ws[2] })
 
-    # Session Info within the About tab
-    output$sessioninfo <- renderPrint({
-       print(sessionInfo())
-    })
-
     #----------------------------------------------------
     # dynamically building of the UI of each analysis tab depending on the selected data subset
     # ( based on the onChange event, linked to the 'inDSelect' input - See the 'R/Plot_XXX.R' files )

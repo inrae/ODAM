@@ -38,7 +38,7 @@
            levelFac <- .C( levels(as.factor(facvals)) )
            l_options <- c( 1:length(levelFac) )
            names(l_options) <- c(as.character(c(levelFac)))
-           updateSelectInput(session, "SelFacX2", choices = l_options, selected=paste0(names(l_options)))
+           updateSelectInput(session, "SelFacX2", choices = l_options, selected=l_options)
        }
     })
     observe({
@@ -57,14 +57,14 @@
                   names(f_options) <- c(as.character(c(flevels)))
               }
           }
-          updateSelectInput(session, "biFeatures", choices = f_options, selected=paste0(names(f_options)))
+          updateSelectInput(session, "biFeatures", choices = f_options, selected=f_options)
        }
     })
 
     #----------------------------------------------------
     # renderUI - Bivariate : ScatterPlot
     #----------------------------------------------------
-    output$ScatterPlot <- renderPlot ({
+    output$ScatterPlot <- renderPlotly ({
         if (! is.null(input$inDSelect) && ! is.null(isolate(input$biFacX)) && ! is.null(input$SelFacX2) && 
             ! is.null(input$biVarSelect1) && ! is.null(input$biVarSelect2) && input$inDSelect>0) {
             FA <- isolate(input$biAnnot)
@@ -167,15 +167,15 @@
 
         # plot
         SE <- FALSE
-        sizeP <- ifelse( blabels, 0, 3 )
-        G1 <- ggplot(aes(x=xvar, y=yvar, colour=factor1), data = dfg) + geom_point(size=sizeP)
+        sizeP <- ifelse( blabels, 0, 0 )
+        G1 <- ggplot(aes(x=xvar, y=yvar, colour=factor1), data = dfg)
+        if (!blabels) G1 <- G1 + geom_point(size=sizeP)
         if (blabels) G1 <- G1 + geom_text(aes(label=IDS), hjust=0.5, vjust=0.5, size=4)
         if (gAddon=="regmod")  G1 <- G1 + stat_smooth(method=lm, size=1, se = SE )
         if (gAddon=="ellipse") G1 <- G1 + geom_path(data=conf.rgn)
         G1 <- G1 + labs(x=xname, y=yname, colour=F1name)
         G1 <- G1 + theme(plot.title = element_text(size=8, lineheight=.8, face="bold"))
         G1 <- G1 + theme_bw()
-        #gg <- ggplotly(G1)
-        #gg
-        G1
+        ggplotly(G1)
+        #G1
     }

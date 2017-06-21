@@ -19,12 +19,12 @@ RUN sh -c 'echo "deb http://cran.rstudio.com/bin/linux/ubuntu trusty/" >> /etc/a
     gpg --keyserver keyserver.ubuntu.com --recv-key E084DAB9 && \
     gpg -a --export E084DAB9 | sudo apt-key add -
 
-# Install R / ...
+# Install R in /usr/lib/R/(site-)library/
 RUN apt-get update \
     && apt-get install -y r-recommended \
     r-cran-rcurl \
     r-cran-base64enc \
-    r-cran-ggplot2
+    r-cran-stringr
 
 ## Configure default locale, see https://github.com/rocker-org/rocker/issues/19
 RUN echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
@@ -41,13 +41,18 @@ RUN wget --no-verbose http://download3.rstudio.org/ubuntu-12.04/x86_64/VERSION -
     gdebi -n ss-latest.deb && \
     rm -f version.txt ss-latest.deb
 
-RUN R -e "install.packages( c( 'httpuv', 'mime', 'jsonlite', 'xtable', 'htmltools', 'R6', 'V8', 'shiny', 'shinyBS', 'shinydashboard', 'shinyjs', 'moments', 'JADE', 'ellipse', 'whisker', 'networkD3'), repos='http://cran.rstudio.com/')"
+# R packages installed in /usr/local/lib/R/site-library/
+RUN R -e "install.packages( c('httpuv', 'mime', 'jsonlite', 'xtable', 'htmltools', 'R6', 'V8'), repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages( c('moments', 'JADE', 'ellipse', 'whisker'), repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages( c('shiny', 'shinyBS', 'shinydashboard', 'shinyjs', 'DT'), repos='http://cran.rstudio.com/')"
 
-# # https://plot.ly/r/shiny-tutorial/ & https://plot.ly/r/
-# RUN apt-get install -y libssl-dev \
-#     && R -e "install.packages( c('assertthat','magrittr','lazyeval','BH','R6', 'DBI'), repos='http://cran.rstudio.com/')" \
-#     && R -e "install.packages('http://cran.r-project.org/src/contrib/Archive/dplyr/dplyr_0.4.1.tar.gz', repos=NULL)" \
-#     && R -e "install.packages(c('plotly', 'ggplot2movies' ), repos='http://cran.rstudio.com/')"
+# 'networkD3'
+RUN R -e "install.packages( c('htmlwidgets', 'igraph', 'magrittr'), repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz', repos=NULL)"
+
+# https://plot.ly/r/shiny-tutorial/ & https://plot.ly/r/ & https://plot.ly/ggplot2/
+RUN apt-get install -y libssl-dev \
+    && R -e "install.packages( c('plotly', 'ggplot2'), repos='http://cran.rstudio.com/')"
 
 ADD ./ /srv/shiny-server
 

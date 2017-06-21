@@ -1,0 +1,25 @@
+body > .main-header .logo {
+  font-family: "Georgia", Times, "Times New Roman", serif;
+  font-weight: bold;
+  font-size: 24px;
+}
+.shiny-input-container:not(.shiny-input-container-inline) {
+  width: 450px;
+  max-width: 100%;
+}
+#Net {
+  margin: auto;
+  /*background: #ffffff;*/
+}
+
+.skin-blue .main-sidebar, .skin-blue .wrapper {
+  background: #3c8dbc;  /* #367fa9 #f4f4f4 #3c8dbc */
+}
+
+.btn-default {
+  color: #fff; background-color: #337ab7; border-color: #2e6da4;
+}
+
+.dataTables_info {
+  display: none;
+}

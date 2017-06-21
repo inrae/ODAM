@@ -1,0 +1,21 @@
+ 
+ if (!require(RCurl)) {
+    install.packages("RCurl")
+    library(RCurl)
+ }
+ 
+ # Specify the WS parameters
+ wsurl <- 'http://www.bordeaux.inra.fr/pmb/getdata/'
+ auth <- ''
+ 
+ # getData : retrieve data/metadata 
+ getData <- function (query) {
+    myurl <- paste(wsurl,'/tsv/', query,"?auth=",auth,sep="");
+    read.csv(textConnection(getURL(myurl)), head=TRUE, sep="\t");
+ }
+ 
+ # Example of query
+ getData("frim1/(samples)/sample/365")
+
+
+ 

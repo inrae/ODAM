@@ -3,7 +3,7 @@
 # ODAM
 ### Open Data, Access and Mining
 
-Give an open access to your data and make them ready to be mined - A data explorer as bonus
+ODAM is an Experiment Data Table Management System (EDTMS) that gives you an open access to your data and make them ready to be mined - A data explorer as bonus
 
 See [presentation](http://fr.slideshare.net/danieljacob771282/odam-open-data-access-and-mining) on fr.slideshare.net
 

@@ -83,6 +83,7 @@ Normally if everything is ok, you can access your data via web-services. You can
 ```
     $ curl "http://localhost:8080/tsv/your_dataset_name
 ```
+Or test your getData API through the web swagger UI (go to [API](https://github.com/INRA/ODAM/tree/master/API)
 
 In your Web browser, you can launch the Data Explorer connected to your dataset with the URL http://localhost/?ds=your_dataset_name (depending on the GETDATA_URL_PROXY and DATAEXPLORER_PORT settings in the ./odam.sh file ).
 

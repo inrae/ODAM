@@ -66,8 +66,8 @@
         if (bsmooth) G2 <- G2 + geom_smooth(aes(group = 1), span=0.75, method="loess", size=2, se = FALSE )
         G2 <- G2 + labs(x=xname, y=yname, colour=colorname)
         G2 <- G2 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"))
-        ggplotly(G2)
-        #G2
+        p <- ggplotly(G2)
+        p
     }
 
     # Two factors

@@ -22,16 +22,30 @@ RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_PID_FILE /var/run/apache2.pid
+ENV APACHE_RUN_DIR /var/run/apache2
+ENV APACHE_LOCK_DIR /var/lock/apache2
+ENV APACHE_SERVERADMIN admin@localhost
+ENV APACHE_SERVERNAME localhost
+ENV APACHE_SERVERALIAS docker.localhost
+ENV APACHE_DOCUMENTROOT /var/www/html
+
 COPY ./www/bin/q /usr/bin/q
-RUN chmod 755 /usr/bin/q
+COPY ./launch-server.sh /usr/bin/launch-server.sh
+ADD ./www /var/www/html
+
+RUN chmod 755 /usr/bin/q \
+  && chmod -R 777 /var/www/html \
+  && chmod 755 /usr/bin/launch-server.sh
 
 RUN mkdir -p /opt/data
 VOLUME /opt/data
-
-ADD ./www /var/www/html
 
 WORKDIR /var/www/html
 
 EXPOSE 80
 
-CMD ["apache2-foreground"]
+CMD ["/usr/bin/launch-server.sh"]

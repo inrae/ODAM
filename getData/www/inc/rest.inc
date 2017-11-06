@@ -24,6 +24,7 @@ include ('inc/tools.inc');
 ob_end_clean();
 
 $auth = isset($_GET['auth']) ?  $_GET['auth'] : '' ;
+$limit = isset($_GET['limit']) ?  $_GET['limit'] : 0 ;
 
 # Parse PATH_INFO if needed
 #if ($_SERVER['PATH_INFO'] && $auth==$AUTHKEY)
@@ -156,6 +157,8 @@ do {
 
     # Nothing
     else break;
+
+    if ($limit>0) $query .= " LIMIT $limit";
 
     # Launch query if needed
     $retval = $doQuery ?  doQuery($DSNAME, $query) : 0;

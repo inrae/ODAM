@@ -9,6 +9,7 @@ library(JADE)
 library(moments)
 library(scales)
 library(networkD3)
+library(htmlwidgets)
 library(plotly)
 
 auth <- ''

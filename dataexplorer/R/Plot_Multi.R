@@ -272,6 +272,7 @@
            gg <- plot_ly(MA, x = ~C1, y = ~C2, color = "blue", type="scatter", mode=strmode, text= ~LABELS ) %>%
                  layout(scene = list(xaxis = list(title = sprintf("%s%d",prefix, pc1)),yaxis = list(title = sprintf("%s%d",prefix, pc2))))
         }
+        #htmlwidgets::saveWidget(as.widget(gg), file = "getMultiPLot.html")
         gg
     }
 

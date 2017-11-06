@@ -1,4 +1,4 @@
-![Logo](swagger.png)
+![Logo](swagger_logo.png)
 
 # Swagger UI
 

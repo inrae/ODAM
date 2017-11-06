@@ -84,6 +84,13 @@ Normally if everything is ok, you can access your data via web-services. You can
     $ curl "http://localhost:8080/tsv/your_dataset_name
 ```
 
+Or you can also test your getData API through the web swagger UI. For that, go to the API folder, then launch the run script with parameters corresponding to your local implementation, namely the API_URL (default is http://www.bordeaux.inra.fr/pmb/api/ODAM/1.0.0/odam-oas3.yaml) and the PORT (default is 8084).
+```
+    $ cd ./API
+    $ sh ./run -p 8080 -a http://www.bordeaux.inra.fr/pmb/api/ODAM/1.0.0/odam-oas3.yaml
+```
+Then, n your Web browser, you can launch the swagger UI with the URL http://localhost:8080/ (depending on the PORT setting).
+
 In your Web browser, you can launch the Data Explorer connected to your dataset with the URL http://localhost/?ds=your_dataset_name (depending on the GETDATA_URL_PROXY and DATAEXPLORER_PORT settings in the ./odam.sh file ).
 
 ### Future improvements

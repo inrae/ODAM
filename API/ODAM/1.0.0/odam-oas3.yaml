@@ -3,7 +3,7 @@ servers:
   - url: 'http://www.bordeaux.inra.fr/pmb'
 info:
   description: >-
-    ODAM (Open Data for Access and Mining) is an Experimental Data Table
+    ODAM (Open Data for Access and Mining) is an Experiment Data Table
     Management System (EDTMS) that implements a simple way to make research data
     broadly accessible and fully available for reuse, including by a script
     language such as R. The main purpose is to make a dataset accessible online

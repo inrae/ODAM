@@ -11,3 +11,4 @@ Then, in your Web browser, you can launch the swagger UI with the URL http://loc
 For more information See [Github Swagger-UI](https://github.com/swagger-api/swagger-ui)
 
 * [![](https://images.microbadger.com/badges/version/swaggerapi/swagger-ui.svg)](https://microbadger.com/images/swaggerapi/swagger-ui "Get your own version badge on microbadger.com")
+[![](https://images.microbadger.com/badges/image/odam/swagger-ui-customized.svg)](https://microbadger.com/images/odam/swagger-ui-customized "Get your own image badge on microbadger.com")

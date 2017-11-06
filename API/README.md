@@ -2,6 +2,8 @@
 
 # Swagger UI
 
+* [![](https://images.microbadger.com/badges/image/swaggerapi/swagger-ui.svg)](http://microbadger.com/images/swaggerapi/swagger-ui "Get your own image badge on microbadger.com")
+
 You can also test your getData API through the web swagger UI. For that, launch the run script with parameters corresponding to your local implementation, namely the API_URL (default is http://www.bordeaux.inra.fr/pmb/api/ODAM/1.0.0/odam-oas3.yaml) and the PORT (default is 8084).
 ```
     $ sh ./run -p 8080 -a http://www.bordeaux.inra.fr/pmb/api/ODAM/1.0.0/odam-oas3.yaml

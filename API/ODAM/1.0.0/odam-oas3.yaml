@@ -63,7 +63,7 @@ paths:
           description: search results matching criteria
         '400':
           description: bad input parameter
-  '/getdata/tsv/{dataset}/{subset}':
+  '/getdata/tsv/{dataset}/{subset}?limit={limit}':
     get:
       tags:
         - developers
@@ -86,12 +86,19 @@ paths:
           schema:
             type: string
           example: samples
+        - in: query
+          name: limit
+          description: limit the number of lines in the output table (0 means no limit) 
+          required: false
+          schema:
+            type: integer
+          example: 10
       responses:
         '200':
           description: search results matching criteria
         '400':
           description: bad input parameter
-  '/getdata/tsv/{dataset}/({subset})':
+  '/getdata/tsv/{dataset}/({subset})?limit={limit}':
     get:
       tags:
         - developers
@@ -114,6 +121,13 @@ paths:
           schema:
             type: string
           example: samples
+        - in: query
+          name: limit
+          description: limit the number of lines in the output table (0 means no limit) 
+          required: false
+          schema:
+            type: integer
+          example: 10
       responses:
         '200':
           description: search results matching criteria
@@ -147,11 +161,11 @@ paths:
           description: search results matching criteria
         '400':
           description: bad input parameter
-  '/getdata/tsv/{dataset}/({subset})/{entry}/{value}':
+  '/getdata/tsv/{dataset}/({subset})/{entry}/{value}?limit={limit}':
     get:
       tags:
         - developers
-      summary: Get all values of a merged data subsets for a specific value of an entry
+      summary: Get all values of a merged data subsets for a specific value of an (WS)entry
       operationId: tsv5
       description: |
         Get all values of a merged data subsets
@@ -184,6 +198,13 @@ paths:
           schema:
             type: string
           example: "365"
+        - in: query
+          name: limit
+          description: limit the number of lines in the output table (0 means no limit) 
+          required: false
+          schema:
+            type: integer
+          example: 10
       responses:
         '200':
           description: search results matching criteria

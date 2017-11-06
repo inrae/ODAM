@@ -4,8 +4,10 @@ MYDIR=`dirname $0` && [ ! `echo "$0" | grep '^\/'` ] && MYDIR=`pwd`/$MYDIR
 DOCKER=`which docker`
 
 PORT=8084
-DOCKIMG=swaggerapi/swagger-ui
-NAME=swagger
+#DOCKIMG=swaggerapi/swagger-ui
+DOCKIMG=docker.io/odam/swagger-ui-customized:latest
+NAME=swagger-ui
+
 API_URL=http://www.bordeaux.inra.fr/pmb/api/ODAM/1.0.0/odam-oas3.yaml
 
 usage() {

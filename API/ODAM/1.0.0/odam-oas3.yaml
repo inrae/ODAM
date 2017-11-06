@@ -1,0 +1,229 @@
+openapi: 3.0.0
+servers:
+  - url: 'http://www.bordeaux.inra.fr/pmb'
+info:
+  description: >-
+    ODAM (Open Data for Access and Mining) is an Experimental Data Table
+    Management System (EDTMS) that implements a simple way to make research data
+    broadly accessible and fully available for reuse, including by a script
+    language such as R. The main purpose is to make a dataset accessible online
+    with a minimal effort from the data provider, and to allow any scientists or
+    bioinformaticians to be able to explore the dataset and then extract a
+    subpart or the totality of the data according to their needs.
+  version: "1.0.0"
+  title: Open Data for Access and Mining
+  contact:
+    email: djacob65@gmail.com
+  license:
+    name: 'GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007'
+tags:
+  - name: developers
+    description: Operations available to regular developers
+paths:
+  '/getdata/check/{dataset}':
+    get:
+      tags:
+        - developers
+      summary: test checks
+      operationId: check
+      description: >
+        Made automatically many test checks and return a list several status
+        about the dataset implementation
+      parameters:
+        - in: path
+          name: dataset
+          description: dataset identifier
+          required: true
+          schema:
+            type: string
+          example: frim1
+      responses:
+        '200':
+          description: list several status about the dataset implementation
+        '400':
+          description: bad input parameter
+  '/getdata/tsv/{dataset}':
+    get:
+      tags:
+        - developers
+      summary: Get the subset list of a dataset
+      operationId: tsv
+      description: |
+        Get the subset list of a dataset along with the metadata
+      parameters:
+        - in: path
+          name: dataset
+          description: dataset identifier
+          required: true
+          schema:
+            type: string
+          example: frim1
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          description: bad input parameter
+  '/getdata/tsv/{dataset}/{subset}':
+    get:
+      tags:
+        - developers
+      summary: Get all values of a data subset
+      operationId: tsv2
+      description: |
+        Get all values of a data subset
+      parameters:
+        - in: path
+          name: dataset
+          description: dataset identifier
+          required: true
+          schema:
+            type: string
+          example: frim1
+        - in: path
+          name: subset
+          description: data subset identifier
+          required: true
+          schema:
+            type: string
+          example: samples
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          description: bad input parameter
+  '/getdata/tsv/{dataset}/({subset})':
+    get:
+      tags:
+        - developers
+      summary: Get all values of a merged data subsets
+      operationId: tsv3
+      description: |
+        Get all values of a merged data subsets
+      parameters:
+        - in: path
+          name: dataset
+          description: dataset identifier
+          required: true
+          schema:
+            type: string
+          example: frim1
+        - in: path
+          name: subset
+          description: data subset identifier
+          required: true
+          schema:
+            type: string
+          example: samples
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          description: bad input parameter
+  '/getdata/tsv/{dataset}/({subset})/entry':
+    get:
+      tags:
+        - developers
+      summary: Get the entry list  of a merged data subsets
+      operationId: tsv4
+      description: |
+        Get the entry list  of a merged data subsets
+      parameters:
+        - in: path
+          name: dataset
+          description: dataset identifier
+          required: true
+          schema:
+            type: string
+          example: frim1
+        - in: path
+          name: subset
+          description: data subset identifier
+          required: true
+          schema:
+            type: string
+          example: activome
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          description: bad input parameter
+  '/getdata/tsv/{dataset}/({subset})/{entry}/{value}':
+    get:
+      tags:
+        - developers
+      summary: Get all values of a merged data subsets for a specific value of an entry
+      operationId: tsv5
+      description: |
+        Get all values of a merged data subsets
+      parameters:
+        - in: path
+          name: dataset
+          description: dataset identifier
+          required: true
+          schema:
+            type: string
+          example: frim1
+        - in: path
+          name: subset
+          description: data subset identifier
+          required: true
+          schema:
+            type: string
+          example: activome
+        - in: path
+          name: entry
+          description: entry identifier
+          required: true
+          schema:
+            type: string
+          example: sample
+        - in: path
+          name: value
+          description: value as filter criteria for entry attribute
+          required: true
+          schema:
+            type: string
+          example: "365"
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          description: bad input parameter
+  '/getdata/tsv/{dataset}/({subset})/{category}':
+    get:
+      tags:
+        - developers
+      summary: Get the variable list within the specified category of a merged data subsets
+      operationId: tsv6
+      description: |
+        Get the variable list within the specified category of a merged data subsets along with the metadata
+      parameters:
+        - in: path
+          name: dataset
+          description: dataset identifier
+          required: true
+          schema:
+            type: string
+          example: frim1
+        - in: path
+          name: subset
+          description: data subset identifier
+          required: true
+          schema:
+            type: string
+          example: activome
+        - in: path
+          name: category
+          description: category
+          required: true
+          schema:
+            type: string
+            enum: [identifier, factor, quantitative, qualitative]
+          example: factor
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          description: bad input parameter
+components:
+  schemas: {}

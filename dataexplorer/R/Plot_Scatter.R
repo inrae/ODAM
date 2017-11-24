@@ -1,16 +1,26 @@
+    #----------------------------------------------------
+    # Observer - ERROR
+    #----------------------------------------------------
+    observe ({
+       ERROR$MsgErrorBi
+       if (nchar(ERROR$MsgErrorBi)>0) {
+          createAlert(session, "ErrAlertBi", "ErrAlertBiId", title = "", content = ERROR$MsgErrorBi, append = FALSE, style='danger')
+       }
+    })
 
     #----------------------------------------------------
     # Observer - Bivariate
     #----------------------------------------------------
-    observe({
+    observe({ tryCatch({
        if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
           # Annotation
           fa_options <- c("None", .C(features[,2]))
           names(fa_options) <- c('---', .C(features$Description))
           updateSelectInput(session, "biAnnot", choices = fa_options)
        }
-    })
-    observe({
+    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 1:\n", e ); }) })
+
+    observe({ tryCatch({
        if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
           if (inDSelect != input$inDSelect) getVars(.N(input$inDSelect))
           # First Factor
@@ -18,21 +28,23 @@
           names(f1_options) <- .C(facnames$Description)
           updateSelectInput(session, "biFacX", choices = f1_options)
        }
-    })
-    observe({
+    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 2:\n", e ); }) })
+
+    observe({ tryCatch({
        if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
           # Select the variable to be analysed
           v_options <- c(0, 1:dim(varnames)[1] )
-          names(v_options) <- c('---',.C(varnames$Description))
+          names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",varnames$Description)))
           updateSelectInput(session, "biVarSelect1", choices = v_options)
           updateSelectInput(session, "biVarSelect2", choices = v_options)
        }
-    })
-    observe({
+    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 3:\n", e ); }) })
+
+    observe({ tryCatch({
        if ( ! is.null(input$inDSelect) && input$inDSelect>0 && ! is.null(input$biFacX) && nchar(input$biFacX)>0) {
            facvals <- data[ , input$biFacX]
            if (is.numeric(facvals)) {
-               fmt <- paste('%0',round(log10(max(abs(facvals))))+3,'.2f',sep='')
+               fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
                facvals <- as.character(sprintf(fmt, facvals))
            }
            levelFac <- .C( levels(as.factor(facvals)) )
@@ -40,15 +52,16 @@
            names(l_options) <- c(as.character(c(levelFac)))
            updateSelectInput(session, "SelFacX2", choices = l_options, selected=l_options)
        }
-    })
-    observe({
+    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 4:\n", e ); }) })
+
+    observe({ tryCatch({
        if (! is.null(input$inDSelect) && input$inDSelect>0 && ! is.null(input$biAnnot) && nchar(input$biAnnot)>0) {
           f_options <- c(.C(input$biAnnot))
           names(f_options) <- c('---')
           if (.C(input$biAnnot) != "None") {
               fvals <- data[ , input$biAnnot]
               if (is.numeric(fvals)) {
-                 fmt <- paste('%0',round(log10(max(abs(fvals))))+3,'.2f',sep='')
+                 fmt <- paste('%0',round(log10(max(abs(fvals)))+0.5)+3,'.2f',sep='')
                  fvals <- as.character(sprintf(fmt, fvals))
               }
               flevels <- .C( levels(as.factor(fvals)) )
@@ -59,12 +72,13 @@
           }
           updateSelectInput(session, "biFeatures", choices = f_options, selected=f_options)
        }
-    })
+    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 5:\n", e ); }) })
 
     #----------------------------------------------------
     # renderUI - Bivariate : ScatterPlot
     #----------------------------------------------------
     output$ScatterPlot <- renderPlotly ({
+    tryCatch({ 
         if (! is.null(input$inDSelect) && ! is.null(isolate(input$biFacX)) && ! is.null(input$SelFacX2) && 
             ! is.null(input$biVarSelect1) && ! is.null(input$biVarSelect2) && input$inDSelect>0) {
             FA <- isolate(input$biAnnot)
@@ -86,6 +100,7 @@
                 })
             }
         }
+    }, error=function(e) { ERROR$MsgErrorBi <- paste("RenderPlotly:\n", e ); })
     })
 
     #----------------------------------------------------
@@ -96,7 +111,7 @@
         # Factor levels
         facvals <- data[ , F1]
         if (is.numeric(facvals)) {
-            fmt <- paste('%0',round(log10(max(abs(facvals))))+3,'.2f',sep='')
+            fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
             facvals <- as.character(sprintf(fmt, facvals))
         }
         levelFac <- .C( levels(as.factor(facvals)) )
@@ -108,7 +123,7 @@
         cfacvals <- as.vector(data[ , FCOL])
         cfacvals[is.na(cfacvals)] <- "NA"
         if (is.numeric(cfacvals)) {
-            fmt <- paste('%0',round(log10(max(abs(cfacvals))))+3,'.2f',sep='')
+            fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')
             cfacvals <- as.character(sprintf(fmt, cfacvals))
         }
         levelcFac <- .C( levels(as.factor(cfacvals)) )

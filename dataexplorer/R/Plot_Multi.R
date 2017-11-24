@@ -1,8 +1,18 @@
+    #----------------------------------------------------
+    # Observer - ERROR
+    #----------------------------------------------------
+    observe ({
+       ERROR$MsgErrorMulti
+       if (nchar(ERROR$MsgErrorMulti)>0) {
+          createAlert(session, "ErrAlertMulti", "ErrAlertMultiId", title = "", content = ERROR$MsgErrorMulti, append = FALSE, style='danger')
+       }
+    })
+
 
     #----------------------------------------------------
     # Observer - Multivariate
     #----------------------------------------------------
-    observe({
+    observe({ tryCatch({
        if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
           if ((as.numeric(input$nbComp)==2 && input$multiType=='ICA') || input$outType != 'IDS') {
               updateCheckboxInput(session, "f3D", label = '3D', value = FALSE)
@@ -11,8 +21,9 @@
               shinyjs::enable("f3D")
           }
        }
-    })
-    observe({
+    }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 1:\n", e ); }) })
+
+    observe({ tryCatch({
        if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
             if (input$f3D==TRUE) {
                   shinyjs::disable("multiLabels")
@@ -22,8 +33,9 @@
                   shinyjs::enable("GBG")
             }
        }
-    })
-    observe({
+    }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 2:\n", e ); }) })
+
+    observe({ tryCatch({
        if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
           # Annotation
           fa_options <- c("None", .C(features[,2]))
@@ -32,8 +44,9 @@
           updateSelectInput(session, "outType", selected="None")
           updateSelectInput(session, "multiType", selected="None")
        }
-    })
-    observe({
+    }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 3:\n", e ); }) })
+
+    observe({ tryCatch({
        if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
           if (inDSelect != input$inDSelect) getVars(.N(input$inDSelect))
           # First Factor
@@ -44,15 +57,16 @@
           }
           # Select the variables to be included in the analysis
           v_options <- c( 1:dim(varnames)[1] )
-          names(v_options) <- c(.C(varnames$Description))
+          names(v_options) <- c(.C(gsub(" \\(.+\\)","",varnames$Description)))
           updateSelectInput(session, "listVars", choices = v_options, selected=v_options)
        }
-    })
-    observe({
+    }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 4:\n", e ); }) })
+
+    observe({ tryCatch({
        if (! is.null(input$inDSelect) && input$inDSelect>0 && ! is.null(input$multiFacX) && nchar(input$multiFacX)>0) {
           facvals <- data[ , input$multiFacX]
           if (is.numeric(facvals)) {
-              fmt <- paste('%0',round(log10(max(abs(facvals))))+3,'.2f',sep='')
+              fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
               facvals <- as.character(sprintf(fmt, facvals))
           }
           levelFac <- .C( levels(as.factor(facvals)) )
@@ -60,15 +74,16 @@
           names(l_options) <- c(as.character(c(levelFac)))
           updateSelectInput(session, "listLevels", choices = l_options, selected=l_options)
        }
-    })
-    observe({
+    }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 5:\n", e ); }) })
+
+    observe({ tryCatch({
        if (! is.null(input$inDSelect) && input$inDSelect>0 && ! is.null(input$multiAnnot) && nchar(input$multiAnnot)>0) {
           f_options <- c(.C(input$multiAnnot))
           names(f_options) <- c('---')
           if (.C(input$multiAnnot) != "None") {
               fvals <- data[ , input$multiAnnot]
-              if (is.numeric(fvals)) {
-                 fmt <- paste('%0',round(log10(max(abs(fvals))))+3,'.2f',sep='')
+              if (is.numeric(fvals) && sum(is.na(fvals))==0 ) {
+                 fmt <- paste('%0',round(log10(max(abs(fvals)))+0.5)+3,'.2f',sep='')
                  fvals <- as.character(sprintf(fmt, fvals))
               }
               flevels <- .C( levels(as.factor(fvals)) )
@@ -79,7 +94,7 @@
           }
           updateSelectInput(session, "listFeatures", choices = f_options, selected=f_options)
        }
-    })
+    }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 6:\n", e ); }) })
 
     #----------------------------------------------------
     # renderUI - Multivariate : HCA / MDS
@@ -93,6 +108,7 @@
     })
 
     output$MultiPlot <- renderPlotly ({
+    tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
         if (input$inDSelect==0) return(NULL)
         input$listVars
         input$listLevels
@@ -107,12 +123,13 @@
         if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
             selectFCOL <- c()
         }
-        withProgress(message = 'Calculation in progress', detail = '... ', value = 0, {
+        #withProgress(message = 'Calculation in progress', detail = '... ', value = 0, {
             tryCatch({
                 getMultiPLot(input$multiType, F1, selectLevels=input$listLevels, FCOL=FCOL, selectFCOL=selectFCOL, selectVars=input$listVars,
                              outputVariables, ellipse=input$ellipse, scale=input$scale, blabels=input$multiLabels, f3D=input$f3D, GBG=input$GBG)
             }, error=function(e) {})
-        })
+        #})
+    }, error=function(e) { ERROR$MsgErrorMulti <- paste("RenderPlotly:\n", e ); })
     })
 
     #----------------------------------------------------
@@ -174,7 +191,7 @@
     
         facvals <- data[ , F1]
         if (is.numeric(facvals)) {
-            fmt <- paste('%0',round(log10(max(abs(facvals))))+3,'.2f',sep='')
+            fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
             facvals <- as.character(sprintf(fmt, facvals))
         }
         levelFac <- .C( levels(as.factor(facvals)) )
@@ -185,7 +202,7 @@
         cfacvals <- as.vector(data[ , FCOL])
         cfacvals[is.na(cfacvals)] <- "NA"
         if (is.numeric(cfacvals)) {
-            fmt <- paste('%0',round(log10(max(abs(cfacvals))))+3,'.2f',sep='')
+            fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')
             cfacvals <- as.character(sprintf(fmt, cfacvals))
         }
         levelcFac <- .C( levels(as.factor(cfacvals)) )
@@ -266,7 +283,7 @@
            MA <- as.data.frame(M[, c(pc1,pc2)])
            names(MA) <- c( 'C1','C2' )
            MA$VARS <- rownames(M)
-           MA$LABELS <- as.character(LABELS[LABELS[,1] %in% MA$VARS,2])
+           MA$LABELS <- gsub(" \\(.+\\)","",as.character(LABELS[LABELS[,1] %in% MA$VARS,2]))
            strmode <- ifelse( blabels==TRUE, "text", "markers" )
            names(MA) <- c( 'C1','C2', 'VARS', 'LABELS' )
            gg <- plot_ly(MA, x = ~C1, y = ~C2, color = "blue", type="scatter", mode=strmode, text= ~LABELS ) %>%

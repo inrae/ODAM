@@ -6,7 +6,7 @@
         # Factor levels F1
         facval1 <- data[ , F1]
         if (is.numeric(facval1)) {
-            fmt <- paste('%0',round(log10(max(abs(facval1))))+3,'.2f',sep='')
+            fmt <- paste('%0',round(log10(max(abs(facval1)))+0.5)+3,'.2f',sep='')
             facval1 <- as.character(sprintf(fmt, facval1))
         }
         levelFac1 <- .C( levels(as.factor(facval1)) )
@@ -76,7 +76,7 @@
         # Factor levels F1
         facval1 <- data[ , F1]
         if (is.numeric(facval1)) {
-            fmt <- paste('%0',round(log10(max(abs(facval1))))+3,'.2f',sep='')
+            fmt <- paste('%0',round(log10(max(abs(facval1)))+0.5)+3,'.2f',sep='')
             facval1 <- as.character(sprintf(fmt, facval1))
         }
         levelFac1 <- .C( levels(as.factor(facval1)) )
@@ -84,7 +84,7 @@
         # Factor levels F2
         facval2 <- data[ , F2]
         if (is.numeric(facval2)) {
-            fmt <- paste('%0',round(log10(max(abs(facval2))))+3,'.2f',sep='')
+            fmt <- paste('%0',round(log10(max(abs(facval2)))+0.5)+3,'.2f',sep='')
             facval2 <- as.character(sprintf(fmt, facval2))
         }
         levelFac2 <- .C( levels(as.factor(facval2)) )
@@ -152,9 +152,19 @@
     }
 
     #----------------------------------------------------
+    # Observer - ERROR
+    #----------------------------------------------------
+    observe ({
+       ERROR$MsgErrorUni
+       if (nchar(ERROR$MsgErrorUni)>0) {
+          createAlert(session, "ErrAlertUni", "ErrAlertUniId", title = "", content = ERROR$MsgErrorUni, append = FALSE, style='danger')
+       }
+    })
+
+    #----------------------------------------------------
     # Observer - Univariate
     #----------------------------------------------------
-    observe({
+    observe({ tryCatch({
        if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
           if (inDSelect != input$inDSelect) getVars(.N(input$inDSelect))
           # First Factor
@@ -167,15 +177,16 @@
           updateSelectInput(session, "uniFacY", choices = f2_options)
           # Select the variable to be analysed
           v_options <- c(0, 1:dim(varnames)[1] )
-          names(v_options) <- c('---',.C(varnames$Description))
+          names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",varnames$Description)))
           updateSelectInput(session, "uniVarSelect", choices = v_options)
        }
-    })
-    observe({
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1:\n", e ); }) })
+
+    observe({ tryCatch({
        if (! is.null(input$inDSelect) && input$inDSelect>0 && ! is.null(input$uniFacX) && nchar(input$uniFacX)>0) {
            facvals <- data[ , input$uniFacX]
            if (is.numeric(facvals)) {
-               fmt <- paste('%0',round(log10(max(abs(facvals))))+3,'.2f',sep='')
+               fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
                facvals <- as.character(sprintf(fmt, facvals))
            }
            levelFac <- .C( levels(as.factor(facvals)) )
@@ -183,12 +194,13 @@
            names(l_options) <- c(as.character(c(levelFac)))
            updateSelectInput(session, "SelFacX", choices = l_options, selected=l_options)
        }
-    })
-    observe({
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 2:\n", e ); }) })
+
+    observe({ tryCatch({
        if (! is.null(input$inDSelect) && input$inDSelect>0 && ! is.null(input$uniFacY) && nchar(input$uniFacY)>0) {
            facvals <- data[ , input$uniFacY]
            if (is.numeric(facvals)) {
-               fmt <- paste('%0',round(log10(max(abs(facvals))))+3,'.2f',sep='')
+               fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
                facvals <- as.character(sprintf(fmt, facvals))
            }
            levelFac <- .C( levels(as.factor(facvals)) )
@@ -196,12 +208,13 @@
            names(l_options) <- c(as.character(c(levelFac)))
            updateSelectInput(session, "SelFacY", choices = l_options, selected=l_options)
        }
-    })
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 3:\n", e ); }) })
 
     #----------------------------------------------------
     # renderUI - Univariate : BoxPlot
     #----------------------------------------------------
     output$BoxPlot <- renderPlotly ({
+    tryCatch({ 
         if (input$inDSelect==0) return( NULL )
         input$SelFacX
         input$SelFacY
@@ -220,4 +233,5 @@
                }, error=function(e) {})
             })
         }
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("RenderPlotly:\n", e ); })
     })

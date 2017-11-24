@@ -17,6 +17,7 @@ $sep = "\t";
 
 function doQuery($dsname, $query, $debug=0) {
       global $DATADIR, $QBIN, $QOPTIONS, $stdout, $stderr;
+      #$CMD = "(cd $DATADIR/$dsname; $QBIN $QOPTIONS \"$query\" | uniq | sed -e \"s/Â//g\")";
       $CMD = "(cd $DATADIR/$dsname; $QBIN $QOPTIONS \"$query\" | uniq)";
       if ($debug>0) {
          $retval=$CMD;

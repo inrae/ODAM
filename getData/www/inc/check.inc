@@ -39,6 +39,9 @@ do {
 # Check format of s_subsets and a_attributes files
     if ($def->check_def_format()) break;
 
+# Check if subset names are consistent
+    if ($def->check_subset_names()) break;
+
 # Parse the definition files
     if ($def->build_hashDS ()) {
        echo $def->retmsg;

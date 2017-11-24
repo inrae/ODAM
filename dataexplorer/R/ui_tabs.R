@@ -1,7 +1,7 @@
 #----------------------------------------------------
 # Information
 #----------------------------------------------------
-ui_infoTab <- tabItem(tabName = "information",
+ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
    box(
       title="Data Subset Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
       HTML("<div id='wait' class='shiny-html-output'><table><tr><td><img src='loading.gif' height=25 width=40 /></td><td>&nbsp;</td><td>Loading ...</td></tr></table></div>"),
@@ -18,7 +18,7 @@ ui_infoTab <- tabItem(tabName = "information",
 #----------------------------------------------------
 # Data table
 #----------------------------------------------------
-ui_dataTab <-  tabItem(tabName = "datatable",
+ui_dataTab <-  tabItem(tabName = "datatable", bsAlert("ErrAlertDT"),
    column(12,
       conditionalPanel(condition="input.inDSelect>0",
         column(1, 
@@ -36,7 +36,7 @@ ui_dataTab <-  tabItem(tabName = "datatable",
 # About
 #----------------------------------------------------
 
-ui_aboutTab <-  tabItem("about",  
+ui_aboutTab <-  tabItem("about", bsAlert("ErrAlertAbout"),
    box(
       title="About", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
       img(src="odam-logo.png", height = 100), br(),
@@ -45,15 +45,20 @@ ui_aboutTab <-  tabItem("about",
          hr(),
          p( "Give an open access to your data and make them ready to be mined - A data explorer as bonus", style = "font-size: 120%; line-height: 120%" ),
          tags$ul(
-            tags$li("For this work, we were inspired by the ", a(href="https://www.google.com/publicdata/directory", target="_blank", "Google Public Data Explorer"), ". But instead of using their ", a(href="https://developers.google.com/public-data/overview", target="_blank", "Dataset Publishing Language (DSPL)"), " based on XML format, we made the choice to keep the good old way of scientist to use worksheets, thus using the same tool for both data files and metadata definition files. Moreover, unlike the Google approach, our approach gives data access through web-services thus providing a good way to connect distributed data. For more information/explanation,  see an", a(href="http://fr.slideshare.net/danieljacob771282/odam-open-data-access-and-mining", target="_blank", "online presentation"), style = "line-height: 160%"),
-            tags$li( "To prepare your own data subsets, see the ", a( href="https://github.com/INRA/ODAM/blob/master/doc/tutorial_on_metadata_files.pdf", target="_blank", "tutorial on metadata files")),
-            tags$li( "Test online the getData API through the web ", a( href="http://www.bordeaux.inra.fr/pmb/odamsw/", target="_blank", "swagger UI")), 
-            tags$li( "For open data access throught web services within R, see the ", a( href="Rodam.html", target="_blank", "R ODAM package and How to use it")), 
-            tags$li( "To install the ODAM software suite on your own harware (laptop or server), the Docker containerization software is required, 
-                      either as a component directly installed on your system or embedded within a Virtual Machine. Get the docker images and the installation instruction to the ", 
-                      a(href="https://hub.docker.com/r/odam/getdata/", target="_blank", "Dockker Hub"), " site.", style = "line-height: 160%" ),
+         tags$li("ODAM (Open Data for Access and Mining) is an Experiment Data Table Management System (EDTMS) that implements a simple way to make research data broadly accessible and fully available for reuse, including by a script language such as R. The main purpose is to make a dataset accessible online with a minimal effort from the data provider, and to allow any scientists or bioinformaticians to be able to explore the dataset and then extract a subpart or the totality of the data according to their needs. For more information/explanation, see ", a(href="http://fr.slideshare.net/danieljacob771282/odam-open-data-access-and-mining", target="_blank", "online presentation"), tags$br(), style = "line-height: 160%"),
+
             tags$li( "Test online with the ", a( href="?ds=frim1", "FRIM dataset"), " - ",
-                     HTML("<a href='https://doi.org/10.5281/zenodo.154041' target='_blank'><img src='https://zenodo.org/badge/DOI/10.5281/zenodo.154041.svg' alt='DOI'></a>") )
+                     HTML("<a href='https://doi.org/10.5281/zenodo.154041' target='_blank'><img src='https://zenodo.org/badge/DOI/10.5281/zenodo.154041.svg' alt='DOI'></a>") ),
+
+            tags$li( "To install the ODAM software suite on your own harware (laptop or server), the Docker containerization software is required, 
+                      either as a component directly installed on your system or embedded within a Virtual Machine. Get the docker images and the installation instruction to the ", a(href="https://hub.docker.com/r/odam/getdata/", target="_blank", "Dockker Hub"), " site.", style = "line-height: 160%"),
+
+            tags$li( "To prepare your own data subsets, see the ", a( href="https://github.com/INRA/ODAM/blob/master/doc/tutorial_on_metadata_files.pdf", target="_blank", "tutorial on metadata files")),
+
+            tags$li( "Test online the getData API through the web ", a( href="http://www.bordeaux.inra.fr/pmb/odamsw/", target="_blank", "swagger UI"), "(See ", a(href="https://github.com/INRA/ODAM/tree/master/API", target="_blank", "Github ODAM/API"), ")"), 
+
+            tags$li( "For open data access throught web services within R, see the ", a( href="Rodam.html", target="_blank", "R ODAM package and How to use it")) 
+
          ,  style = "font-size: 120%; line-height: 240%" )
       )
    ),
@@ -66,7 +71,7 @@ ui_aboutTab <-  tabItem("about",
 #----------------------------------------------------
 # Univariate : BoxPlot 
 #----------------------------------------------------
-ui_uniTab <- tabItem(tabName = "univariate", box(
+ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), box(
    title="Univariate exploration", status = "primary", solidHeader = TRUE, width = 12,
    conditionalPanel(condition="input.inDSelect>0",
       column(4,
@@ -100,7 +105,7 @@ ui_uniTab <- tabItem(tabName = "univariate", box(
 #----------------------------------------------------
 # Bivariate : ScatterPlot 
 #----------------------------------------------------
-ui_scatterTab <- tabItem(tabName = "bivariate", box(
+ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),box(
    title="Bivariate exploration", status = "primary", solidHeader = TRUE, width = 12,
    conditionalPanel(condition="input.inDSelect>0",
       column(4,
@@ -141,7 +146,7 @@ ui_scatterTab <- tabItem(tabName = "bivariate", box(
 #----------------------------------------------------
 # Multivariate : PCA / ICA
 #----------------------------------------------------
-ui_multiTab <- tabItem(tabName = "multivariate", box(
+ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), box(
    title="Multivariate exploration", status = "primary", solidHeader = TRUE, width = 12,
    conditionalPanel(condition="input.inDSelect>0",
    htmlOutput("Msg"),
@@ -155,7 +160,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", box(
                                    , "Independent Component Analysis (ICA)" = "ICA" 
                                    ), selected = "None"),
            column(6,
-                checkboxInput('scale', 'Scale', FALSE)
+                checkboxInput('scale', 'Scale', TRUE)
            ),
            column(6, 
                 conditionalPanel(condition="input.multiType=='PCA'",
@@ -192,3 +197,4 @@ ui_multiTab <- tabItem(tabName = "multivariate", box(
       h3(em("Please, select a Data Subset in the Drop List on the left sidebar "), style = "color:#a2a2bb")
    )
 ))
+

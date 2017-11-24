@@ -14,7 +14,7 @@ library(plotly)
 
 auth <- ''
 dsname <- ''
-ws <<- c(internalURL, dsname, auth, externalURL)
+ws <<- c(internalURL, dsname, auth, externalURL, NULL, NULL, NULL)
 
 subsets <- NULL
 inDSelect <- 0
@@ -55,10 +55,22 @@ getWS <- function(cdata) {
     if (!is.null(params[['ds']])) {
         dsname <- params[['ds']]
     }
+    subsetname <- NULL
+    if (!is.null(params[['subset']])) {
+        subsetname <- params[['subset']]
+    }
+    tabname <- NULL
+    if (!is.null(params[['tab']])) {
+        tabname <- params[['tab']]
+    }
+    headerflag <- NULL
+    if (!is.null(params[['banner']])) {
+        headerflag <- params[['banner']]
+    }
     if (!is.null(params[['auth']])) {
         auth <- params[['auth']]
     }
-    c(  internalURL, dsname, auth, externalURL )
+    c(  internalURL, dsname, auth, externalURL, subsetname, tabname, headerflag )
 }
 
 getData <- function (ws, query) {
@@ -86,7 +98,7 @@ getInit <- function() {
    setnames <<- setnames[ nq>0 ]
    subsets <<- subsets[ subsets[, 'Subset'] %in% setnames, ]
    DSL <<- c(0,subsets$SetID)
-   names(DSL) <<- c('---',.C(subsets$Description))
+   names(DSL) <<- c('-- Select a Data Subset --',.C(subsets$Description))
    subsets$SetID <<- NULL
    subsets[,5] <<- sapply(.C(subsets[,5]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
    subsets[,6] <<- sapply(.C(subsets[,6]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
@@ -94,6 +106,15 @@ getInit <- function() {
    Lev <- NULL; Lev <- cntLevelDN(Lev, dn , 1); N <- min(max(Lev),25)
    N <- (trunc(N/5)+1*(N %% 5 >0))*5
    fs <<- -N + 45
+
+   # Default data subset
+   if (! is.null(ws[5]) ) {
+       N <- which(subsetNames==ws[5])
+       if (length(N)>0 && N>0) {
+           inDSelect <<- N
+           getVars(N)
+       }
+   }
 }
 
 getVars <- function(setID) {

@@ -18,23 +18,41 @@ meta <- tags$head(
    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
    # Load D3.js
    tags$script(src = "js/d3.min.js"),
-   #tags$script(src = 'http://d3js.org/d3.v3.min.js')
    # Load highlightjs
    tags$link(rel = "stylesheet", type = "text/css", href = "css/default.css"),
    tags$script(src = 'js/highlight.pack.js'),
    tags$script(src = "js/init.js")
 )
 
+busyLogo <- function(busysrc, height = 30, width = 30, alt = NULL) {
+  tagList(
+    tags$head(
+      tags$script("setInterval(function(){if ($('html').attr('class')=='shiny-busy') { $('img.busy').show(); } else { $('img.busy').hide(); } },100)")
+    ),
+    img(class = "busy", src=busysrc,height = height, width = width, alt = alt)
+  )
+}
+
 ui <- dashboardPage(skin = "blue",
 
-  dashboardHeader(title = "ODAM - Data Explorer", titleWidth = 450, disable = FALSE ),
+  dashboardHeader(title = "ODAM - Data Explorer", titleWidth = 450, disable = FALSE, 
+            tags$li(busyLogo('busy.gif'), class = "dropdown"),
+            tags$li(img(src="img_00.gif",height = 10, width = 20), class = "dropdown"),
+         # Dataset name
+            tags$li(h2(textOutput("datasetname"), align = "center"), class = "dropdown"),
+            tags$li(img(src="img_00.gif",height = 10, width = 10), class = "dropdown"),
+         # Data subset selection
+            tags$li(selectInput("inDSelect", "", c() ), class = "dropdown inDSelect"),
+            tags$li(img(src="img_00.gif",height = 10, width = 20), class = "dropdown")
+  ),
 
   dashboardSidebar(
     #----------------------------------------------------
     # Sidebar Menu
     #----------------------------------------------------
-        h2(textOutput("datasetname"), align = "center"),
-        selectInput("inDSelect", "Select a Data Subset", c() ),
+        #h2(textOutput("datasetname"), align = "center"),
+        #selectInput("inDSelect", "Select a Data Subset", c() ),
+        tags$br(),tags$br(),
         sidebarMenu(
             id="IdMenu",
             menuItem("Subset Information",   tabName = "information",   icon = icon("eye")),
@@ -56,6 +74,7 @@ ui <- dashboardPage(skin = "blue",
 
     shinyjs::extendShinyjs("js/app.js"),
     fluidRow(
+      bsAlert("ErrAlertMain"),
       tabItems(
       #----------------------------------------------------
       # Information

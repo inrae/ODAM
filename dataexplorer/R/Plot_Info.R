@@ -1,7 +1,23 @@
     #----------------------------------------------------
+    # Observer - ERROR
+    #----------------------------------------------------
+    observe ({
+       ERROR$MsgErrorInfo
+       if (nchar(ERROR$MsgErrorInfo)>0) {
+          createAlert(session, "ErrAlertInfo", "ErrAlertInfoId", title = "", content = ERROR$MsgErrorInfo, append = FALSE, style='danger')
+       }
+    })
+    observe ({
+       ERROR$MsgErrorAbout
+       if (nchar(ERROR$MsgErrorAbout)>0) {
+          createAlert(session, "ErrAlertAbout", "ErrAlertAboutId", title = "", content = ERROR$MsgErrorAbout, append = FALSE, style='danger')
+       }
+    })
+
+    #----------------------------------------------------
     # Observer - Data Table
     #----------------------------------------------------
-    observe({
+    observe({ tryCatch({
        if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
           if (inDSelect != input$inDSelect) getVars(.N(input$inDSelect))
           fa_options <- colnames(data)
@@ -9,12 +25,13 @@
           updateCheckboxGroupInput(session, 'show_vars', label = 'Columns to show:', choices = fa_options,  
                 selected = c( samples, .C(facnames$Attribute) ))
         }
-    })
+    }, error=function(e) { ERROR$MsgErrorInfo <- paste("Observer 1:\n", e ); }) })
 
     #----------------------------------------------------
     # Session Info within the About tab
     #----------------------------------------------------
     output$sessioninfo <- renderPrint({
+    tryCatch({ 
        if (nchar(ws[2])==0) {
          print(sessionInfo())
        } else {
@@ -45,12 +62,14 @@
             )
          }
        }
+    }, error=function(e) { ERROR$MsgErrorAbout <- paste("RenderPrint:\n", e ); })
     })
 
     #----------------------------------------------------
     # renderUI - Information
     #----------------------------------------------------
-    output$subsets <- renderDataTable({ 
+    output$subsets <- renderDataTable({
+    tryCatch({ 
         if ( !is.DS(cdata) || values$init==0 ||  is.null(input$inDSelect)) return(NULL)
         if (input$inDSelect>0) {
             tsets <- subsets[subsets$Subset==subsetNames[.N(input$inDSelect)], ]
@@ -67,13 +86,15 @@
         df <- as.data.frame(setinfo)
         names(df) <- c("Subset","Description","Identifier", "WSEntry", "CV_Term")
         df
-
+    }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Subsets \n", e ); })
     }, options = list(searching=FALSE, paging=FALSE), escape=c(2:4))
 
     output$infos <- renderDataTable({
+    tryCatch({ 
         if (is.null(input$inDSelect) || input$inDSelect==0) return(NULL)
         if (is.null(LABELS) || dim(LABELS)[1]==0) return(NULL)
         getLabels()
+    }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Infos:\n", e ); })
     }, options = list(searching=FALSE, paging=FALSE), escape=c(1,2,3))
 
     output$wait <- renderUI({
@@ -98,20 +119,24 @@
     # renderUI - Subsets Graph
     #----------------------------------------------------
     output$Net <- renderDiagonalNetwork({
+    tryCatch({ 
         if (values$init==0) values$init <- 1
         if (length(subsetNames)>0) {
              diagonalNetwork(List = dn, fontSize = fs, fontFamily = "serif", 
                  linkColour = '#B2B3D0', nodeColour = "#fff", nodeStroke = "red", textColour = "darkblue",
                  opacity = 0.99)
         }
+    }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderNetwork:\n", e ); })
     })
 
     #----------------------------------------------------
     # renderUI - Data Table - See http://rstudio.github.io/DT/
     #----------------------------------------------------
-    output$datavalues <- DT::renderDataTable(
-       unique( data[, input$show_vars, drop = FALSE] ),  selection='none', filter = 'top', rownames = FALSE, 
-       extensions = c('Buttons','Scroller'), options= list(
-              dom='Bfrtip', buttons = list('copy','excel'), pageLength = dim(data)[1], autoWidth=TRUE,  deferRender = FALSE,  scrollY = 750,  scroller = TRUE
-       ), server=FALSE
-    )
+    output$datavalues <- tryCatch({
+       DT::renderDataTable(
+           unique( data[, input$show_vars, drop = FALSE] ),  selection='none', filter = 'top', rownames = FALSE, 
+           extensions = c('Buttons','Scroller'), options= list(
+                 dom='Bfrtip', buttons = list('copy','excel'), pageLength = dim(data)[1], autoWidth=TRUE,  deferRender = FALSE,  scrollY = 750,  scroller = TRUE
+           ), server=FALSE
+       )
+    }, error=function(e) { ERROR$MsgErrorInfo <- paste("DT::renderDataTable:\n", e ); })

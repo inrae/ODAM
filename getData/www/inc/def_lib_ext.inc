@@ -157,6 +157,36 @@ class def_lib_ext extends def_lib {
         return $ret;
     }
 
+# Check if subset names are consistent between both "s_subsets" and "a_attributes" files
+    function check_subset_names() {
+        $ret=0;
+        $f0=fopen($this->subsets_file,"r");
+        $arr_subsets = array();
+        while ( ($data = fgetcsv($f0,0,"\t") ) !== FALSE ) {
+             array_push($arr_subsets, $data[2]);
+        }
+        #fclose($fo);
+        $arr_msg = array();
+        $f1=fopen($this->attrs_file,"r");
+        $subset="subset";
+        while ( ($data = fgetcsv($f1,0,"\t") ) !== FALSE ) {
+             if ($data[0] == $subset) continue;
+             $subset=$data[0];
+             if ( ! in_array($subset, $arr_subsets) ) {
+                 array_push($arr_msg, "the shortname '$subset' seems not to be declared in the s_subsets.tsv file., See note (4.1)");
+                 $ret=1;
+             }
+        }
+        fclose($f1);
+        $msg = 'Check if subset names are consistent';
+        if ($ret) $this->retmsg = implode( '\\n', $arr_msg );
+        $info = $ret==0 ? "all subset names seem consistent" : $this->retmsg ;
+        $status = $ret==0 ? $this->status_tag['ok'] : $this->status_tag['bad'] ;
+        $this->ds_items['subset names'] = array( 'msg' => $msg, 'info' => $info, 'status' => $status, 'cat' => 'subset names' );
+
+        return $ret;
+    }
+
 # Check if identifiers are consistent
     function check_identifiers() {
         $ret=0;

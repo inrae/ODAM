@@ -2,12 +2,15 @@
 # Information
 #----------------------------------------------------
 ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
+   box(title="Data Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+     htmlOutput("datainfos", class="mddiv")
+   ),
    box(
       title="Data Subset Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
       HTML("<div id='wait' class='shiny-html-output'><table><tr><td><img src='loading.gif' height=25 width=40 /></td><td>&nbsp;</td><td>Loading ...</td></tr></table></div>"),
       #verbatimTextOutput('out1'),
       dataTableOutput("subsets"),
-      conditionalPanel(condition="input.inDSelect>0", downloadButton('downloadTSV', label = "Export TSV", class = NULL), p(), dataTableOutput("infos"))
+      conditionalPanel(condition="input.inDSselect>0", downloadButton('downloadTSV', label = "Export TSV", class = NULL), p(), dataTableOutput("infos"))
    ),
    box(
       title="Data Graph", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
@@ -20,14 +23,14 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
 #----------------------------------------------------
 ui_dataTab <-  tabItem(tabName = "datatable", bsAlert("ErrAlertDT"),
    column(12,
-      conditionalPanel(condition="input.inDSelect>0",
+      conditionalPanel(condition="input.inDSselect>0",
         column(1, 
            checkboxGroupInput('show_vars', 'Columns to show:', choices = NULL, selected = NULL)
         ),
         column(11, DT::dataTableOutput('datavalues') )
       ),
-      conditionalPanel(condition="input.inDSelect==0",
-        h3(em("Please, select a Data Subset in the Drop List on the left sidebar "), style = "color:#a2a2bb")
+      conditionalPanel(condition="input.inDSselect==0",
+        h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
       )
    )
 )
@@ -39,28 +42,7 @@ ui_dataTab <-  tabItem(tabName = "datatable", bsAlert("ErrAlertDT"),
 ui_aboutTab <-  tabItem("about", bsAlert("ErrAlertAbout"),
    box(
       title="About", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
-      img(src="odam-logo.png", height = 100), br(),
-      column(10, 
-         p( shiny::icon("info-circle"), " Created by Daniel Jacob - INRA UMR 1332 BFP, PMB - 2016 - Version ", idVersion, style = "color:#2121d2; font-size: 120%"), 
-         hr(),
-         p( "Give an open access to your data and make them ready to be mined - A data explorer as bonus", style = "font-size: 120%; line-height: 120%" ),
-         tags$ul(
-         tags$li("ODAM (Open Data for Access and Mining) is an Experiment Data Table Management System (EDTMS) that implements a simple way to make research data broadly accessible and fully available for reuse, including by a script language such as R. The main purpose is to make a dataset accessible online with a minimal effort from the data provider, and to allow any scientists or bioinformaticians to be able to explore the dataset and then extract a subpart or the totality of the data according to their needs. For more information/explanation, see ", a(href="http://fr.slideshare.net/danieljacob771282/odam-open-data-access-and-mining", target="_blank", "online presentation"), tags$br(), style = "line-height: 160%"),
-
-            tags$li( "Test online with the ", a( href="?ds=frim1", "FRIM dataset"), " - ",
-                     HTML("<a href='https://doi.org/10.5281/zenodo.154041' target='_blank'><img src='https://zenodo.org/badge/DOI/10.5281/zenodo.154041.svg' alt='DOI'></a>") ),
-
-            tags$li( "To install the ODAM software suite on your own harware (laptop or server), the Docker containerization software is required, 
-                      either as a component directly installed on your system or embedded within a Virtual Machine. Get the docker images and the installation instruction to the ", a(href="https://hub.docker.com/r/odam/getdata/", target="_blank", "Dockker Hub"), " site.", style = "line-height: 160%"),
-
-            tags$li( "To prepare your own data subsets, see the ", a( href="https://github.com/INRA/ODAM/blob/master/doc/tutorial_on_metadata_files.pdf", target="_blank", "tutorial on metadata files")),
-
-            tags$li( "Test online the getData API through the web ", a( href="http://www.bordeaux.inra.fr/pmb/odamsw/", target="_blank", "swagger UI"), "(See ", a(href="https://github.com/INRA/ODAM/tree/master/API", target="_blank", "Github ODAM/API"), ")"), 
-
-            tags$li( "For open data access throught web services within R, see the ", a( href="Rodam.html", target="_blank", "R ODAM package and How to use it")) 
-
-         ,  style = "font-size: 120%; line-height: 240%" )
-      )
+      htmlOutput("aboutinfos", class="mddiv")
    ),
    box(
       title="Session Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
@@ -73,7 +55,7 @@ ui_aboutTab <-  tabItem("about", bsAlert("ErrAlertAbout"),
 #----------------------------------------------------
 ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), box(
    title="Univariate exploration", status = "primary", solidHeader = TRUE, width = 12,
-   conditionalPanel(condition="input.inDSelect>0",
+   conditionalPanel(condition="input.inDSselect>0",
       column(4,
            selectInput("uniFacX", "Factor for X Axis", c() )
       ),
@@ -97,8 +79,8 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), box(
            checkboxInput('uniLog', 'Log10', FALSE)
       )
    ),
-   conditionalPanel(condition="input.inDSelect==0",
-      h3(em("Please, select a Data Subset in the Drop List on the left sidebar "), style = "color:#a2a2bb")
+   conditionalPanel(condition="input.inDSselect==0",
+      h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
    )
 ))
 
@@ -107,7 +89,7 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), box(
 #----------------------------------------------------
 ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),box(
    title="Bivariate exploration", status = "primary", solidHeader = TRUE, width = 12,
-   conditionalPanel(condition="input.inDSelect>0",
+   conditionalPanel(condition="input.inDSselect>0",
       column(4,
            selectInput("biFacX", "Factor for Grouping", c() )
       ),
@@ -138,8 +120,8 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),box(
            )
       )
    ),
-   conditionalPanel(condition="input.inDSelect==0",
-      h3(em("Please, select a Data Subset in the Drop List on the left sidebar "), style = "color:#a2a2bb")
+   conditionalPanel(condition="input.inDSselect==0",
+      h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
    )
 ))
 
@@ -148,7 +130,7 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),box(
 #----------------------------------------------------
 ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), box(
    title="Multivariate exploration", status = "primary", solidHeader = TRUE, width = 12,
-   conditionalPanel(condition="input.inDSelect>0",
+   conditionalPanel(condition="input.inDSselect>0",
    htmlOutput("Msg"),
       column(4,
            selectInput("multiFacX", "Factor for highlighting the classification", c() ),
@@ -193,8 +175,8 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), box(
            selectInput("listVars", "Select Variables", c(), multiple = TRUE, , selectize=TRUE )
       )
    ),
-   conditionalPanel(condition="input.inDSelect==0",
-      h3(em("Please, select a Data Subset in the Drop List on the left sidebar "), style = "color:#a2a2bb")
+   conditionalPanel(condition="input.inDSselect==0",
+      h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
    )
 ))
 

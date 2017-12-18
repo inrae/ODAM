@@ -12,7 +12,7 @@
     # Observer - Bivariate
     #----------------------------------------------------
     observe({ tryCatch({
-       if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
+       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
           # Annotation
           fa_options <- c("None", .C(features[,2]))
           names(fa_options) <- c('---', .C(features$Description))
@@ -21,8 +21,8 @@
     }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 1:\n", e ); }) })
 
     observe({ tryCatch({
-       if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
-          if (inDSelect != input$inDSelect) getVars(.N(input$inDSelect))
+       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
+          if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
           # First Factor
           f1_options <- .C(facnames[,2])
           names(f1_options) <- .C(facnames$Description)
@@ -31,7 +31,7 @@
     }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 2:\n", e ); }) })
 
     observe({ tryCatch({
-       if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
+       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
           # Select the variable to be analysed
           v_options <- c(0, 1:dim(varnames)[1] )
           names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",varnames$Description)))
@@ -41,7 +41,7 @@
     }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 3:\n", e ); }) })
 
     observe({ tryCatch({
-       if ( ! is.null(input$inDSelect) && input$inDSelect>0 && ! is.null(input$biFacX) && nchar(input$biFacX)>0) {
+       if ( ! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$biFacX) && nchar(input$biFacX)>0) {
            facvals <- data[ , input$biFacX]
            if (is.numeric(facvals)) {
                fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
@@ -55,7 +55,7 @@
     }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 4:\n", e ); }) })
 
     observe({ tryCatch({
-       if (! is.null(input$inDSelect) && input$inDSelect>0 && ! is.null(input$biAnnot) && nchar(input$biAnnot)>0) {
+       if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$biAnnot) && nchar(input$biAnnot)>0) {
           f_options <- c(.C(input$biAnnot))
           names(f_options) <- c('---')
           if (.C(input$biAnnot) != "None") {
@@ -79,8 +79,8 @@
     #----------------------------------------------------
     output$ScatterPlot <- renderPlotly ({
     tryCatch({ 
-        if (! is.null(input$inDSelect) && ! is.null(isolate(input$biFacX)) && ! is.null(input$SelFacX2) && 
-            ! is.null(input$biVarSelect1) && ! is.null(input$biVarSelect2) && input$inDSelect>0) {
+        if (! is.null(input$inDSselect) && ! is.null(isolate(input$biFacX)) && ! is.null(input$SelFacX2) && 
+            ! is.null(input$biVarSelect1) && ! is.null(input$biVarSelect2) && input$inDSselect>0) {
             FA <- isolate(input$biAnnot)
             F1 <- isolate(input$biFacX)
             FCOL <- ifelse( FA=="None", '', FA )

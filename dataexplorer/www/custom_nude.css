@@ -1,10 +1,3 @@
-body {
-  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 12px;
-  line-height: 1.2;
-  color: #333;
-}
-
 body > .main-header .logo {
   font-family: "Georgia", Times, "Times New Roman", serif;
   font-weight: bold;
@@ -12,11 +5,7 @@ body > .main-header .logo {
 }
 
 .h2, h2 {
-  font-size: 18px;
-}
-
-p {
-  line-height: 20px;
+    font-size: 25px;
 }
 
 .dropdown , .dropdown h2 {
@@ -25,16 +14,15 @@ p {
 }
 
 .form-group {
-  margin-bottom: 0px;
+ margin-bottom: 0px;
 }
 
 .content-wrapper, .right-side {
-  background-color: #ecf0f5;
+    background-color: #fff;
 }
 
 .skin-blue .main-header .logo {
-  background-color: #357ca5;
-  font-size: 18px;
+  background-color: #357ca5; /*#5493b7;*/
 }
 
 .skin-blue .main-header .navbar {
@@ -42,46 +30,50 @@ p {
 }
 
 .main-header .navbar-custom-menu, .main-header .navbar-right {
-  float: left;
+    float: left;
 }
 
 .skin-blue .main-sidebar, .skin-blue .wrapper {
-  background: #e3ebf5; /*#ecf0f5 #365f6d*/
+  background: #fff;  /* #367fa9 #f4f4f4 #3c8dbc */
 }
 
-.skin-blue .sidebar-menu {
-  font-weight: 600;
-  line-height: 1.5;
+.skin-blue .sidebar a {
+    color: #357ca5;
 }
 
 .skin-blue .sidebar-menu>li>a {
-  color: #365f6d; /*#b8c7ce*/
+    color: #357ca5;
+}
+
+.skin-blue .sidebar-menu>li:hover>a {
+    color: #fff;
 }
 
 .skin-blue .sidebar-menu>li.active>a, .skin-blue .sidebar-menu>li:hover>a {
-  background: #1e282c;
-  border-left-color: #e3ebf5;
+    background: #357ca5;
+    border-left-color: ##357ca5;
 }
 
-.shiny-input-container:not(.shiny-input-container-inline) {
-  width: 250px;
+.selectize-input {
+  min-width: 300px;
+}
+
+/*.shiny-input-container:not(.shiny-input-container-inline) {*/
+.inDSselect>select .inDselect>select {
+  min-width: 100px;
+  max-width: 200px;
+  /*max-width: 100%;*/
 }
 
 #Net {
   margin: auto;
+  /*background: #ffffff;*/
 }
 
 .box.box-solid.box-primary>.box-header {
   background: #5493b7;
 }
 
-.box.box-solid.box-primary {
-  border: 0px solid #3c8dbc;
-}
-
-.box-header .box-title, .box-header>.fa, .box-header>.glyphicon, .box-header>.ion {
-  font-size: 16px;
-}
 
 .btn-default {
   color: #fff; background-color: #337ab7; border-color: #2e6da4;

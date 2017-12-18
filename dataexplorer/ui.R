@@ -4,6 +4,7 @@ library(shinyjs)
 library(shinyBS)
 library(networkD3)
 library(plotly)
+library(markdown)
 
 source("R/ui_tabs.R", local=TRUE)
 
@@ -15,11 +16,13 @@ meta <- tags$head(
    <meta http-equiv="expires" content="Tue, 01 Jan 1980 1:00:00 GMT" />
    <meta http-equiv="pragma" content="no-cache" />
    '),
+   tags$script(type="text/javascript", src = "js/google-analytics.js"),
    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
    # Load D3.js
    tags$script(src = "js/d3.min.js"),
    # Load highlightjs
    tags$link(rel = "stylesheet", type = "text/css", href = "css/default.css"),
+   tags$link(rel = "stylesheet", type = "text/css", href = "css/md.css"),
    tags$script(src = 'js/highlight.pack.js'),
    tags$script(src = "js/init.js")
 )
@@ -35,24 +38,25 @@ busyLogo <- function(busysrc, height = 30, width = 30, alt = NULL) {
 
 ui <- dashboardPage(skin = "blue",
 
-  dashboardHeader(title = "ODAM - Data Explorer", titleWidth = 450, disable = FALSE, 
-            tags$li(busyLogo('busy.gif'), class = "dropdown"),
-            tags$li(img(src="img_00.gif",height = 10, width = 20), class = "dropdown"),
-         # Dataset name
+  dashboardHeader(title = "ODAM - Data Explorer", disable = FALSE, # titleWidth = 350, 
+         # Collection / Dataset name
             tags$li(h2(textOutput("datasetname"), align = "center"), class = "dropdown"),
             tags$li(img(src="img_00.gif",height = 10, width = 10), class = "dropdown"),
+         # Dataset selection
+            tags$li(selectInput("inDselect", "", c() ), class = "dropdown inDselect"),
+            tags$li(img(src="img_00.gif",height = 10, width = 5), class = "dropdown"),
          # Data subset selection
-            tags$li(selectInput("inDSelect", "", c() ), class = "dropdown inDSelect"),
-            tags$li(img(src="img_00.gif",height = 10, width = 20), class = "dropdown")
+            tags$li(selectInput("inDSselect", "", c() ), class = "dropdown inDSselect"),
+            tags$li(img(src="img_00.gif",height = 10, width = 20), class = "dropdown"),
+         # Busy logo
+            tags$li(busyLogo('busy.gif'), class = "dropdown")
   ),
 
   dashboardSidebar(
     #----------------------------------------------------
     # Sidebar Menu
     #----------------------------------------------------
-        #h2(textOutput("datasetname"), align = "center"),
-        #selectInput("inDSelect", "Select a Data Subset", c() ),
-        tags$br(),tags$br(),
+        tags$br(),
         sidebarMenu(
             id="IdMenu",
             menuItem("Subset Information",   tabName = "information",   icon = icon("eye")),

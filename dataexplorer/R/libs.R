@@ -14,10 +14,13 @@ library(plotly)
 
 auth <- ''
 dsname <- ''
-ws <<- c(internalURL, dsname, auth, externalURL, NULL, NULL, NULL)
+dcname <- ''
+ws <- c(internalURL, dsname, auth, externalURL, dcname, NULL, NULL, NULL)
 
+dclist <- NULL
+inDselect <- NULL
 subsets <- NULL
-inDSelect <- 0
+inDSselect <- 0
 subsetNames <- NULL
 connectList <- NULL
 dn <- NULL
@@ -43,7 +46,7 @@ trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 is.DS <- function(cdata) {
     lparams <- unlist(strsplit(gsub("\\?", "", cdata[['url_search']]),  '&'))
     ret <- FALSE
-    if (!is.na(pmatch('ds', lparams))) ret <- TRUE
+    if (!is.na(pmatch('ds', lparams)) || !is.na(pmatch('dc', lparams))) ret <- TRUE
     return(ret)
 }
 
@@ -51,9 +54,17 @@ getWS <- function(cdata) {
     #   hostname <- cdata[['url_hostname']]
     #   port <- cdata[['url_port']]
     params <- parseQueryString(cdata$url_search)
-    dsname <- NULL
+    dcname <- ''
+    if (!is.null(params[['dc']])) {
+        dcname <- params[['dc']]
+    }
+    dsname <- ''
     if (!is.null(params[['ds']])) {
         dsname <- params[['ds']]
+    }
+    auth <- ''
+    if (!is.null(params[['auth']])) {
+        auth <- params[['auth']]
     }
     subsetname <- NULL
     if (!is.null(params[['subset']])) {
@@ -67,110 +78,124 @@ getWS <- function(cdata) {
     if (!is.null(params[['banner']])) {
         headerflag <- params[['banner']]
     }
-    if (!is.null(params[['auth']])) {
-        auth <- params[['auth']]
+    c(  internalURL, dsname, auth, externalURL, dcname, subsetname, tabname, headerflag )
+}
+
+getDataCol <- function (ws) {
+    dclist <- NULL
+    myurl <- paste(ws[4],'/tsv/', ws[5], "?auth=",ws[3],sep="");
+    dc <- read.csv(textConnection(getURL(myurl)), head=TRUE, sep="\t");
+    if (length(dc$Subset)==1 && dc$Subset=="collection") {
+        myurl <- paste(ws[4],'/tsv/', ws[5], '/collection',"?auth=",ws[3],sep="");
+        collection <- read.csv(textConnection(getURL(myurl)), head=TRUE, sep="\t");
+        collection$url[is.na(collection$url)] <- externalURL
+        dclist <- list(collection=dc, list=collection)
     }
-    c(  internalURL, dsname, auth, externalURL, subsetname, tabname, headerflag )
+    dclist
+}
+
+getAbout <- function () {
+    aboutfile <- '/srv/shiny-server/www/about.md'
+    if(file.exists(aboutfile)){
+       gsub('@@IMAGE@@/', '', readLines(aboutfile, n = -1) )
+    }
+}
+
+getInfos <- function (ws) {
+    myurl <- paste(ws[4],'/infos/', ws[2], "?auth=",ws[3],sep="");
+    imgurl <- paste(ws[4],'/image/', ws[2], sep="");
+    gsub('@@IMAGE@@', imgurl,  getURL(myurl) )
 }
 
 getData <- function (ws, query) {
-      myurl <- paste(ws[4],'/tsv/', ws[2], '/', query,"?auth=",ws[3],sep="");
-      read.csv(textConnection(getURL(myurl)), head=TRUE, sep="\t");
+    myurl <- paste(ws[4],'/tsv/', ws[2], '/', query,"?auth=",ws[3],sep="");
+    read.csv(textConnection(getURL(myurl)), head=TRUE, sep="\t");
 }
 
 getXML <- function (ws, query) {
-      myurl <- paste(ws[4],'/xml/', ws[2], '/', query,"?auth=",ws[3],sep="");
-      getURL(myurl)
+    myurl <- paste(ws[4],'/xml/', ws[2], '/', query,"?auth=",ws[3],sep="");
+    getURL(myurl)
 }
 
 getInit <- function() {
 
-   # Get subsets information
-   subsets <<- getData(ws, 'subset')
-   subsets <<- subsets[order(subsets$SetID),]
-   subsetNames <<- .C(subsets$Subset)
-   connectList <<- cbind( subsets[subsets$LinkID>0, ]$LinkID , subsets[subsets$LinkID>0, ]$SetID )
-   subsets$LinkID <<- NULL
+    # Get subsets information
+    subsets <<- getData(ws, 'subset')
+    subsets <<- subsets[order(subsets$SetID),]
+    subsetNames <<- .C(subsets$Subset)
+    connectList <<- cbind( subsets[subsets$LinkID>0, ]$LinkID , subsets[subsets$LinkID>0, ]$SetID )
+    subsets$LinkID <<- NULL
 
-   # Filtering of subset depending on quantitative attributes
-   setnames <<- as.vector(subsets[,'Subset'])
-   nq <- simplify2array(lapply(setnames, function (x) { V <- as.vector(getData(ws,paste('(',x,')/quantitative',sep=''))[,1]); length(V[V==x]); }))
-   setnames <<- setnames[ nq>0 ]
-   subsets <<- subsets[ subsets[, 'Subset'] %in% setnames, ]
-   DSL <<- c(0,subsets$SetID)
-   names(DSL) <<- c('-- Select a Data Subset --',.C(subsets$Description))
-   subsets$SetID <<- NULL
-   subsets[,5] <<- sapply(.C(subsets[,5]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
-   subsets[,6] <<- sapply(.C(subsets[,6]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
-   dn <<- fillDN(dn, min(connectList[,1]))
-   Lev <- NULL; Lev <- cntLevelDN(Lev, dn , 1); N <- min(max(Lev),25)
-   N <- (trunc(N/5)+1*(N %% 5 >0))*5
-   fs <<- -N + 45
-
-   # Default data subset
-   if (! is.null(ws[5]) ) {
-       N <- which(subsetNames==ws[5])
-       if (length(N)>0 && N>0) {
-           inDSelect <<- N
-           getVars(N)
-       }
-   }
+    # Filtering of subset depending on quantitative attributes
+    setnames <<- as.vector(subsets[,'Subset'])
+    nq <- simplify2array(lapply(setnames, function (x) { V <- as.vector(getData(ws,paste('(',x,')/quantitative',sep=''))[,1]); length(V[V==x]); }))
+    setnames <<- setnames[ nq>0 ]
+    subsets <<- subsets[ subsets[, 'Subset'] %in% setnames, ]
+    DSL <<- c(0,subsets$SetID)
+    names(DSL) <<- c('-- Select a Data Subset --',.C(subsets$Description))
+    subsets$SetID <<- NULL
+    subsets[,5] <<- sapply(.C(subsets[,5]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
+    subsets[,6] <<- sapply(.C(subsets[,6]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
+    dn <<- fillDN(dn, min(connectList[,1]))
+    Lev <- NULL; Lev <- cntLevelDN(Lev, dn , 1); N <- min(max(Lev),25)
+    N <- (trunc(N/5)+1*(N %% 5 >0))*5
+    fs <<- -N + 45
 }
 
 getVars <- function(setID) {
 
-       inDSelect <<- setID
-       setName <- subsetNames[setID]
+    inDSselect <<- setID
+    setName <- subsetNames[setID]
 
-       # Get DATA
-       data <<- getData(ws,paste('(',setName,')',sep=''))
+    # Get DATA
+    data <<- getData(ws,paste('(',setName,')',sep=''))
 
-       # Get Samples: attribute features, list of identifiers
-       I <- getData(ws,paste('(',setName,')/identifier',sep=''))
-       samplename <<- I[I$Subset == setName, ]
-       samples <<- .C(samplename$Attribute)
-       S <<- unique(data[ , samples])
-       S <<- S[ order(S) ]
+    # Get Samples: attribute features, list of identifiers
+    I <- getData(ws,paste('(',setName,')/identifier',sep=''))
+    samplename <<- I[I$Subset == setName, ]
+    samples <<- .C(samplename$Attribute)
+    S <<- unique(data[ , samples])
+    S <<- S[ order(S) ]
 
-       # Get quantitative variable features
-       Q <- getData(ws,paste('(',setName,')/quantitative',sep=''))
-       varnames <<- Q[Q$Subset == setName, ]
+    # Get quantitative variable features
+    Q <- getData(ws,paste('(',setName,')/quantitative',sep=''))
+    varnames <<- Q[Q$Subset == setName, ]
 
-       # Get qualitative variable features
-       Q <- getData(ws,paste('(',setName,')/qualitative',sep=''))
-       #qualnames <<- Q[Q$Subset == setName, ]
-       qualnames <<- Q
+    # Get qualitative variable features
+    Q <- getData(ws,paste('(',setName,')/qualitative',sep=''))
+    #qualnames <<- Q[Q$Subset == setName, ]
+    qualnames <<- Q
 
-       # Get factor features
-       facnames <<- getData(ws,paste('(',setName,')/factor',sep=''))
+    # Get factor features
+    facnames <<- getData(ws,paste('(',setName,')/factor',sep=''))
 
-       # Get all qualitative features
-       features <<- rbind(I, facnames, qualnames)
+    # Get all qualitative features
+    features <<- rbind(I, facnames, qualnames)
 
-       # Merge all labels
-       LABELS <<- rbind( 
-         matrix( c( as.matrix(samplename)[,c(2:3)], 'Identifier', as.matrix(samplename)[,c(5:6)]), ncol=5, byrow=FALSE  ),
-         matrix( c( as.matrix(facnames)[,c(2:3)], replicate(dim(facnames)[1],'Factor'  ), as.matrix(facnames)[,c(5:6)] ), ncol=5, byrow=FALSE  ),
-         matrix( c( as.matrix(varnames)[,c(2:3)], replicate(dim(varnames)[1],'Variable'), as.matrix(varnames)[,c(5:6)] ), ncol=5, byrow=FALSE  )
-       )
-       if (dim(as.matrix(qualnames))[1]>0 ) LABELS <<- rbind ( LABELS, matrix( c( as.matrix(qualnames)[,c(2:3)], replicate(dim(qualnames)[1],'Feature'), as.matrix(qualnames)[,c(5:6)] ), ncol=5, byrow=FALSE ) )
-       colnames(LABELS) <<- c( 'Attribute', 'Description', 'Type', 'CV_Term_ID ', 'CV_Term_Name' )
-       LABELS[,4] <<- sapply(.C(LABELS[,4]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
-       LABELS[,5] <<- sapply(.C(LABELS[,5]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
+    # Merge all labels
+    LABELS <<- rbind(
+      matrix( c( as.matrix(samplename)[,c(2:3)], 'Identifier', as.matrix(samplename)[,c(5:6)]), ncol=5, byrow=FALSE  ),
+      matrix( c( as.matrix(facnames)[,c(2:3)], replicate(dim(facnames)[1],'Factor'  ), as.matrix(facnames)[,c(5:6)] ), ncol=5, byrow=FALSE  ),
+      matrix( c( as.matrix(varnames)[,c(2:3)], replicate(dim(varnames)[1],'Variable'), as.matrix(varnames)[,c(5:6)] ), ncol=5, byrow=FALSE  )
+    )
+    if (dim(as.matrix(qualnames))[1]>0 ) LABELS <<- rbind ( LABELS, matrix( c( as.matrix(qualnames)[,c(2:3)], replicate(dim(qualnames)[1],'Feature'), as.matrix(qualnames)[,c(5:6)] ), ncol=5, byrow=FALSE ) )
+    colnames(LABELS) <<- c( 'Attribute', 'Description', 'Type', 'CV_Term_ID ', 'CV_Term_Name' )
+    LABELS[,4] <<- sapply(.C(LABELS[,4]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
+    LABELS[,5] <<- sapply(.C(LABELS[,5]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
 
-       for( i in 1:dim(varnames)[1]) { if (.C(varnames$Type[i]) == 'numeric') data[,.C(varnames$Attribute[i])] <<- .N(data[,.C(varnames$Attribute[i])]); }
-       for( i in 1:dim(samplename)[1]) { if (.C(samplename$Type[i]) == 'numeric') data[,.C(samplename$Attribute[i])] <<- .N(data[,.C(samplename$Attribute[i])]); }
+    for( i in 1:dim(varnames)[1]) { if (.C(varnames$Type[i]) == 'numeric') data[,.C(varnames$Attribute[i])] <<- .N(data[,.C(varnames$Attribute[i])]); }
+    for( i in 1:dim(samplename)[1]) { if (.C(samplename$Type[i]) == 'numeric') data[,.C(samplename$Attribute[i])] <<- .N(data[,.C(samplename$Attribute[i])]); }
 }
 
 getLabels <- function() {
-        labelinfo <- NULL
-        for( i in 1:dim(LABELS)[1]) {
-            linkOnto <- ifelse( nchar(.C(LABELS[i,4]))>0, paste("<a href='",.C(LABELS[i,4]),"' target='_blank'>[", basename(.C(LABELS[i,4])),'] ', .C(LABELS[i,5]),"</a>", sep=""), "-")
-            labelinfo <- rbind( labelinfo , c( .C(LABELS[i,c(1:3)]), linkOnto ) )
-        }
-        df <- as.data.frame(labelinfo)
-        names(df) <- c("Attribute","Description","Type","CV_Term")
-        df
+    labelinfo <- NULL
+    for( i in 1:dim(LABELS)[1]) {
+        linkOnto <- ifelse( nchar(.C(LABELS[i,4]))>0, paste("<a href='",.C(LABELS[i,4]),"' target='_blank'>[", basename(.C(LABELS[i,4])),'] ', .C(LABELS[i,5]),"</a>", sep=""), "-")
+        labelinfo <- rbind( labelinfo , c( .C(LABELS[i,c(1:3)]), linkOnto ) )
+    }
+    df <- as.data.frame(labelinfo)
+    names(df) <- c("Attribute","Description","Type","CV_Term")
+    df
 }
 
 fillDN <- function( dn, indx) {
@@ -178,7 +203,7 @@ fillDN <- function( dn, indx) {
     L <- as.vector(connectList[ connectList[,1]==indx, 2])
     if (length(L)>0) {
        dn$children <- list()
-       for (i in 1:length(L)) { 
+       for (i in 1:length(L)) {
            dn$children[[i]] <- list()
            dn$children[[i]] <- fillDN( dn$children[[i]], L[i])
        }
@@ -191,7 +216,7 @@ cntLevelDN <- function(Lev, dn, levelid) {
         if (is.null(Lev[levelid]) || is.na(Lev[levelid])) Lev[levelid] <- 0
         Lev[levelid] <- Lev[levelid] + length(dn$children)
         levelid <- levelid + 1
-        for (i in 1:length(dn$children)) { 
+        for (i in 1:length(dn$children)) {
               Lev <- cntLevelDN(Lev, dn$children[[i]], levelid )
         }
     }

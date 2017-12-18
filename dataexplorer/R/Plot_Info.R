@@ -18,8 +18,8 @@
     # Observer - Data Table
     #----------------------------------------------------
     observe({ tryCatch({
-       if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
-          if (inDSelect != input$inDSelect) getVars(.N(input$inDSelect))
+       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
+          if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
           fa_options <- colnames(data)
           names(fa_options) <- colnames(data)
           updateCheckboxGroupInput(session, 'show_vars', label = 'Columns to show:', choices = fa_options,  
@@ -43,9 +43,9 @@
              "# Get the data subsets list\n","dh$subsetNames\n","\n",
              sep=""
          )
-         if ( input$inDSelect>0) {
-            if (inDSelect != input$inDSelect) getVars(.N(input$inDSelect))
-            setName <- subsetNames[inDSelect]
+         if ( input$inDSselect>0) {
+            if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
+            setName <- subsetNames[inDSselect]
             cat(
                "# Get '",setName,"' data subset\n", "ds <- dh$getSubsetByName('",setName,"')\n", "\n",
                "# Show all descriptions of variables\n", "ds$LABELS\n","\n",
@@ -68,11 +68,38 @@
     #----------------------------------------------------
     # renderUI - Information
     #----------------------------------------------------
+    output$datainfos <- renderText({
+       input$inDselect
+    tryCatch({
+       markdownToHTML(text=getInfos(ws), fragment.only = TRUE, title = "", 
+            options = c("use_xhtml", "smartypants", "base64_images", "mathjax", "highlight_code" ),
+            extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", 
+                            "strikethrough", "lax_spacing", "space_headers", "superscript", "latex_math"),
+            encoding = c("latin1")
+       )
+    }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - Data info \n", e ); })
+    })
+
+    #----------------------------------------------------
+    # renderUI - About Box
+    #----------------------------------------------------
+    output$aboutinfos <- renderText({
+    tryCatch({
+       markdownToHTML(text=getAbout(), fragment.only = TRUE, title = "", 
+            options = c("use_xhtml", "smartypants", "base64_images", "mathjax", "highlight_code" ),
+            extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", 
+                            "strikethrough", "lax_spacing", "space_headers", "superscript", "latex_math"),
+            encoding = c("latin1")
+       )
+    }, error=function(e) { ERROR$MsgErrorAbout <- paste("RenderText - About:\n", e ); })
+    })
+
     output$subsets <- renderDataTable({
     tryCatch({ 
-        if ( !is.DS(cdata) || values$init==0 ||  is.null(input$inDSelect)) return(NULL)
-        if (input$inDSelect>0) {
-            tsets <- subsets[subsets$Subset==subsetNames[.N(input$inDSelect)], ]
+        if ( !is.DS(cdata) || values$init==0 ||  is.null(input$inDSselect)) return(NULL)
+        if ( is.null(subsets) ) return(NULL)
+        if (input$inDSselect>0) {
+            tsets <- subsets[subsets$Subset==subsetNames[.N(input$inDSselect)], ]
         } else {
             tsets <- subsets
         }
@@ -91,7 +118,7 @@
 
     output$infos <- renderDataTable({
     tryCatch({ 
-        if (is.null(input$inDSelect) || input$inDSelect==0) return(NULL)
+        if (is.null(input$inDSselect) || input$inDSselect==0) return(NULL)
         if (is.null(LABELS) || dim(LABELS)[1]==0) return(NULL)
         getLabels()
     }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Infos:\n", e ); })
@@ -107,10 +134,10 @@
     #----------------------------------------------------
     output$downloadTSV <- downloadHandler(
         filename = function() {
-            paste('data_', .C(subsetNames[.N(input$inDSelect)]),'_', Sys.Date(), '.tsv', sep='')
+            paste('data_', .C(subsetNames[.N(input$inDSselect)]),'_', Sys.Date(), '.tsv', sep='')
         },
         content = function(con) {
-            setName <- .C(subsets[ subsets$Subset==subsetNames[.N(input$inDSelect)], ][1,1])
+            setName <- .C(subsets[ subsets$Subset==subsetNames[.N(input$inDSselect)], ][1,1])
             write.table(data, con, sep="\t", row.names=FALSE, col.names=TRUE)
         }
     )

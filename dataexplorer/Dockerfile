@@ -54,6 +54,8 @@ RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/netwo
 RUN apt-get install -y libssl-dev \
     && R -e "install.packages( c('plotly', 'ggplot2'), repos='http://cran.rstudio.com/')"
 
+RUN R -e "install.packages('markdown', , repos='http://cran.rstudio.com/')"
+
 ADD ./ /srv/shiny-server
 
 RUN rm -rf /var/lib/apt/lists/* && \ 

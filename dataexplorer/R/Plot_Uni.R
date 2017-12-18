@@ -165,8 +165,8 @@
     # Observer - Univariate
     #----------------------------------------------------
     observe({ tryCatch({
-       if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
-          if (inDSelect != input$inDSelect) getVars(.N(input$inDSelect))
+       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
+          if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
           # First Factor
           f1_options <- .C(facnames[,2])
           names(f1_options) <- .C(facnames$Description)
@@ -183,7 +183,7 @@
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1:\n", e ); }) })
 
     observe({ tryCatch({
-       if (! is.null(input$inDSelect) && input$inDSelect>0 && ! is.null(input$uniFacX) && nchar(input$uniFacX)>0) {
+       if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$uniFacX) && nchar(input$uniFacX)>0) {
            facvals <- data[ , input$uniFacX]
            if (is.numeric(facvals)) {
                fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
@@ -197,7 +197,7 @@
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 2:\n", e ); }) })
 
     observe({ tryCatch({
-       if (! is.null(input$inDSelect) && input$inDSelect>0 && ! is.null(input$uniFacY) && nchar(input$uniFacY)>0) {
+       if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$uniFacY) && nchar(input$uniFacY)>0) {
            facvals <- data[ , input$uniFacY]
            if (is.numeric(facvals)) {
                fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
@@ -215,7 +215,7 @@
     #----------------------------------------------------
     output$BoxPlot <- renderPlotly ({
     tryCatch({ 
-        if (input$inDSelect==0) return( NULL )
+        if (input$inDSselect==0) return( NULL )
         input$SelFacX
         input$SelFacY
         F1 <- isolate(input$uniFacX)

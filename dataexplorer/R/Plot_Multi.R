@@ -13,7 +13,7 @@
     # Observer - Multivariate
     #----------------------------------------------------
     observe({ tryCatch({
-       if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
+       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
           if ((as.numeric(input$nbComp)==2 && input$multiType=='ICA') || input$outType != 'IDS') {
               updateCheckboxInput(session, "f3D", label = '3D', value = FALSE)
               shinyjs::disable("f3D")
@@ -24,7 +24,7 @@
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 1:\n", e ); }) })
 
     observe({ tryCatch({
-       if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
+       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
             if (input$f3D==TRUE) {
                   shinyjs::disable("multiLabels")
                   shinyjs::disable("GBG")
@@ -36,7 +36,7 @@
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 2:\n", e ); }) })
 
     observe({ tryCatch({
-       if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
+       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
           # Annotation
           fa_options <- c("None", .C(features[,2]))
           names(fa_options) <- c('---', .C(features$Description))
@@ -47,8 +47,8 @@
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 3:\n", e ); }) })
 
     observe({ tryCatch({
-       if ( ! is.null(input$inDSelect) && input$inDSelect>0) {
-          if (inDSelect != input$inDSelect) getVars(.N(input$inDSelect))
+       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
+          if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
           # First Factor
           f1_options <- .C(facnames[,2])
           names(f1_options) <- .C(facnames$Description)
@@ -63,7 +63,7 @@
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 4:\n", e ); }) })
 
     observe({ tryCatch({
-       if (! is.null(input$inDSelect) && input$inDSelect>0 && ! is.null(input$multiFacX) && nchar(input$multiFacX)>0) {
+       if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$multiFacX) && nchar(input$multiFacX)>0) {
           facvals <- data[ , input$multiFacX]
           if (is.numeric(facvals)) {
               fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
@@ -77,7 +77,7 @@
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 5:\n", e ); }) })
 
     observe({ tryCatch({
-       if (! is.null(input$inDSelect) && input$inDSelect>0 && ! is.null(input$multiAnnot) && nchar(input$multiAnnot)>0) {
+       if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$multiAnnot) && nchar(input$multiAnnot)>0) {
           f_options <- c(.C(input$multiAnnot))
           names(f_options) <- c('---')
           if (.C(input$multiAnnot) != "None") {
@@ -101,15 +101,15 @@
     #----------------------------------------------------
 
     output$Msg <- renderUI({
-        if (input$inDSelect==0) return(NULL)
-        if (input$inDSelect>0 && dim(varnames)[1]<3) {
+        if (input$inDSselect==0) return(NULL)
+        if (input$inDSselect>0 && dim(varnames)[1]<3) {
             tags$p(class="shiny-output-error","Not enough variables")
         }
     })
 
     output$MultiPlot <- renderPlotly ({
     tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
-        if (input$inDSelect==0) return(NULL)
+        if (input$inDSselect==0) return(NULL)
         input$listVars
         input$listLevels
         input$listFeatures

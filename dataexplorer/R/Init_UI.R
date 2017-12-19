@@ -46,9 +46,11 @@
     observe({ tryCatch({
         values$initcol
         if (values$initcol==1 && ! is.null(dclist)) {
-            indx <- order(dclist$list$description)
+            #listlabels <- dclist$list$description
+            listlabels <- dclist$list$label
+            indx <- order(listlabels)
             choices <- .C(dclist$list$datasetID[indx])
-            names(choices) <- .C(dclist$list$description[indx])
+            names(choices) <- .C(listlabels[indx])
             inDselect <<- choices[1]
             values$init <<- 0
             values$initcol <<- 0

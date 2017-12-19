@@ -55,6 +55,7 @@
                "# Display a summary for each quantitative variable\n","summary(ds$data[, ds$varnames ])\n","\n",
                "# Boxplot of all variables defined in ds$varnames\n",
                "Rank <- simplify2array(lapply(ds$varnames, function(x) { round(mean(log10(ds$data[ , x]), na.rm=T)) }))\n",
+               "Rank[!is.finite(Rank)] <- 0\n",
                "colRank <- Rank - min(Rank) + 1\n",
                "cols <- c('red', 'orange', 'darkgreen', 'blue', 'purple', 'brown')\n",
                "boxplot(log10(ds$data[, ds$varnames]), outline=F, horizontal=T, border=cols[colRank], las=2, cex.axis=0.5)\n","\n",

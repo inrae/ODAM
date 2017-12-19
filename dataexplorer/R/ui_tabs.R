@@ -24,7 +24,9 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
 ui_dataTab <-  tabItem(tabName = "datatable", bsAlert("ErrAlertDT"),
    column(12,
       conditionalPanel(condition="input.inDSselect>0",
+        tags$style(type='text/css', ".col-sm-11 { width: 90%; } .col-sm-1 { width: 10%; }"),
         column(1, 
+           tags$style(type='text/css', "#show_vars .shiny-options-group label span { font-size: 11px; font-weight: 600; }"),
            checkboxGroupInput('show_vars', 'Columns to show:', choices = NULL, selected = NULL)
         ),
         column(11, DT::dataTableOutput('datavalues') )

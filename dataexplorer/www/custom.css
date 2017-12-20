@@ -90,3 +90,7 @@ p {
 .dataTables_info {
   display: none;
 }
+
+.selectize-dropdown {
+  z-index: 2000;
+}

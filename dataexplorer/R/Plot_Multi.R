@@ -110,6 +110,7 @@
     output$MultiPlot <- renderPlotly ({
     tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
         if (input$inDSselect==0) return(NULL)
+        values$launch
         input$listVars
         input$listLevels
         input$listFeatures

@@ -50,10 +50,21 @@ is.DS <- function(cdata) {
     return(ret)
 }
 
+getME <- function(cdata) {
+    protocol <- cdata[['url_protocol']]
+    hostname <- cdata[['url_hostname']]
+    port <- cdata[['url_port']]
+    pathname <- cdata[['url_pathname']]
+    paste(protocol,'//',hostname,':',port,pathname, sep='')
+}
+
 getWS <- function(cdata) {
     #   hostname <- cdata[['url_hostname']]
     #   port <- cdata[['url_port']]
     params <- parseQueryString(cdata$url_search)
+    if (!is.null(params[['ws']])) {
+        externalURL <<- params[['ws']]
+    }
     dcname <- ''
     if (!is.null(params[['dc']])) {
         dcname <- params[['dc']]

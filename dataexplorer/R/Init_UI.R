@@ -54,7 +54,10 @@
             inDselect <<- choices[1]
             values$init <<- 0
             values$initcol <<- 0
-            ws[2] <<- inDselect
+            if (! is.null(ws[2]) && nchar(ws[2])>0 )
+               inDselect <<- ws[2]
+            else
+               ws[2] <<- inDselect
             ws[4] <<- getURLfromList()
             updateSelectInput(session, "inDselect", choices = choices, selected = inDselect)
         }
@@ -97,6 +100,15 @@
            }
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Data subset Obs:\n", e); }) })
+
+    observe({ tryCatch({
+        if (! is.null(input$inDselect) && nchar(input$inDselect)>0 ) {
+           if (input$inDselect != inDselect) {
+              inDselect <<- input$inDselect
+              values$launch <<- values$launch + 1
+           }
+        }
+    }, error=function(e) { ERROR$MsgErrorMain <- paste("Data subset Change Obs:\n", e); }) })
 
     # Display the Collection/Dataset Name 
     output$datasetname <- renderText({ 

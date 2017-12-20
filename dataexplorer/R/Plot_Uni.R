@@ -216,6 +216,7 @@
     output$BoxPlot <- renderPlotly ({
     tryCatch({ 
         if (input$inDSselect==0) return( NULL )
+        values$launch
         input$SelFacX
         input$SelFacY
         F1 <- isolate(input$uniFacX)

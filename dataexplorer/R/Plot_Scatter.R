@@ -81,6 +81,7 @@
     tryCatch({ 
         if (! is.null(input$inDSselect) && ! is.null(isolate(input$biFacX)) && ! is.null(input$SelFacX2) && 
             ! is.null(input$biVarSelect1) && ! is.null(input$biVarSelect2) && input$inDSselect>0) {
+            values$launch
             FA <- isolate(input$biAnnot)
             F1 <- isolate(input$biFacX)
             FCOL <- ifelse( FA=="None", '', FA )

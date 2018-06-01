@@ -2,7 +2,7 @@
     # Univariate : BoxPlot
     #----------------------------------------------------
     # One factor
-    getBoxPLot1 <- function(F1, selectF1, varX, fMean, bsmooth=FALSE, blog=FALSE) {
+    getBoxPLot1 <- function(F1, selectF1, varX, fMean, bsmooth=FALSE, blog=FALSE, bviolin=FALSE) {
         # Factor levels F1
         facval1 <- data[ , F1]
         if (is.numeric(facval1)) {
@@ -35,6 +35,7 @@
                dat <- rbind(dat,D)
            }
         }
+        dat <- unique(dat)
 
         # define the summary function
         f <- function(x) {
@@ -62,16 +63,20 @@
         colorname <- as.character(LABELS[LABELS[,1]==colorid,2])
 
         # plot
-        G2 <- ggplot(aes(y=y, x=x, colour=colour), data = df, family="Times", lineheight=.8, fontface="bold") + geom_boxplot()
+        G2 <- ggplot(aes(y=y, x=x, colour=colour), data = df, family="Times", lineheight=.8, fontface="bold")
+        if (bviolin) G2 <- G2 + geom_violin()
+        if (!bviolin) G2 <- G2 + geom_boxplot()
         if (bsmooth) G2 <- G2 + geom_smooth(aes(group = 1), span=0.75, method="loess", size=2, se = FALSE )
+        G2 <- G2 + stat_compare_means(method = "anova",label.x=2)
         G2 <- G2 + labs(x=xname, y=yname, colour=colorname)
-        G2 <- G2 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"))
+        G2 <- G2 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"), 
+                         axis.text.x = element_text(angle = 45, vjust = 1, size = 8, hjust = 1))
         p <- ggplotly(G2)
         p
     }
 
     # Two factors
-    getBoxPLot2 <- function(F1, F2, selectF1, selectF2, varX, fMean, bsmooth=FALSE, blog=FALSE) {
+    getBoxPLot2 <- function(F1, F2, selectF1, selectF2, varX, fMean, bsmooth=FALSE, blog=FALSE, bviolin=FALSE) {
 
         # Factor levels F1
         facval1 <- data[ , F1]
@@ -116,6 +121,7 @@
                dat <- rbind(dat,D)
            }
         }
+        dat <- unique(dat)
 
         # define the summary function
         f <- function(x) {
@@ -143,7 +149,9 @@
         colorname <- as.character(LABELS[LABELS[,1]==colorid,2])
 
         # plot
-        G2 <- ggplot(aes(y=y, x=x, colour=colour), data = df, family="Times", lineheight=.8, fontface="bold") + geom_boxplot()
+        G2 <- ggplot(aes(y=y, x=x, colour=colour), data = df, family="Times", lineheight=.8, fontface="bold")
+        if (bviolin) G2 <- G2 + geom_violin()
+        if (!bviolin) G2 <- G2 + geom_boxplot()
         G2 <- G2 + labs(x=xname, y=yname, colour=colorname)
         G2 <- G2 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"))
         if (bsmooth) G2 <- G2 + stat_smooth(aes(group=colour), size=2, se = FALSE )
@@ -165,24 +173,40 @@
     # Observer - Univariate
     #----------------------------------------------------
     observe({ tryCatch({
+       input$inDselect
        if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
           if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
           # First Factor
           f1_options <- .C(facnames[,2])
           names(f1_options) <- .C(facnames$Description)
           updateSelectInput(session, "uniFacX", choices = f1_options)
+       }
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1a:\n", e ); }) })
+
+    observe({ tryCatch({
+       input$inDselect
+       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
+          if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
           # Second Factor
           f2_options <- .C(facnames[,2])
           names(f2_options) <- .C(facnames$Description)
           updateSelectInput(session, "uniFacY", choices = f2_options)
+       }
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1b:\n", e ); }) })
+
+    observe({ tryCatch({
+       input$inDselect
+       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
+          if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
           # Select the variable to be analysed
           v_options <- c(0, 1:dim(varnames)[1] )
           names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",varnames$Description)))
           updateSelectInput(session, "uniVarSelect", choices = v_options)
        }
-    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1:\n", e ); }) })
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1c:\n", e ); }) })
 
     observe({ tryCatch({
+       input$inDselect
        if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$uniFacX) && nchar(input$uniFacX)>0) {
            facvals <- data[ , input$uniFacX]
            if (is.numeric(facvals)) {
@@ -197,6 +221,7 @@
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 2:\n", e ); }) })
 
     observe({ tryCatch({
+       input$inDselect
        if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$uniFacY) && nchar(input$uniFacY)>0) {
            facvals <- data[ , input$uniFacY]
            if (is.numeric(facvals)) {
@@ -227,9 +252,9 @@
             withProgress(message = 'Calculation in progress', detail = '... ', value = 0, {
                tryCatch({
                    if (F1==F2) {
-                       getBoxPLot1(F1, input$SelFacX, varX, fMean, bsmooth=input$uniSmooth, blog=input$uniLog)
+                       getBoxPLot1(F1, input$SelFacX, varX, fMean, bsmooth=input$uniSmooth, blog=input$uniLog, bviolin=input$violin)
                    } else {
-                       getBoxPLot2(F1, F2, input$SelFacX, input$SelFacY, varX, fMean, bsmooth=input$uniSmooth, blog=input$uniLog)
+                       getBoxPLot2(F1, F2, input$SelFacX, input$SelFacY, varX, fMean, bsmooth=input$uniSmooth, blog=input$uniLog, bviolin=FALSE)
                    }
                }, error=function(e) {})
             })

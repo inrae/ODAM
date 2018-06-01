@@ -12,6 +12,7 @@
     # Observer - Bivariate
     #----------------------------------------------------
     observe({ tryCatch({
+       input$inDselect
        if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
           # Annotation
           fa_options <- c("None", .C(features[,2]))
@@ -21,6 +22,7 @@
     }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 1:\n", e ); }) })
 
     observe({ tryCatch({
+       input$inDselect
        if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
           if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
           # First Factor
@@ -31,6 +33,7 @@
     }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 2:\n", e ); }) })
 
     observe({ tryCatch({
+       input$inDselect
        if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
           # Select the variable to be analysed
           v_options <- c(0, 1:dim(varnames)[1] )
@@ -41,6 +44,7 @@
     }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 3:\n", e ); }) })
 
     observe({ tryCatch({
+       input$inDselect
        if ( ! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$biFacX) && nchar(input$biFacX)>0) {
            facvals <- data[ , input$biFacX]
            if (is.numeric(facvals)) {
@@ -55,6 +59,7 @@
     }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 4:\n", e ); }) })
 
     observe({ tryCatch({
+       input$inDselect
        if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$biAnnot) && nchar(input$biAnnot)>0) {
           f_options <- c(.C(input$biAnnot))
           names(f_options) <- c('---')
@@ -96,7 +101,7 @@
                 withProgress(message = 'Calculation in progress', detail = '... ', value = 0, {
                     tryCatch({
                        getScatterPLot(F1, input$SelFacX2, FCOL, selectFCOL=selectFCOL, varX, varY, fMean, blabels=input$biLabels, 
-                                          gAddon=input$biAddon, blog=c(input$biLogX,input$biLogY))
+                                          gAddon=input$biAddon, blog=c(input$biLogX,input$biLogY), reglin=input$gregmod)
                     }, error=function(e) {})
                 })
             }
@@ -107,7 +112,7 @@
     #----------------------------------------------------
     # Bivariate : ScatterPlot 
     #----------------------------------------------------
-    getScatterPLot <- function(F1, selectF1, FCOL, selectFCOL, varX, varY, fMean, blabels=FALSE, gAddon="none",blog=c(FALSE,FALSE)) {
+    getScatterPLot <- function(F1, selectF1, FCOL, selectFCOL, varX, varY, fMean, blabels=FALSE, gAddon="none",blog=c(FALSE,FALSE), reglin=FALSE) {
 
         # Factor levels
         facvals <- data[ , F1]
@@ -165,6 +170,8 @@
         } else {
            dfg <- data.frame(factor1=as.factor(dat[,F1]), xvar=xvar, yvar=yvar, IDS=dat[, samples])
         }
+        dfg <- unique(dfg)
+
         xname  <- as.character(LABELS[LABELS[,1]==varX,2])
         if (blog[1]) xname  <- paste("Log10[",xname,"]")
         yname  <- as.character(LABELS[LABELS[,1]==varY,2])
@@ -181,16 +188,30 @@
              conf.rgn$factor1[ conf.rgn$factor1==i ] <- levels(facvals)[i]
         }
 
+        if (reglin) {
+            fit <- lm(yvar~xvar, data=dfg)
+            fit.title <- paste("Adj R2 = ",signif(summary(fit)$adj.r.squared, 5),
+                              "Intercept =",signif(fit$coef[[1]],5 ),
+                              " Slope =",signif(fit$coef[[2]], 5),
+                              " Pvalue =",signif(summary(fit)$coef[2,4], 5))
+        }
+
         # plot
         SE <- FALSE
         sizeP <- ifelse( blabels, 0, 0 )
-        G1 <- ggplot(aes(x=xvar, y=yvar, colour=factor1), data = dfg)
-        if (!blabels) G1 <- G1 + geom_point(size=sizeP)
-        if (blabels) G1 <- G1 + geom_text(aes(label=IDS), hjust=0.5, vjust=0.5, size=4)
-        if (gAddon=="regmod")  G1 <- G1 + stat_smooth(method=lm, size=1, se = SE )
-        if (gAddon=="ellipse") G1 <- G1 + geom_path(data=conf.rgn)
+        if (gAddon=="smooth")  {
+            G1 <- ggplot(aes(x=xvar, y=yvar), data = dfg)
+            if (gAddon=="smooth") G1 <- G1 + stat_smooth()
+        } else {
+            G1 <- ggplot(aes(x=xvar, y=yvar, colour=factor1), data = dfg)
+            if (gAddon=="regmod")  G1 <- G1 + stat_smooth(method=lm, size=1, se = SE )
+            if (gAddon=="ellipse") G1 <- G1 + geom_path(data=conf.rgn)
+        }
+        if (!blabels) G1 <- G1 + geom_point(aes(colour=factor1), size=sizeP)
+        if (blabels) G1 <- G1 + geom_text(aes(label=IDS, colour=factor1), hjust=0.5, vjust=0.5, size=4)
+        if (reglin) G1 <- G1 + stat_smooth(data = dfg, method = "lm", col = "red", size=1, se=SE) + ggtitle(fit.title)
         G1 <- G1 + labs(x=xname, y=yname, colour=F1name)
-        G1 <- G1 + theme(plot.title = element_text(size=8, lineheight=.8, face="bold"))
+        G1 <- G1 + theme(plot.title = element_text(size=4, lineheight=.4, face="bold"))
         G1 <- G1 + theme_bw()
         ggplotly(G1)
         #G1

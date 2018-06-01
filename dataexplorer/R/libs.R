@@ -2,15 +2,25 @@ library(shiny)
 library(shinyjs)
 library(shinydashboard)
 library(RCurl)
-#library(ggplot2)
+library(reshape2)
+library(pcaMethods)
 library(grid)
 library(ellipse)
 library(JADE)
 library(moments)
 library(scales)
+library(igraph)
+library(FastGGM)
 library(networkD3)
+library(magrittr)
 library(htmlwidgets)
+library(htmltools)
+library(ggpubr)
+library(ggdendro)
 library(plotly)
+
+library(RcppParallel)
+setThreadOptions(numThreads = 4) # set 4 threads for parallel computing
 
 auth <- ''
 dsname <- ''
@@ -37,7 +47,6 @@ facnames <- NULL
 features <- NULL
 LABELS <- NULL
 DSL <- NULL
-
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 .N <- function(x) { as.numeric(as.vector(x)) }
@@ -95,10 +104,10 @@ getWS <- function(cdata) {
 getDataCol <- function (ws) {
     dclist <- NULL
     myurl <- paste(ws[4],'/tsv/', ws[5], "?auth=",ws[3],sep="");
-    dc <- read.csv(textConnection(getURL(myurl)), head=TRUE, sep="\t");
+    dc <- read.csv(textConnection(getURL(myurl, ssl.verifypeer = FALSE)), head=TRUE, sep="\t");
     if (length(dc$Subset)==1 && dc$Subset=="collection") {
         myurl <- paste(ws[4],'/tsv/', ws[5], '/collection',"?auth=",ws[3],sep="");
-        collection <- read.csv(textConnection(getURL(myurl)), head=TRUE, sep="\t");
+        collection <- read.csv(textConnection(getURL(myurl, ssl.verifypeer = FALSE)), head=TRUE, sep="\t");
         collection$url[is.na(collection$url)] <- externalURL
         dclist <- list(collection=dc, list=collection)
     }
@@ -115,17 +124,17 @@ getAbout <- function () {
 getInfos <- function (ws) {
     myurl <- paste(ws[4],'/infos/', ws[2], "?auth=",ws[3],sep="");
     imgurl <- paste(ws[4],'/image/', ws[2], sep="");
-    gsub('@@IMAGE@@', imgurl,  getURL(myurl) )
+    gsub('@@IMAGE@@', imgurl,  getURL(myurl, ssl.verifypeer = FALSE) )
 }
 
 getData <- function (ws, query) {
     myurl <- paste(ws[4],'/tsv/', ws[2], '/', query,"?auth=",ws[3],sep="");
-    read.csv(textConnection(getURL(myurl)), head=TRUE, sep="\t");
+    read.csv(textConnection(getURL(myurl, ssl.verifypeer = FALSE)), head=TRUE, sep="\t");
 }
 
 getXML <- function (ws, query) {
     myurl <- paste(ws[4],'/xml/', ws[2], '/', query,"?auth=",ws[3],sep="");
-    getURL(myurl)
+    getURL(myurl, ssl.verifypeer = FALSE)
 }
 
 getInit <- function() {

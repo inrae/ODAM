@@ -15,7 +15,7 @@ shinyServer(function(input, output, session) {
     ERROR <- reactiveValues(MsgErrorMain='', MsgErrorInfo='', MsgErrorDT='', MsgErrorUni='', MsgErrorBi='', MsgErrorMulti='', MsgErrorAbout='' )
 
     cdata <- session$clientData
-    values <- reactiveValues(init=0, initcol=0, initds=0, launch=0)
+    values <- reactiveValues(init=0, initcol=0, initds=0, launch=0, netData=NULL)
 
     nbopt_multiselect <- 20
 

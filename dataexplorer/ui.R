@@ -19,12 +19,7 @@ meta <- tags$head(
    tags$script(type="text/javascript", src = "js/google-analytics.js"),
    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
    # Load D3.js
-   tags$script(src = "js/d3.min.js"),
-   # Load highlightjs
-   tags$link(rel = "stylesheet", type = "text/css", href = "css/default.css"),
-   tags$link(rel = "stylesheet", type = "text/css", href = "css/md.css"),
-   tags$script(src = 'js/highlight.pack.js'),
-   tags$script(src = "js/init.js")
+   tags$script(src = "js/d3.min.js")
 )
 
 busyLogo <- function(busysrc, height = 30, width = 30, alt = NULL) {

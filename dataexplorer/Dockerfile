@@ -54,7 +54,14 @@ RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/netwo
 RUN apt-get install -y libssl-dev \
     && R -e "install.packages( c('plotly', 'ggplot2'), repos='http://cran.rstudio.com/')"
 
-RUN R -e "install.packages('markdown', , repos='http://cran.rstudio.com/')"
+RUN R -e "install.packages(c('markdown', 'ggpubr', 'ggdendro'), repos='http://cran.rstudio.com/')"
+
+RUN R -e "install.packages('RcppParallel', repos='http://cran.rstudio.com/')" && \
+    wget --no-verbose http://www.pitt.edu/~wec47/Files/FastGGM.tar.gz -O "FastGGM.tar.gz" && \
+    R -e "install.packages(pkgs = 'FastGGM.tar.gz', repos = NULL, type = 'source')" && \
+    rm -f FastGGM.tar.gz
+
+RUN R -e "source('http://bioconductor.org/biocLite.R'); biocLite(c('limma','impute','pcaMethods'))"
 
 ADD ./ /srv/shiny-server
 

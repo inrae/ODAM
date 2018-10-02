@@ -16,13 +16,11 @@ ODAM (Open Data for Access and Mining) is an Experiment Data Table Management Sy
 
 * To prepare your own data subsets, see the <a href="https://github.com/INRA/ODAM/blob/master/doc/tutorial_on_metadata_files.pdf" target="_blank">tutorial on metadata files</a>
 
-* Test online the getData API through the web <a href="http://www.bordeaux.inra.fr/pmb/odamsw/" target="_blank">swagger UI</a> (See <a href="https://github.com/INRA/ODAM/tree/master/API" target="_blank">Github ODAM/API</a> )
+* Test online the getData API through the web <a href="http://pmb-bordeaux.fr/odamsw/" target="_blank">swagger UI</a> (See <a href="https://github.com/INRA/ODAM/tree/master/API" target="_blank">Github ODAM/API</a> )
 
-* For open data access throught web services within R, see the <a href="Rodam.html" target="_blank">R ODAM package and How to use it</a>
+* For open data access throught web services within R, see the <a href="Rodam.html" target="_blank">R ODAM package and How to use it</a> - <a href="https://cran.r-project.org/package=Rodam" target="_blank"><img src="https://www.r-pkg.org/badges/version/Rodam" alt="CRAN status"></a>
 
 * All ontology terms were picked from <a href="http://agroportal.lirmm.fr/"  target="_blank">AgroPortal</a> and especially by levering on their very useful <a href="http://agroportal.lirmm.fr/annotator" target="_blank">Annotator module
 
 
 [ ![Inra](inra_logo.png)](http://www.bordeaux-aquitaine.inra.fr/en)
-
-

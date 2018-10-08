@@ -363,59 +363,57 @@ class def_lib  {
 ********************************************************/
     function getSelectMulti($tarr_DS, $func,$value) {
 
-       $gfields='';  $gfrom=''; $gwhere=''; $prev_falias=''; $query=''; $bFirst = 0; $bLast=0;
+       $gfields='';  $gfrom=''; $gwhere=''; $query='';
        do {
 
           $nbds = count($tarr_DS);
           if ($nbds==0) break;
 
+          $dstree = array();
           if (count($tarr_DS)==1) {
              foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
                 if ($arr[count($arr)-1] == $tarr_DS[0]) {
-                   $tarr_DS = $arr;
+                   $dstree = $arr;
                    break;
                 }
              }
+          } else {
+             for ($i = 0; $i <= $nbds-1; $i++ ) {
+                 $dsarr = array();
+                 foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
+                      if ($arr[count($arr)-1] == $tarr_DS[$i]) {
+                         $dsarr = $arr;
+                         break;
+                      }
+                 }
+                 if (count($dsarr)==0) continue;
+                 foreach ($dsarr as $ds)
+                     if ( ! in_array ( $ds, $dstree) ) array_push($dstree, $ds);
+             }
           }
-          $nbds = count($tarr_DS);
-
-          #$dstree = array();
-          #foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
-          #    if ($arr[count($arr)-1] == $tarr_DS[$nbds-1]) {
-          #       $dstree = $arr;
-          #       break;
-          #    }
-          #}
-
-          $dstree = array();
-          for ($i = 0; $i <= $nbds-1; $i++ ) {
-              $dsarr = array();
-              foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
-                   if ($arr[count($arr)-1] == $tarr_DS[$i]) {
-                      $dsarr = $arr;
-                      break;
-                   }
-              }
-              if (count($dsarr)==0) continue;
-              foreach ($dsarr as $ds)
-                  if ( ! in_array ( $ds, $dstree) ) array_push($dstree, $ds);
-          }
-
           if (count($dstree)==0) break;
           #$query='OKquery: '.implode('/',$tarr_DS).', dstree: '.implode('/',$dstree); break;
 
           # find the dataset to which the 'func' field belongs to
-          foreach ($dstree as $ds) {
-               #if ($bFirst==0 && $ds != $tarr_DS[0]) continue;
-               $bFirst=1;
+          $tAlias = array();
+          $nbds=count($dstree);
+          for ($i = 0; $i <= $nbds-1; $i++ ) {
+               $ds=$dstree[$i];
                list ($falias, $file, $fields, $where) = $this->getSQLparts ($ds,$func,$value);
-               #if ( in_array ( $ds, $tarr_DS) ) {
-                    if (strlen($gfields)>0) $gfields .= ', ';
-                    $gfields .= $fields;
-               #}
+               if (strlen($gfields)>0) $gfields .= ', ';
+               $gfields .= $fields;
+               array_push($tAlias,$falias);
                if (strlen($gfrom)>0) {
                     $joinkey = $this->hDataset[$ds]['joinkey'];
-                    $joincond = "($prev_falias.$joinkey=$falias.$joinkey)";
+                    $k=$i-1;
+                    if ($this->hDataset[$dstree[$k]]['joinkey'] != $joinkey) {
+                       $k=0;
+                       while($k<($i-1)) {
+                          if ($this->hDataset[$dstree[$k]]['identifier'] == $joinkey) break;
+                          $k++;
+                       }
+                    }
+                    $joincond = "(".$tAlias[$k].".$joinkey=$falias.$joinkey)";
                     $tmp = str_replace("$falias.$joinkey, ","", $gfields);
                     $gfields = $tmp;
                     $gfrom .= " JOIN $file ON $joincond";
@@ -423,12 +421,8 @@ class def_lib  {
                     $gfrom = "$file";
                }
                if (strlen($where)>0) {
-                    #if (strlen($gwhere)>0) $gwhere .= ' and ';
-                    #$gwhere .= $where;
                     $gwhere = $where;
                }
-               $prev_falias=$falias;
-               if ($ds == $tarr_DS[$nbds-1]) break;
           }
           $query = "select $gfields from $gfrom";
           if (strlen($gwhere)>0) { $query .= " where $gwhere"; }
@@ -441,27 +435,48 @@ class def_lib  {
 * getCategoryList
 ********************************************************/
     function getCategoryList($tarr_DS, $category) {
-        $list = array();
-        if ( in_array($category, $this->categories) ) {
-            if (count($tarr_DS)==1) {
-               foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
-                  if ($arr[count($arr)-1] == $tarr_DS[0]) {
-                     $tarr_DS = $arr;
-                     break;
-                  }
-               }
-            }
-            $cnt=0;
-            foreach ($tarr_DS as $ds) {
-               if (! isset($this->hDataset[$ds]['categories'][$category]) ) continue;
-               $arr_cat = $this->hDataset[$ds]['categories'][$category];
-               if (count($arr_cat)==0) continue;
-               foreach ($this->hDataset[$ds]['categories'][$category] as $field) {
-                     $list[$cnt++] = array_merge( array($ds,$field), $this->hDataset[$ds]['entities'][$field] );
-               }
-            }
-        }
-        return $list;
+       $list = array();
+       $dstree = array();
+       do {
+          $nbds = count($tarr_DS);
+          if ($nbds==0) break;
+
+          if ( in_array($category, $this->categories) ) {
+              if ($nbds==1) {
+                 foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
+                    if ($arr[count($arr)-1] == $tarr_DS[0]) {
+                       $dstree = $arr;
+                       break;
+                    }
+                 }
+              } else {
+                 for ($i = 0; $i <= $nbds-1; $i++ ) {
+                     $dsarr = array();
+                     foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
+                          if ($arr[count($arr)-1] == $tarr_DS[$i]) {
+                             $dsarr = $arr;
+                             break;
+                          }
+                     }
+                     if (count($dsarr)==0) continue;
+                     foreach ($dsarr as $ds)
+                         if ( ! in_array ( $ds, $dstree) ) array_push($dstree, $ds);
+                 }
+              }
+              if (count($dstree)==0) break;
+
+              $cnt=0;
+              foreach ($dstree as $ds) {
+                 if (! isset($this->hDataset[$ds]['categories'][$category]) ) continue;
+                 $arr_cat = $this->hDataset[$ds]['categories'][$category];
+                 if (count($arr_cat)==0) continue;
+                 foreach ($this->hDataset[$ds]['categories'][$category] as $field) {
+                       $list[$cnt++] = array_merge( array($ds,$field), $this->hDataset[$ds]['entities'][$field] );
+                 }
+              }
+          }
+       } while(0);
+       return $list;
     }
 
 /********************************************************

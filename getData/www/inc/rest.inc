@@ -165,10 +165,12 @@ do {
     if ($limit>0) $query .= " LIMIT $limit";
 
     # Launch query if needed
-    $retval = $doQuery ?  doQuery($DSNAME, $query) : 0;
+    $retval = $doQuery ?  doQuery($DSNAME, $query, $debug) : 0;
 
     if ($debug==1) {
-        echo "OK $restmsg - $cntopt - $CMD - $retval - $stdout<br>$query";
+		$query = str_replace("JOIN", "\nJOIN", str_replace("from", "\nFROM", $query));
+        echo "OK $restmsg - $cntopt - $CMD - $retval - $stdout<br>";
+		echo"<br><pre>$query</pre>";
         echo "<pre>"; print_r($def->hDataset); echo "</pre>";
         exit();
     }

@@ -379,25 +379,40 @@ class def_lib  {
           }
           $nbds = count($tarr_DS);
 
+          #$dstree = array();
+          #foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
+          #    if ($arr[count($arr)-1] == $tarr_DS[$nbds-1]) {
+          #       $dstree = $arr;
+          #       break;
+          #    }
+          #}
+
           $dstree = array();
-          foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
-              if ($arr[count($arr)-1] == $tarr_DS[$nbds-1]) {
-                 $dstree = $arr;
-                 break;
+          for ($i = 0; $i <= $nbds-1; $i++ ) {
+              $dsarr = array();
+              foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
+                   if ($arr[count($arr)-1] == $tarr_DS[$i]) {
+                      $dsarr = $arr;
+                      break;
+                   }
               }
+              if (count($dsarr)==0) continue;
+              foreach ($dsarr as $ds)
+                  if ( ! in_array ( $ds, $dstree) ) array_push($dstree, $ds);
           }
+
           if (count($dstree)==0) break;
           #$query='OKquery: '.implode('/',$tarr_DS).', dstree: '.implode('/',$dstree); break;
 
           # find the dataset to which the 'func' field belongs to
           foreach ($dstree as $ds) {
-               if ($bFirst==0 && $ds != $tarr_DS[0]) continue;
+               #if ($bFirst==0 && $ds != $tarr_DS[0]) continue;
                $bFirst=1;
                list ($falias, $file, $fields, $where) = $this->getSQLparts ($ds,$func,$value);
-               if ( in_array ( $ds, $tarr_DS) ) {
+               #if ( in_array ( $ds, $tarr_DS) ) {
                     if (strlen($gfields)>0) $gfields .= ', ';
                     $gfields .= $fields;
-               }
+               #}
                if (strlen($gfrom)>0) {
                     $joinkey = $this->hDataset[$ds]['joinkey'];
                     $joincond = "($prev_falias.$joinkey=$falias.$joinkey)";

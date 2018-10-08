@@ -25,6 +25,7 @@ ob_end_clean();
 
 $auth = isset($_GET['auth']) ?  $_GET['auth'] : '' ;
 $limit = isset($_GET['limit']) ?  $_GET['limit'] : 0 ;
+$debug=0;
 
 # Parse PATH_INFO if needed
 #if ($_SERVER['PATH_INFO'] && $auth==$AUTHKEY)
@@ -35,7 +36,10 @@ do {
     array_shift($urloptions);
 
     $cntopt=count($urloptions);
-
+    if ($urloptions[$cntopt-1] == 'debug') {
+        $cntopt--;
+        $debug=1;
+    }
     $dataset = array_shift($urloptions);
     if (! is_dir("$DATADIR/$dataset")) {
         echo "ERROR: the dataset directory is not available";
@@ -163,8 +167,11 @@ do {
     # Launch query if needed
     $retval = $doQuery ?  doQuery($DSNAME, $query) : 0;
 
-#echo "OK $restmsg - $cntopt - $CMD - $retval - $stdout<br>$query";
-#exit();
+    if ($debug==1) {
+        echo "OK $restmsg - $cntopt - $CMD - $retval - $stdout<br>$query";
+        echo "<pre>"; print_r($def->hDataset); echo "</pre>";
+        exit();
+    }
 
     if ($retval) {
        $ERRORMSG='QUERY:&nbsp;'.$query.'<BR>===>&nbsp;'.`cat $stderr`.'<BR><BR>';

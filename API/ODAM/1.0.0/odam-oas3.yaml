@@ -1,6 +1,6 @@
 openapi: 3.0.0
 servers:
-  - url: 'http://www.bordeaux.inra.fr/pmb'
+  - url: 'http://pmb-bordeaux.fr'
 info:
   description: >-
     ODAM (Open Data for Access and Mining) is an Experiment Data Table
@@ -183,7 +183,7 @@ paths:
           required: true
           schema:
             type: string
-          example: activome
+          example: activome,qNMR_metabo
         - in: path
           name: entry
           description: entry identifier

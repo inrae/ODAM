@@ -8,7 +8,7 @@ PORT=8084
 DOCKIMG=docker.io/odam/swagger-ui-customized:latest
 NAME=swagger-ui
 
-API_URL=http://www.bordeaux.inra.fr/pmb/api/ODAM/1.0.0/odam-oas3.yaml
+API_URL=http://pmb-bordeaux.fr/api/ODAM/1.0.0/odam-oas3.yaml
 
 usage() {
     echo "usage: sh $0 [-a <API_URL>] [-i <docker image>] [-n <container name>] [-p <port>] help|start|stop|status"

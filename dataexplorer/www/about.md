@@ -9,8 +9,10 @@ _Created by Daniel Jacob - INRA UMR 1332 BFP, PMB - 2016 - Version 1.1_
 ### Give an open access to your data and make them ready to be mined - A data explorer as bonus
 
 ODAM (Open Data for Access and Mining) is an Experiment Data Table Management System (EDTMS) that implements a simple way to make research data broadly accessible and fully available for reuse, including by a script language such as R. The main purpose is to make a dataset accessible online with a minimal effort from the data provider, and to allow any scientists or bioinformaticians to be able to explore the dataset and then extract a subpart or the totality of the data according to their needs. For more information/explanation, see <a href="http://fr.slideshare.net/danieljacob771282/odam-open-data-access-and-mining" target="_blank">online presentation</a>
- 
-* Test online with the <a href="?ds=frim1">FRIM dataset</a> - <a href='https://doi.org/10.5281/zenodo.154041' target='_blank'><img src='https://zenodo.org/badge/DOI/10.5281/zenodo.154041.svg' alt='DOI'></a>
+
+----
+#### Test online with the <a href="?ds=frim1">FRIM dataset</a>
+----
 
 * To install the ODAM software suite on your own harware (laptop or server), get the docker images and the installation instruction to the <a href="https://hub.docker.com/r/odam/getdata/" target="_blank">Docker Hub</a> site.
 

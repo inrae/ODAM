@@ -381,10 +381,10 @@
            MA <- as.data.frame(cbind( Score[, c(pc1,pc2,pc3)], facvals))
            names(MA) <- c( 'C1','C2', 'C3', 'fac' )
            
-           if (! f3D) {
+           if (! f3D) { # Compute ellipse for each factor level
               centroids <- aggregate(cbind(C1,C2) ~ fac , MA, mean)
               conf.rgn  <- do.call(rbind,lapply(unique(MA$fac),function(t)
-                data.frame(fac=as.character(t),
+                 data.frame(fac=as.character(t),
                            ellipse(cov(MA[MA$fac==t,1:2]),
                                    centre=as.matrix(centroids[centroids$fac==t,2:3]),
                                    level=0.95, npoints=50),
@@ -400,14 +400,14 @@
            for( i in 1:length(levels(facvals)) ) MA$fac[ MA$fac==i ] <- levels(facvals)[i]
            MA$fac <- as.factor(MA$fac)
 
-           if (f3D) {
+           if (f3D) { # Use 3D plotly
               symbolset = c('dot', 'cross', 'diamond', 'square', 'triangle-down', 'triangle-left', 'triangle-right', 'triangle-up')
               gg <- plot_ly(MA, x = ~C1, y = ~C2, z = ~C3, color = ~fac, 
                  type="scatter3d", marker=list(size = 4), text= ~IDS ) %>%
                  layout(scene = list(xaxis = list(title = sprintf("%s%d = %6.2f%%",prefix, pc1, evnorm[pc1])),
                        yaxis = list(title = sprintf("%s%d = %6.2f%%",prefix, pc2, evnorm[pc2])),
                        zaxis = list(title = sprintf("%s%d = %6.2f%%",prefix, pc3, evnorm[pc3]))))    
-           } else {
+           } else { # Use 2D ggplot / plotly
               sizeP <- ifelse( blabels, 0, 0 )
               G1 <- ggplot(data=MA,(aes(x=C1,y=C2,colour = fac)))
               if (!blabels) G1 <- G1 + geom_point(size=sizeP)
@@ -428,7 +428,7 @@
 
         } else {
 
-        # Loadings plot
+        # Loadings plot - 2D plotly
            
            MA <- as.data.frame(M[, c(pc1,pc2)])
            names(MA) <- c( 'C1','C2' )

@@ -31,7 +31,7 @@ function echo_results($format) {
       global $stdout, $GETDATA_URL_PROXY, $def;
       if ($format == 'xml') {
           header('Content-Type: text/xml; charset=ISO-8859-1');
-          echo $def->getdata_xml_output($stdout, "$GETDATA_URL_PROXY"."xsl/query_report.xsl");
+          echo $def->getdata_xml_output($stdout, "$GETDATA_URL_PROXY"."xsl/query_report2.xsl");
       }
       elseif ($format == 'json') {
           header('Content-Type: text/json; charset=ISO-8859-1');

@@ -4,7 +4,7 @@ title: "About"
 
 ![](odam-logo.png)
 
-_Created by Daniel Jacob - INRA UMR 1332 BFP, PMB - 2016 - Version 1.1_
+_(C) Daniel Jacob - INRA UMR 1332 BFP, PMB - 2018 - Version 1.1_
 
 ### Give an open access to your data and make them ready to be mined - A data explorer as bonus
 

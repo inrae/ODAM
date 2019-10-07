@@ -24,12 +24,14 @@
     
         # Data extraction
         subdata <- cbind( data[ , c(samples,variables)] , facvals, cfacvals )
+        #subdata <- na.omit(cbind( data[ , c(samples,variables)] , facvals, cfacvals ))
+        # Data imputation
         dataIn <- subdata[, variables ]
         if (scale) dataIn <- scale( dataIn, center=TRUE, scale=TRUE )
         resNIPALS <- pca(as.matrix(dataIn), method = "nipals", center = FALSE)
-        subdata[, variables ] <- resNIPALS@completeObs
-        #subdata <- na.omit(cbind( data[ , c(samples,variables)] , facvals, cfacvals ))
+        subdata[, variables ] <- resNIPALS@completeObs        
         colnames(subdata) <- c ( samples, variables, F1, FCOL)
+        # Data selection
         subdata <- subdata[subdata[ , F1 ] %in% levelFac[.N(selectLevels)], ]
         if (fannot && length(selectFCOL)>0) subdata <- subdata[subdata[ , FCOL ] %in% levelcFac[.N(selectFCOL)], ]
         facvals <- subdata[, F1 ]

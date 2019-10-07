@@ -76,3 +76,12 @@ def getSubsetFromODAM(dataset, subset='', query=''):
                    [df1, df2, df3, df4, df5, numvars ]
     d = dict( zip( list1, list2 ))
     return(d)
+
+def convertDateToStr(DataNum):
+    dateStr = [ ( pd.to_datetime('1899-12-30') + pd.to_timedelta(x,'D') ).strftime("%m/%d/%Y") for x in DataNum ]
+    return(dateStr)
+
+def convertTimeToStr(TimeNum):
+    timeStr = [ ( pd.to_datetime('1899-12-30') + pd.to_timedelta(x,'D') ).strftime("%H:%M") for x in TimeNum ]
+    return(timeStr)
+

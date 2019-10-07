@@ -9,8 +9,8 @@ subset = 'activome,qNMR_metabo'
 df = getDataFromODAM(dataset, subset,'sample/365?limit=10')
 
 # Convert both data and time in MS Excel format into String
-df.HarvestDate = [ ( pd.to_datetime('1899-12-30') + pd.to_timedelta(x,'D') ).strftime("%m/%d/%Y") for x in df.HarvestDate ]
-df.HarvestHour = [ ( pd.to_datetime('1899-12-30') + pd.to_timedelta(x,'D') ).strftime("%H:%M") for x in df.HarvestHour ]
+df.HarvestDate = convertDateToStr(df.HarvestDate)
+df.HarvestHour = convertTimeToStr(df.HarvestHour)
 print("Output1:\n--------------\n", df,"\n\n")
 
 # Get the variable list within the 'factor' category of a merged data subset

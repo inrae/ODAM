@@ -6,32 +6,31 @@ getDataFromODAM(dataset)
 
 # Get all values of a merged data subsets ( both activome & qNMR_metabofor) the specific 'sample' entry equal to 365
 subset = 'activome,qNMR_metabo'
-df = getDataFromODAM(dataset, subset,'sample/365?limit=10')
+df = getSubsetFromODAM(dataset, subset,'sample/365?limit=10')
+data = df['data']
 
 # Convert both data and time in MS Excel format into String
-df.HarvestDate = convertDateToStr(df.HarvestDate)
-df.HarvestHour = convertTimeToStr(df.HarvestHour)
-print("Output1:\n--------------\n", df,"\n\n")
+data.HarvestDate = convertDateToStr(data.HarvestDate)
+data.HarvestHour = convertTimeToStr(data.HarvestHour)
+print("Output1:\n--------------\n", data,"\n\n")
 
 # Get the variable list within the 'factor' category of a merged data subset
-df2 = getDataFromODAM(dataset, subset, 'factor')
-print("Output2:\n--------------\n", df2,"\n\n")
+print("Output2:\n--------------\n", df['factor'],"\n\n")
 
 # Get the variable list within the 'identifier' category of a merged data subset
-df3 = getDataFromODAM(dataset, subset, 'identifier')
-print("Output3:\n--------------\n", df3,"\n\n")
+print("Output3:\n--------------\n", df['identifier'],"\n\n")
 
 # Get the variable list within the 'quantitative' category of a merged data subset
-df4 = getDataFromODAM(dataset, subset, 'quantitative')
-print("Output4:\n--------------\n", df4.loc[ 0:10, ],"\n\n")
+quantitative = df['quantitative']
+print("Output4:\n--------------\n", quantitative.loc[ 0:10, ],"\n\n")
 
 # Select the variables from the merged data belongings to the 'activome' data subset
-print("Output5:\n--------------\n", df[df4[df4.Subset=='activome']['Attribute']],"\n\n")
+print("Output5:\n--------------\n", data[quantitative[quantitative.Subset=='activome']['Attribute']],"\n\n")
 
 # Select the variables from the merged data belongings to the 'qNMR_metabo' data subset
-print("Output6:\n--------------\n", df[df4[df4.Subset=='qNMR_metabo']['Attribute']],"\n\n")
+print("Output6:\n--------------\n", data[quantitative[quantitative.Subset=='qNMR_metabo']['Attribute']],"\n\n")
 
 # Convert a sub-data set to numpy format
-numpy_matrix = df[df4[df4.Subset=='activome']['Attribute']].to_numpy()
+numpy_matrix = data[quantitative[quantitative.Subset=='activome']['Attribute']].to_numpy()
 print("Output7:\n--------------\n", numpy_matrix,"\n\n")
 

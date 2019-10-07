@@ -4,7 +4,7 @@ title: "About"
 
 ![](odam-logo.png)
 
-_(C) Daniel Jacob - INRA UMR 1332 BFP, PMB - 2018 - Version 1.1_
+_(C) Daniel Jacob - INRA UMR 1332 BFP, PMB - 2019 - Version 1.1_
 
 ### Give an open access to your data and make them ready to be mined - A data explorer as bonus
 
@@ -20,7 +20,12 @@ ODAM (Open Data for Access and Mining) is an Experiment Data Table Management Sy
 
 * Test online the getData API through the web <a href="http://pmb-bordeaux.fr/odamsw/" target="_blank">swagger UI</a> (See <a href="https://github.com/INRA/ODAM/tree/master/API" target="_blank">Github ODAM/API</a> )
 
-* For open data access throught web services within R, see the <a href="Rodam.html" target="_blank">R ODAM package and How to use it</a> - <a href="https://cran.r-project.org/package=Rodam" target="_blank"><img src="https://www.r-pkg.org/badges/version/Rodam" alt="CRAN status"></a>
+* For open data access throught web services 
+      - with R : see  the <a href="Rodam.html" target="_blank">R ODAM package and How to use it</a>
+      - within a R notebook : see  the <a href="Rodam_notebook.html" target="_blank">R ODAM within Jupyter</a>
+      - with <a href="https://ipython.org/" target="_blank">IPython notebook</a> : see **Demo 1**: <a href="PyODAM_api_demo.html" target="_blank">Using the API</a> & **Demo 2**: <a href="PyODAM_api_PCA.html" target="_blank">PCA</a>
+
+<br>
 
 * All ontology terms were picked from <a href="http://agroportal.lirmm.fr/"  target="_blank">AgroPortal</a> and especially by levering on their very useful <a href="http://agroportal.lirmm.fr/annotator" target="_blank">Annotator module
 

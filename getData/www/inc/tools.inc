@@ -27,6 +27,30 @@ function doQuery($dsname, $query, $debug=0) {
       return $retval;
 }
 
+// TODO: CVS to JSON
+// $arr=array();
+// $arr["records"]=array();
+//
+// Take items by parsing the first line
+// put in the item array
+// $item=array();
+//
+// For each $row do {
+//   // extract row and split it (based the separator)
+//   $values = strsplit(separator, $row)
+//   $record =array()
+//   for ($i = 0; $i <= len($items); $i++ ) {
+//      $record[$items[$i]] = $values[$items[$i]];
+//   } 
+//   array_push($arr["records"], $record);
+// }
+// 
+// // set response code - 200 OK
+// http_response_code(200);
+// 
+// // show products data in json format
+// echo json_encode($arr);
+
 function echo_results($format) {
       global $stdout, $GETDATA_URL_PROXY, $def;
       if ($format == 'xml') {

@@ -26,6 +26,7 @@ ob_end_clean();
 $auth = isset($_GET['auth']) ?  $_GET['auth'] : '' ;
 $limit = isset($_GET['limit']) ?  $_GET['limit'] : 0 ;
 $debug=0;
+$metadata=0;
 
 # Parse PATH_INFO if needed
 #if ($_SERVER['PATH_INFO'] && $auth==$AUTHKEY)
@@ -39,6 +40,10 @@ do {
     if ($urloptions[$cntopt-1] == 'debug') {
         $cntopt--;
         $debug=1;
+    }
+    if (in_array($urloptions[$cntopt-1], array('metadata','attribute'))) {
+        $cntopt--;
+        $metadata=1;
     }
     $dataset = array_shift($urloptions);
     if (! is_dir("$DATADIR/$dataset")) {
@@ -167,21 +172,32 @@ do {
     # Launch query if needed
     $retval = $doQuery ?  doQuery($DSNAME, $query, $debug) : 0;
 
+    if ($metadata==1) {
+        if ($format == 'json') {
+           header('Content-Type: application/json; charset=ISO-8859-1');
+           echo json_encode($def->hDataset);
+        } else {
+           echo_results($format, $file=$def->attrs_file);
+        }
+        break;
+    }
+
     if ($debug==1) {
 		$query = str_replace("JOIN", "\nJOIN", str_replace("from", "\nFROM", $query));
         echo "OK $restmsg - $cntopt - $CMD - $retval - $stdout<br>";
 		echo"<br><pre>$query</pre>";
         echo "<pre>"; print_r($def->hDataset); echo "</pre>";
-        exit();
+        break;
     }
 
     if ($retval) {
        $ERRORMSG='QUERY:&nbsp;'.$query.'<BR>===>&nbsp;'.`cat $stderr`.'<BR><BR>';
        echo $ERRORMSG;
+       break;
     }
-    else {
-       echo_results($format);
-    }
+
+    # Output the results
+    echo_results($format);
 
 } while (0);
 

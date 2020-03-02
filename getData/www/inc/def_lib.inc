@@ -548,6 +548,27 @@ class def_lib  {
         return $xml_output;
     }
 
+/********************************************************
+* getdata_json_output: Generate the results within a json structure
+********************************************************/
+    function getdata_json_output($csvfile) {
+
+        $nbrows=0;
+        $hlist = array();
+        $fo=fopen($csvfile,"r");
+        if ( ($headers = fgetcsv($fo,0,"\t") ) !== FALSE) {
+            $nbcol = count($headers);
+            while ( ($data = fgetcsv($fo,0,"\t") ) !== FALSE ) {
+                $arr = array();
+                for ($i = 0; $i < $nbcol; $i++ )
+                   $arr[$headers[$i]]=$data[$i];
+              $hlist[$nbrows++] = $arr;
+            }
+        }
+        fclose($fo);
+        return json_encode($hlist);
+    }
+
 }
 
 /*

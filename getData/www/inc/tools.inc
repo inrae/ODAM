@@ -51,18 +51,20 @@ function doQuery($dsname, $query, $debug=0) {
 // // show products data in json format
 // echo json_encode($arr);
 
-function echo_results($format) {
+function echo_results($format, $file='') {
       global $stdout, $GETDATA_URL_PROXY, $def;
+      if (strlen($file)==0) $file=$stdout;
       if ($format == 'xml') {
           header('Content-Type: text/xml; charset=ISO-8859-1');
-          echo $def->getdata_xml_output($stdout, "$GETDATA_URL_PROXY"."xsl/query_report2.xsl");
+          echo $def->getdata_xml_output($file, "$GETDATA_URL_PROXY"."xsl/query_report2.xsl");
       }
       elseif ($format == 'json') {
-          header('Content-Type: text/json; charset=ISO-8859-1');
-          echo `cat $stdout | /usr/bin/csvtojson --delimiter=';' `;
+          header('Content-Type: application/json; charset=ISO-8859-1');
+          echo $def->getdata_json_output($file);
       }
       elseif ($format == 'tsv') {
-          echo `cat $stdout`;
+          header('Content-Type: text/tab-separated-values; charset=ISO-8859-1');
+          echo `cat $file`;
       }
 }
 

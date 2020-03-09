@@ -74,9 +74,15 @@ do {
 
 } while (0);
 
-# Generate the checking results within a XML structure as output
-header('Content-Type: text/xml; charset=ISO-8859-1');
-echo $def->check_xml_output("$GETDATA_URL_PROXY"."xsl/check_report.xsl");
+# Generate the checking results as output 
+if ($format == 'xml') { # within a XML structure 
+   header('Content-Type: text/xml; charset=ISO-8859-1');
+   echo $def->check_xml_output("$GETDATA_URL_PROXY"."xsl/check_report.xsl");
+}
+elseif ($format == 'json') { # within a JSON structure
+   header('Content-Type: application/json; charset=ISO-8859-1');
+   echo $def->check_json_output();
+}
 
 `rm -f $TMPDIR/$SESSID.*`;
 

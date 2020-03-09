@@ -1,6 +1,6 @@
 openapi: 3.0.0
 servers:
-  - url: 'http://pmb-bordeaux.fr'
+  - url: 'https://pmb-bordeaux.fr'
 info:
   description: >-
     ODAM (Open Data for Access and Mining) is an Experiment Data Table
@@ -19,8 +19,42 @@ info:
 tags:
   - name: developers
     description: Operations available to regular developers
+components:
+  parameters:
+    formatParam:
+      in: path
+      name: format
+      required: true
+      schema:
+        type: string
+        enum: [json, tsv]
+      example: tsv
+      description: output format
+    datasetParam:
+      in: path
+      name: dataset
+      required: true
+      schema:
+        type: string
+      example: frim1
+      description: dataset identifier
 paths:
-  '/getdata/check/{dataset}':
+  '/getdata/infos/{dataset}':
+    get:
+      tags:
+        - developers
+      summary: get information
+      operationId: info
+      description: >
+        Get information on the dataset
+      parameters:
+        - $ref: '#/components/parameters/datasetParam'
+      responses:
+        '200':
+          description: list several status about the dataset implementation
+        '400':
+          description: bad input parameter
+  '/getdata/json/{dataset}/check':
     get:
       tags:
         - developers
@@ -30,19 +64,13 @@ paths:
         Made automatically many test checks and return a list several status
         about the dataset implementation
       parameters:
-        - in: path
-          name: dataset
-          description: dataset identifier
-          required: true
-          schema:
-            type: string
-          example: frim1
+        - $ref: '#/components/parameters/datasetParam'
       responses:
         '200':
           description: list several status about the dataset implementation
         '400':
           description: bad input parameter
-  '/getdata/tsv/{dataset}':
+  '/getdata/{format}/{dataset}':
     get:
       tags:
         - developers
@@ -51,19 +79,32 @@ paths:
       description: |
         Get the subset list of a dataset along with the metadata
       parameters:
-        - in: path
-          name: dataset
-          description: dataset identifier
-          required: true
-          schema:
-            type: string
-          example: frim1
+        - $ref: '#/components/parameters/formatParam'
+        - $ref: '#/components/parameters/datasetParam'
       responses:
         '200':
           description: search results matching criteria
         '400':
           description: bad input parameter
-  '/getdata/tsv/{dataset}/{subset}?limit={limit}':
+  '/getdata/{format}/{dataset}/metadata':
+    get:
+      tags:
+        - developers
+      summary: Get all attribute metadata
+      operationId: tsv
+      description: |
+        Get all attribute metadata for all subsets of a dataset
+      parameters:
+        - $ref: '#/components/parameters/formatParam'
+        - $ref: '#/components/parameters/datasetParam'
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          schema:
+            type: string
+          example: frim1
+  '/getdata/{format}/{dataset}/{subset}?limit={limit}':
     get:
       tags:
         - developers
@@ -72,13 +113,8 @@ paths:
       description: |
         Get all values of a data subset
       parameters:
-        - in: path
-          name: dataset
-          description: dataset identifier
-          required: true
-          schema:
-            type: string
-          example: frim1
+        - $ref: '#/components/parameters/formatParam'
+        - $ref: '#/components/parameters/datasetParam'
         - in: path
           name: subset
           description: data subset identifier
@@ -88,7 +124,7 @@ paths:
           example: samples
         - in: query
           name: limit
-          description: limit the number of lines in the output table (0 means no limit) 
+          description: limit the number of lines in the output table (0 means no limit)
           required: false
           schema:
             type: integer
@@ -98,7 +134,7 @@ paths:
           description: search results matching criteria
         '400':
           description: bad input parameter
-  '/getdata/tsv/{dataset}/({subset})?limit={limit}':
+  '/getdata/{format}/{dataset}/({subset})?limit={limit}':
     get:
       tags:
         - developers
@@ -107,13 +143,8 @@ paths:
       description: |
         Get all values of a merged data subsets
       parameters:
-        - in: path
-          name: dataset
-          description: dataset identifier
-          required: true
-          schema:
-            type: string
-          example: frim1
+        - $ref: '#/components/parameters/formatParam'
+        - $ref: '#/components/parameters/datasetParam'
         - in: path
           name: subset
           description: data subset identifier
@@ -123,7 +154,7 @@ paths:
           example: samples
         - in: query
           name: limit
-          description: limit the number of lines in the output table (0 means no limit) 
+          description: limit the number of lines in the output table (0 means no limit)
           required: false
           schema:
             type: integer
@@ -133,7 +164,7 @@ paths:
           description: search results matching criteria
         '400':
           description: bad input parameter
-  '/getdata/tsv/{dataset}/({subset})/entry':
+  '/getdata/{format}/{dataset}/({subset})/entry':
     get:
       tags:
         - developers
@@ -142,13 +173,8 @@ paths:
       description: |
         Get the entry list  of a merged data subsets
       parameters:
-        - in: path
-          name: dataset
-          description: dataset identifier
-          required: true
-          schema:
-            type: string
-          example: frim1
+        - $ref: '#/components/parameters/formatParam'
+        - $ref: '#/components/parameters/datasetParam'
         - in: path
           name: subset
           description: data subset identifier
@@ -161,7 +187,7 @@ paths:
           description: search results matching criteria
         '400':
           description: bad input parameter
-  '/getdata/tsv/{dataset}/({subset})/{entry}/{value}?limit={limit}':
+  '/getdata/{format}/{dataset}/({subset})/{entry}/{value}?limit={limit}':
     get:
       tags:
         - developers
@@ -170,13 +196,8 @@ paths:
       description: |
         Get all values of a merged data subsets
       parameters:
-        - in: path
-          name: dataset
-          description: dataset identifier
-          required: true
-          schema:
-            type: string
-          example: frim1
+        - $ref: '#/components/parameters/formatParam'
+        - $ref: '#/components/parameters/datasetParam'
         - in: path
           name: subset
           description: data subset identifier
@@ -200,7 +221,7 @@ paths:
           example: "365"
         - in: query
           name: limit
-          description: limit the number of lines in the output table (0 means no limit) 
+          description: limit the number of lines in the output table (0 means no limit)
           required: false
           schema:
             type: integer
@@ -210,7 +231,7 @@ paths:
           description: search results matching criteria
         '400':
           description: bad input parameter
-  '/getdata/tsv/{dataset}/({subset})/{category}':
+  '/getdata/{format}/{dataset}/({subset})/{category}':
     get:
       tags:
         - developers
@@ -219,13 +240,8 @@ paths:
       description: |
         Get the variable list within the specified category of a merged data subsets along with the metadata
       parameters:
-        - in: path
-          name: dataset
-          description: dataset identifier
-          required: true
-          schema:
-            type: string
-          example: frim1
+        - $ref: '#/components/parameters/formatParam'
+        - $ref: '#/components/parameters/datasetParam'
         - in: path
           name: subset
           description: data subset identifier
@@ -246,5 +262,3 @@ paths:
           description: search results matching criteria
         '400':
           description: bad input parameter
-components:
-  schemas: {}

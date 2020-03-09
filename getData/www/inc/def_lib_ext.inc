@@ -22,7 +22,8 @@ ob_start();
 include('def_lib.inc');
 ob_end_clean();
 
-class def_lib_ext extends def_lib {
+class def_lib_ext extends def_lib
+{
 
     /* environment and tool variables involved in the SQL querying of the CSV data subset files (cf do_SQL_query-) */
     var $TMPDIR    = "";
@@ -48,7 +49,8 @@ class def_lib_ext extends def_lib {
                                             'info'=>'','status' => 'not checked', 'cat'=>'a_attributes' )
     );
 
-    var $ref_notes = array(
+    var $ref_notes = array
+    (
          1 => "A directory named as the dataset name should be actually created in the data repository; \\n Be careful in the spelling, see note 6;",
          2 => "The s_subsets.tsv and a_attributes.tsv files should be present in the data repository",
          3 => "All data subset files declared in the s_subsets.tsv (col 5) should be available in the data repository",
@@ -65,13 +67,15 @@ class def_lib_ext extends def_lib {
     function __construct($input) { $this->def_lib_ext($input); } # PHP 5.3-compliant
 
     # Init. Vars.
-    function def_lib_ext($input) {
+    function def_lib_ext($input)
+    {
         parent::__construct($input);
         if (!strlen($input)) $this->check_flag=0;
     }
 
 # Check dataset directory
-    function check_dataset_dir() {
+    function check_dataset_dir()
+    {
         $ret=0;
         do {
             if (! is_dir($this->dir_input)) {
@@ -88,7 +92,8 @@ class def_lib_ext extends def_lib {
     }
 
 # Check if s_subsets and a_attributes files are available
-    function check_def_files() {
+    function check_def_files()
+    {
         $ret=0;
         $this->ds_items['subsetdef']['info'] = is_file($this->dir_input."/s_subsets.tsv") ? "Available" : "Not available. See note (2)" ;
         $this->ds_items['subsetdef']['status'] = is_file($this->dir_input."/s_subsets.tsv") ? $this->status_tag['ok'] : $this->status_tag['bad'] ;
@@ -100,7 +105,8 @@ class def_lib_ext extends def_lib {
     }
 
 # Check format of s_subsets and a_attributes files
-    function check_def_format() {
+    function check_def_format()
+    {
         $ret=0;
     # Check format of s_subsets file
         $ret1 = $this->check_deffile('s_subsets');
@@ -118,7 +124,8 @@ class def_lib_ext extends def_lib {
     }
 
 # Check if data subset files are available
-    function check_subset_files() {
+    function check_subset_files()
+    {
         $ret=0;
         $NB_FILES = 0;
         $fileinfo ='';
@@ -134,7 +141,8 @@ class def_lib_ext extends def_lib {
     }
 
 # Check if  spelling of the attribute names are proper ?
-    function check_attribute_spelling() {
+    function check_attribute_spelling()
+    {
         $ret=0;
         $ret = $this->check_attributes();
         $msg = "Check if spelling of names are proper in a_attributes.tsv";
@@ -145,7 +153,8 @@ class def_lib_ext extends def_lib {
     }
 
 # Check if attribute names are available ?
-    function check_attribute_names() {
+    function check_attribute_names()
+    {
         $ret=0;
         foreach ($this->FILES as $id => $file) {
              $ret = $ret || $this->check_subset($file);
@@ -158,7 +167,8 @@ class def_lib_ext extends def_lib {
     }
 
 # Check if subset names are consistent between both "s_subsets" and "a_attributes" files
-    function check_subset_names() {
+    function check_subset_names()
+    {
         $ret=0;
         $f0=fopen($this->subsets_file,"r");
         $arr_subsets = array();
@@ -188,7 +198,8 @@ class def_lib_ext extends def_lib {
     }
 
 # Check if identifiers are consistent
-    function check_identifiers() {
+    function check_identifiers()
+    {
         $ret=0;
         $f0=fopen($this->subsets_file,"r");
         $nb_s=-1;
@@ -246,7 +257,8 @@ class def_lib_ext extends def_lib {
 */
 
 # do SQL query 
-    function do_SQL_query($query) {
+    function do_SQL_query($query)
+    {
         $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
         $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
         $QSQL = $this->QSQL;
@@ -260,7 +272,8 @@ class def_lib_ext extends def_lib {
     }
 
 # Check if SQL on each subset file works
-    function check_SQL_subsets($merge) {
+    function check_SQL_subsets($merge)
+    {
         $arr_msg = array();
         $arr = array_keys($this->hDataset);
         array_pop($arr);
@@ -285,7 +298,8 @@ class def_lib_ext extends def_lib {
     }
 
 # Count the number of errors
-    function check_count_errors() {
+    function check_count_errors()
+    {
         $nberrors=0;
         foreach ($this->ds_items as $key => $arr)
            if ($arr['status']==$status_tag['bad']) $nberrors++;
@@ -293,8 +307,8 @@ class def_lib_ext extends def_lib {
     }
 
 # Generate the checking results within a XML structure
-    function check_xml_output($xsl_url_file) {
-
+    function check_xml_output($xsl_url_file)
+    {
         $nbrows=0;
         $nberrors=0;
         $ds_checks="";
@@ -319,6 +333,34 @@ class def_lib_ext extends def_lib {
         $xml_output .= "<WSCheck><Rows count=\"$nbrows\" errors=\"$nberrors\">$ds_checks</Rows><Notes count=\"$nbnotes\">$chk_notes</Notes></WSCheck>\n";
         
         return $xml_output;
+    }
+
+# Generate the checking results within a JSON structure
+    function check_json_output()
+    {
+        $nbrows=0;
+        $nberrors=0;
+        $hlist = array();
+        if ($this->check_flag) {
+           foreach ($this->ds_items as $key => $arr) {
+              $nbrows++;
+              $hlist[$nbrows] = $arr;
+              if ($arr['status']==$this->status_tag['bad']) $nberrors++;
+           }
+           $hlist['rows'] = count($this->ds_items);
+           $hlist['errors'] = $nberrors;
+        }
+
+        $nbnotes = count($this->ref_notes);
+        if ($nbnotes>0 && $nberrors>0) {
+            foreach ($this->ref_notes as $key => $val)
+               $hlist['N'.$key] = $val;
+            $hlist['notes'] = $nbnotes;
+        } else {
+            $hlist['notes'] = 0;
+        }
+
+        return json_encode($hlist);
     }
 
 }

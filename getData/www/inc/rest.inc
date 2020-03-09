@@ -18,11 +18,6 @@
     along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-ob_start();
-include ('inc/def_lib.inc');
-include ('inc/tools.inc');
-ob_end_clean();
-
 $auth = isset($_GET['auth']) ?  $_GET['auth'] : '' ;
 $limit = isset($_GET['limit']) ?  $_GET['limit'] : 0 ;
 $debug=0;
@@ -36,20 +31,47 @@ do {
     $urloptions = explode("/",$_SERVER['PATH_INFO']);
     array_shift($urloptions);
 
+    # count options
     $cntopt=count($urloptions);
     if ($urloptions[$cntopt-1] == 'debug') {
         $cntopt--;
         $debug=1;
     }
+
+    # check if metadata|attribute
     if (in_array($urloptions[$cntopt-1], array('metadata','attribute'))) {
         $cntopt--;
         $metadata=1;
     }
+
+    # check if dataset present
     $dataset = array_shift($urloptions);
     if (! is_dir("$DATADIR/$dataset")) {
         echo "ERROR: the dataset directory is not available";
         break;
     }
+
+    # get function
+    $func = array_shift($urloptions);
+    $restmsg="cnt=$cntopt;func=$func";
+
+    $cntopt--;
+    if ($cntopt<1 || strlen($func)==0 ) $func = 'subset';
+
+    $doQuery = 0; $retval=0; $CMD='';
+
+    # if check function
+    if ($func == 'check') {
+        include ('inc/check.inc');
+        break;
+    }
+    
+    ob_start();
+    include ('inc/def_lib.inc');
+    include ('inc/tools.inc');
+    ob_end_clean();
+
+    # check if metadata files
     $def = new def_lib("$DATADIR/$dataset");
     if ( $def->check_deffile('s_subsets') ) {
        echo 's_subsets: '.$def->retmsg;
@@ -63,24 +85,14 @@ do {
        echo $def->retmsg;
        break;
     }
-    $DSNAME=$dataset;
-
 #echo "<pre>"; print_r($def->hDataset); echo "</pre>"; break;
 
+    $DSNAME=$dataset;
     $NB_FILES = 0;
     foreach ($def->FILES as $id => $file) {
          if (is_file("$DATADIR/$DSNAME/$file")) $NB_FILES++;
     }
     $IS_FILES = ($NB_FILES == count($def->FILES)) ? 1 : 0 ;
-
-    $func = array_shift($urloptions);
-    $restmsg="cnt=$cntopt;func=$func";
-
-    $cntopt--;
-    if ($cntopt<1 || strlen($func)==0 ) $func = 'subset';
-
-    $doQuery = 0; $retval=0; $CMD='';
-
 
     #-------------------------
     # Get Subsets information

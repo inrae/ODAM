@@ -11,6 +11,7 @@ ini_set('error_reporting', E_ALL & ~E_NOTICE);
 ini_set("include_path", ".:/usr/share/php");
 
 include ('inc/config.inc');
+$format = 'xml';
 include ('inc/check.inc');
 
 ?>

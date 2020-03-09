@@ -18,7 +18,8 @@
     along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-class def_lib  {
+class def_lib
+{
      var $categories   = array('identifier','factor','quantitative','qualitative');
      var $attrtypes    = array('numeric', 'string');
      var $def_infos    = array(
@@ -55,7 +56,8 @@ class def_lib  {
     function __construct($input) { $this->def_lib($input); } # PHP 5.3-compliant
 
     # Init. Vars.
-    function def_lib($input) {
+    function def_lib($input)
+    {
         $this->dir_input = $input;
         $this->dsname = basename($this->dir_input);
         $this->ret=0;
@@ -66,7 +68,8 @@ class def_lib  {
 /********************************************************
 * check_deffile
 ********************************************************/
-    function check_deffile ($defname) {
+    function check_deffile ($defname)
+    {
         $ret=0;
         $this->retmsg = '';
         $csvfile=$this->dir_input.'/'.$defname.'.tsv';
@@ -138,7 +141,8 @@ class def_lib  {
 /********************************************************
 * check_attributes
 ********************************************************/
-    function check_attributes () {
+    function check_attributes ()
+    {
         $ret=0;
         $this->retmsg = '';
         do {
@@ -181,7 +185,8 @@ class def_lib  {
 /********************************************************
 * check_subset
 ********************************************************/
-    function check_subset ($subsetfile) {
+    function check_subset ($subsetfile)
+    {
         $ret=0;
         $this->retmsg = '';
         $csvfile=$this->dir_input.'/'.$subsetfile;
@@ -243,7 +248,8 @@ class def_lib  {
 /********************************************************
 * build_hashDS: Building of the data structure (mainly as a hash table) by parsing both metadata files, (s_subsets.tsv and a_attributes.tsv)
 ********************************************************/
-    function build_hashDS () {
+    function build_hashDS ()
+    {
         $ret=0;
         do {
             if ( $this->check_deffile('s_subsets') ) {
@@ -324,7 +330,8 @@ class def_lib  {
 /********************************************************
 * getSQLparts
 ********************************************************/
-    function getSQLparts ($ds,$func,$value) {
+    function getSQLparts ($ds,$func,$value)
+    {
        $falias = 'f'.$this->hDataset[$ds]['file'];
        $file = $this->FILES[ $this->hDataset[$ds]['file'] ].' '.$falias;
        $entities = $this->hDataset[$ds]['entities'];
@@ -351,7 +358,8 @@ class def_lib  {
 /********************************************************
 * getSelect1
 ********************************************************/
-    function getSelect1($ds,$func,$value) {
+    function getSelect1($ds,$func,$value)
+    {
        list ($falias, $file, $fields, $where) = $this->getSQLparts ($ds,$func,$value);
        $query = "select $fields from $file";
        if (strlen("$where")>0) $query .= " where $where";
@@ -361,8 +369,8 @@ class def_lib  {
 /********************************************************
 * getSelectMulti
 ********************************************************/
-    function getSelectMulti($tarr_DS, $func,$value) {
-
+    function getSelectMulti($tarr_DS, $func,$value)
+    {
        $gfields='';  $gfrom=''; $gwhere=''; $query='';
        do {
 
@@ -434,7 +442,8 @@ class def_lib  {
 /********************************************************
 * getCategoryList
 ********************************************************/
-    function getCategoryList($tarr_DS, $category) {
+    function getCategoryList($tarr_DS, $category)
+    {
        $list = array();
        $dstree = array();
        do {
@@ -482,7 +491,8 @@ class def_lib  {
 /********************************************************
 * getEntryList
 ********************************************************/
-    function getEntryList($tarr_DS) {
+    function getEntryList($tarr_DS)
+    {
         $list = array();
         if (count($tarr_DS)==1) {
            foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
@@ -506,7 +516,8 @@ class def_lib  {
 /********************************************************
 * getSubsetList
 ********************************************************/
-    function getSubsetList() {
+    function getSubsetList()
+    {
         $list = array();
         $cnt=0;
         foreach ($this->hDataset as $subset => $arr ) {
@@ -523,8 +534,8 @@ class def_lib  {
 /********************************************************
 * getdata_xml_output: Generate the results within a XML structure
 ********************************************************/
-    function getdata_xml_output($csvfile, $xsl_url_file) {
-
+    function getdata_xml_output($csvfile, $xsl_url_file)
+    {
         $nbrows=0;
         $ds_rows="";
         $fo=fopen($csvfile,"r");
@@ -551,8 +562,8 @@ class def_lib  {
 /********************************************************
 * getdata_json_output: Generate the results within a json structure
 ********************************************************/
-    function getdata_json_output($csvfile) {
-
+    function getdata_json_output($csvfile)
+    {
         $nbrows=0;
         $hlist = array();
         $fo=fopen($csvfile,"r");

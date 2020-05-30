@@ -1,0 +1,296 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inrae.github.io/odam-docs/json-schema/odam-data-resource.json",
+  "title": "odam-data-resource",
+  "description": "Description of an ODAM data resource",
+  "type": "object",
+  "definitions": {
+    "name": {
+      "title": "Name",
+      "description": "An identifier string. Lower case characters with `_` are allowed.",
+      "type": "string",
+      "pattern": "^([a-zA-Z0-9_])+$",
+      "context": "This is ideally a url-usable and human-readable name. Name `SHOULD` be invariant, meaning it `SHOULD NOT` change when its parent descriptor is updated."
+    },
+    "title": {
+      "title": "Title",
+      "description": "A human-readable title.",
+      "type": "string"
+    },
+    "description": {
+      "title": "Description",
+      "description": "A text description. Markdown is encouraged.",
+      "type": "string"
+    },
+    "path": {
+      "title": "Path",
+      "description": "A fully qualified URL, or a POSIX file path..",
+      "type": "string",
+      "pattern": "^(?=^[^./~])(^((?!\\.{2}).)*$).*$",
+      "context": "Implementations need to negotiate the type of path provided, and dereference the data accordingly."
+    },
+    "anyTermId" : {
+      "title": "CV Term id",
+      "description": "URL of the controlled vocabulary",
+      "type": "string"
+    },
+    "anyTermName" : {
+      "title": "CV Term Name",
+      "description": "Short description of the controlled vocabulary",
+      "type": "string"
+    },
+    "csvDialect": {
+      "title": "CSV Dialect",
+      "description": "The CSV dialect descriptor.",
+      "required": [
+        "delimiter",
+        "doubleQuote"
+      ],
+      "properties": {
+        "csvddfVersion": {
+          "$ref": "#/definitions/csvddfVersion"
+        },
+        "delimiter": {
+          "$ref": "#/definitions/delimiter"
+        },
+        "doubleQuote": {
+          "$ref": "#/definitions/doubleQuote"
+        },
+        "lineTerminator": {
+          "$ref": "#/definitions/lineTerminator"
+        },
+        "quoteChar": {
+          "$ref": "#/definitions/quoteChar"
+        },
+        "escapeChar": {
+          "$ref": "#/definitions/escapeChar"
+        },
+        "skipInitialSpace": {
+          "$ref": "#/definitions/skipInitialSpace"
+        },
+        "header": {
+          "$ref": "#/definitions/header"
+        },
+        "commentChar": {
+          "$ref": "#/definitions/commentChar"
+        },
+        "caseSensitiveHeader": {
+          "$ref": "#/definitions/caseSensitiveHeader"
+        }
+      }
+    },
+    "csvddfVersion": {
+      "title": "CSV Dialect schema version",
+      "description": "A number to indicate the schema version of CSV Dialect. Version 1.0 was named CSV Dialect Description Format and used different field names.",
+      "type": "number",
+      "default": 1.2
+    },
+    "delimiter": {
+      "title": "Delimiter",
+      "description": "A character sequence to use as the field separator.",
+      "type": "string",
+      "default": ","
+    },
+    "doubleQuote": {
+      "title": "Double Quote",
+      "description": "Specifies the handling of quotes inside fields.",
+      "context": "If Double Quote is set to true, two consecutive quotes must be interpreted as one.",
+      "type": "boolean",
+      "default": true
+    },
+    "lineTerminator": {
+      "title": "Line Terminator",
+      "description": "Specifies the character sequence that must be used to terminate rows.",
+      "type": "string",
+      "default": "\n"
+    },
+    "quoteChar": {
+      "title": "Quote Character",
+      "description": "Specifies a one-character string to use as the quoting character.",
+      "type": "string",
+      "default": "\""
+    },
+    "escapeChar": {
+      "title": "Escape Character",
+      "description": "Specifies a one-character string to use as the escape character.",
+      "type": "string"
+    },
+    "skipInitialSpace": {
+      "title": "Skip Initial Space",
+      "description": "Specifies the interpretation of whitespace immediately following a delimiter. If false, whitespace immediately after a delimiter should be treated as part of the subsequent field.",
+      "type": "boolean",
+      "default": true
+    },
+    "header": {
+      "title": "Header",
+      "description": "Specifies if the file includes a header row, always as the first row in the file.",
+      "type": "boolean",
+      "default": true
+    },
+    "commentChar": {
+      "title": "Comment Character",
+      "description": "Specifies a character sequence causing the rest of the line after it to be ignored.",
+      "type": "string"
+    },
+    "caseSensitiveHeader": {
+      "title": "Case Sensitive Header",
+      "description": "Specifies if the case of headers is meaningful.",
+      "context": "Use of case in source CSV files is not always an intentional decision. For example, should \"CAT\" and \"Cat\" be considered to have the same meaning.",
+      "type": "boolean",
+      "default": false
+    },
+    "format": {
+      "title": "Format",
+      "description": "The file format of this resource.",
+      "context": "`csv`, `xls`, `json` are examples of common formats.",
+      "type": "string"
+    },
+    "mediatype": {
+      "title": "Media Type",
+      "description": "The media type of this resource. Can be any valid media type listed with [IANA](https://www.iana.org/assignments/media-types/media-types.xhtml).",
+      "type": "string",
+      "pattern": "^(.+)/(.+)$"
+    },
+    "encoding": {
+      "title": "Encoding",
+      "description": "The file encoding of this resource.",
+      "type": "string",
+      "default": "utf-8"
+    },
+    "tableSchema": {
+      "title": "Table Schema",
+      "description": "A Table Schema for this resource, compliant with the [Table Schema](/tableschema/) specification.",
+      "type": "object",
+      "required": [
+        "fields",
+        "categories"
+      ],
+      "properties": {
+        "fields": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/tableSchemaField"
+          },
+          "description": "An `array` of Table Schema Field objects."
+        },
+        "categories": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/tableSchemaCategory"
+          },
+          "description": "An `array` of Table Schema Category objects."
+        }
+      }
+    },
+    "tableSchemaField": {
+      "title": "Table Schema Field",
+      "type": "object",
+      "required": [
+        "name", "type", "title"
+      ],
+      "properties": {
+        "name": {
+           "$ref": "#/definitions/name"
+        },
+        "type": {
+           "type": "string",
+           "enum": [
+              "numeric", "string"
+           ]
+        }, 
+        "title": {
+           "$ref": "#/definitions/title"
+        }, 
+        "unit": {
+           "type": "string"
+        },
+        "cv_term_id": {
+           "$ref": "#/definitions/anyTermId"
+        }, 
+        "cv_term_name": {
+           "$ref": "#/definitions/anyTermName"
+        }
+      }
+    },
+    "tableSchemaCategory": {
+      "title": "Table Schema Category",
+      "type": "object",
+      "properties": {
+        "name": {
+           "type": "string",
+           "enum": [
+              "identifier", "factor", "quantitative", "qualitative"
+           ]
+        },
+        "fields": {
+           "type": "array"
+        }
+      }
+    },
+    "tableSchemaMissingValues": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": [
+        ""
+      ]
+    }
+  },
+  "properties": {
+     "path": {
+        "$ref": "#/definitions/path"
+     },
+     "profile": {
+        "type": "string",
+        "enum": [
+            "odam-data-resource"
+          ]
+     },
+     "name": {
+        "$ref": "#/definitions/name"
+     },
+     "title": {
+        "$ref": "#/definitions/title"
+     },
+     "identifier": {
+        "description": "name of the identifier field (column name). i.e same as primaryKey",
+        "type": "string"
+     },
+     "obtainedFrom": {
+        "description": "name of the file ",
+        "type": "string"
+     },
+     "joinkey": {
+        "description": "name of the identifier field (column name) that serves to link with its father file i.e same as foreignKey",
+        "type": "string"
+     },
+     "cv_term_id" : {
+        "$ref": "#/definitions/anyTermId"
+     },
+     "cv_term_name" : {
+        "$ref": "#/definitions/anyTermName"
+     },
+     "schema": {  
+        "$ref": "#/definitions/tableSchema"
+     },
+     "dialect": {
+        "$ref": "#/definitions/csvDialect"
+     },
+     "encoding": {
+        "$ref": "#/definitions/encoding"
+     },
+     "format": {
+        "$ref": "#/definitions/format"
+     },
+     "mediatype": {
+        "$ref": "#/definitions/mediatype"
+     },
+     "missingValues": {
+        "$ref": "#/definitions/tableSchemaMissingValues"
+     }
+  },
+  "required": [ "path", "name", "title", "identifier", "schema", "dialect", "format" ]
+}

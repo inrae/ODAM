@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Daniel Jacob">
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+<title>ODAM - Docs</title>
+    
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="../css/extra.css" rel="stylesheet" />
+  <link href="../css/nbheader_styles_MOD.css" rel="stylesheet" />
+  <link href="../css/pdfextra.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/nbheader_styles_MOD.css" type="text/css" />
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "About";
+    var mkdocs_page_input_path = "about.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+<!-- Loading mathjax macro -->
+<!-- Load mathjax -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
+<!-- MathJax configuration -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true }
+    }
+});
+</script>
+<!-- End of mathjax configuration -->
+
+
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> ODAM</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">About</a>
+    <ul class="current">
+    </ul>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">ODAM</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>About</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">#</a></h1>
+<p><img alt="" src="../images/odam-logo.png" /></p>
+<p><em>(C) Daniel Jacob - INRAE UMR 1332 BFP, PMB - 2020 - Version 1.1</em></p>
+<hr />
+<p><strong>Set of tools and protocols implemented in this work</strong>
+<br><br>
+<style type="text/css">.c49{border-right-style:solid;padding:5pt 5pt 5pt 5pt;border-bottom-color:#000000;border-top-width:1pt;border-right-width:0pt;border-left-color:#000000;vertical-align:top;border-right-color:#000000;border-left-width:0pt;border-top-style:solid;border-left-style:solid;border-bottom-width:1pt;width:200.3pt;border-top-color:#000000;border-bottom-style:solid}.c47{border-right-style:solid;padding:5pt 5pt 5pt 5pt;border-bottom-color:#000000;border-top-width:1pt;border-right-width:0pt;border-left-color:#000000;vertical-align:top;border-right-color:#000000;border-left-width:0pt;border-top-style:solid;border-left-style:solid;border-bottom-width:1pt;width:150pt;border-top-color:#000000;border-bottom-style:solid}.c48{border-right-style:solid;padding:5pt 5pt 5pt 5pt;border-bottom-color:#000000;border-top-width:1pt;border-right-width:0pt;border-left-color:#000000;vertical-align:top;border-right-color:#000000;border-left-width:0pt;border-top-style:solid;border-left-style:solid;border-bottom-width:1pt;width:300pt;border-top-color:#000000;border-bottom-style:solid}.c4{padding-top:0pt;padding-bottom:0pt;line-height:1.15;orphans:2;widows:2;text-align:justify}.c68{padding-top:0pt;padding-bottom:0pt;line-height:1.0;orphans:2;widows:2;text-align:justify}.c39{color:#000000;text-decoration:none;vertical-align:baseline;font-size:12pt;font-family:"Arial";font-style:normal}.c32{font-weight:400;text-decoration:none;vertical-align:baseline;font-size:9pt;font-family:"Arial";font-style:normal}.c24{background-color:#ffffff;color:#0366d6}.c38{font-weight:700}.c112{height:28.8pt}.c9{margin-left:4.5pt}.c15{margin-left:13.5pt}.c58{height:28pt}.c70{background-color:#bdd6ee}.c65{font-size:9pt}
+p{margin:0;font-size:11pt;font-family:"Arial"}table td,table th{padding:2}
+</style></p>
+<table class="c27"><tbody>
+<!-- Header -->
+<tr class="c112"><td class="c49 c70" colspan="1" rowspan="1"><p class="c68"><span class="c39 c38">Description</span></p></td><td class="c47 c70" colspan="1" rowspan="1"><p class="c68"><span class="c39 c38">Type</span></p></td><td class="c48 c70" colspan="1" rowspan="1"><p class="c15 c68"><span class="c38 c39">Link</span></p></td></tr>
+
+<!-- Data Preparation Protocol for ODAM Compliance -->
+<tr class="c58"><td class="c49" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Data Preparation Protocol for ODAM Compliance</span></p></td><td class="c47" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Documentation</span></p></td><td class="c48" colspan="1" rowspan="1"><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="https://www.protocols.io/view/data-preparation-protocol-for-odam-compliance-betcjeiw">doi:10.17504/protocols.io.betcjeiw</a></span></p></td></tr>
+
+<!-- API Documentation based on Swagger -->
+<tr class="c58"><td class="c49" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">API Documentation based on Swagger</span></p></td><td class="c47" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Web API Tool</span></p></td><td class="c48" colspan="1" rowspan="1"><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.0.1-oas3/">INRA-PMB/ODAM/1.0.1-oas3/</a></span></p></td></tr>
+
+<!-- R ODAM package -->
+<tr class="c58"><td class="c49" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">R ODAM package and How to use it</span></p></td><td class="c47" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Package</span></p></td><td class="c48" colspan="1" rowspan="1"><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="https://cran.r-project.org/package%3DRodam">package=Rodam</a></span></p></td></tr>
+
+<!-- R ODAM package Vignette -->
+<tr class="c58"><td class="c49" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">R ODAM package Vignette</span></p></td><td class="c47" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Package</span></p></td><td class="c48" colspan="1" rowspan="1"><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="https://cran.r-project.org/web/packages/Rodam/vignettes/Rodam.html">Rodam/vignettes/Rodam.html</a></span></p></td></tr>
+
+<!-- Oracle VM  embedding the ODAM software -->
+<tr class="c58"><td class="c49" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Virtual Machine embedding the ODAM software on Oracle VM VirtualBox along with its installation guide</span></p></td><td class="c47" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Virtual Machine + Documentation</span></p></td><td class="c48" colspan="1" rowspan="1"><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="https://doi.org/10.15454/C9LAEF">https://doi.org/10.15454/C9LAEF</a></span></p><p class="c0 c15"><span class="c32 c24"></span></p></td></tr>
+
+<!-- Docker containers -->
+<tr class="c58"><td class="c49" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Docker containers on DockerHub for installing on a Linux machine</span></p></td><td class="c47" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Container</span></p></td><td class="c48" colspan="1" rowspan="1"><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="https://hub.docker.com/r/odam/getdata/">https://hub.docker.com/r/odam/getdata/</a></span></p><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="https://hub.docker.com/r/odam/dataexplorer/">https://hub.docker.com/r/odam/dataexplorer/</a></span></p></td></tr>
+
+<!-- ODAM WebServer -->
+<tr class="c58"><td class="c49" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">A very lightweight local web server for Windows to deploy the ODAM API</span></p></td><td class="c47" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Web API Tool</span></p></td><td class="c48" colspan="1" rowspan="1"><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="http://pmb-bordeaux.fr/odam/ODAMwebserver/">http://pmb-bordeaux.fr/odam/ODAMwebserver/</a></span></p></td></tr>
+
+<!-- Examples of Jupyter notebooks -->
+<tr class="c58"><td class="c49" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Examples of Jupyter notebooks (R &amp; Python) based on the ODAM Web API</span></p></td><td class="c47" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Notebook</span></p></td><td class="c48" colspan="1" rowspan="1"><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="https://github.com/djacob65/binder_odam">https://github.com/djacob65/binder_odam</a></span></p><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="https://doi.org/10.24433/CO.8981049.v1">https://doi.org/10.24433/CO.8981049.v1</a></span></p><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="https://doi.org/10.24433/CO.0011270.v1">https://doi.org/10.24433/CO.0011270.v1</a></span><span class="c24 c32">&nbsp;</span></p></td></tr>
+
+<!-- Modeling the growth of tomato fruits -->
+<tr class="c58"><td class="c49" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Modeling the growth of tomato fruits based on enzyme activity profiles (Example of data analysis interfaced by ODAM)</span></p></td><td class="c47" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Notebook</span></p></td><td class="c48" colspan="1" rowspan="1"><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="https://hal.inrae.fr/hal-02611223">https://hal.inrae.fr/hal-02611223</a></span></p></td></tr>
+
+<!-- ODAM Source code on GitHub -->
+<tr class="c58"><td class="c49" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">ODAM Source code on GitHub</span></p></td><td class="c47" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Source Code</span></p></td><td class="c48" colspan="1" rowspan="1"><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="https://github.com/INRA/ODAM">https://github.com/INRA/ODAM</a></span></p></td></tr>
+
+<!-- ODAM Source code on GitHub -->
+<tr class="c58"><td class="c49" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">JSON Schema for ODAM data package</span></p></td><td class="c47" colspan="1" rowspan="1"><p class="c4 c9"><span class="c65">Source Code</span></p></td><td class="c48" colspan="1" rowspan="1"><p class="c4 c15"><span class="c24 c65"><a class="c1" target="_blank" href="http://pmb-bordeaux.fr/odam/json-schema/">http://pmb-bordeaux.fr/odam/json-schema/</a></span></p></td></tr>
+
+</tbody></table>
+
+<hr />
+<p><a href="https://www6.bordeaux-aquitaine.inrae.fr/bfp_eng/"> <img alt="Inra" src="../images/inrae_logo.png" /></a></p>
+              
+            </div>
+          </div>
+          <footer>
+    
+      <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        
+        
+          <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        
+      </div>
+    
+  
+    <hr/>
+  
+    <div role="contentinfo">
+      <!-- Copyright etc -->
+      
+        <p>INRAE, 2020</p>
+      
+    </div>
+  
+    Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+    Built by <a href="https://www.rparthiban.com">Parthiban Rajendran</a>
+  </footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

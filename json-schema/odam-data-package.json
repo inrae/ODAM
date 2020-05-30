@@ -1,0 +1,102 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://inrae.github.io/odam-docs/json-schema/odam-data-package.json",
+  "title": "odam-data-package",
+  "description": "Description of an ODAM data package",
+  "type": "object",
+  "definitions": {
+    "path": {
+      "title": "Path",
+      "description": "A fully qualified URL, or a POSIX file path..",
+      "type": "string",
+      "pattern": "^(?=^[^./~])(^((?!\\.{2}).)*$).*$",
+      "context": "Implementations need to negotiate the type of path provided, and dereference the data accordingly."
+    },
+    "name": {
+      "title": "Name",
+      "description": "An identifier string. Lower case characters with `_` are allowed.",
+      "type": "string",
+      "pattern": "^([a-zA-Z0-9_])+$",
+      "context": "This is ideally a url-usable and human-readable name. Name `SHOULD` be invariant, meaning it `SHOULD NOT` change when its parent descriptor is updated."
+    },
+    "title": {
+      "title": "Title",
+      "description": "A human-readable title.",
+      "type": "string"
+    },
+    "keywords": {
+      "title": "Keywords",
+      "description": "A list of keywords that describe this package.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string"
+      }
+    },
+    "license": {
+      "title": "License",
+      "description": "A license for this descriptor.",
+      "type": "object",
+      "properties": {
+        "name": {
+          "title": "Open Definition license identifier",
+          "description": "MUST be an Open Definition license identifier, see http://licenses.opendefinition.org/",
+          "type": "string",
+          "pattern": "^([-a-zA-Z0-9._])+$"
+        },
+        "path": {
+          "$ref": "#/definitions/path"
+        },
+        "title": {
+          "$ref": "#/definitions/title"
+        }
+      },
+      "context": "Use of this property does not imply that the person was the original creator of, or a contributor to, the data in the descriptor, but refers to the composition of the descriptor itself."
+    },
+    "licenses": {
+      "title": "Licenses",
+      "description": "The license(s) under which this package is published.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/definitions/license"
+      },
+      "context": "This property is not legally binding and does not guarantee that the package is licensed under the terms defined herein."
+    },
+    "tabularDataResources": {
+      "title": "Tabular Data Resources",
+      "description": "An `array` of Tabular Data Resource objects, each compliant with the [Tabular Data Resource](/tabular-data-resource/) specification.",
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "https://inrae.github.io/odam-docs/json-schema/odam-data-resource.json"
+      }
+    }
+  },
+  "properties": {
+     "profile": {
+        "type": "string",
+        "enum": [
+            "odam-data-package"
+          ]
+     },
+     "name": {
+        "$ref": "#/definitions/name"
+     },
+     "datapackage_version": {
+        "type" : "string",
+        "pattern": "^([0-9.])+$"
+     },
+     "keywords": {
+        "$ref": "#/definitions/keywords"
+     },
+     "licenses" : {
+        "$ref": "#/definitions/licenses"
+     },
+     "resources": {
+        "$ref": "#/definitions/tabularDataResources"
+     }
+  },
+  "required": [ "profile", "name", "licenses", "resources" ]
+}
+

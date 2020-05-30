@@ -1,8 +1,0 @@
-Options FollowSymLinks Includes MultiViews SymLinksIfOwnerMatch
-
-<Files *>
-  Order allow,deny
-  allow from all
-  AcceptPathInfo On
-  ForceType application/x-httpd-php
-</Files>

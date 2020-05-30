@@ -69,6 +69,7 @@ RUN rm -rf /var/lib/apt/lists/* && \
     cp /srv/shiny-server/launch-server.sh /usr/local/bin && \
     chmod 755 /usr/local/bin/launch-server.sh
 
+
 EXPOSE 3838
 
 CMD ["/usr/local/bin/launch-server.sh"]

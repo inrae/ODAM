@@ -285,7 +285,8 @@ class def_lib
                 }
                 $this->hDataset[$data[2]] = array('idset' => $data[0], 'idfather' => $data[1],
                                             'name' => $data[5], 'entries' => array(), 'entities' => array(),
-                                            'categories' => array(), 'file' => $idfile, 'identifier' => $data[3],
+                                            'categories' => array(), 'file' => $idfile, 'filename' => $this->FILES[$idfile], 
+                                            'identifier' => $data[3],
                                             'cv_term_id' => $data[6], 'cv_term_name' => $data[7],
                                             'joinkey' => '' );
                 foreach ($this->categories as $cat) $this->hDataset[$data[2]]['categories'][$cat] = array();
@@ -293,7 +294,7 @@ class def_lib
             fclose($fo);
 
             # Building all the  possible sets of subsets (each subset within a set linked by a SQL JOIN )
-            $this->hDataset['dstree'] = array();
+            $this->hDataset['_dstree_'] = array();
             $i=count($subsets)-1;
             while ($i>=0) {
                 $arr_tmp = array();
@@ -304,7 +305,7 @@ class def_lib
                 }
                 $arr_tmp = array_reverse($arr_tmp);
                 array_push($arr_tmp, $subsets[$i]);
-                $this->hDataset['dstree'][$i+1] = $arr_tmp;
+                $this->hDataset['_dstree_'][$i+1] = $arr_tmp;
                 if ($i>0) $this->hDataset[$subsets[$i]]['joinkey'] = $this->hDataset[$subsets[$father_rank[$i]-1]]['identifier'];
                 $i--;
             }
@@ -379,7 +380,7 @@ class def_lib
 
           $dstree = array();
           if (count($tarr_DS)==1) {
-             foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
+             foreach ($this->hDataset['_dstree_'] as $keyid => $arr ) {
                 if ($arr[count($arr)-1] == $tarr_DS[0]) {
                    $dstree = $arr;
                    break;
@@ -388,7 +389,7 @@ class def_lib
           } else {
              for ($i = 0; $i <= $nbds-1; $i++ ) {
                  $dsarr = array();
-                 foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
+                 foreach ($this->hDataset['_dstree_'] as $keyid => $arr ) {
                       if ($arr[count($arr)-1] == $tarr_DS[$i]) {
                          $dsarr = $arr;
                          break;
@@ -452,7 +453,7 @@ class def_lib
 
           if ( in_array($category, $this->categories) ) {
               if ($nbds==1) {
-                 foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
+                 foreach ($this->hDataset['_dstree_'] as $keyid => $arr ) {
                     if ($arr[count($arr)-1] == $tarr_DS[0]) {
                        $dstree = $arr;
                        break;
@@ -461,7 +462,7 @@ class def_lib
               } else {
                  for ($i = 0; $i <= $nbds-1; $i++ ) {
                      $dsarr = array();
-                     foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
+                     foreach ($this->hDataset['_dstree_'] as $keyid => $arr ) {
                           if ($arr[count($arr)-1] == $tarr_DS[$i]) {
                              $dsarr = $arr;
                              break;
@@ -495,7 +496,7 @@ class def_lib
     {
         $list = array();
         if (count($tarr_DS)==1) {
-           foreach ($this->hDataset['dstree'] as $keyid => $arr ) {
+           foreach ($this->hDataset['_dstree_'] as $keyid => $arr ) {
               if ($arr[count($arr)-1] == $tarr_DS[0]) {
                  $tarr_DS = $arr;
                  break;
@@ -578,6 +579,100 @@ class def_lib
         }
         fclose($fo);
         return json_encode($hlist);
+    }
+
+/********************************************************
+* cmd_Batch: Generate the command batch file under Windows
+********************************************************/
+    function cmd_Batch($filebatch, $CMD, $stdout, $stderr)
+    {
+       $content = "@echo off
+$CMD  > $stdout 2> $stderr
+setlocal
+set file=$stderr
+set maxbytesize=10
+
+FOR /F \"usebackq\" %%A IN ('%file%') DO set size=%%~zA
+FOR /F \"usebackq\" %%B IN (`dirname %file%`) DO set TEMP=%%B
+cd %TEMP%
+
+if %size% LSS %maxbytesize% (
+    echo.0
+    exit /b 0
+) ELSE (
+    echo.1
+    exit /b 1
+)
+";
+       file_put_contents($filebatch, $content);
+    }
+
+/********************************************************
+* getJSONDataTable : Create a simple container format for describing a coherent 
+     collection of data in a single 'package'.  It provides the basis for convenient 
+     delivery, installation and management of datasets.
+     cf https://specs.frictionlessdata.io/data-package/
+********************************************************/
+    function getJSONDataTable($urlroot='', $format='tsv')
+    {
+        $subsets = array_keys($this->hDataset);
+        $json  ='{"name":"'.$this->dsname.'",';
+        $json .='"profile":"odam-data-package",';
+        $json .='"datapackage_version":"1.0", "keywords":["Experimental Data Tables"],';
+        $json .='"licenses":[{"name":"ODC-BY-1.0", "path":"https://opendatacommons.org/licenses/by/", "title":"Open Data Commons Attribution License 1.0"}],';
+        $json .='"resources":[';
+        $flg=0;
+        foreach ($this->hDataset as $subset => $arr ) {
+            if ($subset=='_dstree_') continue;
+            if (is_array($arr) && isset($arr['name'])) {
+                if ($flg) $json .=',';
+                $flg++;
+                $identifier = $arr['categories']['identifier'][0];
+                $ent_rev = array_flip($arr['entries']);
+                if (strlen($urlroot)>0)
+                    $json .='{"path":"'."$urlroot/$format/".$this->dsname.'/'.$subset.'", ';
+                else
+                    $json .='{"path":"'.$arr['filename'].'", ';
+                $json .='"profile": "odam-data-resource", ';                
+                $json .='"name":"'.$subset.'", ';
+                $json .='"title":"'.$arr['name'].'", ';                           
+                $json .='"identifier":"'.$identifier.'", ';
+                if ($arr['idfather']>0)
+                    $json .='"obtainedFrom":"'.$subsets[$arr['idfather']-1].'", ';
+                if (strlen($arr['joinkey'])>0)
+                    $json .='"joinkey":"'.$arr['joinkey'].'", ';
+                $json .='"cv_term_id":"'.$arr['cv_term_id'].'", '; 
+                $json .='"cv_term_name":"'.$arr['cv_term_name'].'", ';
+                
+                $json .='"schema": {"fields": [';
+                $i=0;
+                foreach ($arr['entities'] as $field => $subarr ) {
+                    if ($i) $json .=','; $i++;
+                    $json .='{"name":"'.$field.'", "type":"'.$subarr[1].'"';
+                    if (preg_match('/\((.+)\)/', $subarr[0], $matches, PREG_OFFSET_CAPTURE))
+                        $json .=', "title":"'.trim(preg_replace('/\(.+\)/', '', $subarr[0])).'", "unit":"'.$matches[1][0].'"';
+                    else
+                        $json .=', "title":"'.trim($subarr[0]).'"';
+                    if (strlen($subarr[2]))
+                        $json .=', "cv_term_id":"'.$subarr[2].'", "cv_term_name":"'.$subarr[3].'"';
+                    $json .='}';
+                }
+                $json .='],';
+                $i=0;
+                $json .='"categories": [';
+                foreach ($arr['categories'] as $cat => $subarr ) {
+                    if (count($subarr)==0) continue;
+                    if ($i) $json .=','; $i++;
+                    $json .='{"name":"'.$cat.'",';
+                    $json .='"fields":["'.join('","',$subarr).'"]}';
+                }
+                $json .=']},';
+                $json .='"dialect": {"caseSensitiveHeader": true, "delimiter":"\t", "decimalChar":".", "lineTerminator":"\n", "header":true, "doubleQuote": false, "skipInitialSpace": true, "commentChar":"#" },';
+                $json .='"encoding":"utf-8", "format":"tsv", "mediatype":"text/tab-separated-values", "missingValues":[""]}';
+            }
+        }
+        $json .= ']}';
+        return $json;
     }
 
 }

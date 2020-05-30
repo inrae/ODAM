@@ -26,6 +26,7 @@ class def_lib_ext extends def_lib
 {
 
     /* environment and tool variables involved in the SQL querying of the CSV data subset files (cf do_SQL_query-) */
+    var $OS        = "LINUX";
     var $TMPDIR    = "";
     var $SESSID    = "";
     var $QSQL      =  "";
@@ -58,7 +59,7 @@ class def_lib_ext extends def_lib
          4 => "1) all subsets in the a_attributes.tsv file (col 1) should be declared in the s_subsets.tsv file (col 3)\\n 2) all subsets in the s_subsets.tsv file (col 3) should be declared in the a_attributes.tsv file (col 1)\\n 3) all attribute names in the a_attributes.tsv file (col 2) should be available as a column in the corresponding data subset file declared in the s_subsets.tsv file (col 5)",
          6 => "Be careful in the spelling: \\n 1) for data subset file names (col 5 in s_subsets.tsv), identifier name (col 2 in s_subsets.tsv), attribute names (col 2 in a_attributes.tsv), subset shortnames (col 3 in s_subsets.tsv and col 1 in a_attributes.tsv) and entry names (col 3 in a_attributes.tsv), only the alphanumerical characters and the underscore are allowed (i.e 'a-z', 'A-Z', '0-9' and '_'). Moreover, these names should not start with a digit!\\n 2) for categorical names (col 4 in a_attributes.tsv), the number of terms and their spelling are fixed, namely: 'identifier','factor','quantitative','qualitative'. \\n 3) for type (col 5 in a_attributes.tsv), the allowed names are restrited to 'numeric' or 'string'. \\n 4) for descritpion, the allowed characters are : 0-9 a-z A-Z , : + * () [] {} - % ! | / . ?",
          7=> "Identifiers declared in the s_subsets.tsv file (col 2)\\n 1) should be declared as 'identifier' in the 'category' column in the a_attributes.tsv file (col 4) \\n 2) should be available as an column item in the corresponding data subset file \\n 3) should be the only one attribute declared as identifier for the corresponding data subset file in the a_attributes.tsv file (col 4)",
-         8=> "Each subset having a 'father_rank' greater than 0 in the s_subsets.tsv file (col 2)\\n 1) should  have a column label in the corresponding data file that must be identical to the identifier label of the linked subset (i.e. corresponding to the 'father_rank' in col 1) \\n 2) should have the linked subset identifier with no category (i.e. void) in the a-attributes.tsv file (col 4), except if the subset and the linked subset have the same identifier"
+         8=> "Each subset having a 'father_rank' greater than 0 in the s_subsets.tsv file (col 2)\\n 1) should include in its data file a column corresponding to the identifier of the subset to which it is linked (i.e. corresponding to the father_rank in col 1)\\n 2) should have the linked subset identifier with no category (i.e. empty) in the a-attributes.tsv file (col 4), except if the subset and the linked subset have the same identifier"
     );
 
 /********************************************************
@@ -261,12 +262,24 @@ class def_lib_ext extends def_lib
     {
         $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
         $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
-        $QSQL = $this->QSQL;
-        $CMD = "(cd ".$this->dir_input."; $QSQL \"$query\" | uniq)";
-        $retval=trim(`$CMD 1>$stdout 2>$stderr; ls -l $stderr | cut -d' ' -f5`);
-        if ($retval) {
-           $CMD = "(cd ".$this->dir_input."; cat $stderr |  sed -e \"s|.*Error|Error|\")";
-           $this->error_msg = trim(`$CMD`);
+        $QSQL = $this->QSQL;  
+        if ($this->OS == "LINUX") {
+           $CMD = "(cd ".$this->dir_input."; $QSQL \"$query\" | uniq)";
+           $retval=trim(`$CMD 1>$stdout 2>$stderr; ls -l $stderr | cut -d' ' -f5`);
+           if ($retval) {
+              $CMD = "(cd ".$this->dir_input."; cat $stderr |  sed -e \"s|.*Error|Error|\")";
+              $this->error_msg = trim(`$CMD`);
+           }
+        }
+        if ($this->OS == "WIN") {
+           $CMD = "(cd ".$this->dir_input." && $QSQL \"$query\" | uniq)";
+           $filebatch = dirname($stdout)."/cmdbatch.bat";
+           $this->cmd_Batch($filebatch, $CMD, $stdout, $stderr);
+           $retval=trim(`$filebatch`);
+           if ($retval) {
+              $CMD = "(cd ".$this->dir_input." && type $stderr\")";
+              $this->error_msg = trim(`$CMD`);
+           }
         }
         return $retval;
     }

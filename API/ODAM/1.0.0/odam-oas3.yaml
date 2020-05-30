@@ -91,7 +91,7 @@ paths:
       tags:
         - developers
       summary: Get all attribute metadata
-      operationId: tsv
+      operationId: tsv1
       description: |
         Get all attribute metadata for all subsets of a dataset
       parameters:
@@ -101,9 +101,7 @@ paths:
         '200':
           description: search results matching criteria
         '400':
-          schema:
-            type: string
-          example: frim1
+          description: bad input parameter
   '/getdata/{format}/{dataset}/{subset}?limit={limit}':
     get:
       tags:

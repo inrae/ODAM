@@ -62,9 +62,10 @@ do {
 
 # Populate the '$def' instance (def_lib_ext object) with configuration variables coming from the '$set' instance (Set_Config object)
 #  => Environment and tool variables involved in the SQL querying of the TSV data subset files (cf do_SQL_query)
+    $def->OS = $OS ;
     $def->TMPDIR = $TMPDIR ;
     $def->SESSID = $SESSID ;
-    $def->QSQL   = "$QBIN $QOPTIONS" ;
+    $def->QSQL   = $QSQL ;
 
 # Check if SQL on each subset file works
     if ($def->check_SQL_subsets(0)) break;

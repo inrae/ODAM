@@ -2,7 +2,6 @@
 # Auteur(s): D.JACOB 
 # Copyright: (c) INRA - 2015
 
-$logfile     = "$ROOTDIR/log/rest.log";
 $theIP       = $_SERVER["REMOTE_ADDR"];
 $theURI      = $_SERVER["REQUEST_URI"];
 
@@ -15,15 +14,24 @@ $stdout = "$TMPDIR/$SESSID.out";
 
 $sep = "\t";
 
+# Generate a KEY (30  alpha-num. char. )
+function genKEY() {
+   return md5(uniqid(rand(),true));
+}
+
 function doQuery($dsname, $query, $debug=0) {
-      global $DATADIR, $QBIN, $QOPTIONS, $stdout, $stderr;
-      #$CMD = "(cd $DATADIR/$dsname; $QBIN $QOPTIONS \"$query\" | uniq | sed -e \"s/Â//g\")";
-      $CMD = "(cd $DATADIR/$dsname; $QBIN $QOPTIONS \"$query\" | uniq)";
-      if ($debug>0) {
-         $retval=$CMD;
-      } else {
-         $retval=trim(`$CMD 1>$stdout 2>$stderr; ls -l $stderr | cut -d' ' -f5`);
+      global $OS, $DATADIR, $QSQL, $stdout, $stderr, $def;
+      if ($OS == "LINUX") {
+          $CMD = "(cd $DATADIR/$dsname; $QSQL \"$query\" | uniq)";
+          if ($debug== 0) $retval=trim(`$CMD 1>$stdout 2>$stderr; ls -l $stderr | cut -d' ' -f5`);
       }
+      if ($OS == "WIN") {
+          $CMD = "cd $DATADIR/$dsname && $QSQL \"$query\"";
+          $filebatch = dirname($stdout)."/cmdbatch.bat";
+          $def->cmd_Batch($filebatch, $CMD, $stdout, $stderr);
+          if ($debug== 0) $retval=trim(`$filebatch`);
+      }
+      if ($debug>0) $retval=$CMD;
       return $retval;
 }
 
@@ -40,6 +48,7 @@ function echo_results($format, $file='') {
       }
       elseif ($format == 'tsv') {
           header('Content-Type: text/tab-separated-values; charset=ISO-8859-1');
+          header('Content-Disposition: inline; filename="data-'.genKEY().'.txt"');
           echo `cat $file`;
       }
 }

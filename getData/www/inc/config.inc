@@ -5,29 +5,42 @@
  */
 
 include_once ('inc/Set_Config.inc');
-$set = new Set_Config(array('-conf'=>"etc/getdata.conf",'-global'=>FALSE));
 
 #----------------------------------------------
 # Populate some variables 
 #----------------------------------------------
 
-$GETDATA_URL_PROXY = isset($_ENV["GETDATA_URL_PROXY"]) ? $_ENV["GETDATA_URL_PROXY"] : $set->GETDATA_URL_PROXY;
-$ROOTDIR  = $set->ROOTDIR;
+$ROOTDIR  = $_SERVER['DOCUMENT_ROOT'];
+if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+    $set = new Set_Config(array('-conf'=>"$ROOTDIR/../settings/getdata.conf",'-global'=>FALSE));
+    $OS = isset($set->OS) ? $set->OS : 'WIN';
+}
+else {
+    $set = new Set_Config(array('-conf'=>"$ROOTDIR/settings/getdata.conf",'-global'=>FALSE));
+    $OS = isset($set->OS) ? $set->OS : 'LINUX';
+}
 
-$TMPDIR  = "$ROOTDIR/tmp";
+# DEBUG status
+$DEBUG = isset($set->DEBUG) ? $set->DEBUG : 0 ;
+
+$GETDATA_URL_PROXY = isset($_ENV["GETDATA_URL_PROXY"]) ? $_ENV["GETDATA_URL_PROXY"] : $set->GETDATA_URL_PROXY;
+
+$URLSERVER = preg_replace('/\/$/', '', $GETDATA_URL_PROXY);
+
+$DATADIR  = $set->DATAROOT;
+
+if ($OS=='LINUX') {
+    $TMPDIR  = "$ROOTDIR/tmp";
+    $QSQL    = $set->QBIN.' '.$set->QOPTIONS;
+    $AUTHKEY  = $set->AUTHKEY;
+} else {
+    $TMPDIR  = str_replace( '\\', '/', getenv('TEMP'));
+    $QSQL     = $ROOTDIR.'/../bin/q '.$set->QOPTIONS;
+    $AUTHKEY  = "";
+}
+
 $SESSID  = md5(uniqid(rand(),true));
 $set->TMPDIR = $TMPDIR;
 $set->SESSID = $SESSID;
-
-$DATADIR  = $set->DATAROOT;
-$AUTHKEY  = $set->AUTHKEY;
-
-$QBIN     = $set->QBIN;
-$QOPTIONS = $set->QOPTIONS;
-
-
-# DEBUG status
-$DEBUG          = $set->DEBUG;
-
 
 ?>

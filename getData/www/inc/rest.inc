@@ -20,8 +20,10 @@
 
 $auth = isset($_GET['auth']) ?  $_GET['auth'] : '' ;
 $limit = isset($_GET['limit']) ?  $_GET['limit'] : 0 ;
+$links = isset($_GET['links']) ?  $_GET['links'] : 0 ;
 $debug=0;
 $metadata=0;
+$datapackage=0;
 
 # Parse PATH_INFO if needed
 #if ($_SERVER['PATH_INFO'] && $auth==$AUTHKEY)
@@ -42,6 +44,12 @@ do {
     if (in_array($urloptions[$cntopt-1], array('metadata','attribute'))) {
         $cntopt--;
         $metadata=1;
+    }
+    
+    # check if datapackage
+    if (in_array($urloptions[$cntopt-1], array('datapackage'))) {
+        $cntopt--;
+        $datapackage=1;
     }
 
     # check if dataset present
@@ -184,6 +192,7 @@ do {
     # Launch query if needed
     $retval = $doQuery ?  doQuery($DSNAME, $query, $debug) : 0;
 
+    # Get metadata
     if ($metadata==1) {
         if ($format == 'json') {
            header('Content-Type: application/json; charset=ISO-8859-1');
@@ -193,11 +202,36 @@ do {
         }
         break;
     }
+    
+    # Get metadata into a data-package schema
+    if ($datapackage==1 && $format == 'json') {
+        header('Content-Type: application/json; charset=ISO-8859-1');
+        $urlroot = $links ? $URLSERVER : '';
+        echo $def->getJSONDataTable($urlroot);
+        break;
+    }
 
     if ($debug==1) {
-		$query = str_replace("JOIN", "\nJOIN", str_replace("from", "\nFROM", $query));
+        if ($doQuery) {
+           $query = str_replace("JOIN", "\nJOIN", str_replace("from", "\nFROM", $query));
+           $query = str_replace("select", "SELECT", str_replace("where", "\nWHERE", $query));
+           $nbds = count($def->hDataset);
+           for ($i=1; $i<$nbds; $i++) {
+              $j=$i+1; $ret=0;
+              while($j<=$nbds) {
+                 $match = 'f'.$i.'.[^,]+, f'.$j.'.';
+                 $ret = preg_match("/$match/", $query, $str_match);
+                 if ($ret) break;
+                 $j++;
+              }
+              if ($ret) {
+                 $str_split = preg_split("/,/", $str_match[0]);
+                 $query = str_replace($str_split[0].',', $str_split[0].",\n      ", $query);
+              }
+           }
+        }
         echo "OK $restmsg - $cntopt - $CMD - $retval - $stdout<br>";
-		echo"<br><pre>$query</pre>";
+        if ($doQuery) echo"<br><pre>$query</pre>";
         echo "<pre>"; print_r($def->hDataset); echo "</pre>";
         break;
     }
@@ -213,14 +247,6 @@ do {
 
 } while (0);
 
-# Put infos in logfile
-# if (!file_exists($logfile)) { `touch $logfile`; }
-# $line = "$theIP @ $theURI @ $restmsg\n";
-# $fw=fopen($logfile,"a+");
-# $fp=fwrite($fw,$line);
-# fclose($fw);
-
 `rm -f $TMPDIR/$SESSID.*`;
-
 
 ?>

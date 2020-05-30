@@ -4,9 +4,11 @@ h1, h2, h3
 }
 
 /* To avoid repetition of title of page as first list item */
+/*
 li.toctree-l2:first-child {
     display: none;
 }
+*/
 
 /* ipython notebooks overflow in x direction */
 #notebook-container

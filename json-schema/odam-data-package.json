@@ -1,10 +1,15 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://inrae.github.io/odam-docs/json-schema/odam-data-package.json",
+  "$id": "https://inrae.github.io/ODAM/json-schema/odam-data-package.json",
   "title": "odam-data-package",
   "description": "Description of an ODAM data package",
   "type": "object",
   "definitions": {
+    "profile": {
+      "title": "odam-data-package",
+      "description": "odam-data-package profile is an extension of the tabular-data-package profile",
+      "type": "string"
+    },
     "path": {
       "title": "Path",
       "description": "A fully qualified URL, or a POSIX file path..",
@@ -69,16 +74,13 @@
       "type": "array",
       "minItems": 1,
       "items": {
-        "$ref": "https://inrae.github.io/odam-docs/json-schema/odam-data-resource.json"
+        "$ref": "https://inrae.github.io/ODAM/json-schema/odam-data-resource.json"
       }
     }
   },
   "properties": {
      "profile": {
-        "type": "string",
-        "enum": [
-            "odam-data-package"
-          ]
+        "$ref": "#/definitions/profile"
      },
      "name": {
         "$ref": "#/definitions/name"

@@ -212,7 +212,7 @@
         "type": {
            "type": "string",
            "enum": [
-              "numeric", "string"
+              "number", "string"
            ]
         }, 
         "title": {
@@ -228,20 +228,20 @@
            "$ref": "#/definitions/anyTermName"
         },
         "constraints": {
-          "title": "Constraints",
-          "description": "The following constraints are supported for `string` fields.",
-          "type": "object",
-          "properties": {
-             "required": {
-                "type": "boolean",
-                "description": "Indicates whether a property must have a value for each instance.",
-                "context": "An empty string is considered to be a missing value."
-             },
-             "unique": {
-                "type": "boolean",
-                "description": "When `true`, each value for the property `MUST` be unique."
-             }
-          }
+           "title": "Constraints",
+           "description": "The following constraints are supported for `string` fields.",
+           "type": "object",
+           "properties": {
+              "required": {
+                 "type": "boolean",
+                 "description": "Indicates whether a property must have a value for each instance.",
+                 "context": "An empty string is considered to be a missing value."
+              },
+              "unique": {
+                 "type": "boolean",
+                 "description": "When `true`, each value for the property `MUST` be unique."
+              }
+           }
         }
       }
     },

@@ -19,9 +19,9 @@ ODAM (Open Data for Access and Mining) is an Experiment Data Table Management Sy
 
 * To install the ODAM software suite on your local harware (PC desktop/laptop), see the <a href="http://pmb-bordeaux.fr/odam/ODAM_install_VirtualBox.pdf" target="_blank">ODAM installation Guide</a> or on your own server, get the docker images and the installation instruction to the <a href="https://hub.docker.com/r/odam/getdata/" target="_blank">Docker Hub</a> site.
 
-* To prepare your own data subsets, see the <a href="https://github.com/INRA/ODAM/blob/master/doc/tutorial_on_metadata_files.pdf" target="_blank">tutorial on metadata files</a>
+* To prepare your own data subsets, see the <a href="https://www.protocols.io/view/data-preparation-protocol-for-odam-compliance-betcjeiw" target="_blank">Data Preparation Protocol for ODAM Compliance</a>
 
-* Test online the getData API through the web <a href="http://pmb-bordeaux.fr/odamsw/" target="_blank">swagger UI</a> (See <a href="https://github.com/INRA/ODAM/tree/master/API" target="_blank">Github ODAM/API</a> )
+* Test online the getData API through the web <a href="http://pmb-bordeaux.fr/odamsw/" target="_blank">swagger UI</a> (See <a href="https://github.com/inrae/ODAM/tree/master/API" target="_blank">Github ODAM/API</a> )
 
 * For open data access throught web services 
       - with R : see  the <a href="Rodam.html" target="_blank">R ODAM package and How to use it</a>

@@ -613,13 +613,25 @@ if %size% LSS %maxbytesize% (
      delivery, installation and management of datasets.
      cf https://specs.frictionlessdata.io/data-package/
 ********************************************************/
+    function _get_lists_of_threads($rank)
+    {
+        $threads = array();
+        foreach ($this->hDataset as $subset => $arr ) {
+            if ($subset=='_dstree_') continue;
+            if ( $arr['idfather'] != $rank ) continue;
+            array_push($threads, $subset );
+        }
+        return $threads;
+    }
     function getJSONDataTable($urlroot='', $format='tsv')
     {
         $subsets = array_keys($this->hDataset);
+    # name / profile / datapackage_version / keywords / licenses
         $json  ='{"name":"'.$this->dsname.'",';
-        $json .='"profile":"odam-data-package",';
+        $json .='"profile":"https://inrae.github.io/ODAM/json-schema/odam-data-package.json",';
         $json .='"datapackage_version":"1.0", "keywords":["Experimental Data Tables"],';
         $json .='"licenses":[{"name":"ODC-BY-1.0", "path":"https://opendatacommons.org/licenses/by/", "title":"Open Data Commons Attribution License 1.0"}],';
+    # resources
         $json .='"resources":[';
         $flg=0;
         foreach ($this->hDataset as $subset => $arr ) {
@@ -629,11 +641,12 @@ if %size% LSS %maxbytesize% (
                 $flg++;
                 $identifier = $arr['categories']['identifier'][0];
                 $ent_rev = array_flip($arr['entries']);
+          # path / profile / name / title / identifier / obtainedFrom / joinkey / CV Term
                 if (strlen($urlroot)>0)
                     $json .='{"path":"'."$urlroot/$format/".$this->dsname.'/'.$subset.'", ';
                 else
                     $json .='{"path":"'.$arr['filename'].'", ';
-                $json .='"profile": "odam-data-resource", ';                
+                $json .='"profile": "https://inrae.github.io/ODAM/json-schema/odam-data-resource.json", ';                
                 $json .='"name":"'.$subset.'", ';
                 $json .='"title":"'.$arr['name'].'", ';                           
                 $json .='"identifier":"'.$identifier.'", ';
@@ -643,21 +656,38 @@ if %size% LSS %maxbytesize% (
                     $json .='"joinkey":"'.$arr['joinkey'].'", ';
                 $json .='"cv_term_id":"'.$arr['cv_term_id'].'", '; 
                 $json .='"cv_term_name":"'.$arr['cv_term_name'].'", ';
-                
+          # schema - fields
                 $json .='"schema": {"fields": [';
                 $i=0;
                 foreach ($arr['entities'] as $field => $subarr ) {
                     if ($i) $json .=','; $i++;
-                    $json .='{"name":"'.$field.'", "type":"'.$subarr[1].'"';
+                    $typefield = $subarr[1] == "string" ? "string" : "number" ;
+                    $json .='{"name":"'.$field.'", "type":"'.$typefield.'"';
                     if (preg_match('/\((.+)\)/', $subarr[0], $matches, PREG_OFFSET_CAPTURE))
                         $json .=', "title":"'.trim(preg_replace('/\(.+\)/', '', $subarr[0])).'", "unit":"'.$matches[1][0].'"';
                     else
                         $json .=', "title":"'.trim($subarr[0]).'"';
                     if (strlen($subarr[2]))
                         $json .=', "cv_term_id":"'.$subarr[2].'", "cv_term_name":"'.$subarr[3].'"';
+                    $required = $field==$identifier || $field==$arr['joinkey'] ? 'true' : 'false' ;
+                    $json .= ', "constraints": { "required":'.$required.' }';
                     $json .='}';
                 }
                 $json .='],';
+          # schema - primaryKey
+                #$json .='"primaryKey": [ "'.$identifier.'" ], ';
+          # schema - foreignKey
+                $threads = $this->_get_lists_of_threads($arr['idset']);
+                if (count($threads)>0) {
+                    $json .='"foreignKey": [ ';
+                    $i=0;
+                    foreach($threads as $thread) {
+                        if ($i) $json .=','; $i++;
+                        $json .= '{ "fields": "'.$identifier.'", "reference": {"resource": "'.$thread.'", "fields": "'.$identifier.'"} }';
+                    }
+                    $json .='],';
+                }
+          # schema - categories
                 $i=0;
                 $json .='"categories": [';
                 foreach ($arr['categories'] as $cat => $subarr ) {
@@ -667,8 +697,10 @@ if %size% LSS %maxbytesize% (
                     $json .='"fields":["'.join('","',$subarr).'"]}';
                 }
                 $json .=']},';
+          # dialect
                 $json .='"dialect": {"caseSensitiveHeader": true, "delimiter":"\t", "decimalChar":".", "lineTerminator":"\n", "header":true, "doubleQuote": false, "skipInitialSpace": true, "commentChar":"#" },';
-                $json .='"encoding":"utf-8", "format":"tsv", "mediatype":"text/tab-separated-values", "missingValues":[""]}';
+          # encoding / mediatype / missingValues
+                $json .='"encoding":"utf-8", "format":"csv", "mediatype":"text/tab-separated-values", "missingValues":[""]}';
             }
         }
         $json .= ']}';

@@ -179,6 +179,16 @@
           },
           "description": "An `array` of Table Schema Field objects."
         },
+        "primaryKey": {
+           "$ref": "#/definitions/tableSchemaPrimaryKey"
+        },
+        "foreignKeys": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/tableSchemaForeignKey"
+          }
+        },
         "categories": {
           "type": "array",
           "minItems": 1,
@@ -216,6 +226,69 @@
         }, 
         "cv_term_name": {
            "$ref": "#/definitions/anyTermName"
+        },
+        "constraints": {
+          "title": "Constraints",
+          "description": "The following constraints are supported for `string` fields.",
+          "type": "object",
+          "properties": {
+             "required": {
+                "type": "boolean",
+                "description": "Indicates whether a property must have a value for each instance.",
+                "context": "An empty string is considered to be a missing value."
+             },
+             "unique": {
+                "type": "boolean",
+                "description": "When `true`, each value for the property `MUST` be unique."
+             }
+          }
+        }
+      }
+    },
+    "tableSchemaPrimaryKey": {
+      "oneOf": [
+        {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string"
+          }
+        },
+        {
+          "type": "string"
+        }
+      ],
+      "description": "A primary key is a field name or an array of field names, whose values `MUST` uniquely identify each row in the table."
+    },
+    "tableSchemaForeignKey": {
+      "title": "Table Schema Foreign Key",
+      "description": "Table Schema Foreign Key",
+      "type": "object",
+      "required": [
+        "fields",
+        "reference"
+      ],
+      "properties": {
+        "fields": {
+          "type": "string",
+          "description": "Fields that make up the primary key."
+        },
+        "reference": {
+          "type": "object",
+          "required": [
+            "resource",
+            "fields"
+          ],
+          "properties": {
+            "resource": {
+              "type": "string",
+              "default": ""
+            },
+            "fields": {
+              "type": "string"
+            }
+          }
         }
       }
     },

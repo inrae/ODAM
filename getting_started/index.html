@@ -85,6 +85,10 @@ MathJax.Hub.Config({
                 <ul class="current">
                     <li class="toctree-l1 current"><a class="reference internal current" href="./">Getting started</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#background">Background</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#proposed-solution">Proposed solution</a>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a>
     </li>
     </ul>
@@ -130,28 +134,26 @@ MathJax.Hub.Config({
 <p><br>
 <strong>ODAM (Open Data for Access and Mining) is an Experiment Data Table Management System (EDTMS)</strong>
 <br><br></p>
+<h4 id="background">Background<a class="headerlink" href="#background" title="Permanent link">#</a></h4>
 <p>When generating data in an experiment involving several types of data from several analytical techniques, and this for the same samples, the task of being able to easily link these different data on the basis of sample identifiers is crucial. This is because the consistency of the data must be ensured throughout the experiment, so that it becomes unnecessary for each member to conduct a laborious investigation to find out who has the correct identifiers.
 <br><br></p>
 <p><center>
 <a href="../images/figure1.png" data-lightbox="fig1"><img src="../images/figure1.png" width="500px"></a>
 </center><br><br></p>
 <p>Each time we plan to share data coming from a common experimental design, the classical challenges for fast using data by every partner are data storage and data access. We propose an approach for sharing project data all along its development phase, from the setup of the experimental schema up to the data acquisition from the various analyzes of samples, so that all data is readily available as soon as they are generated. 
-<br><br>
-ODAM software is designed to manage experimental data tables in a quick and easy way for users without high computer skills.
+<br><br></p>
+<h4 id="proposed-solution">Proposed solution<a class="headerlink" href="#proposed-solution" title="Permanent link">#</a></h4>
+<p>ODAM software is designed to manage experimental data tables in a quick and easy way for users. There is no need to develop a complex data model. Just complete the data with some structural metadata. These structural metadata will be used first to make full use of the data as soon as they are produced and formatted and then to annotate the dataset for later dissemination, either to project partners or more widely.
 <br><br>
 <center>
 <a href="../images/figure2.png" data-lightbox="fig2"><img src="../images/figure2.png" width="500px"></a>
 <br><b><i>The core idea in one shot</i></b>
 </center>
-<br><br></p>
-<p>ODAM proposes to meet certain needs typically encountered during the implementation of an experimental design in life science including several different analyses of the same sample. 
 <br><br>
-Based on the following criteria:</p>
-<ul>
-<li>Centrally manage identifiers (plants, harvests, samples, ...) so that they are unique and shared by all</li>
-<li>Avoid the implementation of a complex data management system (requiring a data model) given that many changes can occur during the project. (possibility of new analysis, new measures or give up some others,  ...)</li>
-<li>Facilitates the subsequent publication of data: either the data can serve to fill in an existing database or the data can be broadcast through a web-service approach with the associated metadata.</li>
-</ul>
+The central idea which has been the founding idea of ODAM, is that data producers "just" have to drag and drop their data tables onto a storage space, which depending on the chosen infrastructure can be local (i.e. their PC, or a NAS) or remote (virtual disk space). So simply dropping data files (along with two additional metadata files) on the storage space allows users to access them through web services. This means there is no need for additional configuration on the server. 
+<br><br></p>
+<p>ODAM proposes to meet certain needs typically encountered during the implementation of an experimental design in life science including several different analyses of the same sample. </p>
+<p><br></p>
 <p><strong>ODAM  sofware suite</strong> allows  <a href="https://github.com/inrae/ODAM/wiki/datatype">experimental data tables</a> to be widely accessible and fully reusable and this with minimal effort on the part of the data provider.</p>
 <ul>
 <li><a href="https://www.protocols.io/view/data-preparation-protocol-for-odam-compliance-betcjeiw">Easily structure your data by adding structural metadata</a> so that you can first exploit it locally yourself, before sharing it more widely just as easily.</li>
@@ -159,7 +161,20 @@ Based on the following criteria:</p>
 <li>allow data to be selected then, downloadable by <a href="https://github.com/inrae/ODAM/wiki/webservices">web API</a></li>
 <li>allow data and analysis to be <a href="https://github.com/inrae/ODAM/wiki/dataexplorer">visualized online</a></li>
 </ul>
+<p>Based on the following criteria:</p>
+<ul>
+<li>Centrally manage identifiers (plants, harvests, samples, ...) so that they are unique and shared by all</li>
+<li>Avoid the implementation of a complex data management system (requiring a data model) given that many changes can occur during the project. (possibility of new analysis, new measures or give up some others,  ...)</li>
+<li>Facilitates the subsequent publication of data: either the data can serve to fill in an existing database or the data can be broadcast through a web-service approach with the associated metadata.</li>
+</ul>
 <p>For this work, we made the choice to keep the good old way of scientist to use worksheets, thus using the same tool for both data files and metadata definition files.</p>
+<p><br>
+The ODAM software can be deployed at multiple scales (local, intranet, internet), depending on the need and the target community. 
+<br><br>
+<center>
+<a href="../images/figure3.png" data-lightbox="fig3"><img src="../images/figure3.png" width="500px"></a>
+</center>
+<br><br></p>
 <hr />
 <p><strong>Guideline keywords</strong> : simplicity, flexibility, efficiency </p>
 <hr />

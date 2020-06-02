@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <meta name="author" content="Daniel Jacob">
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+<title>ODAM - Docs</title>
+    
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700" />
+
+  <link rel="stylesheet" href="../css/theme.css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" />
+  <link href="../css/extra.css" rel="stylesheet" />
+  <link href="../css/pdfextra.css" rel="stylesheet" />
+  <link href="../css/lightbox.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../css/nbheader_styles_MOD.css" type="text/css" />
+
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Getting started";
+    var mkdocs_page_input_path = "getting_started.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+<!-- Loading mathjax macro -->
+<!-- Load mathjax -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_HTML"></script>
+<!-- MathJax configuration -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true }
+    }
+});
+</script>
+<!-- End of mathjax configuration -->
+
+
+
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> ODAM</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                    </li>
+                </ul>
+                <ul class="current">
+                    <li class="toctree-l1 current"><a class="reference internal current" href="./">Getting started</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a>
+    </li>
+    </ul>
+                    </li>
+                </ul>
+                <ul>
+                    <li class="toctree-l1"><a class="reference internal" href="../about/">About</a>
+                    </li>
+                </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">ODAM</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Getting started</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">#</a></h1>
+<p><br>
+<strong>ODAM (Open Data for Access and Mining) is an Experiment Data Table Management System (EDTMS)</strong>
+<br><br></p>
+<p>When generating data in an experiment involving several types of data from several analytical techniques, and this for the same samples, the task of being able to easily link these different data on the basis of sample identifiers is crucial. This is because the consistency of the data must be ensured throughout the experiment, so that it becomes unnecessary for each member to conduct a laborious investigation to find out who has the correct identifiers.
+<br><br></p>
+<p><center>
+<a href="../images/figure1.png" data-lightbox="fig1"><img src="../images/figure1.png" width="500px"></a>
+</center><br><br></p>
+<p>Each time we plan to share data coming from a common experimental design, the classical challenges for fast using data by every partner are data storage and data access. We propose an approach for sharing project data all along its development phase, from the setup of the experimental schema up to the data acquisition from the various analyzes of samples, so that all data is readily available as soon as they are generated. 
+<br><br>
+ODAM software is designed to manage experimental data tables in a quick and easy way for users without high computer skills.
+<br><br>
+<center>
+<a href="../images/figure2.png" data-lightbox="fig2"><img src="../images/figure2.png" width="500px"></a>
+<br><b><i>The core idea in one shot</i></b>
+</center>
+<br><br></p>
+<p>ODAM proposes to meet certain needs typically encountered during the implementation of an experimental design in life science including several different analyses of the same sample. 
+<br><br>
+Based on the following criteria:</p>
+<ul>
+<li>Centrally manage identifiers (plants, harvests, samples, ...) so that they are unique and shared by all</li>
+<li>Avoid the implementation of a complex data management system (requiring a data model) given that many changes can occur during the project. (possibility of new analysis, new measures or give up some others,  ...)</li>
+<li>Facilitates the subsequent publication of data: either the data can serve to fill in an existing database or the data can be broadcast through a web-service approach with the associated metadata.</li>
+</ul>
+<p><strong>ODAM  sofware suite</strong> allows  <a href="https://github.com/inrae/ODAM/wiki/datatype">experimental data tables</a> to be widely accessible and fully reusable and this with minimal effort on the part of the data provider.</p>
+<ul>
+<li><a href="https://www.protocols.io/view/data-preparation-protocol-for-odam-compliance-betcjeiw">Easily structure your data by adding structural metadata</a> so that you can first exploit it locally yourself, before sharing it more widely just as easily.</li>
+<li>make research data locally or broadly accessible all along the project</li>
+<li>allow data to be selected then, downloadable by <a href="https://github.com/inrae/ODAM/wiki/webservices">web API</a></li>
+<li>allow data and analysis to be <a href="https://github.com/inrae/ODAM/wiki/dataexplorer">visualized online</a></li>
+</ul>
+<p>For this work, we made the choice to keep the good old way of scientist to use worksheets, thus using the same tool for both data files and metadata definition files.</p>
+<hr />
+<p><strong>Guideline keywords</strong> : simplicity, flexibility, efficiency </p>
+<hr />
+<p><strong>Give an open access to your data and make them ready to be mined - A data explorer as bonus : Test online with the <a href="https://pmb-bordeaux.fr/dataexplorer/?ds=frim1">FRIM dataset</a></strong></p>
+<hr />
+<h4 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link">#</a></h4>
+<ul>
+<li><strong>Presentation</strong> : A presentation on the ODAM software, its aims and what can we do with it for what purposes.<ul>
+<li><a href="https://github.com/inrae/ODAM/files/4306784/FAIR_and_DataLife_DJ_Oct2019.pdf">FAIR_and_DataLife_DJ_Oct2019.pdf</a></li>
+</ul>
+</li>
+<li><strong>Presentation</strong> : Part 1: How to best manage your data to make the most of it for your research<ul>
+<li><a href="https://fr.slideshare.net/danieljacob771282/make-your-data-great-now">Make your data great now</a></li>
+</ul>
+</li>
+<li><strong>Presentation</strong> : Part 2: How to ensure that open data works for research - Towards Linked Data<ul>
+<li><a href="https://fr.slideshare.net/danieljacob771282/make-your-data-great-again-ver-2">Make your data great again</a></li>
+</ul>
+</li>
+<li><strong>Document</strong> : ODAM: Deployment and User's Guide<ul>
+<li><a href="../pdf/ODAM%20-%20Deployment%20and%20User%27s%20Guide.pdf">ODAM - Deployment and User's Guide</a></li>
+</ul>
+</li>
+<li><strong>Document</strong> : Data Preparation Protocol for ODAM Compliance. <em>protocols.io</em><ul>
+<li><a href="https://www.protocols.io/view/data-preparation-protocol-for-odam-compliance-betcjeiw">doi:10.17504/protocols.io.betcjeiw</a> </li>
+</ul>
+</li>
+<li><strong>Document</strong> :How to install a VM embedding the ODAM software on Oracle VM VirtualBox<ul>
+<li><a href="https://doi.org/10.15454/C9LAEF">doi:10.15454/C9LAEF</a>, Portail Data INRAE, V1</li>
+</ul>
+</li>
+</ul>
+<hr />
+<p><a href="https://www6.bordeaux-aquitaine.inrae.fr/bfp_eng/"> <img alt="Inra" src="../images/inrae_logo.png" /></a></p>
+              
+            </div>
+          </div>
+          <footer>
+    
+      <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        
+          <a href="../about/" class="btn btn-neutral float-right" title="About">Next <span class="icon icon-circle-arrow-right"></span></a>
+        
+        
+          <a href=".." class="btn btn-neutral" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        
+      </div>
+    
+  
+    <hr/>
+  
+    <div role="contentinfo">
+      <!-- Copyright etc -->
+      
+        <p>INRAE, 2020</p>
+      
+    </div>
+  
+    Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+    Built by <a href="https://www.rparthiban.com">Parthiban Rajendran</a>
+  </footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href=".." style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../about/" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../js/lightbox.min.js" defer></script>
+      <script src="../search/main.js" defer></script>
+    <script defer>
+        window.onload = function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        };
+    </script>
+
+</body>
+</html>

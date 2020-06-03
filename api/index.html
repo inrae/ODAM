@@ -19,7 +19,7 @@
     
     
       
-        <title>frim_example</title>
+        <title>Web Services</title>
       
     
     
@@ -89,7 +89,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              frim_example
+              Web Services
             
           </span>
         </div>
@@ -187,7 +187,7 @@
 
 
   <li class="md-nav__item">
-    <a href="." title="A dataset example" class="md-nav__link">
+    <a href="../dataset_example" title="A dataset example" class="md-nav__link">
       A dataset example
     </a>
   </li>
@@ -231,29 +231,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#a-dataset-example" class="md-nav__link">
-    A dataset example
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#links-related-to-the-dataset" class="md-nav__link">
-    Links related to the dataset
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#publication-of-the-dataset-according-to-fair-principles" class="md-nav__link">
-    Publication of the dataset according to FAIR principles
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#references" class="md-nav__link">
-    References
+  <a href="#web-api" class="md-nav__link">
+    Web API
   </a>
   
 </li>
@@ -276,73 +255,66 @@
                 
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">#</a></h1>
 <hr />
-<h3 id="a-dataset-example">A dataset example<a class="headerlink" href="#a-dataset-example" title="Permanent link">#</a></h3>
-<p>Fruit Integrative Modelling, an <a href="https://www.era-learn.eu/network-information/networks/erasysbio-1">ERASysBio+ project</a> : <a href="https://www6.bordeaux-aquitaine.inrae.fr/bfp_eng/Research/Metabolism-Team">Yves Gibon</a> (Coordinator)
-<!-- , <a href="https://www.ibgc.cnrs.fr/mazat/">Jean-Pierre Mazat</a> , <a href="https://www6.paca.inrae.fr/psh/Equipes-de-recherche/Equipe-1-Croissance-Architecture-Qualite-CraQ/Le-personnel-de-l-equipe-1/Michel-Genard">Michel Génard</a> , <a href="https://www.plants.ox.ac.uk/people/lee-sweetlove">Lee Sweetlove</a> , <a href="https://en.wikipedia.org/wiki/David_Fell_(biochemist)">David Fell</a>, <a href="https://www.mpimp-golm.mpg.de/9205/Alisdair_Fernie">Alisdair Fernie</a>, <a href="http://www.sun.ac.za/english/faculty/science/biochemistry/research/rohwer-group">Johann Rohwer</a> -->
-<br><br>
-The project aimed to build a virtual tomato fruit that enables the prediction of metabolite levels given genetic and environmental inputs, by an iterative process between laboratories which combine expertise in fruit biology, ecophysiology, theoretical and experimental biochemistry, and biotechnology.</p>
-<ul>
-<li>To build a kinetic model encompassing the routes carbon takes, once imported into the fruit cells from the source organs of the mother plant.</li>
-<li>To integrate the kinetic model with a phenomenological model predicting sugar and organic acid contents as functions of time, light intensity, temperature and water availability.</li>
-<li>To obtain large-scale experimental measures of the consequences of altered environmental conditions.</li>
-<li>To assess the influence of the environment on fruit metabolism, tomato (<a href="https://jardinage.ooreka.fr/astuce/voir/729813/tomate-moneymaker">Solanum lycopersicum 'Moneymaker'</a>) plants were grown under contrasting conditions (optimal for commercial, shaded production) and locations. Samples were harvested at nine stages of development, and 36 enzyme activities of central metabolism were measured as well as protein, starch, and major metabolites, such as hexoses, sucrose, organic acids, and amino acids.</li>
-</ul>
+<h3 id="web-api">Web API<a class="headerlink" href="#web-api" title="Permanent link">#</a></h3>
+<p>Based on REST services using a Resource Naming convention: an understandable resource naming leading to an easily leveraged Web service API (Identification/querying of resources) and easy to implement within R. Output formats: TSV, JSON and XML. Even if the WS outputs are not dedicated to human readers (the script languages as R are the typical clients), the XML outputs can be human readable in a web browser, made possible by using a <a href="https://en.wikipedia.org/wiki/XSLT">XSL transformation</a> mechanism which converts the XML outputs to HTML format.</p>
 <p><center>
-<a href="../images/figure4.png" data-lightbox="fig4"><img src="../images/figure4.png" width="600px"></a>
-</center><br><br>
-About 580 tomato plants were grown in a greenhouse in the southwest of France (<a href="https://www.google.com/maps/place/47110+Sainte-Livrade-sur-Lot/@44.402492,0.5002783,11.5z">Sainte-Livrade sur Lot</a>) during the summer of 2010 according to usual production practices.</p>
-<p><br></p>
-<h3 id="links-related-to-the-dataset">Links related to the dataset<a class="headerlink" href="#links-related-to-the-dataset" title="Permanent link">#</a></h3>
+<a href="../images/web1.png" data-lightbox="web1"><img src="../images/web1.png" width="600px"></a>
+</center><br><br></p>
+<ul>
+<li>Using the two metadata files, it is possible to build a tree structure from which the data files can be queried to extract a subset. The tree structure is built on the Entity-Attribute-Value scheme.</li>
+</ul>
 <table>
 <thead>
 <tr>
+<th>Field</th>
 <th>Description</th>
-<th>Link</th>
+<th>Examples</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>Data explorer<sup>(*)</sup></td>
-<td><a href="https://pmb-bordeaux.fr/dataexplorer/?ds=frim1" target="_blank">https://pmb-bordeaux.fr/dataexplorer/?ds=frim1</a></td>
+<td>&lt;data format&gt;</td>
+<td>Format of the retrieved data; possible values are: 'xml', ‘json’ or ‘tsv'</td>
+<td>tsv</td>
 </tr>
 <tr>
-<td>Dataverse<sup>(*)</sup></td>
-<td><a href="https://doi.org/10.15454/95JUTK" target="_blank">https://doi.org/10.15454/95JUTK</a></td>
+<td>&lt;dataset name&gt;</td>
+<td>Short name (tag) of your dataset</td>
+<td>frim1</td>
 </tr>
 <tr>
-<td>Jupyter notebooks (R &amp; Python)</td>
-<td><a href="https://nbviewer.jupyter.org/github/djacob65/binder_odam/tree/master/" target="_blank">https://nbviewer.jupyter.org/github/djacob65/binder_odam/tree/master/</a></td>
+<td>&lt;subset&gt;</td>
+<td>Short name of a data subset</td>
+<td>samples</td>
 </tr>
 <tr>
-<td>Modeling the growth of tomato fruits based on enzyme activity profiles : An example of data analysis interfaced by ODAM</td>
-<td><a href="https://hal.inrae.fr/hal-02611223" target="_blank">https://hal.inrae.fr/hal-02611223</a></td>
+<td>&lt;entry&gt;</td>
+<td>Name of an attribute entry (defined by the user in the a_attribute file (column ‘entry’)</td>
+<td>sampleid</td>
+</tr>
+<tr>
+<td>&lt;category&gt;</td>
+<td>Name of the attribute category; (assigned by the user in the a_attribute file (column ‘category’). Possible values are:  ‘identifier’, ‘factor’, ‘qualitative’, ‘quantitative’</td>
+<td>quantitative</td>
+</tr>
+<tr>
+<td>(&lt;subset&gt;)</td>
+<td>Set of data subsets by merging all the subsets with lower rank than the specified subset and following the pathway defined by the "is_part_of" links.</td>
+<td>(samples) &lt;=&gt; plants + samples</td>
+</tr>
+<tr>
+<td>&lt;value&gt;</td>
+<td>Exact value of the desired entry or category</td>
+<td>1 (for subset) or <br> Factor (for category)</td>
 </tr>
 </tbody>
 </table>
-<p><strong> (*) </strong> Both repositories are supported by <a href="https://www.inrae.fr/en">INRAE</a> (France) for a minimum period of 10 years (until 2030).</p>
-<p><br></p>
-<h3 id="publication-of-the-dataset-according-to-fair-principles">Publication of the dataset according to FAIR principles<a class="headerlink" href="#publication-of-the-dataset-according-to-fair-principles" title="Permanent link">#</a></h3>
-<p>Because ODAM is primarily an Experimental Data Table Management System (EDTMS) for data sharing, it must be associated with a suitable data repository in order to support data publishing.  So the ODAM approach has to be regarded as complementary with publication of the data online within an institutional data repository as described in <a href="http://re3data.org/">re3data.org</a> (e.g. <a href="https://data.inrae.fr/">INRAE Data Portal</a>) associated or not with a scientific paper.</p>
-<p>Not all data, documents, workflows and other tools need to be located in a single system, but from a central repository, it is the set of links that constitutes the true information management system. It must be able to be traversed by a human being as well as by machines.</p>
-<p><center>
-<a href="../images/fair4.png" data-lightbox="fair4"><img src="../images/fair4.png" width="400px"></a>
-</center><br><br></p>
-<!--
-Data publication of the FRIM dataset uses Dataverse for descriptive metadata and ODAM for both structural metadata and the data itself. Dataverse also provides the ability to associate other documents, codes and even other related data. 
-<center>
-<a href="../images/fair1.png" data-lightbox="fair1"><img src="../images/fair1.png" width="600px"></a>
-<a href="../images/fair2.png" data-lightbox="fair2"><img src="../images/fair2.png" width="600px"></a>
-</center><br>
--->
-
-<p>Data INRAE repository as a hub (based on Dataverse) allows to interconnect the different elements of the FRIM dataset. By relying on explicit schemas (<a href="https://json-ld.org/">JSON-LD</a>, <a href="../json-schema">JSON Schema</a>) for both metadata and data, it becomes possible to reuse the data without friction, both by humans and machines. (see <a href="https://oznome.csiro.au/5star/?view=5ec2a9654d0983adde57a21e">5 ★ Data Rating evaluation</a> for FRIM dataset)</p>
-<p><center>
-<a href="../images/fair3.png" data-lightbox="fair3"><img src="../images/fair3.png" width="400px"></a>
-</center><br><br></p>
-<h3 id="references">References<a class="headerlink" href="#references" title="Permanent link">#</a></h3>
 <ul>
-<li>Biais B, Bénard C, Beauvoit B, Colombié S, Prodhomme D, Ménard G, Bernillon S, Gehl B, Gautier H, Ballias P, Mazat J-P, Sweetlove L, Génard M, Gibon Y. 2014. Remarkable reproducibility of enzyme activity profiles in tomato fruits grown under contrasting environments provides a roadmap for studies of fruit metabolism. Plant Physiology 164, 1204-1221. <a href="http://www.plantphysiol.org/content/164/3/1204">doi: 10.1104/pp.113.231241</a></li>
+<li>API Documentation on SwaggerHub : <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.0.1-oas3/">INRA-PMB/ODAM/1.0.1-oas3</a></li>
 </ul>
+<p><center>
+<a href="../images/web2.png" data-lightbox="web2"><img src="../images/web2.png" width="600px"></a>
+</center><br><br></p>
                 
                   
                 

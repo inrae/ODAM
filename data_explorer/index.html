@@ -14,20 +14,23 @@
       
         <meta name="author" content="Daniel Jacob">
       
-      <link rel="shortcut icon" href="/assets/images/favicon.png">
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.1, mkdocs-material-5.2.2">
     
     
       
-        <title>ODAM</title>
+        <title>Data Explorer</title>
       
     
     
-      <link rel="stylesheet" href="/assets/stylesheets/main.b8fb47b5.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.b8fb47b5.min.css">
       
       
     
     
+    
+    <script src="../js/jquery-2.1.1.min.js"></script>
+
     
       
         <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
@@ -37,11 +40,11 @@
     
     
     
-      <link rel="stylesheet" href="/css/extra.css">
+      <link rel="stylesheet" href="../css/extra.css">
     
-      <link rel="stylesheet" href="/css/pdfextra.css">
+      <link rel="stylesheet" href="../css/pdfextra.css">
     
-      <link rel="stylesheet" href="/css/lightbox.css">
+      <link rel="stylesheet" href="../css/lightbox.css">
     
     
       
@@ -57,6 +60,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#odam-deployment-and-users-guide" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -64,7 +72,7 @@
     
       <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid" aria-label="Header">
-    <a href="/." title="ODAM" class="md-header-nav__button md-logo" aria-label="ODAM">
+    <a href=".." title="ODAM" class="md-header-nav__button md-logo" aria-label="ODAM">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -81,7 +89,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              
+              Data Explorer
             
           </span>
         </div>
@@ -138,7 +146,7 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/." title="ODAM" class="md-nav__button md-logo" aria-label="ODAM">
+    <a href=".." title="ODAM" class="md-nav__button md-logo" aria-label="ODAM">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
@@ -155,7 +163,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/." title="Home" class="md-nav__link">
+    <a href=".." title="Home" class="md-nav__link">
       Home
     </a>
   </li>
@@ -167,7 +175,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/getting_started/" title="Getting started" class="md-nav__link">
+    <a href="../getting_started/" title="Getting started" class="md-nav__link">
       Getting started
     </a>
   </li>
@@ -179,7 +187,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/dataset_example" title="A dataset example" class="md-nav__link">
+    <a href="../dataset_example" title="A dataset example" class="md-nav__link">
       A dataset example
     </a>
   </li>
@@ -191,7 +199,7 @@
 
 
   <li class="md-nav__item">
-    <a href="/about/" title="About" class="md-nav__link">
+    <a href="../about/" title="About" class="md-nav__link">
       About
     </a>
   </li>
@@ -204,12 +212,69 @@
               </div>
             
             
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#data-explorer" class="md-nav__link">
+    Data Explorer
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content">
             <article class="md-content__inner md-typeset">
               
-  <h1>404 - Not found</h1>
-
+                
+                
+                  
+                
+                
+                <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">#</a></h1>
+<hr />
+<h3 id="data-explorer">Data Explorer<a class="headerlink" href="#data-explorer" title="Permanent link">#</a></h3>
+<p>The Data Explorer makes data easy to explore, visualize, and subsequently to better understand the data as a whole. Explore your data in several ways according to your concerns by interacting with the graphs. For instance, univariate, bivariate and multivariate approaches have been implemented so that they are very easy to be interactively used. This is very useful in order to have a first glimpse of the data that can show trends and this allows the data to be well characterized, which is necessary to then choose how to analyze it later on.</p>
+<p><center>
+<a href="../images/figure7.png" data-lightbox="fig7"><img src="../images/figure7.png" width="600px"></a>
+<br><font size="-1"><i>The Data Explorer</i></font>
+</center><br></p>
+<p><center>
+<a href="../images/figure8.png" data-lightbox="fig8"><img src="../images/figure8.png" width="600px"></a>
+<br><font size="-1"><i>Example of graphical output produced by the Data Explorer </i></font>
+</center><br><br></p>
+<p>For each analysis, several possibilities can be explored by selecting many parameters and interacting with the graphs. Graphics can be easily exported as PNG files.</p>
+<p>An interesting possibility is that you can make a selection of a subset of data and then export it directly into your spreadsheet.</p>
+<p><center>
+<a href="../images/figure9.png" data-lightbox="fig9"><img src="../images/figure9.png" width="600px"></a>
+<br><font size="-1"><i>Export a previously selected data subset.</i></font>
+</center><br><br></p>
+                
+                  
+                
+              
               
                 
 
@@ -243,20 +308,20 @@
       
     </div>
     
-      <script src="/assets/javascripts/vendor.de50e36d.min.js"></script>
-      <script src="/assets/javascripts/bundle.ff925e8b.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      <script src="../assets/javascripts/vendor.de50e36d.min.js"></script>
+      <script src="../assets/javascripts/bundle.ff925e8b.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
       
       <script>
         app = initialize({
-          base: "/",
+          base: "..",
           features: [],
           search: Object.assign({
-            worker: "/assets/javascripts/worker/search.27c6a5e6.min.js"
+            worker: "../assets/javascripts/worker/search.27c6a5e6.min.js"
           }, typeof search !== "undefined" && search)
         })
       </script>
       
-        <script src="/js/lightbox.min.js"></script>
+        <script src="../js/lightbox.min.js"></script>
       
     
   </body>

@@ -251,8 +251,8 @@
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">#</a></h1>
 <hr />
 <h3 id="odam-data-package-based-on-json-schema">ODAM data-package based on JSON-Schema<a class="headerlink" href="#odam-data-package-based-on-json-schema" title="Permanent link">#</a></h3>
-<p>A data package is a simple container format based on [JSON Schema specifications][2] used to describe and package a collection of data. Defining an explicit schema for structural metadata allows machines to better interpret the data for reuse. Thus, when disseminating data, a file named [datapackage.json][1] by convention can be added to the collection of your data files. This [datapackage.json][1] file contains all structural metadata along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions.</p>
-<p>ODAM data package schema is very close to the [Frictionless Data][3] framework.</p>
+<p>A data package is a simple container format based on <a href="https://json-schema.org/">JSON Schema specifications</a> used to describe and package a collection of data. Defining an explicit schema for structural metadata allows machines to better interpret the data for reuse. Thus, when disseminating data, a file named <a href="https://datahub.io/docs/data-packages">datapackage.json</a> by convention can be added to the collection of your data files. This <a href="https://datahub.io/docs/data-packages">datapackage.json</a> file contains all structural metadata along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions.</p>
+<p>ODAM data package schema is very close to the <a href="https://frictionlessdata.io/">Frictionless Data</a> framework.</p>
 <ul>
 <li><strong><a href="odam-data-package.json">odam-data-package.json</a></strong> : JSON Schema for ODAM data package</li>
 <li><strong><a href="odam-data-resource.json">odam-data-resource.json</a></strong> : JSON Schema for ODAM data resource</li>
@@ -274,9 +274,6 @@
 <ul>
 <li><a href="https://rdrr.io/cran/jsonvalidate/man/json_validate.html" target="_blank">https://rdrr.io/cran/jsonvalidate/man/json_validate.html</a></li>
 </ul>
-<p>[1] https://datahub.io/docs/data-packages
-[2] https://json-schema.org/
-[3] https://frictionlessdata.io/</p>
 <hr />
 <h3 id="example-of-a-session-under-r-using-a-data-package">Example of a session under R using a data package<a class="headerlink" href="#example-of-a-session-under-r-using-a-data-package" title="Permanent link">#</a></h3>
 <p><div class="highlight"><pre><span></span><code><span class="nf">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span>

@@ -1,0 +1,454 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="ODAM, Open data and access to data mining, Deployment and User's Guide">
+      
+      
+      
+        <meta name="author" content="Daniel Jacob">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-5.2.2">
+    
+    
+      
+        <title>ODAM data-package based on JSON-Schema</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.b8fb47b5.min.css">
+      
+      
+    
+    
+    
+    <script src="../js/jquery-2.1.1.min.js"></script>
+
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../css/extra.css">
+    
+      <link rel="stylesheet" href="../css/pdfextra.css">
+    
+      <link rel="stylesheet" href="../css/lightbox.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#odam-deployment-and-users-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href=".." title="ODAM" class="md-header-nav__button md-logo" aria-label="ODAM">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            ODAM
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              ODAM data-package based on JSON-Schema
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ODAM" class="md-nav__button md-logo" aria-label="ODAM">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    ODAM
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../getting_started/" title="Getting started" class="md-nav__link">
+      Getting started
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../about/" title="About" class="md-nav__link">
+      About
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#odam-data-package-based-on-json-schema" class="md-nav__link">
+    ODAM data-package based on JSON-Schema
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-of-a-session-under-r-using-a-data-package" class="md-nav__link">
+    Example of a session under R using a data package
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">#</a></h1>
+<hr />
+<h3 id="odam-data-package-based-on-json-schema">ODAM data-package based on JSON-Schema<a class="headerlink" href="#odam-data-package-based-on-json-schema" title="Permanent link">#</a></h3>
+<p>A data package is a simple container format used to describe and package a collection of data. Defining an explicit schema for structural metadata allows machines to better interpret the data for reuse. Thus, when disseminating data, a file named â€˜datapackage.jsonâ€™ by convention can be added to the collection of your data files. This â€˜datapackage.jsonâ€™ file contains all structural metadata along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions.</p>
+<p>ODAM data package schema is very close to the 'Frictionless Data' framework.</p>
+<ul>
+<li><strong><a href="odam-data-package.json">odam-data-package.json</a></strong> : JSON Schema for ODAM data package</li>
+<li><strong><a href="odam-data-resource.json">odam-data-resource.json</a></strong> : JSON Schema for ODAM data resource</li>
+</ul>
+<p>The datapackage.json file can be generated directly from the ODAM API by specifying '/datapackage' at the end of the request. By default, the reference to the data files is relative. To have a URL as reference for the data files, it is necessary to add at the end of the request '?links=1'</p>
+<p><center>
+<a href="../images/ODAM-datapackage.png" data-lightbox="fig1"><img src="../images/ODAM-datapackage.png" width="500px"></a>
+</center><br></p>
+<p><strong> ODAM data-package on github </strong></p>
+<ul>
+<li><a href="https://github.com/djacob65/odam-datapackage" target="_blank">https://github.com/djacob65/odam-datapackage</a></li>
+</ul>
+<p><strong> Frictionless Data Specifications </strong></p>
+<ul>
+<li><a href="http://specs.frictionlessdata.io/" target="_blank">http://specs.frictionlessdata.io/</a></li>
+<li><a href="https://github.com/frictionlessdata/specs/tree/master/schemas" target="_blank">https://github.com/frictionlessdata/specs/tree/master/schemas</a></li>
+</ul>
+<p><strong> json_validate: Validate a json file </strong></p>
+<ul>
+<li><a href="https://rdrr.io/cran/jsonvalidate/man/json_validate.html" target="_blank">https://rdrr.io/cran/jsonvalidate/man/json_validate.html</a></li>
+</ul>
+<hr />
+<h3 id="example-of-a-session-under-r-using-a-data-package">Example of a session under R using a data package<a class="headerlink" href="#example-of-a-session-under-r-using-a-data-package" title="Permanent link">#</a></h3>
+<p><div class="highlight"><pre><span></span><code><span class="nf">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">jsonvalidate</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span>
+
+<span class="c1"># Get the ODAM data package schema</span>
+<span class="n">response</span> <span class="o">&lt;-</span> <span class="nf">GET</span><span class="p">(</span><span class="s">&#39;https://inrae.github.io/ODAM/json-schema/odam-data-package.json&#39;</span><span class="p">,</span> 
+                 <span class="nf">config</span><span class="p">(</span><span class="n">sslversion</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="n">ssl_verifypeer</span><span class="o">=</span><span class="m">1</span><span class="p">))</span>
+<span class="n">schema</span> <span class="o">&lt;-</span> <span class="nf">rawToChar</span><span class="p">(</span><span class="n">response</span><span class="o">$</span><span class="n">content</span><span class="p">)</span>
+
+<span class="c1"># Get structural metadata information in datapackage format (json) </span>
+<span class="c1"># for the &#39;frim1&#39; dataset directly from an ODAM repository </span>
+<span class="c1">#   (located on https://pmb-bordeaux.fr)</span>
+<span class="c1"># As the option links is set to 1, we will have the absolute reference</span>
+<span class="c1">#   for data files (see below)</span>
+<span class="n">response</span> <span class="o">&lt;-</span> <span class="nf">GET</span><span class="p">(</span><span class="s">&#39;https://pmb-bordeaux.fr/getdata/json/frim1/datapackage?links=1&#39;</span><span class="p">,</span> 
+                 <span class="nf">config</span><span class="p">(</span><span class="n">sslversion</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="n">ssl_verifypeer</span><span class="o">=</span><span class="m">1</span><span class="p">))</span>
+<span class="n">json</span> <span class="o">&lt;-</span> <span class="nf">rawToChar</span><span class="p">(</span><span class="n">response</span><span class="o">$</span><span class="n">content</span><span class="p">)</span>
+
+<span class="c1"># Validate the JSON against the ODAM data package schema</span>
+<span class="n">jsonvalidate</span><span class="o">::</span><span class="nf">json_validate</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
+</code></pre></div>
+<div class="highlight"><pre><span></span><code>[1] TRUE
+</code></pre></div></p>
+<div class="tabbed-set" data-tabs="1:2">
+<input name="__tabbed_1" type="radio" id="__tabbed_1_1" checked="checked" /><label for="__tabbed_1_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Parse the JSON object to a data.frame</span>
+<span class="n">metadata</span> <span class="o">&lt;-</span> <span class="nf">fromJSON</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
+
+<span class="c1"># List some metadata about the dataset</span>
+<span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">,</span> <span class="s">&quot;joinkey&quot;</span><span class="p">)</span> <span class="n">]</span>
+</code></pre></div></div>
+<input name="__tabbed_1" type="radio" id="__tabbed_1_2" /><label for="__tabbed_1_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>                name                                   title identifier obtainedFrom   joinkey
+1             plants                          Plant features    PlantID         &lt;NA&gt;      &lt;NA&gt;
+2            samples                         Sample features   SampleID       plants   PlantID
+3           aliquots                       Aliquots features  AliquotID      samples  SampleID
+4    cellwall_metabo      Cell wall Compound quantifications  AliquotID     aliquots AliquotID
+5  cellwall_metaboFW Cell Wall Compound quantifications (FW)  AliquotID     aliquots AliquotID
+6           activome                       Activome Features  AliquotID     aliquots AliquotID
+7              pools                Pools of remaining pools     PoolID      samples  SampleID
+8         qMS_metabo             MS Compounds quantification     PoolID        pools    PoolID
+9        qNMR_metabo            NMR Compounds quantification     PoolID        pools    PoolID
+10    plato_hexosesP                       Hexoses Phosphate  AliquotID     aliquots AliquotID
+11         lipids_AG                               Lipids AG  AliquotID     aliquots AliquotID
+12         AminoAcid                             Amino Acids  AliquotID     aliquots AliquotID
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="2:2">
+<input name="__tabbed_2" type="radio" id="__tabbed_2_1" checked="checked" /><label for="__tabbed_2_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># List the absolute reference for data files </span>
+<span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="s">&quot;path&quot;</span> <span class="n">]</span>
+</code></pre></div></div>
+<input name="__tabbed_2" type="radio" id="__tabbed_2_2" /><label for="__tabbed_2_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>                                                          path
+1             https://pmb-bordeaux.fr/getdata/tsv/frim1/plants
+2            https://pmb-bordeaux.fr/getdata/tsv/frim1/samples
+3           https://pmb-bordeaux.fr/getdata/tsv/frim1/aliquots
+4    https://pmb-bordeaux.fr/getdata/tsv/frim1/cellwall_metabo
+5  https://pmb-bordeaux.fr/getdata/tsv/frim1/cellwall_metaboFW
+6           https://pmb-bordeaux.fr/getdata/tsv/frim1/activome
+7              https://pmb-bordeaux.fr/getdata/tsv/frim1/pools
+8         https://pmb-bordeaux.fr/getdata/tsv/frim1/qMS_metabo
+9        https://pmb-bordeaux.fr/getdata/tsv/frim1/qNMR_metabo
+10    https://pmb-bordeaux.fr/getdata/tsv/frim1/plato_hexosesP
+11         https://pmb-bordeaux.fr/getdata/tsv/frim1/lipids_AG
+12         https://pmb-bordeaux.fr/getdata/tsv/frim1/AminoAcid
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="3:2">
+<input name="__tabbed_3" type="radio" id="__tabbed_3_1" checked="checked" /><label for="__tabbed_3_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Read the &#39;samples&#39; data file - index=2</span>
+<span class="n">index</span> <span class="o">&lt;-</span> <span class="m">2</span>
+<span class="n">M</span> <span class="o">&lt;-</span> <span class="nf">read.table</span><span class="p">(</span><span class="nf">url</span><span class="p">(</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="s">&quot;path&quot;</span> <span class="n">]</span><span class="o">$</span><span class="n">path[index]</span><span class="p">),</span> 
+                <span class="n">header</span><span class="o">=</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">header[index]</span><span class="p">,</span> 
+                <span class="n">sep</span><span class="o">=</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">delimiter[index]</span> <span class="p">)</span>
+
+<span class="c1"># Display an extract </span>
+<span class="n">M[1</span><span class="o">:</span><span class="m">10</span><span class="p">,</span><span class="n">]</span>
+</code></pre></div></div>
+<input name="__tabbed_3" type="radio" id="__tabbed_3_2" /><label for="__tabbed_3_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>   SampleID PlantID Truss DevStage FruitAge HarvestDate HarvestHour FruitPosition FruitDiameter FruitHeight FruitFW  FruitDW DW
+1         1     A26    T5    FF.01    08DPA       40379         0.5             2            NA          NA    0.72 0.090216 NA
+2         1      C2    T5    FF.01    08DPA       40379         0.5             3            NA          NA    0.56 0.070168 NA
+3         1     D15    T5    FF.01    08DPA       40379         0.5             4            NA          NA    0.78 0.097734 NA
+4         1     E19    T5    FF.01    08DPA       40379         0.5             4            NA          NA    0.66 0.082698 NA
+5         1     E34    T5    FF.01    08DPA       40379         0.5             3            NA          NA     0.7 0.087710 NA
+6         1     E38    T5    FF.01    08DPA       40379         0.5             3            NA          NA     0.7 0.087710 NA
+7         1     H29    T5    FF.01    08DPA       40379         0.5             5            NA          NA    1.24 0.155372 NA
+8         1     H34    T5    FF.01    08DPA       40379         0.5             4            NA          NA    0.86 0.107758 NA
+9         1     H52    T5    FF.01    08DPA       40379         0.5             5            NA          NA    0.77 0.096481 NA
+10        1     H61    T5    FF.01    08DPA       40379         0.5             5            NA          NA    0.56 0.070168 NA
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="4:2">
+<input name="__tabbed_4" type="radio" id="__tabbed_4_1" checked="checked" /><label for="__tabbed_4_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the list of data subsets that were obtained from the &#39;samples&#39;</span>
+<span class="n">index</span> <span class="o">&lt;-</span> <span class="m">2</span>
+<span class="n">subsets</span> <span class="o">&lt;-</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">foreignKey[[index]]</span><span class="o">$</span><span class="n">reference[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span>
+<span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">subsets</span><span class="p">)</span> <span class="p">)</span> 
+   <span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">subsets</span><span class="p">,</span>
+                       <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">)</span> <span class="n">]</span>
+</code></pre></div></div>
+<input name="__tabbed_4" type="radio" id="__tabbed_4_2" /><label for="__tabbed_4_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>        name                     title  identifier  obtainedFrom
+3   aliquots         Aliquots features   AliquotID       samples
+7      pools  Pools of remaining pools      PoolID       samples
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="5:2">
+<input name="__tabbed_5" type="radio" id="__tabbed_5_1" checked="checked" /><label for="__tabbed_5_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the list of data subsets that were obtained from the &#39;aliquots&#39;</span>
+<span class="n">index</span> <span class="o">&lt;-</span> <span class="m">3</span>
+<span class="n">subsets</span> <span class="o">&lt;-</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">foreignKey[[index]]</span><span class="o">$</span><span class="n">reference[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span>
+<span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">subsets</span><span class="p">)</span> <span class="p">)</span> 
+   <span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">subsets</span><span class="p">,</span>
+                       <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">)</span> <span class="n">]</span>
+</code></pre></div></div>
+<input name="__tabbed_5" type="radio" id="__tabbed_5_2" /><label for="__tabbed_5_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>                name                                   title identifier obtainedFrom
+4    cellwall_metabo      Cell wall Compound quantifications  AliquotID     aliquots
+5  cellwall_metaboFW Cell Wall Compound quantifications (FW)  AliquotID     aliquots
+6           activome                       Activome Features  AliquotID     aliquots
+10    plato_hexosesP                       Hexoses Phosphate  AliquotID     aliquots
+11         lipids_AG                               Lipids AG  AliquotID     aliquots
+12         AminoAcid                             Amino Acids  AliquotID     aliquots
+</code></pre></div></div>
+</div>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            INRAE, 2020
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.de50e36d.min.js"></script>
+      <script src="../assets/javascripts/bundle.ff925e8b.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: [],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.27c6a5e6.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+        <script src="../js/lightbox.min.js"></script>
+      
+    
+  </body>
+</html>

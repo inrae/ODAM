@@ -284,15 +284,22 @@
 <li><a href="http://specs.frictionlessdata.io/" target="_blank">http://specs.frictionlessdata.io/</a></li>
 <li><a href="https://github.com/frictionlessdata/specs/tree/master/schemas" target="_blank">https://github.com/frictionlessdata/specs/tree/master/schemas</a></li>
 </ul>
+<hr />
+<h3 id="example-of-a-session-under-r-using-a-data-package">Example of a session under R using a data package<a class="headerlink" href="#example-of-a-session-under-r-using-a-data-package" title="Permanent link">#</a></h3>
 <p><strong> json_validate: Validate a json file </strong></p>
 <ul>
 <li><a href="https://rdrr.io/cran/jsonvalidate/man/json_validate.html" target="_blank">https://rdrr.io/cran/jsonvalidate/man/json_validate.html</a></li>
 </ul>
-<hr />
-<h3 id="example-of-a-session-under-r-using-a-data-package">Example of a session under R using a data package<a class="headerlink" href="#example-of-a-session-under-r-using-a-data-package" title="Permanent link">#</a></h3>
-<p><div class="highlight"><pre><span></span><code><span class="nf">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span>
+<div class="tabbed-set" data-tabs="1:2">
+<input name="__tabbed_1" type="radio" id="__tabbed_1_1" checked="checked" /><label for="__tabbed_1_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="nf">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">jsonvalidate</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span>
+
+<span class="c1"># URL of the ODAM data repository</span>
+<span class="n">odam_url</span> <span class="o">&lt;-</span> <span class="s">&#39;https://pmb-bordeaux.fr&#39;</span>
+
+<span class="c1"># ID of the dataset</span>
+<span class="n">dataset</span> <span class="o">&lt;-</span> <span class="s">&#39;frim1&#39;</span>
 
 <span class="c1"># Get the ODAM data package schema</span>
 <span class="n">response</span> <span class="o">&lt;-</span> <span class="nf">GET</span><span class="p">(</span><span class="s">&#39;https://inrae.github.io/ODAM/json-schema/odam-data-package.json&#39;</span><span class="p">,</span> 
@@ -304,55 +311,37 @@
 <span class="c1">#   (located on https://pmb-bordeaux.fr)</span>
 <span class="c1"># As the option links is set to 1, we will have the absolute reference</span>
 <span class="c1">#   for data files (see below)</span>
-<span class="n">response</span> <span class="o">&lt;-</span> <span class="nf">GET</span><span class="p">(</span><span class="s">&#39;https://pmb-bordeaux.fr/getdata/json/frim1/datapackage?links=1&#39;</span><span class="p">,</span> 
+<span class="n">response</span> <span class="o">&lt;-</span> <span class="nf">GET</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&#39;%s/getdata/json/%s/datapackage?links=1&#39;</span><span class="p">,</span> <span class="n">odam_url</span><span class="p">,</span> <span class="n">dataset</span><span class="p">),</span> 
                  <span class="nf">config</span><span class="p">(</span><span class="n">sslversion</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="n">ssl_verifypeer</span><span class="o">=</span><span class="m">1</span><span class="p">))</span>
 <span class="n">json</span> <span class="o">&lt;-</span> <span class="nf">rawToChar</span><span class="p">(</span><span class="n">response</span><span class="o">$</span><span class="n">content</span><span class="p">)</span>
 
 <span class="c1"># Validate the JSON against the ODAM data package schema</span>
 <span class="n">jsonvalidate</span><span class="o">::</span><span class="nf">json_validate</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
-</code></pre></div>
-<div class="highlight"><pre><span></span><code>[1] TRUE
-</code></pre></div></p>
-<div class="tabbed-set" data-tabs="1:2">
-<input name="__tabbed_1" type="radio" id="__tabbed_1_1" checked="checked" /><label for="__tabbed_1_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Parse the JSON object to a data.frame</span>
-<span class="n">metadata</span> <span class="o">&lt;-</span> <span class="nf">fromJSON</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
-
-<span class="c1"># List some metadata about the dataset</span>
-<span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">,</span> <span class="s">&quot;joinkey&quot;</span><span class="p">)</span> <span class="n">]</span>
 </code></pre></div></div>
-<input name="__tabbed_1" type="radio" id="__tabbed_1_2" /><label for="__tabbed_1_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>                name                                   title identifier obtainedFrom   joinkey
-1             plants                          Plant features    PlantID         &lt;NA&gt;      &lt;NA&gt;
-2            samples                         Sample features   SampleID       plants   PlantID
-3           aliquots                       Aliquots features  AliquotID      samples  SampleID
-4    cellwall_metabo      Cell wall Compound quantifications  AliquotID     aliquots AliquotID
-5  cellwall_metaboFW Cell Wall Compound quantifications (FW)  AliquotID     aliquots AliquotID
-6           activome                       Activome Features  AliquotID     aliquots AliquotID
-7              pools                Pools of remaining pools     PoolID      samples  SampleID
-8         qMS_metabo             MS Compounds quantification     PoolID        pools    PoolID
-9        qNMR_metabo            NMR Compounds quantification     PoolID        pools    PoolID
-10    plato_hexosesP                       Hexoses Phosphate  AliquotID     aliquots AliquotID
-11         lipids_AG                               Lipids AG  AliquotID     aliquots AliquotID
-12         AminoAcid                             Amino Acids  AliquotID     aliquots AliquotID
+<input name="__tabbed_1" type="radio" id="__tabbed_1_2" /><label for="__tabbed_1_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>[1] TRUE
 </code></pre></div></div>
 </div>
 <hr />
 <div class="tabbed-set" data-tabs="2:2">
-<input name="__tabbed_2" type="radio" id="__tabbed_2_1" checked="checked" /><label for="__tabbed_2_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># List the absolute reference for data files </span>
-<span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="s">&quot;path&quot;</span> <span class="n">]</span>
+<input name="__tabbed_2" type="radio" id="__tabbed_2_1" checked="checked" /><label for="__tabbed_2_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Parse the JSON object to a data.frame</span>
+<span class="n">metadata</span> <span class="o">&lt;-</span> <span class="nf">fromJSON</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
+
+<span class="c1"># List some metadata about the dataset</span>
+<span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">,</span> <span class="s">&quot;joinkey&quot;</span><span class="p">,</span> <span class="s">&quot;path&quot;</span><span class="p">)</span> <span class="n">]</span>
 </code></pre></div></div>
-<input name="__tabbed_2" type="radio" id="__tabbed_2_2" /><label for="__tabbed_2_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>                                                          path
-1             https://pmb-bordeaux.fr/getdata/tsv/frim1/plants
-2            https://pmb-bordeaux.fr/getdata/tsv/frim1/samples
-3           https://pmb-bordeaux.fr/getdata/tsv/frim1/aliquots
-4    https://pmb-bordeaux.fr/getdata/tsv/frim1/cellwall_metabo
-5  https://pmb-bordeaux.fr/getdata/tsv/frim1/cellwall_metaboFW
-6           https://pmb-bordeaux.fr/getdata/tsv/frim1/activome
-7              https://pmb-bordeaux.fr/getdata/tsv/frim1/pools
-8         https://pmb-bordeaux.fr/getdata/tsv/frim1/qMS_metabo
-9        https://pmb-bordeaux.fr/getdata/tsv/frim1/qNMR_metabo
-10    https://pmb-bordeaux.fr/getdata/tsv/frim1/plato_hexosesP
-11         https://pmb-bordeaux.fr/getdata/tsv/frim1/lipids_AG
-12         https://pmb-bordeaux.fr/getdata/tsv/frim1/AminoAcid
+<input name="__tabbed_2" type="radio" id="__tabbed_2_2" /><label for="__tabbed_2_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>                name                                   title identifier obtainedFrom   joinkey                                                        path
+1             plants                          Plant features    PlantID         &lt;NA&gt;      &lt;NA&gt;            https://pmb-bordeaux.fr/getdata/tsv/frim1/plants
+2            samples                         Sample features   SampleID       plants   PlantID           https://pmb-bordeaux.fr/getdata/tsv/frim1/samples
+3           aliquots                       Aliquots features  AliquotID      samples  SampleID          https://pmb-bordeaux.fr/getdata/tsv/frim1/aliquots
+4    cellwall_metabo      Cell wall Compound quantifications  AliquotID     aliquots AliquotID   https://pmb-bordeaux.fr/getdata/tsv/frim1/cellwall_metabo
+5  cellwall_metaboFW Cell Wall Compound quantifications (FW)  AliquotID     aliquots AliquotID https://pmb-bordeaux.fr/getdata/tsv/frim1/cellwall_metaboFW
+6           activome                       Activome Features  AliquotID     aliquots AliquotID          https://pmb-bordeaux.fr/getdata/tsv/frim1/activome
+7              pools                Pools of remaining pools     PoolID      samples  SampleID             https://pmb-bordeaux.fr/getdata/tsv/frim1/pools
+8         qMS_metabo             MS Compounds quantification     PoolID        pools    PoolID        https://pmb-bordeaux.fr/getdata/tsv/frim1/qMS_metabo
+9        qNMR_metabo            NMR Compounds quantification     PoolID        pools    PoolID       https://pmb-bordeaux.fr/getdata/tsv/frim1/qNMR_metabo
+10    plato_hexosesP                       Hexoses Phosphate  AliquotID     aliquots AliquotID    https://pmb-bordeaux.fr/getdata/tsv/frim1/plato_hexosesP
+11         lipids_AG                               Lipids AG  AliquotID     aliquots AliquotID         https://pmb-bordeaux.fr/getdata/tsv/frim1/lipids_AG
+12         AminoAcid                             Amino Acids  AliquotID     aliquots AliquotID         https://pmb-bordeaux.fr/getdata/tsv/frim1/AminoAcid
 </code></pre></div></div>
 </div>
 <hr />
@@ -381,34 +370,112 @@
 </div>
 <hr />
 <div class="tabbed-set" data-tabs="4:2">
-<input name="__tabbed_4" type="radio" id="__tabbed_4_1" checked="checked" /><label for="__tabbed_4_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the list of data subsets that were obtained from the &#39;samples&#39;</span>
+<input name="__tabbed_4" type="radio" id="__tabbed_4_1" checked="checked" /><label for="__tabbed_4_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the categories for the &#39;samples&#39; data subset</span>
+<span class="n">categories</span> <span class="o">&lt;-</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">categories[[index]]</span>
+<span class="n">categories</span>
+
+<span class="c1"># List the &#39;quantitative&#39; variables for the &#39;samples&#39; data subset</span>
+<span class="n">categories</span><span class="o">$</span><span class="n">fields[</span> <span class="n">categories</span><span class="o">$</span><span class="n">name</span> <span class="o">==</span> <span class="s">&quot;quantitative&quot;</span> <span class="n">][[1]]</span>
+</code></pre></div></div>
+<input name="__tabbed_4" type="radio" id="__tabbed_4_2" /><label for="__tabbed_4_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>          name                                           fields
+1   identifier                                         SampleID
+2       factor                               DevStage, FruitAge
+3 quantitative FruitDiameter, FruitHeight, FruitFW, FruitDW, DW
+4  qualitative                                            Truss
+
+[1] &quot;FruitDiameter&quot; &quot;FruitHeight&quot;   &quot;FruitFW&quot;       &quot;FruitDW&quot;       &quot;DW&quot;           
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="5:2">
+<input name="__tabbed_5" type="radio" id="__tabbed_5_1" checked="checked" /><label for="__tabbed_5_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the list of data subsets that were obtained from the &#39;samples&#39;</span>
 <span class="n">index</span> <span class="o">&lt;-</span> <span class="m">2</span>
 <span class="n">subsets</span> <span class="o">&lt;-</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">foreignKey[[index]]</span><span class="o">$</span><span class="n">reference[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span>
 <span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">subsets</span><span class="p">)</span> <span class="p">)</span> 
    <span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">subsets</span><span class="p">,</span>
                        <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">)</span> <span class="n">]</span>
 </code></pre></div></div>
-<input name="__tabbed_4" type="radio" id="__tabbed_4_2" /><label for="__tabbed_4_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>        name                     title  identifier  obtainedFrom
+<input name="__tabbed_5" type="radio" id="__tabbed_5_2" /><label for="__tabbed_5_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>        name                     title  identifier  obtainedFrom
 3   aliquots         Aliquots features   AliquotID       samples
 7      pools  Pools of remaining pools      PoolID       samples
 </code></pre></div></div>
 </div>
 <hr />
-<div class="tabbed-set" data-tabs="5:2">
-<input name="__tabbed_5" type="radio" id="__tabbed_5_1" checked="checked" /><label for="__tabbed_5_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the list of data subsets that were obtained from the &#39;aliquots&#39;</span>
+<div class="tabbed-set" data-tabs="6:2">
+<input name="__tabbed_6" type="radio" id="__tabbed_6_1" checked="checked" /><label for="__tabbed_6_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the list of data subsets that were obtained from the &#39;aliquots&#39;</span>
 <span class="n">index</span> <span class="o">&lt;-</span> <span class="m">3</span>
 <span class="n">subsets</span> <span class="o">&lt;-</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">foreignKey[[index]]</span><span class="o">$</span><span class="n">reference[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span>
 <span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">subsets</span><span class="p">)</span> <span class="p">)</span> 
    <span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">subsets</span><span class="p">,</span>
                        <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">)</span> <span class="n">]</span>
 </code></pre></div></div>
-<input name="__tabbed_5" type="radio" id="__tabbed_5_2" /><label for="__tabbed_5_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>                name                                   title identifier obtainedFrom
+<input name="__tabbed_6" type="radio" id="__tabbed_6_2" /><label for="__tabbed_6_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>                name                                   title identifier obtainedFrom
 4    cellwall_metabo      Cell wall Compound quantifications  AliquotID     aliquots
 5  cellwall_metaboFW Cell Wall Compound quantifications (FW)  AliquotID     aliquots
 6           activome                       Activome Features  AliquotID     aliquots
 10    plato_hexosesP                       Hexoses Phosphate  AliquotID     aliquots
 11         lipids_AG                               Lipids AG  AliquotID     aliquots
 12         AminoAcid                             Amino Acids  AliquotID     aliquots
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="7:2">
+<input name="__tabbed_7" type="radio" id="__tabbed_7_1" checked="checked" /><label for="__tabbed_7_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># getMergedDataset : </span>
+<span class="c1">#    Returns the merged data subset by going back up the linking chain of the </span>
+<span class="c1">#       data subsets i.e. with which each of them was obtained.</span>
+<span class="c1">#    Method : Performs a &#39;Rigth Join&#39; between the different tables (data subsets)</span>
+<span class="n">getMergedDataset</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">subset</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="n">M</span> <span class="o">&lt;-</span> <span class="kc">NULL</span>
+   <span class="n">s</span> <span class="o">&lt;-</span> <span class="n">subset</span>
+   <span class="nf">while</span><span class="p">(</span> <span class="nf">sum</span><span class="p">(</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">s</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+      <span class="nf">if </span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span> <span class="nf">cat </span><span class="p">(</span><span class="s">&quot;data subset &quot;</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+      <span class="c1"># index for subset s</span>
+      <span class="n">i1</span> <span class="o">&lt;-</span> <span class="nf">which</span><span class="p">(</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">s</span><span class="p">)</span>
+      <span class="c1"># get metadata from subset s</span>
+      <span class="n">m1</span> <span class="o">&lt;-</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources[i1</span><span class="p">,</span> <span class="n">]</span>
+      <span class="c1"># Read data for subset s</span>
+      <span class="n">M1</span> <span class="o">&lt;-</span> <span class="nf">read.table</span><span class="p">(</span><span class="nf">url</span><span class="p">(</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="s">&quot;path&quot;</span> <span class="n">]</span><span class="o">$</span><span class="n">path[i1]</span><span class="p">),</span> 
+                <span class="n">header</span><span class="o">=</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">header[i1]</span><span class="p">,</span> 
+                <span class="n">sep</span><span class="o">=</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">delimiter[i1]</span> <span class="p">)</span>
+      <span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">M</span><span class="p">))</span> <span class="p">{</span>
+          <span class="c1"># Merge the subset s - Right Join</span>
+          <span class="n">M</span> <span class="o">&lt;-</span> <span class="nf">merge</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">m1</span><span class="o">$</span><span class="n">identifier</span><span class="p">,</span> <span class="n">all.y</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
+      <span class="p">}</span> <span class="n">else</span> <span class="p">{</span>
+          <span class="n">M</span> <span class="o">&lt;-</span> <span class="n">M1</span>
+      <span class="p">}</span>
+      <span class="c1"># the data subset from which it was obtained.</span>
+      <span class="n">s</span> <span class="o">&lt;-</span> <span class="n">m1</span><span class="o">$</span><span class="n">obtainedFrom</span>
+      <span class="c1"># End of the string ?</span>
+      <span class="nf">if </span><span class="p">(</span><span class="nf">is.na</span><span class="p">(</span><span class="n">s</span><span class="p">))</span> <span class="n">break</span>
+   <span class="p">}</span>
+   <span class="nf">unique</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># Merge the &#39;plants&#39;, &#39;samples&#39;, &#39;aliquots&#39; and &#39;activome&#39; data subsets </span>
+<span class="n">M</span> <span class="o">&lt;-</span> <span class="nf">getMergedDataset</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="s">&#39;activome&#39;</span><span class="p">,</span> <span class="n">true</span><span class="p">)</span>
+<span class="nf">dim</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+
+<span class="nf">colnames</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
+</code></pre></div></div>
+<input name="__tabbed_7" type="radio" id="__tabbed_7_2" /><label for="__tabbed_7_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>data subset  activome 
+data subset  aliquots 
+data subset  samples 
+data subset  plants 
+
+[1] 1272   55
+
+ [1] &quot;PlantID&quot;         &quot;Rank&quot;            &quot;PlantNum&quot;        &quot;Treatment&quot;       &quot;SampleID&quot;       
+ [6] &quot;Truss&quot;           &quot;DevStage&quot;        &quot;FruitAge&quot;        &quot;HarvestDate&quot;     &quot;HarvestHour&quot;    
+[11] &quot;FruitPosition&quot;   &quot;FruitDiameter&quot;   &quot;FruitHeight&quot;     &quot;FruitFW&quot;         &quot;FruitDW&quot;        
+[16] &quot;DW&quot;              &quot;AliquotID&quot;       &quot;PGM&quot;             &quot;cFBPase&quot;         &quot;PyrK&quot;           
+[21] &quot;CitS&quot;            &quot;PFP&quot;             &quot;Aconitase&quot;       &quot;PFK&quot;             &quot;FruK&quot;           
+[26] &quot;pFBPase&quot;         &quot;GluK&quot;            &quot;NAD_ISODH&quot;       &quot;Enolase&quot;         &quot;NADP_ISODH&quot;     
+[31] &quot;PEPC&quot;            &quot;Aldolase&quot;        &quot;Succ_CoA_ligase&quot; &quot;NAD_MalDH&quot;       &quot;AlaAT&quot;          
+[36] &quot;Fumarase&quot;        &quot;AspAT&quot;           &quot;NADP_GluDH&quot;      &quot;NAD_GAPDH&quot;       &quot;NADP_GAPDH&quot;     
+[41] &quot;NAD_GluDH&quot;       &quot;TPI&quot;             &quot;PGK&quot;             &quot;Neutral_Inv&quot;     &quot;Acid_Inv&quot;       
+[46] &quot;G6PDH&quot;           &quot;UGPase&quot;          &quot;SuSy&quot;            &quot;NAD_ME&quot;          &quot;ShiDH&quot;          
+[51] &quot;NADP_ME&quot;         &quot;PGI&quot;             &quot;StarchS&quot;         &quot;AGPase&quot;          &quot;SPS&quot;            
 </code></pre></div></div>
 </div>
                 

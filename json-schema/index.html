@@ -293,6 +293,7 @@
 </ul>
 <hr />
 <h3 id="example-of-a-session-under-r-using-a-data-package">Example of a session under R using a data package<a class="headerlink" href="#example-of-a-session-under-r-using-a-data-package" title="Permanent link">#</a></h3>
+<p>In this example, the datapackage is directly generated from an <a href="https://pmb-bordeaux.fr/dataexplorer/?ds=frim1">ODAM repository</a>. But it is also possible to retrieve it from a <a href="https://dataverse.org/">Dataverse</a> repository from a keyword. Cf <a href="../dataverse/">Example</a></p>
 <p><strong> json_validate: Validate a json file </strong></p>
 <ul>
 <li><a href="https://rdrr.io/cran/jsonvalidate/man/json_validate.html" target="_blank">https://rdrr.io/cran/jsonvalidate/man/json_validate.html</a></li>
@@ -320,10 +321,10 @@
 <span class="c1">#   for data files (see below)</span>
 <span class="n">response</span> <span class="o">&lt;-</span> <span class="nf">GET</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&#39;%s/getdata/json/%s/datapackage?links=1&#39;</span><span class="p">,</span> <span class="n">odam_url</span><span class="p">,</span> <span class="n">dataset</span><span class="p">),</span> 
                  <span class="nf">config</span><span class="p">(</span><span class="n">sslversion</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="n">ssl_verifypeer</span><span class="o">=</span><span class="m">1</span><span class="p">))</span>
-<span class="n">json</span> <span class="o">&lt;-</span> <span class="nf">rawToChar</span><span class="p">(</span><span class="n">response</span><span class="o">$</span><span class="n">content</span><span class="p">)</span>
+<span class="n">dp_json</span> <span class="o">&lt;-</span> <span class="nf">rawToChar</span><span class="p">(</span><span class="n">response</span><span class="o">$</span><span class="n">content</span><span class="p">)</span>
 
 <span class="c1"># Validate the JSON against the ODAM data package schema</span>
-<span class="n">jsonvalidate</span><span class="o">::</span><span class="nf">json_validate</span><span class="p">(</span><span class="n">json</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
+<span class="n">jsonvalidate</span><span class="o">::</span><span class="nf">json_validate</span><span class="p">(</span><span class="n">dp_json</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
 </code></pre></div></div>
 <input name="__tabbed_1" type="radio" id="__tabbed_1_2" /><label for="__tabbed_1_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>[1] TRUE
 </code></pre></div></div>
@@ -331,7 +332,7 @@
 <hr />
 <div class="tabbed-set" data-tabs="2:2">
 <input name="__tabbed_2" type="radio" id="__tabbed_2_1" checked="checked" /><label for="__tabbed_2_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Parse the JSON object to a data.frame</span>
-<span class="n">metadata</span> <span class="o">&lt;-</span> <span class="nf">fromJSON</span><span class="p">(</span><span class="n">json</span><span class="p">)</span>
+<span class="n">metadata</span> <span class="o">&lt;-</span> <span class="nf">fromJSON</span><span class="p">(</span><span class="n">dp_json</span><span class="p">)</span>
 
 <span class="c1"># List some metadata about the dataset</span>
 <span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">,</span> <span class="s">&quot;joinkey&quot;</span><span class="p">,</span> <span class="s">&quot;path&quot;</span><span class="p">)</span> <span class="n">]</span>

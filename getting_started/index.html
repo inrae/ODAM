@@ -328,13 +328,27 @@
 <p><strong>ODAM (Open Data for Access and Mining) is an Experiment Data Table Management System (EDTMS)</strong>
 <br><br></p>
 <h3 id="background">Background<a class="headerlink" href="#background" title="Permanent link">#</a></h3>
-<p>When generating data in an experiment involving several types of data from several analytical techniques, and this for the same samples, the task of being able to easily link these different data on the basis of sample identifiers is crucial. This is because the consistency of the data must be ensured throughout the experiment, so that it becomes unnecessary for each member to conduct a laborious investigation to find out who has the correct identifiers.
-<br><br></p>
+<p>In life sciences, (and particularly in plant sciences), each time an experimental design (<a href="https://en.wikipedia.org/wiki/Design_of_experiments">DoE</a>) is implemented, we can, very schematically, represent the data flow according to 4 main steps, from raw data to publication of results.</p>
+<p><center>
+<a href="../images/figure0.png" data-lightbox="fig0"><img src="../images/figure0.png" width="600px"></a>
+<br><font size="-1"><i>Very Schematically one can represent the data flow according to 4 main steps, from raw data to publication of results.
+</i></font>
+</center><br></p>
+<dl>
+<dt>What kind of data</dt>
+<dd>From a biological point of view, the data integrating the maximum amount of relevant information are those resulting from the <a href="https://www.techopedia.com/definition/14650/data-preprocessing">pre-processing</a> of so-called <a href="https://www.techopedia.com/definition/1230/raw-data">raw data</a> (resulting from analytical techniques) and including annotations with curation then validated by one or more experts; i.e. those involving a transformation of analytical variables (peaks or resonances on spectra, locus on a DNA / RNA / Protein sequence, ...) into biological variables (metabolites, proteins, genes, ...). At this stage, because they are not synthesized, they still have all their variabilities (technological and biological replicas on all factorial levels) and therefore have more potential for reuse. Moreover, these data are not automatically reproducible (e.g. via workflows) because they require human expertise (i.e. know-how). This is why <strong>we have focused our data management on these experimental data tables</strong>.</dd>
+<dt>Data handling</dt>
+<dd>When generating data in an experiment involving several types of data from several analytical techniques, and this for the same samples, the task of being able to easily link these different data on the basis of sample identifiers is crucial. This is because the consistency of the data must be ensured throughout the experiment, so that it becomes unnecessary for each member to conduct a laborious investigation to find out who has the correct identifiers.
+<br><br></dd>
+</dl>
 <p><center>
 <a href="../images/figure1.png" data-lightbox="fig1"><img src="../images/figure1.png" width="600px"></a>
 </center><br><br></p>
-<p>Each time we plan to share data coming from a common experimental design, the classical challenges for fast using data by every partner are data storage and data access. We propose an approach for sharing project data all along its development phase, from the setup of the experimental schema up to the data acquisition from the various analyzes of samples, so that all data is readily available as soon as they are generated. 
-<br><br></p>
+<dl>
+<dt>Data sharing</dt>
+<dd>Each time we plan to share data coming from a common experimental design, the classical challenges for fast using data by every partner are data storage and data access. We propose an approach for sharing project data all along its development phase, from the setup of the experimental schema up to the data acquisition from the various analyzes of samples, so that all data is readily available as soon as they are generated. 
+<br><br></dd>
+</dl>
 <h3 id="proposed-solution">Proposed solution<a class="headerlink" href="#proposed-solution" title="Permanent link">#</a></h3>
 <p>ODAM software is designed to manage experimental data tables in a quick and easy way for users. There is no need to develop a complex data model. Just complete the data with some structural metadata. These structural metadata will be used first to make full use of the data as soon as they are produced and formatted and then to annotate the dataset for later dissemination, either to project partners or more widely.
 <br><br>
@@ -347,17 +361,21 @@ The central idea which has been the founding idea of ODAM, is that data producer
 <br><br></p>
 <p>ODAM proposes to meet certain needs typically encountered during the implementation of an experimental design in life science including several different analyses of the same sample. </p>
 <dl>
-<dt>1 - <strong>Data collecting and preparation</strong></dt>
+<dt><strong>Data collecting and preparation</strong></dt>
 <dd>The formatting of all the data and matching the data from the different analyses with their experimental context can be a long step.   Tasks such as collecting and preparing data in order to combine several data sources require a lot of long, repetitive and tedious manipulations. Similarly, when modeling, subsets must be selected and then many scenarios with different parameters must be tested. </dd>
-<dt>2 - <strong>Data sharing</strong></dt>
+<dt><strong>Data sharing</strong></dt>
 <dd>Enabling centralized management of identifiers (e.g. plants, crops, samples, etc.) so that they are unique and shared by all project members. Indeed, as each biological sample is most often aliquoted and then sent for analysis by different techniques, the data returned in tabular form must be able to be linked to the other data according to the identifiers of the samples
 Giving access to data for rapid use by each project member and this throughout the development phase, from the implementation of the experimental design to the acquisition of data from the various sample analyses, so that all data are readily available as soon as they are generated.</dd>
-<dt>3 - <strong>Data publishing</strong></dt>
-<dd>To be able to publish one's data without a colossal effort of formatting, and without the need for data archaeology.
-To be able to publish one's data according to the <a href="https://www.force11.org/group/fairgroup/fairprinciples">FAIR principles</a>, at least the essentials
-To facilitate the reuse of data by providing structural metadata, thus avoiding that data consumers spend a disproportionate amount of time trying to understand the digital resources they need and devising specific ways to combine them.
+<dt><strong>Data publishing</strong></dt>
+<dd>
+<ul>
+<li>To be able to publish one's data without a colossal effort of formatting, and without the need for data archaeology.</li>
+<li>To be able to publish one's data according to the <a href="https://www.force11.org/group/fairgroup/fairprinciples">FAIR principles</a>, at least the essentials.</li>
+<li>To facilitate the reuse of data by providing structural metadata, thus avoiding that data consumers spend a disproportionate amount of time trying to understand the digital resources they need and devising specific ways to combine them.
 <!-- X -->
-<br><br></dd>
+<br><br></li>
+</ul>
+</dd>
 </dl>
 <p><strong>ODAM  sofware suite</strong> allows experimental data tables to be widely accessible and fully reusable and this with minimal effort on the part of the data provider.</p>
 <ul>
@@ -372,7 +390,9 @@ To facilitate the reuse of data by providing structural metadata, thus avoiding 
 <li>Avoid the implementation of a complex data management system (requiring a data model) given that many changes can occur during the project. (possibility of new analysis, new measures or give up some others,  ...)</li>
 <li>Facilitates the subsequent publication of data: either the data can serve to fill in an existing database or the data can be broadcast through a web-service approach with the associated metadata.</li>
 </ul>
+<hr />
 <p>For this work, we made the choice to keep the good old way of scientist to use worksheets, thus using the same tool for both data files and metadata definition files.</p>
+<hr />
 <p><br>
 The ODAM software can be deployed at multiple scales (local, intranet, internet), depending on the need and the target community. 
 <br><br>

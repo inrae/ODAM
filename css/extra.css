@@ -30,4 +30,9 @@ a:focus {
   color: #e07f25!important;
 }
 
-
+p.plegend {
+    line-height: 1.2; 
+    font-size: smaller;
+    font-style: italic;
+    margin: 0 0 0 0;
+}

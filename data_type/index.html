@@ -281,13 +281,15 @@
 <p>Whatever the kind of experiment, this assumes a design of experiment (<a href="https://en.wikipedia.org/wiki/Design_of_experiments">DoE</a>) involving individuals, samples or whatever things, as the main objects of study and producing several <a href="https://www.google.com/search?safe=strict&amp;q=experimental+data+table&amp;tbm=isch&amp;source=univ&amp;sa=X&amp;biw=1549&amp;bih=768">experimental data tables</a>. This also assumes the observation of dependent variables resulting from effects of some controlled independent variables (<strong>factors</strong>). Moreover, the objects of study usually have an <strong>identifier</strong> for each of them, and the variables can be <strong>quantitative</strong> or <strong>qualitative</strong>.</p>
 <p><center>
 <a href="../images/figure5.png" data-lightbox="fig5"><img src="../images/figure5.png" width="600px"></a>
-<br><font size="-1"><i>Example of an experiment data table viewed according to the repartition by category as introduced in the text</i></font>
+<p class="plegend">Example of an experiment data table viewed according to the repartition by category as introduced in the text</p>
 </center><br><br></p>
+<!-- font size="-1"></font-->
+
 <h4 id="data-management-promote-good-practices">Data management : promote good practices<a class="headerlink" href="#data-management-promote-good-practices" title="Permanent link">#</a></h4>
 <p>First and foremost, it is important to have well-organized data. The files generated during data collection have to be organized according to the entity-attribute relational model. Indeed, each entity corresponds to a type of collected data (samples, compounds, ...) for which is associated a set of attributes, i.e. observed or measured variables. Well organized data means that each variable forms a column, each observation forms a line, and each type of "unit observational" forms a table, i.e a file. Then, a link is established for each subset with the subset from which it was obtained, so that the links can be interpreted as "obtained from", since each column of each subset of data must be associated with a type of experimental data (called a category), especially those corresponding to identifiers that the links are based on.</p>
 <p><center>
 <a href="../images/figure6.png" data-lightbox="fig6"><img src="../images/figure6.png" width="600px"></a>
-<br><font size="-1"><i>A link is established for each subset with the subset from which it was obtained, so that the links can be interpreted as "obtained from", since each column of each subset of data must be associated with a type of experimental data (called a category), especially those corresponding to identifiers that the links are based on.</i></font>
+<p class="plegend">A link is established for each subset with the subset from which it was obtained, so that the links can be interpreted as "obtained from", since each column of each subset of data must be associated with a type of experimental data (called a category), especially those corresponding to identifiers that the links are based on.</p>
 </center><br></p>
 <p>Another good practice is to promote non-proprietary formats such as <a href="https://en.wikipedia.org/wiki/Tab-separated_values">TSV</a>, which is a necessary and indispensable step towards "open linked data" (<a href="https://5stardata.info/en">5 gold stars</a> principle). So an ODAM dataset is a bundle that contains a set of TSV files. The TSV files are simple tables containing the data of the dataset.</p>
 <p>All steps concerning the collection and preparation of data have been published and are available online at <a href="https://www.protocols.io/">protocols.io</a></p>
@@ -298,7 +300,8 @@
 </dl>
 <hr />
 <p>The purpose of this protocol is to describe all the steps involved in collecting, preparing and annotating the data from an experiment associated with an experimental design (DoE) that will then allow the user to benefit from the services offered by ODAM. The overall approach is based on good data management practices concerning data structuring and the description of structural metadata.</p>
-<p>Indeed, ODAM allows to put metadata in depth, i.e. at the level of the data itself (i.e. metadata at column-level such as factors, variables,...) and not only as a "hat" on the data set. Thus, having the actual data elements also machine-readable makes the dataset of a higher level of interoperability and makes functional interlinking and analysis in broader context much easier.</p>
+<p>Indeed, ODAM allows to put metadata in depth, i.e. at the level of the data itself (i.e. metadata at column-level such as factors, variables,...) and not only as a "hat" on the data set. Thus, having unambiguous (standard) definitions of all internal elements (e.g. column definitions, units of measurement), makes the dataset human and machine readable i.e. with a higher level of interoperability and makes functional interlinking and analysis in broader context much easier.
+<br><br></p>
                 
                   
                 

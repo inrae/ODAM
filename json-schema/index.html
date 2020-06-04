@@ -244,6 +244,13 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#example-of-a-session-under-python-using-a-data-package" class="md-nav__link">
+    Example of a session under Python using a data package
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -437,12 +444,11 @@
        <span class="n">M1</span> <span class="o">&lt;-</span> <span class="nf">read.table</span><span class="p">(</span><span class="nf">url</span><span class="p">(</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="s">&quot;path&quot;</span> <span class="n">]</span><span class="o">$</span><span class="n">path[i1]</span><span class="p">),</span> 
                         <span class="n">header</span><span class="o">=</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">header[i1]</span><span class="p">,</span> 
                         <span class="n">sep</span><span class="o">=</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">delimiter[i1]</span> <span class="p">)</span>
-       <span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">M</span><span class="p">))</span> <span class="p">{</span>
+       <span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
          <span class="c1"># Merge the subset s - Right Join</span>
            <span class="n">M</span> <span class="o">&lt;-</span> <span class="nf">merge</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">m1</span><span class="o">$</span><span class="n">identifier</span><span class="p">,</span> <span class="n">all.y</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
-       <span class="p">}</span> <span class="n">else</span> <span class="p">{</span>
+       <span class="n">else</span>
            <span class="n">M</span> <span class="o">&lt;-</span> <span class="n">M1</span>
-       <span class="p">}</span>
      <span class="c1"># the data subset from which it was obtained.</span>
        <span class="n">s</span> <span class="o">&lt;-</span> <span class="n">m1</span><span class="o">$</span><span class="n">obtainedFrom</span>
      <span class="c1"># End of the chain ?</span>
@@ -452,9 +458,10 @@
 <span class="p">}</span>
 
 <span class="c1"># Merge the &#39;plants&#39;, &#39;samples&#39;, &#39;aliquots&#39; and &#39;activome&#39; data subsets </span>
-<span class="n">M</span> <span class="o">&lt;-</span> <span class="nf">getMergedDataset</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="s">&#39;activome&#39;</span><span class="p">,</span> <span class="n">true</span><span class="p">)</span>
+<span class="n">M</span> <span class="o">&lt;-</span> <span class="nf">getMergedDataset</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="s">&#39;activome&#39;</span><span class="p">,</span> <span class="kc">TRUE</span><span class="p">)</span>
 <span class="nf">dim</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
 
+<span class="c1"># Display column names of the merged data subset</span>
 <span class="nf">colnames</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
 </code></pre></div></div>
 <input name="__tabbed_6" type="radio" id="__tabbed_6_2" /><label for="__tabbed_6_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="n">data</span> <span class="n">subset</span>  <span class="n">activome</span> 
@@ -475,6 +482,156 @@
 <span class="p">[</span><span class="mi">41</span><span class="p">]</span> <span class="s">&quot;NAD_GluDH&quot;</span>       <span class="s">&quot;TPI&quot;</span>             <span class="s">&quot;PGK&quot;</span>             <span class="s">&quot;Neutral_Inv&quot;</span>     <span class="s">&quot;Acid_Inv&quot;</span>       
 <span class="p">[</span><span class="mi">46</span><span class="p">]</span> <span class="s">&quot;G6PDH&quot;</span>           <span class="s">&quot;UGPase&quot;</span>          <span class="s">&quot;SuSy&quot;</span>            <span class="s">&quot;NAD_ME&quot;</span>          <span class="s">&quot;ShiDH&quot;</span>          
 <span class="p">[</span><span class="mi">51</span><span class="p">]</span> <span class="s">&quot;NADP_ME&quot;</span>         <span class="s">&quot;PGI&quot;</span>             <span class="s">&quot;StarchS&quot;</span>         <span class="s">&quot;AGPase&quot;</span>          <span class="s">&quot;SPS&quot;</span>            
+</code></pre></div></div>
+</div>
+<hr />
+<h3 id="example-of-a-session-under-python-using-a-data-package">Example of a session under Python using a data package<a class="headerlink" href="#example-of-a-session-under-python-using-a-data-package" title="Permanent link">#</a></h3>
+<p><strong> frictionlessdata/datapackage-py </strong></p>
+<ul>
+<li><a href="https://github.com/frictionlessdata/datapackage-py" target="_blank">https://github.com/frictionlessdata/datapackage-py</a></li>
+</ul>
+<div class="tabbed-set" data-tabs="7:2">
+<input name="__tabbed_7" type="radio" id="__tabbed_7_1" checked="checked" /><label for="__tabbed_7_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span> 
+<span class="kn">from</span> <span class="nn">datapackage</span> <span class="kn">import</span> <span class="n">Package</span><span class="p">,</span> <span class="n">Resource</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://pmb-bordeaux.fr/getdata/json/frim1/datapackage?links=1&#39;</span>
+<span class="n">dp</span> <span class="o">=</span> <span class="n">Package</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+
+<span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span>
+</code></pre></div></div>
+<input name="__tabbed_7" type="radio" id="__tabbed_7_2" /><label for="__tabbed_7_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>[&#39;plants&#39;,
+ &#39;samples&#39;,
+ &#39;aliquots&#39;,
+ &#39;cellwall_metabo&#39;,
+ &#39;cellwall_metaboFW&#39;,
+ &#39;activome&#39;,
+ &#39;pools&#39;,
+ &#39;qMS_metabo&#39;,
+ &#39;qNMR_metabo&#39;,
+ &#39;plato_hexosesP&#39;,
+ &#39;lipids_AG&#39;,
+ &#39;AminoAcid&#39;]
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="8:2">
+<input name="__tabbed_8" type="radio" id="__tabbed_8_1" checked="checked" /><label for="__tabbed_8_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">keyed</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+
+<span class="c1"># Print the data.frame</span>
+<span class="n">df</span>
+</code></pre></div></div>
+<input name="__tabbed_8" type="radio" id="__tabbed_8_2" /><label for="__tabbed_8_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>    PlantID Rank PlantNum    Treatment
+0        A1    A        1      Control
+1        A2    A        2      Control
+2        A3    A        3      Control
+3        A4    A        4      Control
+4        A5    A        5      Control
+..      ...  ...      ...          ...
+547     G65    G      548  WaterStress
+548     G66    G      549  WaterStress
+549     G67    G      550  WaterStress
+550     G68    G      551  WaterStress
+551     G69    G      552  WaterStress
+
+[552 rows x 4 columns]
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="9:2">
+<input name="__tabbed_9" type="radio" id="__tabbed_9_1" checked="checked" /><label for="__tabbed_9_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the headers of the first resource (id=0)</span>
+<span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_Resource__table_options</span>
+</code></pre></div></div>
+<input name="__tabbed_9" type="radio" id="__tabbed_9_2" /><label for="__tabbed_9_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>{&#39;scheme&#39;: None,
+ &#39;format&#39;: &#39;csv&#39;,
+ &#39;encoding&#39;: &#39;utf-8&#39;,
+ &#39;pick_fields&#39;: None,
+ &#39;skip_fields&#39;: None,
+ &#39;pick_rows&#39;: [],
+ &#39;skip_rows&#39;: [],
+ &#39;delimiter&#39;: &#39;\t&#39;,
+ &#39;doublequote&#39;: False,
+ &#39;lineterminator&#39;: &#39;\n&#39;,
+ &#39;skipinitialspace&#39;: True}
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="10:2">
+<input name="__tabbed_10" type="radio" id="__tabbed_10_1" checked="checked" /><label for="__tabbed_10_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the resource descriptor of the &#39;samples&#39; (id=1)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">_Resource__current_descriptor</span>
+
+<span class="c1"># List some attributes</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="s1">&#39;profile&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;identifier&#39;</span><span class="p">,</span> <span class="s1">&#39;obtainedFrom&#39;</span><span class="p">,</span> <span class="s1">&#39;joinkey&#39;</span><span class="p">]:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">res</span><span class="p">[</span><span class="n">x</span><span class="p">]))</span>
+</code></pre></div></div>
+<input name="__tabbed_10" type="radio" id="__tabbed_10_2" /><label for="__tabbed_10_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>path: https://pmb-bordeaux.fr/getdata/tsv/frim1/samples
+profile: https://inrae.github.io/ODAM/json-schema/odam-data-resource.json
+name: samples
+title: Sample features
+identifier: SampleID
+obtainedFrom: plants
+joinkey: PlantID
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="11:2">
+<input name="__tabbed_11" type="radio" id="__tabbed_11_1" checked="checked" /><label for="__tabbed_11_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the categories of the &#39;samples&#39;</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;schema&#39;</span><span class="p">][</span><span class="s1">&#39;categories&#39;</span><span class="p">])</span>
+</code></pre></div></div>
+<input name="__tabbed_11" type="radio" id="__tabbed_11_2" /><label for="__tabbed_11_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>           name                                             fields
+0    identifier                                         [SampleID]
+1        factor                               [DevStage, FruitAge]
+2  quantitative  [FruitDiameter, FruitHeight, FruitFW, FruitDW,...
+3   qualitative                                            [Truss]
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="12:2">
+<input name="__tabbed_12" type="radio" id="__tabbed_12_1" checked="checked" /><label for="__tabbed_12_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the data subsets that were obtained from the &#39;samples&#39;</span>
+<span class="k">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;schema&#39;</span><span class="p">][</span><span class="s1">&#39;foreignKey&#39;</span><span class="p">]))</span>
+
+<span class="n">the_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;schema&#39;</span><span class="p">][</span><span class="s1">&#39;foreignKey&#39;</span><span class="p">]:</span>
+    <span class="n">the_list</span> <span class="o">+=</span> <span class="p">[</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">][</span><span class="s1">&#39;resource&#39;</span><span class="p">]</span> <span class="p">]</span>
+
+<span class="n">the_list</span>
+</code></pre></div></div>
+<input name="__tabbed_12" type="radio" id="__tabbed_12_2" /><label for="__tabbed_12_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>     fields                                       reference
+0  SampleID  {&#39;resource&#39;: &#39;aliquots&#39;, &#39;fields&#39;: &#39;SampleID&#39;}
+1  SampleID     {&#39;resource&#39;: &#39;pools&#39;, &#39;fields&#39;: &#39;SampleID&#39;}
+
+[&#39;aliquots&#39;, &#39;pools&#39;]
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="13:2">
+<input name="__tabbed_13" type="radio" id="__tabbed_13_1" checked="checked" /><label for="__tabbed_13_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Merge the &#39;samples&#39; subset with the data subset </span>
+<span class="c1">#       from which the &#39;samples&#39; subset was obtained </span>
+<span class="nb">id</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">_Resource__current_descriptor</span>
+<span class="n">id_from</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;obtainedFrom&#39;</span><span class="p">])</span>
+<span class="n">df_from</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="n">id_from</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">keyed</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+<span class="n">df</span>      <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">keyed</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+
+<span class="c1"># Right join</span>
+<span class="n">merged_inner</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="n">df_from</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">how</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> 
+                        <span class="n">left_on</span><span class="o">=</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;joinkey&#39;</span><span class="p">],</span> <span class="n">right_on</span><span class="o">=</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;joinkey&#39;</span><span class="p">])</span>
+<span class="n">merged_inner</span>
+</code></pre></div></div>
+<input name="__tabbed_13" type="radio" id="__tabbed_13_2" /><label for="__tabbed_13_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>     PlantID Rank PlantNum    Treatment  ... FruitHeight FruitFW   FruitDW    DW
+0         A1    A        1      Control  ...       10.42    0.81  0.098091  None
+1         A1    A        1      Control  ...       31.77   21.43  1.470098  None
+2         A1    A        1      Control  ...       46.85   64.05   4.18887  None
+3         A1    A        1      Control  ...       43.35   66.64  3.338664  None
+4         A2    A        2      Control  ...       44.93   66.98  3.355698  None
+     ...  ...      ...          ...  ...         ...     ...       ...   ...
+1282     G67    G      550  WaterStress  ...       45.72   70.23      None  None
+1283     G68    G      551  WaterStress  ...       36.56    38.6      None  None
+1284     G69    G      552  WaterStress  ...        39.1   45.47   2.63726  None
+1285     G69    G      552  WaterStress  ...       46.59   65.73  3.227343  None
+1286     G69    G      552  WaterStress  ...        40.4   58.51  4.908989  None
+
+[1287 rows x 16 columns]
 </code></pre></div></div>
 </div>
                 

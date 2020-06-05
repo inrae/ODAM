@@ -19,7 +19,7 @@
     
     
       
-        <title>Web API</title>
+        <title>FAIR_on_frim</title>
       
     
     
@@ -89,7 +89,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Web API
+              FAIR_on_frim
             
           </span>
         </div>
@@ -231,15 +231,22 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#web-api" class="md-nav__link">
-    Web API
+  <a href="#fair-grids-applied-on-frim-dataset" class="md-nav__link">
+    FAIR grids applied on FRIM dataset
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#very-detailed-example-of-api-querying" class="md-nav__link">
-    Very detailed example of API querying
+  <a href="#results" class="md-nav__link">
+    Results
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    References
   </a>
   
 </li>
@@ -262,111 +269,44 @@
                 
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
 <hr />
-<h3 id="web-api">Web API<a class="headerlink" href="#web-api" title="Permanent link">&para;</a></h3>
-<p>Based on REST services using a Resource Naming convention: an understandable resource naming leading to an easily leveraged Web service API (Identification/querying of resources) and easy to implement within R.
-<br><br>
-<strong>Output formats</strong>: TSV, JSON and XML.
-<br><br>
-Even if Web API outputs are not dedicated to human readers (script languages as R are the typical clients), XML outputs can be human readable in a web browser, made possible by using a <a href="https://en.wikipedia.org/wiki/XSLT" target="_blank">XSL transformation</a> mechanism which converts the XML outputs to HTML format.</p>
+<h3 id="fair-grids-applied-on-frim-dataset">FAIR grids applied on FRIM dataset<a class="headerlink" href="#fair-grids-applied-on-frim-dataset" title="Permanent link">&para;</a></h3>
+<dl>
+<dt><br></dt>
+<dt>Three FAIR grids avery different from each other.</dt>
+<dt><br></dt>
+<dt>1- <a href="https://confluence.csiro.au/display/OZNOME/Oznome+5-star+Processes" target="_blank">5 ★ Data Rating Tool</a></dt>
+<dd>From <a href="https://confluence.csiro.au/display/OZNOME/About+OzNome">OZONOME</a>,  it aims to carry out an evaluation based on the FAIR principles as defined by Willkinson et al<sup>(1)</sup>. The main output is a global rating, indicating the global FAIRness of the dataset. It provides implementations of the <a href="https://www.force11.org/group/fairgroup/fairprinciples">FORCE 11 FAIR data principles</a>.</dd>
+<dt>2 - <a href="https://www.rd-alliance.org/groups/fair-data-maturity-model-wg" target="_blank">FDMM  (FAIR Data Maturity Model)</a><sup>(2)</sup></dt>
+<dd>FDMM is a recognized and endorsed working group within RDA (Research Data Alliance). They produce a document that describes a maturity model for FAIR assessment with assessment indicators, priorities and evaluation methods, useful for the normalisation of assessment approaches to enable comparison of their results.</dd>
+<dt>3 - <a href="https://www.rd-alliance.org/groups/sharing-rewards-and-credit-sharc-ig" target="_blank">SHARC  (Sharing Rewards and Credit)</a><sup>(3)</sup></dt>
+<dd>SHARC is a recognized and endorsed working group within RDA (Research Data Alliance). They produce a document that allows assessing FAIRness of projects and related human processes by either external evaluators or the researchers themselves, implying to implement simple FAIRness assessment in various communities and identify procedures and training that must be deployed and adapted to their practices and level of understanding.</dd>
+</dl>
+<h3 id="results">Results<a class="headerlink" href="#results" title="Permanent link">&para;</a></h3>
+<dl>
+<dt>5 ★ Data Rating Tool</dt>
+<dd><a href="https://oznome.csiro.au/5star/?view=5ec2a9654d0983adde57a21e" target="_blank">https://oznome.csiro.au/5star/?view=5ec2a9654d0983adde57a21e</a></dd>
+<dt>FDMM  (FAIR Data Maturity Model)</dt>
+<dd><a href="https://drive.google.com/file/d/1a520Cbu8bryEeZIPI3h1l6zkaO7MZ39-/view?usp=sharing&quot;" target="_blank">https://drive.google.com/file/d/1a520Cbu8bryEeZIPI3h1l6zkaO7MZ39-/view?usp=sharing"</a></dd>
+<dt>SHARC  (Sharing Rewards and Credit)</dt>
+<dd><a href="https://drive.google.com/file/d/1uif-jy9QBno_WPnpGL14LFpDzL366tMH/view?usp=sharing" target="_blank">https://drive.google.com/file/d/1uif-jy9QBno_WPnpGL14LFpDzL366tMH/view?usp=sharing</a></dd>
+</dl>
+<p><br><br>
+<center>
+<a href="../../images/fair5.png" data-lightbox="fair5"><img src="../../images/fair5.png" width="600px"></a>
+<br><font size="-1"><i>Synthesis of FAIR evaluation grids applied to the Frim dataset</i></font>
+</center><br>
+The Fair Data Maturity Model (FDMM) document (A) describes a maturity model for the FAIR assessment with indicators, priorities and assessment methods, which are useful for standardizing assessment approaches in order to allow comparison of their results. Whereas the FAIR SHARC (SHAring Rewards and Credit) (B) document allows the fairness of projects and associated human processes to be assessed, either by external evaluators or by the researchers themselves. Therefore, these grids cannot be compared with each other, but rather complement each other.
+<br><br></p>
 <p><center>
-<a href="../images/web1.png" data-lightbox="web1"><img src="../images/web1.png" width="600px"></a>
-</center><br><br></p>
-<ul>
-<li>Using the two metadata files, it is possible to build a tree structure from which the data files can be queried to extract a subset. The tree structure is built on the Entity-Attribute-Value scheme.</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Description</th>
-<th>Examples</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>&lt;data format&gt;</strong></td>
-<td>Format of the retrieved data; possible values are: 'xml', ‘json’ or ‘tsv'</td>
-<td>tsv</td>
-</tr>
-<tr>
-<td><strong>&lt;dataset name&gt;</strong></td>
-<td>Short name (tag) of your dataset</td>
-<td>frim1</td>
-</tr>
-<tr>
-<td><strong>&lt;subset&gt;</strong></td>
-<td>Short name of a data subset</td>
-<td>samples</td>
-</tr>
-<tr>
-<td><strong>&lt;entry&gt;</strong></td>
-<td>Name of an attribute entry (defined by the user in the a_attribute file (column ‘entry’)</td>
-<td>sampleid</td>
-</tr>
-<tr>
-<td><strong>&lt;category&gt;</strong></td>
-<td>Name of the attribute category; (assigned by the user in the a_attribute file (column ‘category’). Possible values are:  ‘identifier’, ‘factor’, ‘qualitative’, ‘quantitative’</td>
-<td>quantitative</td>
-</tr>
-<tr>
-<td><strong>(&lt;subset&gt;)</strong></td>
-<td>Set of data subsets by merging all the subsets with lower rank than the specified subset and following the pathway defined by the "is_part_of" links.</td>
-<td>(samples) &lt;=&gt; plants + samples</td>
-</tr>
-<tr>
-<td><strong>&lt;value&gt;</strong></td>
-<td>Exact value of the desired entry or category</td>
-<td>1 (for subset) or <br> Factor (for category)</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>API Documentation on SwaggerHub : <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.0.1-oas3/" target="_blank">INRA-PMB/ODAM/1.0.1-oas3</a></li>
-</ul>
-<p><center>
-<a href="../images/web2.png" data-lightbox="web2"><img src="../images/web2.png" width="600px"></a>
+<a href="../../images/fair6.png" data-lightbox="fair6"><img src="../../images/fair6.png" width="600px"></a>
+<br><font size="-1"><i>Summary table of essential FAIR criteria based on force11.org, applied to the Frim dataset</i></font>
 </center><br></p>
-<h2 id="very-detailed-example-of-api-querying">Very detailed example of API querying<a class="headerlink" href="#very-detailed-example-of-api-querying" title="Permanent link">&para;</a></h2>
-<p>Since all the experimental data tables were generated as part of an experiment associated with a Design of Experiment (DoE), each file thus contains data acquired sequentially as the experiment progressed. There must therefore be a link between each file, i.e. information that connects them together. In most cases (if not all), this information corresponds to identifiers that make it possible to precisely reference within the experiment each of the elements belonging to the same observation entity forming a coherent observation unit. For example, each plant, each sample has its own identifier, and each of these entities corresponds to a separate data file.
-<br><br>
-The files generated during data collection have to be organized according to the entity-relationship model similar to relational database management systems (RDBMS), as shown below with the FRIM1 dataset.</p>
-<p><center>
-<a href="../images/figure40.png" data-lightbox="fig40"><img src="../images/figure40.png" width="600px"></a>
-<br><p class="plegend">Structural metadata (file s_subsets.tsv) for FRIM1 dataset</p>
-</center><br></p>
-<p>Each file (entity) corresponds to a type of collected data (samples, compounds, ...) for which is associated a set of attributes, i.e. a set of variables that may include observed or measured variables (quantitative or qualitative), controlled independent variables (factors) and obviously an identifier.
-<br><br>
-Since there is a relationship between each of the files, it is therefore possible to combine them by following the paths of their mutual links. Suppose we want to retrieve activome data (enzyme expressions) combined with NMR observed metabolite data, including experimental metadata (factors and phenotypic data), as shown below:</p>
-<p><center>
-<a href="../images/figure43.png" data-lightbox="fig43"><img src="../images/figure43.png" width="600px"></a>
-<br><p class="plegend">legend</p>
-</center><br></p>
-<p>The ODAM API offers this possibility of combining data by following relational paths, using the  '<strong>(</strong>{<em>subset</em>}<strong>)</strong>' operator in the API request. Simply specify the desired subsets separated by a comma, as shown above.  The '<strong>(</strong>{<em>subset</em>}<strong>)</strong>' operator allows you to get data subsets by merging all the subsets with lower rank than the specified subsets and following the pathway defined by the “obtainedFrom" links.</p>
-<p>Let's further assume that we only want the data for the 'Control' treatment. The ODAM API also offers the possibility of setting a selector called an 'entry' provided that such an entry has been specified for the attribute to which one wants to apply a selection, as shown below:</p>
-<p><center>
-<a href="../images/figure42.png" data-lightbox="fig42"><img src="../images/figure42.png" width="600px"></a>
-<br><p class="plegend">legend</p>
-</center><br></p>
-<p>In our case, the 'Treatment' factor has the entry (alias) 'treatment'. It is therefore possible to use it as a selector in the API request.
-Thus, our complete API request would be this one:</p>
-<p><center>
-<a href="../images/figure44.png" data-lightbox="fig44"><img src="../images/figure44.png" width="600px"></a>
-<br><p class="plegend">legend</p>
-</center><br><br></p>
-<p>To test this request by yourself, you can go to <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.0.1-oas3/" target="_blank">ODAM's Swagger interface</a> and play with the followed specific query :</p>
-<p><center>
-<a href="../images/figure45.png" data-lightbox="fig45"><img src="../images/figure45.png" width="600px"></a>
-<br><p class="plegend">legend</p>
-</center><br><br></p>
-<p>Finally, how does it work internally? How are the different subsets of data combined in practice?
-Since each data subset being a data file, and linked to one or more other data subsets by means of common identifiers, it is possible to apply a SQL query from the data files thanks to the powerful tool  <a href="http://harelba.github.io/q/" target="_blank">q - Text as Data</a> which allows to apply SQL queries directly to CSV and TSV files as shown below:</p>
-<p><center>
-<a href="../images/figure41.png" data-lightbox="fig41"><img src="../images/figure41.png" width="600px"></a>
-<br><p class="plegend">legend</p>
-</center><br><br></p>
-<p>In addition, if you want to display information about the API request, just add '/debug' at the end of the request, as shown below:
-<br>
-<a href="http://pmb-bordeaux.fr/getdata/tsv/frim1/(activome,qNMR_metabo)/treatment/Control/debug" target="_blank">http://pmb-bordeaux.fr/getdata/tsv/frim1/(activome,qNMR_metabo)/treatment/Control/debug</a></p>
+<h3 id="references">References<a class="headerlink" href="#references" title="Permanent link">&para;</a></h3>
+<ol>
+<li>Wilkinson, M., Dumontier, M., Aalbersberg, I. et al. (2016) The FAIR Guiding Principles for scientific data management and stewardship. Sci Data 3, 160018. <a href="https://doi.org/10.1038/sdata.2016.18" target="_blank">doi:10.1038/sdata.2016.18</a></li>
+<li>RDA FAIR Data Maturity Model Working Group (2020). FAIR Data Maturity Model: specification and guidelines. Research Data Alliance. <a href="https://doi.org/10.15497/RDA00045" target="_blank">DOI: 10.15497/RDA00045</a></li>
+<li>Romain David, Laurence Mabile, Alison Specht, Stryeck, Sarah, Mogens Thomsen, et al. FAIRness Literacy: the Achilles' Heel of applying FAIR Principles. 2020. <a href="https://hal.archives-ouvertes.fr/hal-02483307" target="_blank">https://hal.archives-ouvertes.fr/hal-02483307</a></li>
+</ol>
                 
                   
                 

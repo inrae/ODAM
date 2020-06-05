@@ -19,7 +19,7 @@
     
     
       
-        <title>Web API</title>
+        <title>Installation</title>
       
     
     
@@ -89,7 +89,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Web API
+              Installation
             
           </span>
         </div>
@@ -231,16 +231,62 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#web-api" class="md-nav__link">
-    Web API
+  <a href="#installation" class="md-nav__link">
+    Installation
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#local-installation-deployment-of-odam-with-full-functionality" class="md-nav__link">
+    Local installation : Deployment of ODAM with full functionality
+  </a>
+  
+    <nav class="md-nav" aria-label="Local installation : Deployment of ODAM with full functionality">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#howto" class="md-nav__link">
+    HOWTO
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#very-detailed-example-of-api-querying" class="md-nav__link">
-    Very detailed example of API querying
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#local-installation-odam-api-on-windows" class="md-nav__link">
+    Local installation : ODAM API on Windows
   </a>
+  
+    <nav class="md-nav" aria-label="Local installation : ODAM API on Windows">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#howto_1" class="md-nav__link">
+    HOWTO
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#intranetinternet-installation" class="md-nav__link">
+    Intranet/Internet installation
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -262,111 +308,88 @@
                 
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
 <hr />
-<h3 id="web-api">Web API<a class="headerlink" href="#web-api" title="Permanent link">&para;</a></h3>
-<p>Based on REST services using a Resource Naming convention: an understandable resource naming leading to an easily leveraged Web service API (Identification/querying of resources) and easy to implement within R.
+<h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
+<p>The ODAM software can be deployed at multiple scales (local, intranet, internet), depending on the need and the target community. </p>
+<hr />
+<h3 id="local-installation-deployment-of-odam-with-full-functionality">Local installation : Deployment of ODAM with full functionality<a class="headerlink" href="#local-installation-deployment-of-odam-with-full-functionality" title="Permanent link">&para;</a></h3>
+<p>This type of deployment is reserved more specifically for computers running under MS Windows 10 and Apple MacOS 10.x. 
 <br><br>
-<strong>Output formats</strong>: TSV, JSON and XML.
-<br><br>
-Even if Web API outputs are not dedicated to human readers (script languages as R are the typical clients), XML outputs can be human readable in a web browser, made possible by using a <a href="https://en.wikipedia.org/wiki/XSLT" target="_blank">XSL transformation</a> mechanism which converts the XML outputs to HTML format.</p>
+All the steps involved in the installation of the virtual machine have been published and are available online on the INRAE Data website.</p>
+<div class="admonition abstract">
+<p class="admonition-title">ODAM Virtual Disk Image (VDI) for Oracle VM VirtualBox - Zipped with 7zip.</p>
+<p><a href="https://doi.org/10.15454/C9LAEF" target="_blank">https://doi.org/10.15454/C9LAEF</a>, Portail Data INRAE, V1</p>
+</div>
+<p>The three main steps are shown below:</p>
 <p><center>
-<a href="../images/web1.png" data-lightbox="web1"><img src="../images/web1.png" width="600px"></a>
+<a href="../images/figure20.png" data-lightbox="fig20"><img src="../images/figure20.png" width="600px"></a>
+<br><p class="plegend">Overview of the ODAM software deployment on your PC (Windows 10, MacOS 10.x)</p>
 </center><br><br></p>
+<h4 id="howto">HOWTO<a class="headerlink" href="#howto" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Download the virtual machine file, to be unzipped with <a href="https://www.7-zip.org/" target="_blank">7zip</a>. Then follow the installation guide mentioned above. This requires prior installation of <a href="https://www.virtualbox.org/" target="_blank">Oracle VM VirtualBox software</a></li>
+<li><a href="../data_type">Data collection and preparation</a></li>
+<li><a href="">Using ODAM</a></li>
+</ol>
+<hr />
+<h3 id="local-installation-odam-api-on-windows">Local installation : ODAM API on Windows<a class="headerlink" href="#local-installation-odam-api-on-windows" title="Permanent link">&para;</a></h3>
+<p>Deploy the ODAM API with a very lightweight local web server for Windows.</p>
+<p>For Windows users, ODAMwebserver offers a simple, fast and efficient way to deploy the ODAM API layer locally in (almost) one click. </p>
+<div class="admonition abstract">
+<p class="admonition-title">ODAM API using Apache Web Server</p>
+<p><a href="http://pmb-bordeaux.fr/odam/ODAMwebserver/" target="_blank">http://pmb-bordeaux.fr/odam/ODAMwebserver/</a></p>
+</div>
+<p><center>
+<a href="../images/figure21.png" data-lightbox="fig21"><img src="../images/figure21.png" width="600px"></a>
+<br><p class="plegend">Overview of the ODAM API deployment (Windows 10)</p>
+</center><br><br></p>
+<h4 id="howto_1">HOWTO<a class="headerlink" href="#howto_1" title="Permanent link">&para;</a></h4>
 <ul>
-<li>Using the two metadata files, it is possible to build a tree structure from which the data files can be queried to extract a subset. The tree structure is built on the Entity-Attribute-Value scheme.</li>
+<li>
+<p>Download and Unzip <strong>ODAMwebserver.zip</strong> to the location of your choice on your hard drive</p>
+</li>
+<li>
+<p>Go to the directory <strong>usbwebserver\settings</strong>, then with the <a href="https://en.wikipedia.org/wiki/Microsoft_Notepad" target="_blank">notepad application</a> for example, edit the <strong>getdata.conf</strong> file.</p>
+</li>
+<li>In the line starting with <strong>DATAROOT</strong>, specify the full path of the root of the data directory (be careful, it is necessary to put slashes "/" and not backslashes "\")</li>
 </ul>
-<table>
-<thead>
-<tr>
-<th>Field</th>
-<th>Description</th>
-<th>Examples</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td><strong>&lt;data format&gt;</strong></td>
-<td>Format of the retrieved data; possible values are: 'xml', ‘json’ or ‘tsv'</td>
-<td>tsv</td>
-</tr>
-<tr>
-<td><strong>&lt;dataset name&gt;</strong></td>
-<td>Short name (tag) of your dataset</td>
-<td>frim1</td>
-</tr>
-<tr>
-<td><strong>&lt;subset&gt;</strong></td>
-<td>Short name of a data subset</td>
-<td>samples</td>
-</tr>
-<tr>
-<td><strong>&lt;entry&gt;</strong></td>
-<td>Name of an attribute entry (defined by the user in the a_attribute file (column ‘entry’)</td>
-<td>sampleid</td>
-</tr>
-<tr>
-<td><strong>&lt;category&gt;</strong></td>
-<td>Name of the attribute category; (assigned by the user in the a_attribute file (column ‘category’). Possible values are:  ‘identifier’, ‘factor’, ‘qualitative’, ‘quantitative’</td>
-<td>quantitative</td>
-</tr>
-<tr>
-<td><strong>(&lt;subset&gt;)</strong></td>
-<td>Set of data subsets by merging all the subsets with lower rank than the specified subset and following the pathway defined by the "is_part_of" links.</td>
-<td>(samples) &lt;=&gt; plants + samples</td>
-</tr>
-<tr>
-<td><strong>&lt;value&gt;</strong></td>
-<td>Exact value of the desired entry or category</td>
-<td>1 (for subset) or <br> Factor (for category)</td>
-</tr>
-</tbody>
-</table>
+<div class="highlight"><pre><span></span><code>DATAROOT = C:/&lt;PATH TO YOUR DATA/
+</code></pre></div>
+
 <ul>
-<li>API Documentation on SwaggerHub : <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.0.1-oas3/" target="_blank">INRA-PMB/ODAM/1.0.1-oas3</a></li>
+<li>
+<p>Save the configuration file, then exit</p>
+</li>
+<li>
+<p>Run <strong>WebServer.bat</strong>. A small window opens, indicating whether the Apache server is running or not.</p>
+</li>
+<li>At the first run, Windows should ask you for permission to pass through the firewall. Validate the authorization so that the web server can function properly.</li>
+<li>
+<p>Also, if the system tells you that the libssh2.dll file is missing, don't worry, it will still work.</p>
+</li>
+<li>
+<p>In your browser, go To <em><a href="http://localhost/">http://localhost/</a></em> to view your site root and to <em><a href="http://localhost/getdata/xml/">http://localhost/getdata/xml/</a>&lt;dataset></em> to view the <em>&lt;dataset></em> where <em>&lt;dataset></em> correspondings to your dataset put under the root of the data directory.</p>
+</li>
+<li>
+<p>For testing, you could <a href="https://data.inra.fr/dataset.xhtml?persistentId=doi:10.15454/95JUTK" target="_blank">download the FRIM1 dataset</a> (choose <strong>frim1.zip</strong>), then unzip the download file under the <strong>DATAROOT</strong> folder. In your browser, go To <em><a href="http://localhost/getdata/xml/frim1">http://localhost/getdata/xml/frim1</a></em></p>
+</li>
 </ul>
-<p><center>
-<a href="../images/web2.png" data-lightbox="web2"><img src="../images/web2.png" width="600px"></a>
-</center><br></p>
-<h2 id="very-detailed-example-of-api-querying">Very detailed example of API querying<a class="headerlink" href="#very-detailed-example-of-api-querying" title="Permanent link">&para;</a></h2>
-<p>Since all the experimental data tables were generated as part of an experiment associated with a Design of Experiment (DoE), each file thus contains data acquired sequentially as the experiment progressed. There must therefore be a link between each file, i.e. information that connects them together. In most cases (if not all), this information corresponds to identifiers that make it possible to precisely reference within the experiment each of the elements belonging to the same observation entity forming a coherent observation unit. For example, each plant, each sample has its own identifier, and each of these entities corresponds to a separate data file.
-<br><br>
-The files generated during data collection have to be organized according to the entity-relationship model similar to relational database management systems (RDBMS), as shown below with the FRIM1 dataset.</p>
-<p><center>
-<a href="../images/figure40.png" data-lightbox="fig40"><img src="../images/figure40.png" width="600px"></a>
-<br><p class="plegend">Structural metadata (file s_subsets.tsv) for FRIM1 dataset</p>
-</center><br></p>
-<p>Each file (entity) corresponds to a type of collected data (samples, compounds, ...) for which is associated a set of attributes, i.e. a set of variables that may include observed or measured variables (quantitative or qualitative), controlled independent variables (factors) and obviously an identifier.
-<br><br>
-Since there is a relationship between each of the files, it is therefore possible to combine them by following the paths of their mutual links. Suppose we want to retrieve activome data (enzyme expressions) combined with NMR observed metabolite data, including experimental metadata (factors and phenotypic data), as shown below:</p>
-<p><center>
-<a href="../images/figure43.png" data-lightbox="fig43"><img src="../images/figure43.png" width="600px"></a>
-<br><p class="plegend">legend</p>
-</center><br></p>
-<p>The ODAM API offers this possibility of combining data by following relational paths, using the  '<strong>(</strong>{<em>subset</em>}<strong>)</strong>' operator in the API request. Simply specify the desired subsets separated by a comma, as shown above.  The '<strong>(</strong>{<em>subset</em>}<strong>)</strong>' operator allows you to get data subsets by merging all the subsets with lower rank than the specified subsets and following the pathway defined by the “obtainedFrom" links.</p>
-<p>Let's further assume that we only want the data for the 'Control' treatment. The ODAM API also offers the possibility of setting a selector called an 'entry' provided that such an entry has been specified for the attribute to which one wants to apply a selection, as shown below:</p>
-<p><center>
-<a href="../images/figure42.png" data-lightbox="fig42"><img src="../images/figure42.png" width="600px"></a>
-<br><p class="plegend">legend</p>
-</center><br></p>
-<p>In our case, the 'Treatment' factor has the entry (alias) 'treatment'. It is therefore possible to use it as a selector in the API request.
-Thus, our complete API request would be this one:</p>
-<p><center>
-<a href="../images/figure44.png" data-lightbox="fig44"><img src="../images/figure44.png" width="600px"></a>
-<br><p class="plegend">legend</p>
-</center><br><br></p>
-<p>To test this request by yourself, you can go to <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.0.1-oas3/" target="_blank">ODAM's Swagger interface</a> and play with the followed specific query :</p>
-<p><center>
-<a href="../images/figure45.png" data-lightbox="fig45"><img src="../images/figure45.png" width="600px"></a>
-<br><p class="plegend">legend</p>
-</center><br><br></p>
-<p>Finally, how does it work internally? How are the different subsets of data combined in practice?
-Since each data subset being a data file, and linked to one or more other data subsets by means of common identifiers, it is possible to apply a SQL query from the data files thanks to the powerful tool  <a href="http://harelba.github.io/q/" target="_blank">q - Text as Data</a> which allows to apply SQL queries directly to CSV and TSV files as shown below:</p>
-<p><center>
-<a href="../images/figure41.png" data-lightbox="fig41"><img src="../images/figure41.png" width="600px"></a>
-<br><p class="plegend">legend</p>
-</center><br><br></p>
-<p>In addition, if you want to display information about the API request, just add '/debug' at the end of the request, as shown below:
-<br>
-<a href="http://pmb-bordeaux.fr/getdata/tsv/frim1/(activome,qNMR_metabo)/treatment/Control/debug" target="_blank">http://pmb-bordeaux.fr/getdata/tsv/frim1/(activome,qNMR_metabo)/treatment/Control/debug</a></p>
+<p><strong>Note</strong>: For MacOS (10.13 or newer), you can easily <a href="https://docs.docker.com/docker-for-mac/install/" target="_blank">install Docker</a>, then proceed as described in the next section "Intranet/Internet installation".</p>
+<hr />
+<h3 id="intranetinternet-installation">Intranet/Internet installation<a class="headerlink" href="#intranetinternet-installation" title="Permanent link">&para;</a></h3>
+<p>This type of deployment is reserved more specifically for computers or IT infrastructures running Linux, and allows the deployment of <a href="https://www.docker.com/" target="_blank">Docker</a> containers. See for more details on <a href="https://opensource.com/resources/what-docker" target="_blank">“What is Docker”</a> on opensource.com. </p>
+<p><strong>Note</strong>: Depending on the scale you want to deploy, your intranet can be local or via a VPN (<a href="https://en.wikipedia.org/wiki/Virtual_private_network" target="_blank">Virtual Private Network</a>) and for the internet, a machine on an institutional <a href="https://en.wikipedia.org/wiki/Data_center" target="_blank">data center</a> (e.g. university) is better but a machine on a <a href="https://en.wikipedia.org/wiki/Cloud_computing" target="_blank">cloud computing</a> is a perfectly feasible solution. </p>
+<p>All the steps to deploy the Docker containers corresponding to the ODAM software have been put online :</p>
+<div class="admonition abstract">
+<p class="admonition-title">Github</p>
+<p><a href="https://github.com/inrae/ODAM" target="_blank">https://github.com/inrae/ODAM</a></p>
+</div>
+<div class="admonition abstract">
+<p class="admonition-title">DockerHub</p>
+<p><a href="https://hub.docker.com/r/odam/getdata/" target="_blank">https://hub.docker.com/r/odam/getdata/</a></p>
+</div>
+<p><br><br></p>
+<p><strong>Remark</strong> : Installing one's own ODAM instance on an institutional server for example allows in this way experimental data tables to be widely accessible and fully reusable including through scripting languages such as <a href="https://www.r-project.org/about.html" target="_blank">R</a> or <a href="https://www.python.org/" target="_blank">Python</a>, and this with minimal effort on the part of the data provider.  Thus, the web of data could be seen as a data network on the web, based on appropriate technologies (<a href="https://en.wikipedia.org/wiki/Web_API" target="_blank">Web API</a>), and using standard data formats (<a href="https://en.wikipedia.org/wiki/Tab-separated_values" target="_blank">TSV</a>, <a href="https://www.json.org/json-en.html" target="_blank">JSON</a>).  Web applications, each with a clearly defined objective, then operate this network. A data can therefore be used for several applications and vice versa. The data management system becomes completely independent of its operation. The data is thus “decompartmentalized", a sine qua non condition for the Web of Data.</p>
+<p><br><br></p>
                 
                   
                 

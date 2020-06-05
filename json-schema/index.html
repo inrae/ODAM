@@ -498,7 +498,6 @@
 <div class="tabbed-set" data-tabs="7:2">
 <input name="__tabbed_7" type="radio" id="__tabbed_7_1" checked="checked" /><label for="__tabbed_7_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span> 
 <span class="kn">from</span> <span class="nn">datapackage</span> <span class="kn">import</span> <span class="n">Package</span><span class="p">,</span> <span class="n">Resource</span>
-<span class="kn">import</span> <span class="nn">json</span>
 
 <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://pmb-bordeaux.fr/getdata/json/frim1/datapackage?links=1&#39;</span>
 <span class="n">dp</span> <span class="o">=</span> <span class="n">Package</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
@@ -521,7 +520,9 @@
 </div>
 <hr />
 <div class="tabbed-set" data-tabs="8:2">
-<input name="__tabbed_8" type="radio" id="__tabbed_8_1" checked="checked" /><label for="__tabbed_8_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">keyed</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+<input name="__tabbed_8" type="radio" id="__tabbed_8_1" checked="checked" /><label for="__tabbed_8_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the &#39;plants&#39; subsets into a data.frame</span>
+<span class="nb">id</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;plants&#39;</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">keyed</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 
 <span class="c1"># Print the data.frame</span>
 <span class="n">df</span>
@@ -562,8 +563,9 @@
 </div>
 <hr />
 <div class="tabbed-set" data-tabs="10:2">
-<input name="__tabbed_10" type="radio" id="__tabbed_10_1" checked="checked" /><label for="__tabbed_10_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the resource descriptor of the &#39;samples&#39; (id=1)</span>
-<span class="n">res</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">_Resource__current_descriptor</span>
+<input name="__tabbed_10" type="radio" id="__tabbed_10_1" checked="checked" /><label for="__tabbed_10_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the resource descriptor of the &#39;samples&#39;</span>
+<span class="nb">id</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;samples&#39;</span><span class="p">)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">_Resource__current_descriptor</span>
 
 <span class="c1"># List some attributes</span>
 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="s1">&#39;profile&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;identifier&#39;</span><span class="p">,</span> <span class="s1">&#39;obtainedFrom&#39;</span><span class="p">,</span> <span class="s1">&#39;joinkey&#39;</span><span class="p">]:</span>
@@ -611,7 +613,7 @@ joinkey: PlantID
 <hr />
 <div class="tabbed-set" data-tabs="13:2">
 <input name="__tabbed_13" type="radio" id="__tabbed_13_1" checked="checked" /><label for="__tabbed_13_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Merge the &#39;samples&#39; subset with the data subset  from which it was obtained </span>
-<span class="nb">id</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="nb">id</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;samples&#39;</span><span class="p">)</span>
 <span class="n">res</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">_Resource__current_descriptor</span>
 <span class="n">id_from</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;obtainedFrom&#39;</span><span class="p">])</span>
 <span class="n">df_from</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="n">id_from</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">keyed</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>

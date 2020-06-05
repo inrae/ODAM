@@ -187,7 +187,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../dataset_example" title="A dataset example" class="md-nav__link">
+    <a href="../dataset_example/" title="A dataset example" class="md-nav__link">
       A dataset example
     </a>
   </li>
@@ -238,15 +238,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-of-a-session-under-r-using-a-data-package" class="md-nav__link">
-    Example of a session under R using a data package
+  <a href="#session-example-with-r-using-a-datapackage" class="md-nav__link">
+    Session example with R using a datapackage
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-of-a-session-under-python-using-a-data-package" class="md-nav__link">
-    Example of a session under Python using a data package
+  <a href="#session-example-with-python-using-a-datapackage" class="md-nav__link">
+    Session example with Python using a datapackage
   </a>
   
 </li>
@@ -267,9 +267,9 @@
                   
                 
                 
-                <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">#</a></h1>
+                <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
 <hr />
-<h3 id="odam-data-package-based-on-json-schema">ODAM data-package based on JSON-Schema<a class="headerlink" href="#odam-data-package-based-on-json-schema" title="Permanent link">#</a></h3>
+<h3 id="odam-data-package-based-on-json-schema">ODAM data-package based on JSON-Schema<a class="headerlink" href="#odam-data-package-based-on-json-schema" title="Permanent link">&para;</a></h3>
 <p>A data package is a simple container format based on <a href="https://json-schema.org/">JSON Schema specifications</a> used to describe and package a collection of data. Defining an explicit schema for structural metadata allows machines to better interpret the data for reuse. Thus, when disseminating data, a file named <a href="https://datahub.io/docs/data-packages">datapackage.json</a> by convention can be added to the collection of your data files. This <a href="https://datahub.io/docs/data-packages">datapackage.json</a> file contains all structural metadata along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions.</p>
 <p>The <a href="https://datahub.io/docs/data-packages">datapackage.json</a> file can be generated directly from the <a href="../api/">ODAM API</a> by specifying '<i><b>/datapackage</b></i>' at the end of the request. By default, the reference to the data files is relative. To have a URL as reference for the data files, it is necessary to add at the end of the request '<i><b>?links=1</b></i>'</p>
 <p><center>
@@ -277,31 +277,33 @@
 </center><br></p>
 <p>ODAM data package schema is very close to the <a href="https://frictionlessdata.io/">Frictionless Data</a> framework.</p>
 <ul>
-<li><a href="odam-data-package">odam-data-package.json</a> : JSON Schema for ODAM data package</li>
-<li><a href="odam-data-resource">odam-data-resource.json</a> : JSON Schema for ODAM data resource
+<li><a href="odam-data-package">odam-data-package.json</a> : JSON Schema for ODAM datapackage</li>
+<li><a href="odam-data-resource">odam-data-resource.json</a> : JSON Schema for ODAM dataresource
 <!-- X --></li>
 </ul>
 <hr />
-<p><strong> ODAM data-package on github </strong></p>
+<p>** ODAM data-package on github **</p>
 <ul>
-<li><a href="https://github.com/djacob65/odam-datapackage" target="_blank">https://github.com/djacob65/odam-datapackage</a></li>
+<li><a href="https://github.com/djacob65/odam-datapackage" target="_blank"><a href="https://github.com/djacob65/odam-datapackage">https://github.com/djacob65/odam-datapackage</a></a></li>
 </ul>
-<p><strong> Frictionless Data Specifications </strong></p>
+<p>** Frictionless Data Specifications **</p>
 <ul>
-<li><a href="http://specs.frictionlessdata.io/" target="_blank">http://specs.frictionlessdata.io/</a></li>
-<li><a href="https://github.com/frictionlessdata/specs/tree/master/schemas" target="_blank">https://github.com/frictionlessdata/specs/tree/master/schemas</a></li>
+<li><a href="http://specs.frictionlessdata.io/" target="_blank"><a href="http://specs.frictionlessdata.io/">http://specs.frictionlessdata.io/</a></a></li>
+<li><a href="https://github.com/frictionlessdata/specs/tree/master/schemas" target="_blank"><a href="https://github.com/frictionlessdata/specs/tree/master/schemas">https://github.com/frictionlessdata/specs/tree/master/schemas</a></a></li>
 </ul>
 <hr />
-<h3 id="example-of-a-session-under-r-using-a-data-package">Example of a session under R using a data package<a class="headerlink" href="#example-of-a-session-under-r-using-a-data-package" title="Permanent link">#</a></h3>
+<h3 id="session-example-with-r-using-a-datapackage">Session example with R using a datapackage<a class="headerlink" href="#session-example-with-r-using-a-datapackage" title="Permanent link">&para;</a></h3>
 <p>In this example, the datapackage is directly generated from an <a href="https://pmb-bordeaux.fr/dataexplorer/?ds=frim1">ODAM repository</a>. But it is also possible to retrieve it from a <a href="https://dataverse.org/">Dataverse</a> repository from a keyword. Cf <a href="../dataverse/">Example</a></p>
-<p><strong> json_validate: Validate a json file </strong></p>
+<p>** json_validate: Validate a json file **</p>
 <ul>
-<li><a href="https://rdrr.io/cran/jsonvalidate/man/json_validate.html" target="_blank">https://rdrr.io/cran/jsonvalidate/man/json_validate.html</a></li>
+<li><a href="https://rdrr.io/cran/jsonvalidate/man/json_validate.html" target="_blank"><a href="https://rdrr.io/cran/jsonvalidate/man/json_validate.html">https://rdrr.io/cran/jsonvalidate/man/json_validate.html</a></a></li>
 </ul>
 <div class="tabbed-set" data-tabs="1:2">
 <input name="__tabbed_1" type="radio" id="__tabbed_1_1" checked="checked" /><label for="__tabbed_1_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="nf">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">jsonvalidate</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span>
+
+<span class="nf">options</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="m">256</span><span class="p">)</span>
 
 <span class="c1"># URL of the ODAM data repository</span>
 <span class="n">odam_url</span> <span class="o">&lt;-</span> <span class="s">&#39;https://pmb-bordeaux.fr&#39;</span>
@@ -332,10 +334,11 @@
 <hr />
 <div class="tabbed-set" data-tabs="2:2">
 <input name="__tabbed_2" type="radio" id="__tabbed_2_1" checked="checked" /><label for="__tabbed_2_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Parse the JSON object to a data.frame</span>
-<span class="n">metadata</span> <span class="o">&lt;-</span> <span class="nf">fromJSON</span><span class="p">(</span><span class="n">dp_json</span><span class="p">)</span>
+<span class="n">dp</span> <span class="o">&lt;-</span> <span class="nf">fromJSON</span><span class="p">(</span><span class="n">dp_json</span><span class="p">)</span>
+<span class="n">resources</span> <span class="o">&lt;-</span> <span class="n">dp</span><span class="o">$</span><span class="n">resources</span>
 
 <span class="c1"># List some metadata about the dataset</span>
-<span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">,</span> <span class="s">&quot;joinkey&quot;</span><span class="p">,</span> <span class="s">&quot;path&quot;</span><span class="p">)</span> <span class="n">]</span>
+<span class="n">resources[</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">,</span> <span class="s">&quot;joinkey&quot;</span><span class="p">,</span> <span class="s">&quot;path&quot;</span><span class="p">)</span> <span class="n">]</span>
 </code></pre></div></div>
 <input name="__tabbed_2" type="radio" id="__tabbed_2_2" /><label for="__tabbed_2_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>                <span class="n">name</span>                                   <span class="n">title</span> <span class="n">identifier</span> <span class="n">obtainedFrom</span>   <span class="n">joinkey</span>                                                        <span class="n">path</span>
 <span class="mi">1</span>             <span class="n">plants</span>                          <span class="n">Plant</span> <span class="n">features</span>    <span class="n">PlantID</span>         <span class="o">&lt;</span><span class="n">NA</span><span class="o">&gt;</span>      <span class="o">&lt;</span><span class="n">NA</span><span class="o">&gt;</span>            <span class="nl">https</span><span class="p">:</span><span class="c1">//pmb-bordeaux.fr/getdata/tsv/frim1/plants</span>
@@ -356,9 +359,9 @@
 <div class="tabbed-set" data-tabs="3:2">
 <input name="__tabbed_3" type="radio" id="__tabbed_3_1" checked="checked" /><label for="__tabbed_3_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Read the &#39;samples&#39; data file - index=2</span>
 <span class="n">index</span> <span class="o">&lt;-</span> <span class="m">2</span>
-<span class="n">M</span> <span class="o">&lt;-</span> <span class="nf">read.table</span><span class="p">(</span><span class="nf">url</span><span class="p">(</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="s">&quot;path&quot;</span> <span class="n">]</span><span class="o">$</span><span class="n">path[index]</span><span class="p">),</span> 
-                <span class="n">header</span><span class="o">=</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">header[index]</span><span class="p">,</span> 
-                <span class="n">sep</span><span class="o">=</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">delimiter[index]</span> <span class="p">)</span>
+<span class="n">M</span> <span class="o">&lt;-</span> <span class="nf">read.table</span><span class="p">(</span><span class="nf">url</span><span class="p">(</span><span class="n">resources[</span> <span class="s">&quot;path&quot;</span> <span class="n">]</span><span class="o">$</span><span class="n">path[index]</span><span class="p">),</span> 
+                <span class="n">header</span><span class="o">=</span> <span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">header[index]</span><span class="p">,</span> 
+                <span class="n">sep</span><span class="o">=</span><span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">delimiter[index]</span> <span class="p">)</span>
 
 <span class="c1"># Display an extract </span>
 <span class="n">M[1</span><span class="o">:</span><span class="m">10</span><span class="p">,</span><span class="n">]</span>
@@ -379,7 +382,7 @@
 <hr />
 <div class="tabbed-set" data-tabs="4:2">
 <input name="__tabbed_4" type="radio" id="__tabbed_4_1" checked="checked" /><label for="__tabbed_4_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the categories for the &#39;samples&#39; data subset</span>
-<span class="n">categories</span> <span class="o">&lt;-</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">categories[[index]]</span>
+<span class="n">categories</span> <span class="o">&lt;-</span> <span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">categories[[index]]</span>
 <span class="n">categories</span>
 
 <span class="c1"># List the &#39;quantitative&#39; variables for the &#39;samples&#39; data subset</span>
@@ -398,16 +401,16 @@
 <div class="tabbed-set" data-tabs="5:2">
 <input name="__tabbed_5" type="radio" id="__tabbed_5_1" checked="checked" /><label for="__tabbed_5_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the list of data subsets that were obtained from the &#39;samples&#39;</span>
 <span class="n">index</span> <span class="o">&lt;-</span> <span class="m">2</span>
-<span class="n">subsets</span> <span class="o">&lt;-</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">foreignKey[[index]]</span><span class="o">$</span><span class="n">reference[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span>
+<span class="n">subsets</span> <span class="o">&lt;-</span> <span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">foreignKey[[index]]</span><span class="o">$</span><span class="n">reference[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span>
 <span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">subsets</span><span class="p">)</span> <span class="p">)</span> 
-   <span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">subsets</span><span class="p">,</span>
+   <span class="n">resources[</span> <span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">subsets</span><span class="p">,</span>
                        <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">)</span> <span class="n">]</span>
 
 <span class="c1"># Get the list of data subsets that were obtained from the &#39;aliquots&#39;</span>
 <span class="n">index</span> <span class="o">&lt;-</span> <span class="m">3</span>
-<span class="n">subsets</span> <span class="o">&lt;-</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">foreignKey[[index]]</span><span class="o">$</span><span class="n">reference[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span>
+<span class="n">subsets</span> <span class="o">&lt;-</span> <span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">foreignKey[[index]]</span><span class="o">$</span><span class="n">reference[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span>
 <span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">subsets</span><span class="p">)</span> <span class="p">)</span> 
-   <span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">subsets</span><span class="p">,</span>
+   <span class="n">resources[</span> <span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">subsets</span><span class="p">,</span>
                        <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">)</span> <span class="n">]</span>
 </code></pre></div></div>
 <input name="__tabbed_5" type="radio" id="__tabbed_5_2" /><label for="__tabbed_5_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="cp"># List of data subsets that were obtained from the &#39;samples&#39;</span>
@@ -428,23 +431,24 @@
 <hr />
 <div class="tabbed-set" data-tabs="6:2">
 <input name="__tabbed_6" type="radio" id="__tabbed_6_1" checked="checked" /><label for="__tabbed_6_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># getMergedDataset : </span>
-<span class="c1">#    Returns the merged data subset by going back up the linking chain of the </span>
-<span class="c1">#       data subsets i.e. with which each of them was obtained.</span>
+<span class="c1">#    Returns the data subset resulting from the merging of each data subset from which</span>
+<span class="c1">#    the previous data subset was obtained (i.e. going back up the chain of linking </span>
+<span class="c1">#    data subsets)</span>
 <span class="c1">#    Method : Performs a &#39;Rigth Join&#39; between the different tables (data subsets)</span>
-<span class="n">getMergedDataset</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span> <span class="n">metadata</span><span class="p">,</span> <span class="n">subset</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">FALSE</span><span class="p">)</span>
+<span class="n">getMergedDataset</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span> <span class="n">resources</span><span class="p">,</span> <span class="n">subset</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">FALSE</span> <span class="p">)</span>
 <span class="p">{</span>
    <span class="n">M</span> <span class="o">&lt;-</span> <span class="kc">NULL</span>
    <span class="n">s</span> <span class="o">&lt;-</span> <span class="n">subset</span>
-   <span class="nf">while</span><span class="p">(</span> <span class="nf">sum</span><span class="p">(</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">s</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+   <span class="nf">while</span><span class="p">(</span> <span class="nf">sum</span><span class="p">(</span><span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">s</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
       <span class="nf">if </span><span class="p">(</span><span class="n">verbose</span><span class="p">)</span> <span class="nf">cat </span><span class="p">(</span><span class="s">&quot;data subset &quot;</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
      <span class="c1"># index for subset s</span>
-       <span class="n">i1</span> <span class="o">&lt;-</span> <span class="nf">which</span><span class="p">(</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">s</span><span class="p">)</span>
+       <span class="n">i1</span> <span class="o">&lt;-</span> <span class="nf">which</span><span class="p">(</span><span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">s</span><span class="p">)</span>
      <span class="c1"># get metadata from subset s</span>
-       <span class="n">m1</span> <span class="o">&lt;-</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources[i1</span><span class="p">,</span> <span class="n">]</span>
+       <span class="n">m1</span> <span class="o">&lt;-</span> <span class="n">resources[i1</span><span class="p">,</span> <span class="n">]</span>
      <span class="c1"># Read data for subset s</span>
-       <span class="n">M1</span> <span class="o">&lt;-</span> <span class="nf">read.table</span><span class="p">(</span><span class="nf">url</span><span class="p">(</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources[</span> <span class="s">&quot;path&quot;</span> <span class="n">]</span><span class="o">$</span><span class="n">path[i1]</span><span class="p">),</span> 
-                        <span class="n">header</span><span class="o">=</span> <span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">header[i1]</span><span class="p">,</span> 
-                        <span class="n">sep</span><span class="o">=</span><span class="n">metadata</span><span class="o">$</span><span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">delimiter[i1]</span> <span class="p">)</span>
+       <span class="n">M1</span> <span class="o">&lt;-</span> <span class="nf">read.table</span><span class="p">(</span><span class="nf">url</span><span class="p">(</span><span class="n">resources[</span> <span class="s">&quot;path&quot;</span> <span class="n">]</span><span class="o">$</span><span class="n">path[i1]</span><span class="p">),</span> 
+                        <span class="n">header</span><span class="o">=</span> <span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">header[i1]</span><span class="p">,</span> 
+                        <span class="n">sep</span><span class="o">=</span><span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">delimiter[i1]</span> <span class="p">)</span>
        <span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">M</span><span class="p">))</span>
          <span class="c1"># Merge the subset s - Right Join</span>
            <span class="n">M</span> <span class="o">&lt;-</span> <span class="nf">merge</span><span class="p">(</span><span class="n">M1</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">by</span> <span class="o">=</span> <span class="n">m1</span><span class="o">$</span><span class="n">identifier</span><span class="p">,</span> <span class="n">all.y</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span>
@@ -459,7 +463,7 @@
 <span class="p">}</span>
 
 <span class="c1"># Merge the &#39;plants&#39;, &#39;samples&#39;, &#39;aliquots&#39; and &#39;activome&#39; data subsets </span>
-<span class="n">M</span> <span class="o">&lt;-</span> <span class="nf">getMergedDataset</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="s">&#39;activome&#39;</span><span class="p">,</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">M</span> <span class="o">&lt;-</span> <span class="nf">getMergedDataset</span><span class="p">(</span><span class="n">resources</span><span class="p">,</span> <span class="s">&#39;activome&#39;</span><span class="p">,</span> <span class="kc">TRUE</span><span class="p">)</span>
 <span class="nf">dim</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
 
 <span class="c1"># Display column names of the merged data subset</span>
@@ -486,10 +490,10 @@
 </code></pre></div></div>
 </div>
 <hr />
-<h3 id="example-of-a-session-under-python-using-a-data-package">Example of a session under Python using a data package<a class="headerlink" href="#example-of-a-session-under-python-using-a-data-package" title="Permanent link">#</a></h3>
-<p><strong> frictionlessdata/datapackage-py </strong></p>
+<h3 id="session-example-with-python-using-a-datapackage">Session example with Python using a datapackage<a class="headerlink" href="#session-example-with-python-using-a-datapackage" title="Permanent link">&para;</a></h3>
+<p>** datapackage-py **</p>
 <ul>
-<li><a href="https://github.com/frictionlessdata/datapackage-py" target="_blank">https://github.com/frictionlessdata/datapackage-py</a></li>
+<li><a href="https://pypi.org/project/datapackage/" target="_blank"><a href="https://pypi.org/project/datapackage/">https://pypi.org/project/datapackage/</a></a></li>
 </ul>
 <div class="tabbed-set" data-tabs="7:2">
 <input name="__tabbed_7" type="radio" id="__tabbed_7_1" checked="checked" /><label for="__tabbed_7_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span> 
@@ -606,8 +610,7 @@ joinkey: PlantID
 </div>
 <hr />
 <div class="tabbed-set" data-tabs="13:2">
-<input name="__tabbed_13" type="radio" id="__tabbed_13_1" checked="checked" /><label for="__tabbed_13_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Merge the &#39;samples&#39; subset with the data subset </span>
-<span class="c1">#       from which the &#39;samples&#39; subset was obtained </span>
+<input name="__tabbed_13" type="radio" id="__tabbed_13_1" checked="checked" /><label for="__tabbed_13_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Merge the &#39;samples&#39; subset with the data subset  from which it was obtained </span>
 <span class="nb">id</span> <span class="o">=</span> <span class="mi">1</span>
 <span class="n">res</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">_Resource__current_descriptor</span>
 <span class="n">id_from</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;obtainedFrom&#39;</span><span class="p">])</span>

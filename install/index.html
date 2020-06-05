@@ -348,11 +348,11 @@ All the steps involved in the installation of the virtual machine have been publ
 <p>Download and Unzip <strong>ODAMwebserver.zip</strong> to the location of your choice on your hard drive</p>
 </li>
 <li>
-<p>Go to the directory <strong>usbwebserver\settings</strong>, then with the <a href="https://en.wikipedia.org/wiki/Microsoft_Notepad" target="_blank">notepad application</a> for example, edit the <strong>getdata.conf</strong> file.</p>
+<p>Go to the directory <strong>ODAMwebserver\settings</strong>, then with the <a href="https://en.wikipedia.org/wiki/Microsoft_Notepad" target="_blank">notepad application</a> for example, edit the <strong>getdata.conf</strong> file.</p>
 </li>
 <li>In the line starting with <strong>DATAROOT</strong>, specify the full path of the root of the data directory (be careful, it is necessary to put slashes "/" and not backslashes "\")</li>
 </ul>
-<div class="highlight"><pre><span></span><code>DATAROOT = C:/&lt;PATH TO YOUR DATA/
+<div class="highlight"><pre><span></span><code>DATAROOT = C:/PATH/TO/YOUR/DATA/
 </code></pre></div>
 
 <ul>
@@ -376,7 +376,7 @@ All the steps involved in the installation of the virtual machine have been publ
 <p><strong>Note</strong>: For MacOS (10.13 or newer), you can easily <a href="https://docs.docker.com/docker-for-mac/install/" target="_blank">install Docker</a>, then proceed as described in the next section "Intranet/Internet installation".</p>
 <hr />
 <h3 id="intranetinternet-installation">Intranet/Internet installation<a class="headerlink" href="#intranetinternet-installation" title="Permanent link">&para;</a></h3>
-<p>This type of deployment is reserved more specifically for computers or IT infrastructures running Linux, and allows the deployment of <a href="https://www.docker.com/" target="_blank">Docker</a> containers. See for more details on <a href="https://opensource.com/resources/what-docker" target="_blank">“What is Docker”</a> on opensource.com. </p>
+<p>This type of deployment is reserved more specifically for computers or IT infrastructures running Linux (including MacOS 10.13 or newer) which allow the deployment of <a href="https://www.docker.com/" target="_blank">Docker</a> containers. See for more details on <a href="https://opensource.com/resources/what-docker" target="_blank">“What is Docker”</a> on opensource.com. </p>
 <p><strong>Note</strong>: Depending on the scale you want to deploy, your intranet can be local or via a VPN (<a href="https://en.wikipedia.org/wiki/Virtual_private_network" target="_blank">Virtual Private Network</a>) and for the internet, a machine on an institutional <a href="https://en.wikipedia.org/wiki/Data_center" target="_blank">data center</a> (e.g. university) is better but a machine on a <a href="https://en.wikipedia.org/wiki/Cloud_computing" target="_blank">cloud computing</a> is a perfectly feasible solution. </p>
 <p>All the steps to deploy the Docker containers corresponding to the ODAM software have been put online :</p>
 <div class="admonition abstract">

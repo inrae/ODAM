@@ -20,7 +20,7 @@ Requirements:
 From Github, Clone the repository
 
 ```
-    $ git clone https://github.com/INRA/ODAM.git
+    $ git clone https://github.com/inrae/ODAM.git
 ```
    
 

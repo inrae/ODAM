@@ -266,6 +266,14 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#provide-services" class="md-nav__link">
+    Provide Services
+  </a>
+  
+    <nav class="md-nav" aria-label="Provide Services">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#export-data-from-your-web-browser" class="md-nav__link">
     Export data from your web browser
   </a>
@@ -283,6 +291,11 @@
   <a href="#reproducible-research-with-jupyter-notebooks" class="md-nav__link">
     Reproducible research with Jupyter notebooks
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -387,6 +400,14 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#provide-services" class="md-nav__link">
+    Provide Services
+  </a>
+  
+    <nav class="md-nav" aria-label="Provide Services">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#export-data-from-your-web-browser" class="md-nav__link">
     Export data from your web browser
   </a>
@@ -404,6 +425,11 @@
   <a href="#reproducible-research-with-jupyter-notebooks" class="md-nav__link">
     Reproducible research with Jupyter notebooks
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
         
@@ -451,7 +477,8 @@
 </p>
 </center><br></p>
 <p>So simply dropping data files (along with two additional metadata files) on the storage space allows users to access them through web services. This means there is no need for additional configuration on the server. The dataset must first be previously formatted according to precise rules which requires that some good practices be followed and adhered to. See Data collection and preparation section.</p>
-<p><strong>Note</strong>: In case of having a remote storage space, the <a href="https://www.syncany.org/" target="_blank">Syncany solution</a> (Dropbox-like) might be a good choice. Several other tools or approaches can be used as: <a href="https://winscp.net/eng/index.php" target="_blank">WinSCP</a>, <a href="https://www.samba.org/samba/what_is_samba.html" target="_blank">SAMBA</a>, <a href="https://en.wikipedia.org/wiki/Rsync" target="_blank">rsync</a>, ...</p>
+<p><strong>Note</strong>: In case of having a remote storage space, the <a href="https://www.syncany.org/" target="_blank">Syncany solution</a> (Dropbox-like) might be a good choice. Several other tools or approaches can be used as: <a href="https://winscp.net/eng/index.php" target="_blank">WinSCP</a>, <a href="https://en.wikipedia.org/wiki/Rsync" target="_blank">rsync</a>, ...</p>
+<h3 id="provide-services">Provide Services<a class="headerlink" href="#provide-services" title="Permanent link">&para;</a></h3>
 <p>The ODAM software embeds an API (<a href="https://en.wikipedia.org/wiki/Application_programming_interface" target="_blank">Application Programming Interface</a>) layer which offers data selection and merging services.  It is this API layer that allows interoperability between the different tables and the applications that will be able to use them (See Appendix 3).  </p>
 <p>With the help of this layer, it opens up a whole ecosystem of potential applications, depending on your needs but also on your skills in the proposed tools.</p>
 <p><center>
@@ -460,7 +487,7 @@
 </p>
 </center><br></p>
 <hr />
-<h3 id="export-data-from-your-web-browser">Export data from your web browser<a class="headerlink" href="#export-data-from-your-web-browser" title="Permanent link">&para;</a></h3>
+<h4 id="export-data-from-your-web-browser">Export data from your web browser<a class="headerlink" href="#export-data-from-your-web-browser" title="Permanent link">&para;</a></h4>
 <p>You can retrieve data directly from your web browser based on the API. To understand the syntax, see <a href="../api">Web API</a>. </p>
 <div class="admonition abstract">
 <p class="admonition-title">Test from the API Documentation on SwaggerHub</p>
@@ -486,12 +513,16 @@
 <p>If you have associated the files having the extension '.txt' (tab as separator) with e.g. MS Excel, then just click on it to open it.</p>
 <p>For more details on how API querie work, see a <a href="../api/#very-detailed-example-of-api-querying">very detailed example of api querying</a>.</p>
 <hr />
-<h3 id="using-the-api-with-r">Using the API with R<a class="headerlink" href="#using-the-api-with-r" title="Permanent link">&para;</a></h3>
+<h4 id="using-the-api-with-r">Using the API with R<a class="headerlink" href="#using-the-api-with-r" title="Permanent link">&para;</a></h4>
 <p>It is possible to adopt more efficient approaches to analyze data, e.g for automating various processing operations, or for allowing users to select subsets of data and then carry out numerous repetitions of complex processing operations according to a wide variety of parameters (scenarios).</p>
-<p>For this purpose we have developed an R (Rodam) package that allows data extraction according to the <a href="../api">API schema</a>.</p>
+<p>For this purpose we have developed an R (<a href="https://cran.r-project.org/web/packages/Rodam/index.html" target="_blank">Rodam</a>) package that allows data extraction according to the <a href="../api">API schema</a>.</p>
 <p>The Rodam package provides a set of functions to retrieve data and their metadata from data sets formatted according to the ODAM data structuring approach. </p>
 <div class="admonition abstract">
-<p class="admonition-title">Vignette 'Demonstration of the functionalities of the R ODAM package'</p>
+<p class="admonition-title">Rodam Package Manual</p>
+<p><a href="https://cran.r-project.org/web/packages/Rodam/Rodam.pdf" target="_blank">https://cran.r-project.org/web/packages/Rodam/Rodam.pdf</a></p>
+</div>
+<div class="admonition abstract">
+<p class="admonition-title">Vignette 'Demonstration of the functionalities of the Rodam package'</p>
 <p><a href="https://cran.r-project.org/web/packages/Rodam/vignettes/Rodam.html" target="_blank">https://cran.r-project.org/web/packages/Rodam/vignettes/Rodam.html</a></p>
 </div>
 <p><center>
@@ -504,7 +535,7 @@
 <br><p class="plegend justify">Illustration of the use of the API under R using the Rodam package. Visualization of set intersections between data subset based on the sample identifier and using the UpSetR  package</p>
 </center><br></p>
 <hr />
-<h3 id="reproducible-research-with-jupyter-notebooks">Reproducible research with Jupyter notebooks<a class="headerlink" href="#reproducible-research-with-jupyter-notebooks" title="Permanent link">&para;</a></h3>
+<h4 id="reproducible-research-with-jupyter-notebooks">Reproducible research with Jupyter notebooks<a class="headerlink" href="#reproducible-research-with-jupyter-notebooks" title="Permanent link">&para;</a></h4>
 <p>In order to illustrate a reproducible research process, we provide examples of <a href="https://jupyter.org/" target="_blank">Jupyter Notebooks</a> (R &amp; Python) based on the ODAM Web API, as well as links to view them (Jupyter nbviewer, CodeOcean) and re-run them (<a href="https://mybinder.org/" target="_blank">MyBinder</a>, <a href="https://codeocean.com/" target="_blank">CodeOcean</a>)</p>
 <div class="admonition abstract">
 <p class="admonition-title">GitHub</p>

@@ -199,6 +199,115 @@
 
 
   <li class="md-nav__item">
+    <a href="../install/" title="Installation" class="md-nav__link">
+      Installation
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../services/" title="Using ODAM" class="md-nav__link">
+      Using ODAM
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../data_explorer/" title="Data Explorer" class="md-nav__link">
+      Data Explorer
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Web API
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="Web API" class="md-nav__link md-nav__link--active">
+      Web API
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#web-api" class="md-nav__link">
+    Web API
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#very-detailed-example-of-api-querying" class="md-nav__link">
+    Very detailed example of API querying
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../json-schema/" title="JSON schema" class="md-nav__link">
+      JSON schema
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="../about/" title="About" class="md-nav__link">
       About
     </a>
@@ -310,7 +419,7 @@ Even if Web API outputs are not dedicated to human readers (script languages as 
 </tr>
 <tr>
 <td><strong>(&lt;subset&gt;)</strong></td>
-<td>Set of data subsets by merging all the subsets with lower rank than the specified subset and following the pathway defined by the "is_part_of" links.</td>
+<td>Set of data subsets by merging all the subsets with lower rank than the specified subset and following the pathway defined by the "obtainedFrom" links.</td>
 <td>(samples) &lt;=&gt; plants + samples</td>
 </tr>
 <tr>
@@ -327,44 +436,45 @@ Even if Web API outputs are not dedicated to human readers (script languages as 
 <a href="../images/web2.png" data-lightbox="web2"><img src="../images/web2.png" width="600px"></a>
 </center><br></p>
 <h2 id="very-detailed-example-of-api-querying">Very detailed example of API querying<a class="headerlink" href="#very-detailed-example-of-api-querying" title="Permanent link">&para;</a></h2>
-<p>Since all the experimental data tables were generated as part of an experiment associated with a Design of Experiment (DoE), each file thus contains data acquired sequentially as the experiment progressed. There must therefore be a link between each file, i.e. information that connects them together. In most cases (if not all), this information corresponds to identifiers that make it possible to precisely reference within the experiment each of the elements belonging to the same observation entity forming a coherent observation unit. For example, each plant, each sample has its own identifier, and each of these entities corresponds to a separate data file.
+<p>Since all the experimental data tables were generated as part of an experiment associated with a Design of Experiment (<a href="https://en.wikipedia.org/wiki/Design_of_experiments" target="_blank">DoE</a>), each file thus contains data acquired sequentially as the experiment progressed. There must therefore be a link between each file, i.e. information that connects them together. In most cases (if not all), this information corresponds to identifiers that make it possible to precisely reference within the experiment each of the elements belonging to the same observation entity forming a coherent observation unit. For example, each plant, each sample has its own identifier, and each of these entities corresponds to a separate data file.
 <br><br>
-The files generated during data collection have to be organized according to the entity-relationship model similar to relational database management systems (RDBMS), as shown below with the FRIM1 dataset.</p>
+The files generated during data collection have to be organized according to the <a href="https://en.wikipedia.org/wiki/Entity%E2%80%93relationship_model" target="_blank">entity-relationship model</a> similar to relational database management systems (<a href="https://en.wikipedia.org/wiki/Relational_database" target="_blank">RDBMS</a>), as shown below with the FRIM1 dataset.</p>
 <p><center>
 <a href="../images/figure40.png" data-lightbox="fig40"><img src="../images/figure40.png" width="600px"></a>
-<br><p class="plegend">Structural metadata (file s_subsets.tsv) for FRIM1 dataset</p>
+<br><p class="plegend center">Extract of structural metadata (file s_subsets.tsv) for FRIM1 dataset</p>
 </center><br></p>
-<p>Each file (entity) corresponds to a type of collected data (samples, compounds, ...) for which is associated a set of attributes, i.e. a set of variables that may include observed or measured variables (quantitative or qualitative), controlled independent variables (factors) and obviously an identifier.
+<p>Each file (an <strong>entity</strong>, i.e an observational unit) corresponds to a type of collected data (samples, compounds, ...) for which is associated a set of <strong>attributes</strong>, i.e. a set of variables that may include observed or measured variables (<strong>quantitative</strong> or <strong>qualitative</strong>), controlled independent variables (<strong>factors</strong>) and obviously an <strong>identifier</strong>.
 <br><br>
-Since there is a relationship between each of the files, it is therefore possible to combine them by following the paths of their mutual links. Suppose we want to retrieve activome data (enzyme expressions) combined with NMR observed metabolite data, including experimental metadata (factors and phenotypic data), as shown below:</p>
+Since there is a relationship between each of the files, it is therefore possible to combine them by following the paths of their mutual links. Suppose we want to retrieve <em>activome data</em> (enzyme expressions) combined with <em>NMR observed metabolite data</em>, including experimental metadata (factors and phenotypic data).</p>
+<p>The ODAM API offers the possibility of combining data by following relational paths, using the  '<strong>(</strong>{<em>subset</em>}<strong>)</strong>' operator in the API query. Simply specify the desired subsets separated by a comma, as shown below:</p>
 <p><center>
 <a href="../images/figure43.png" data-lightbox="fig43"><img src="../images/figure43.png" width="600px"></a>
-<br><p class="plegend">legend</p>
+<br><p class="plegend center">'(activome,qNMR_metabo)' operator in the API query</p>
 </center><br></p>
-<p>The ODAM API offers this possibility of combining data by following relational paths, using the  '<strong>(</strong>{<em>subset</em>}<strong>)</strong>' operator in the API request. Simply specify the desired subsets separated by a comma, as shown above.  The '<strong>(</strong>{<em>subset</em>}<strong>)</strong>' operator allows you to get data subsets by merging all the subsets with lower rank than the specified subsets and following the pathway defined by the “obtainedFrom" links.</p>
+<p>The '<strong>(</strong>{<em>subset</em>}<strong>)</strong>' operator allows you to get data subsets by merging all the subsets with lower rank than the specified subsets and following the pathway defined by the “obtainedFrom" links.</p>
 <p>Let's further assume that we only want the data for the 'Control' treatment. The ODAM API also offers the possibility of setting a selector called an 'entry' provided that such an entry has been specified for the attribute to which one wants to apply a selection, as shown below:</p>
 <p><center>
 <a href="../images/figure42.png" data-lightbox="fig42"><img src="../images/figure42.png" width="600px"></a>
-<br><p class="plegend">legend</p>
+<br><p class="plegend center">Extract of structural metadata (file a_attributes.tsv) for FRIM1 dataset</p>
 </center><br></p>
-<p>In our case, the 'Treatment' factor has the entry (alias) 'treatment'. It is therefore possible to use it as a selector in the API request.
-Thus, our complete API request would be this one:</p>
+<p>In our case, the 'Treatment' factor has the entry (alias) 'treatment'. It is therefore possible to use it as a selector in the API query.
+Thus, our complete API query would be this one:</p>
 <p><center>
 <a href="../images/figure44.png" data-lightbox="fig44"><img src="../images/figure44.png" width="600px"></a>
-<br><p class="plegend">legend</p>
+<br><p class="plegend center">Complete API query</p>
 </center><br><br></p>
-<p>To test this request by yourself, you can go to <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.0.1-oas3/" target="_blank">ODAM's Swagger interface</a> and play with the followed specific query :</p>
+<p>To test this query by yourself, you can go to <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.0.1-oas3/" target="_blank">ODAM's Swagger interface</a> and play with the followed specific query :</p>
 <p><center>
 <a href="../images/figure45.png" data-lightbox="fig45"><img src="../images/figure45.png" width="600px"></a>
-<br><p class="plegend">legend</p>
+<br><p class="plegend center">ODAM API in Swagger</p>
 </center><br><br></p>
 <p>Finally, how does it work internally? How are the different subsets of data combined in practice?
 Since each data subset being a data file, and linked to one or more other data subsets by means of common identifiers, it is possible to apply a SQL query from the data files thanks to the powerful tool  <a href="http://harelba.github.io/q/" target="_blank">q - Text as Data</a> which allows to apply SQL queries directly to CSV and TSV files as shown below:</p>
 <p><center>
 <a href="../images/figure41.png" data-lightbox="fig41"><img src="../images/figure41.png" width="600px"></a>
-<br><p class="plegend">legend</p>
+<br><p class="plegend center">SQL query corresponding to the API query</p>
 </center><br><br></p>
-<p>In addition, if you want to display information about the API request, just add '/debug' at the end of the request, as shown below:
+<p>In addition, if you want to display information about the API query, just add '/debug' at the end of the query, as shown below:
 <br>
 <a href="http://pmb-bordeaux.fr/getdata/tsv/frim1/(activome,qNMR_metabo)/treatment/Control/debug" target="_blank">http://pmb-bordeaux.fr/getdata/tsv/frim1/(activome,qNMR_metabo)/treatment/Control/debug</a></p>
                 
@@ -383,6 +493,41 @@ Since each data subset being a data file, and linked to one or more other data s
       
         
 <footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../data_explorer/" title="Data Explorer" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Data Explorer
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../json-schema/" title="JSON schema" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                JSON schema
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">

@@ -37,6 +37,12 @@ p.plegend {
     margin: 0 0 0 0;
 }
 
+p.center {
+    text-align: center;
+}
+
 p.justify {
     text-align: justify;
 }
+
+p { text-align: justify; }

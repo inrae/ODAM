@@ -199,6 +199,142 @@
 
 
   <li class="md-nav__item">
+    <a href="../install/" title="Installation" class="md-nav__link">
+      Installation
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Using ODAM
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="./" title="Using ODAM" class="md-nav__link md-nav__link--active">
+      Using ODAM
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#using-odam" class="md-nav__link">
+    Using ODAM
+  </a>
+  
+    <nav class="md-nav" aria-label="Using ODAM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#export-data-from-your-web-browser" class="md-nav__link">
+    Export data from your web browser
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-api-with-r" class="md-nav__link">
+    Using the API with R
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reproducible-research-with-jupyter-notebooks" class="md-nav__link">
+    Reproducible research with Jupyter notebooks
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advantages-of-this-approach" class="md-nav__link">
+    Advantages of this approach
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../data_explorer/" title="Data Explorer" class="md-nav__link">
+      Data Explorer
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../api/" title="Web API" class="md-nav__link">
+      Web API
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../json-schema/" title="JSON schema" class="md-nav__link">
+      JSON schema
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
     <a href="../about/" title="About" class="md-nav__link">
       About
     </a>
@@ -231,9 +367,43 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#services-provides-by-odam" class="md-nav__link">
-    Services provides by ODAM
+  <a href="#using-odam" class="md-nav__link">
+    Using ODAM
   </a>
+  
+    <nav class="md-nav" aria-label="Using ODAM">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#export-data-from-your-web-browser" class="md-nav__link">
+    Export data from your web browser
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#using-the-api-with-r" class="md-nav__link">
+    Using the API with R
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#reproducible-research-with-jupyter-notebooks" class="md-nav__link">
+    Reproducible research with Jupyter notebooks
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advantages-of-this-approach" class="md-nav__link">
+    Advantages of this approach
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -255,22 +425,63 @@
                 
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
 <hr />
-<h2 id="services-provides-by-odam">Services provides by ODAM<a class="headerlink" href="#services-provides-by-odam" title="Permanent link">&para;</a></h2>
+<h2 id="using-odam">Using ODAM<a class="headerlink" href="#using-odam" title="Permanent link">&para;</a></h2>
 <p>The overall usage scheme of ODAM is shown in the following figure:</p>
 <p><center>
 <a href="../images/figure31.png" data-lightbox="fig31"><img src="../images/figure31.png" width="600px"></a>
-<br><p class="plegend">The overall usage scheme of ODAM </p>
+<br><p class="plegend center">The overall usage scheme of ODAM </p>
 </center><br></p>
+<p>As input, we have the various data files from the experiment. You can view the data graphically (see <a href="../data_explorer">Data Explorer</a>) and you can also merge certain files based on common identifiers and then select a sub-part. The output is the file resulting from the query.  </p>
+<p>The central idea which has been the founding idea of ODAM, is that data producers "just" have to drag and drop their data tables onto a storage space, which depending on the chosen infrastructure can be local (i.e. their Desktop Computer, or a <a href="https://en.wikipedia.org/wiki/Network-attached_storage" target="_blank">NAS</a>) or remote (<a href="https://en.wikipedia.org/wiki/Virtual_disk_and_virtual_drive" target="_blank">virtual disk space</a>). See Installation section.</p>
 <p><center>
 <a href="../images/figure32.png" data-lightbox="fig32"><img src="../images/figure32.png" width="600px"></a>
 <br><p class="plegend justify">The central idea is that data producers "just" have to drag and drop their data tables onto a storage space depending on the chosen infrastructure (local, intranet, internet). An API (Application Programming Interface) layer is implemented which allows data handling (data selection and merging)
 </p>
 </center><br></p>
+<p>So simply dropping data files (along with two additional metadata files) on the storage space allows users to access them through web services. This means there is no need for additional configuration on the server. The dataset must first be previously formatted according to precise rules which requires that some good practices be followed and adhered to. See Data collection and preparation section.</p>
+<p><strong>Note</strong>: In case of having a remote storage space, the <a href="https://www.syncany.org/" target="_blank">Syncany solution</a> (Dropbox-like) might be a good choice. Several other tools or approaches can be used as: <a href="https://winscp.net/eng/index.php" target="_blank">WinSCP</a>, <a href="https://www.samba.org/samba/what_is_samba.html" target="_blank">SAMBA</a>, <a href="https://en.wikipedia.org/wiki/Rsync" target="_blank">rsync</a>, ...</p>
+<p>The ODAM software embeds an API (<a href="https://en.wikipedia.org/wiki/Application_programming_interface" target="_blank">Application Programming Interface</a>) layer which offers data selection and merging services.  It is this API layer that allows interoperability between the different tables and the applications that will be able to use them (See Appendix 3).  </p>
+<p>With the help of this layer, it opens up a whole ecosystem of potential applications, depending on your needs but also on your skills in the proposed tools.</p>
 <p><center>
 <a href="../images/figure33.png" data-lightbox="fig33"><img src="../images/figure33.png" width="600px"></a>
 <br><p class="plegend justify">From the set of data files (which are uncombined tables, each corresponding to a particular observational unit that we name an entity), the user can: 1) Visualize the data associated with their metadata according to several criteria and in a completely interactive way with the help of the data explorer. 2) Export in tabular form subsets selected according to his criteria with combined, merged data. 3) Build and test its models more easily using a scripting language such as R, which allows it to repeat different scenarios according to a variety of parameters.  An R package allows to perform extractions according to the same criteria as those proposed in the data explorer. All this is possible thanks to the API layer, which opens up a whole ecosystem of potential applications.
 </p>
 </center><br></p>
+<hr />
+<h3 id="export-data-from-your-web-browser">Export data from your web browser<a class="headerlink" href="#export-data-from-your-web-browser" title="Permanent link">&para;</a></h3>
+<p>You can retrieve data directly from your web browser based on the API. To understand the syntax, see <a href="../api">Web API</a>. </p>
+<div class="admonition abstract">
+<p class="admonition-title">Test from the API Documentation on SwaggerHub</p>
+</div>
+<dl>
+<dd><a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.0.1-oas3/" target="_blank">https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.0.1-oas3/</a></dd>
+</dl>
+<p><strong>Example</strong> :</p>
+<ul>
+<li>
+<dl>
+<dt>First, view the subset list of a dataset along with the metadata</dt>
+<dd><a href="https://pmb-bordeaux.fr/getdata/xml/frim1" target="_blank">https://pmb-bordeaux.fr/getdata/xml/frim1</a></dd>
+</dl>
+</li>
+<li>
+<dl>
+<dt>Then, retrieve  a data table by merging “Activome Features” data (enzymes) and “NMR Compounds quantification” data</dt>
+<dd><a href="https://pmb-bordeaux.fr/getdata/tsv/frim1/(activome,qNMR_metabo)">https://pmb-bordeaux.fr/getdata/tsv/frim1/(activome,qNMR_metabo)</a></dd>
+</dl>
+</li>
+</ul>
+<p>If you have associated the files having the extension '.txt' (tab as separator) with e.g. MS Excel, then just click on it to open it.</p>
+<p>For more details on how API querie work, see a <a href="../api/#very-detailed-example-of-api-querying">very detailed example of api querying</a>.</p>
+<hr />
+<h3 id="using-the-api-with-r">Using the API with R<a class="headerlink" href="#using-the-api-with-r" title="Permanent link">&para;</a></h3>
+<p>It is possible to adopt more efficient approaches to analyze data, e.g for automating various processing operations, or for allowing users to select subsets of data and then carry out numerous repetitions of complex processing operations according to a wide variety of parameters (scenarios).</p>
+<p>For this purpose we have developed an R (Rodam) package that allows data extraction according to the <a href="../api">API schema</a>.</p>
+<p>The Rodam package provides a set of functions to retrieve data and their metadata from data sets formatted according to the ODAM data structuring approach. </p>
+<div class="admonition abstract">
+<p class="admonition-title">Vignette 'Demonstration of the functionalities of the R ODAM package'</p>
+<p><a href="https://cran.r-project.org/web/packages/Rodam/vignettes/Rodam.html" target="_blank">https://cran.r-project.org/web/packages/Rodam/vignettes/Rodam.html</a></p>
+</div>
 <p><center>
 <a href="../images/figure34.png" data-lightbox="fig34"><img src="../images/figure34.png" width="600px"></a>
 <br><p class="plegend justify">Illustration of the use of the API under R using the Rodam package. First of all (top) one can easily view the global structure of the data set. Then (bottom), one can apply a query for a single sample (here id 365) by returning a merge of several subsets (here plant+samples).
@@ -280,6 +491,30 @@
 <a href="../images/figure35.png" data-lightbox="fig35"><img src="../images/figure35.png" width="600px"></a>
 <br><p class="plegend justify">Illustration of the use of the API under R using the Rodam package. Visualization of set intersections between data subset based on the sample identifier and using the UpSetR  package</p>
 </center><br></p>
+<hr />
+<h3 id="reproducible-research-with-jupyter-notebooks">Reproducible research with Jupyter notebooks<a class="headerlink" href="#reproducible-research-with-jupyter-notebooks" title="Permanent link">&para;</a></h3>
+<p>In order to illustrate a reproducible research process, we provide examples of <a href="https://jupyter.org/" target="_blank">Jupyter Notebooks</a> (R &amp; Python) based on the ODAM Web API, as well as links to view them (Jupyter nbviewer, CodeOcean) and re-run them (<a href="https://mybinder.org/" target="_blank">MyBinder</a>, <a href="https://codeocean.com/" target="_blank">CodeOcean</a>)</p>
+<div class="admonition abstract">
+<p class="admonition-title">GitHub</p>
+<p><a href="https://github.com/djacob65/binder_odam" target="_blank">https://github.com/djacob65/binder_odam</a></p>
+</div>
+<div class="admonition abstract">
+<p class="admonition-title">CodeOcean</p>
+<p>Rodam API Demo : <a href="https://doi.org/10.24433/CO.8981049.v1" target="_blank">https://doi.org/10.24433/CO.8981049.v1</a><br>
+PyODAM API Demo : <a href="https://doi.org/10.24433/CO.0011270.v1" target="_blank">https://doi.org/10.24433/CO.0011270.v1</a></p>
+</div>
+<p>To Install Jupyter Notebook linked to your R version (and also Python), here is a <a href="../pdf/R_Jupyter_Install.pdf" target="_blank">simple tutorial</a>.</p>
+<p><strong>Note</strong> : A good way to share your notebooks with colleagues or project members is to install the <a href="http://tljh.jupyter.org/en/latest/" target="_blank">Littlest JupyterHub</a> in a <a href="https://en.wikipedia.org/wiki/Data_center" target="_blank">datacenter</a> (institutional or in the cloud).  It is a simple JupyterHub distribution for a small (0-100) number of users on a single server.</p>
+<hr />
+<h3 id="advantages-of-this-approach">Advantages of this approach<a class="headerlink" href="#advantages-of-this-approach" title="Permanent link">&para;</a></h3>
+<p>From a user's point of view, data collection should be done as early as possible in a project. There are several reasons:</p>
+<ul>
+<li><p>First, experimental design is defined very early, so it is possible to share in the form of a spreadsheet the list of identifiers of individuals with their unique identifiers (plant identifiers) associated with the particular features defining the factorial group (metadata) such as: genotype, the type of treatment, its position in the greenhouse or in the field, … Thus, the array of the "plants" may be created even before planting the seeds. So too, the array of the "harvesting" can be done as soon as harvested, before any analysis. Then, each analysis comes complementing the dataset as soon as they produce their data subset.</p></li>
+<li><p>Whether the data are acquired in the field or in the laboratory, their acquisition is carried out gradually, and is modified according to the first statistical treatments and preliminary results. This iterative aspect of production requires traceability and management tools. Typically, an experiment design often implies if followed as planned plenty of samples due to the multiplication of several numbers: number of factors X the number of factor levels X number of biological replication X different types of analysis X number of technical replication for each analysis type. Giving the possibility to explore the preliminary data (e.g. the distributions of some features of the samples), will allow scientists to eliminate outliers, thus avoiding subsequent analysis of these samples.</p></li>
+<li><p>Data have to be accessible to everyone as soon as they are produced, allowing other data producers in the data string to link the identifiers of their analytical samples within the information system and subsequently allowing all partners to gather data with the metadata (factors, dates, ... ) of the Design of Experiment. By proceeding in this way, we ensure data coherence all the experiment time, and thus it becomes useless for each member to proceed a laborious investigation to find out who possesses the right identifiers.</p></li>
+</ul>
+<p>From a technical point of view, the great advantage is to avoid the implementation of a complex data management system (requiring a data model) given that many changes can occur during the project. (possibility of new analysis, new measures or renouncing some others, ...). It also facilitates the subsequent publication of data: either the data can serve to fill in an existing database or the data can be broadcast through a web-service approach with the associated metadata. See Data publishing.</p>
+<p>Tasks such as combining several data files are time-consuming and require repetitive and tedious handling. Similarly, when modeling, subsets have to be selected and many scenarios tested with different parameters. If performed manually (i.e., multiple copy-paste in a spreadsheet) these tasks are  not only tedious but prone to handling errors. ODAM software is designed to perform precisely these tasks by providing several services for greater flexibility in data handling. </p>
                 
                   
                 
@@ -296,6 +531,41 @@
       
         
 <footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="../install/" title="Installation" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Installation
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="../data_explorer/" title="Data Explorer" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Data Explorer
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">

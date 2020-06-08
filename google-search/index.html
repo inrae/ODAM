@@ -175,7 +175,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../getting_started/" title="Getting started" class="md-nav__link">
+    <a href="../getting-started/" title="Getting started" class="md-nav__link">
       Getting started
     </a>
   </li>
@@ -187,7 +187,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../dataset_example/" title="A dataset example" class="md-nav__link">
+    <a href="../dataset-example/" title="A dataset example" class="md-nav__link">
       A dataset example
     </a>
   </li>
@@ -211,7 +211,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../data_type/" title="Data collection and preparation" class="md-nav__link">
+    <a href="../data-type/" title="Data collection and preparation" class="md-nav__link">
       Data collection and preparation
     </a>
   </li>
@@ -235,7 +235,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../data_explorer/" title="Data Explorer" class="md-nav__link">
+    <a href="../data-explorer/" title="Data Explorer" class="md-nav__link">
       Data Explorer
     </a>
   </li>
@@ -303,8 +303,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#how-to-get-google-search-results" class="md-nav__link">
-    How to get google search results
+  <a href="#find-a-dataset-on-google-search" class="md-nav__link">
+    Find a dataset on Google Search
   </a>
   
 </li>
@@ -327,57 +327,61 @@
                 
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
 <hr />
-<h3 id="how-to-get-google-search-results">How to get google search results<a class="headerlink" href="#how-to-get-google-search-results" title="Permanent link">&para;</a></h3>
+<h3 id="find-a-dataset-on-google-search">Find a dataset on Google Search<a class="headerlink" href="#find-a-dataset-on-google-search" title="Permanent link">&para;</a></h3>
+<p>The purpose of this R script is to test if a dataset can be "findable" by a search engine such as Google. For this test, we have chosen our example dataset 'frim1'. The <strong>searched keywords</strong> are thus '<strong>frim1</strong>' associated with '<strong>dataset</strong>'. See the code and its results.</p>
+<hr />
 <p>Find all the links that resulted from a keyword search on google</p>
-<ul>
-<li><a href="https://stackoverflow.com/questions/32889136/how-to-get-google-search-results" target="_blank">https://stackoverflow.com/questions/32889136/how-to-get-google-search-results</a></li>
-</ul>
 <div class="tabbed-set" data-tabs="1:2">
-<input name="__tabbed_1" type="radio" id="__tabbed_1_1" checked="checked" /><label for="__tabbed_1_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="nf">library</span><span class="p">(</span><span class="n">XML</span><span class="p">)</span>
-<span class="nf">library</span><span class="p">(</span><span class="n">RCurl</span><span class="p">)</span>
-
-<span class="c1"># Build the Google Search URL</span>
-<span class="n">getGoogleURL</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">search.term</span><span class="p">,</span> <span class="n">domain</span> <span class="o">=</span> <span class="s">&#39;.com&#39;</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span> 
-<span class="p">{</span>
-    <span class="n">search.term</span> <span class="o">&lt;-</span> <span class="nf">gsub</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">,</span> <span class="s">&#39;%20&#39;</span><span class="p">,</span> <span class="n">search.term</span><span class="p">)</span>
-    <span class="nf">if</span><span class="p">(</span><span class="n">quotes</span><span class="p">)</span> <span class="n">search.term</span> <span class="o">&lt;-</span> <span class="nf">paste</span><span class="p">(</span><span class="s">&#39;%22&#39;</span><span class="p">,</span> <span class="n">search.term</span><span class="p">,</span> <span class="s">&#39;%22&#39;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span> 
-        <span class="n">getGoogleURL</span> <span class="o">&lt;-</span> <span class="nf">paste</span><span class="p">(</span><span class="s">&#39;http://www.google&#39;</span><span class="p">,</span> <span class="n">domain</span><span class="p">,</span> <span class="s">&#39;/search?q=&#39;</span><span class="p">,</span>
-        <span class="n">search.term</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
-<span class="p">}</span>
-
-<span class="c1"># Do the search </span>
-<span class="n">getGoogleLinks</span> <span class="o">&lt;-</span> <span class="nf">function</span><span class="p">(</span><span class="n">search.term</span><span class="p">,</span> <span class="n">domain</span> <span class="o">=</span> <span class="s">&#39;.com&#39;</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span> 
-<span class="p">{</span>
-   <span class="n">google.url</span> <span class="o">&lt;-</span> <span class="nf">getGoogleURL</span><span class="p">(</span><span class="n">search.term</span><span class="o">=</span><span class="n">search.term</span><span class="p">,</span> <span class="n">domain</span> <span class="o">=</span> <span class="n">domain</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="n">quotes</span><span class="p">)</span>
-   <span class="n">doc</span> <span class="o">&lt;-</span> <span class="nf">getURL</span><span class="p">(</span><span class="n">google.url</span><span class="p">,</span> <span class="n">httpheader</span> <span class="o">=</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;User-Agent&quot;</span> <span class="o">=</span> <span class="s">&quot;R (2.10.0)&quot;</span><span class="p">))</span>
-   <span class="n">html</span> <span class="o">&lt;-</span> <span class="nf">htmlTreeParse</span><span class="p">(</span><span class="n">doc</span><span class="p">,</span> <span class="n">useInternalNodes</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="nf">function </span><span class="p">(</span><span class="kc">...</span><span class="p">){})</span>
-   <span class="n">nodes</span> <span class="o">&lt;-</span> <span class="nf">getNodeSet</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s">&quot;//div[@class=&#39;kCrYT&#39;]//a&quot;</span><span class="p">)</span>
-   <span class="n">links</span> <span class="o">&lt;-</span> <span class="nf">sapply</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">x</span> <span class="o">&lt;-</span> <span class="nf">xmlAttrs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="n">[[</span><span class="s">&quot;href&quot;</span><span class="n">]]</span><span class="p">)</span>
-   <span class="n">links</span> <span class="o">&lt;-</span> <span class="n">links</span><span class="nf">[grep</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&quot;google%s/search&quot;</span><span class="p">,</span><span class="n">domain</span><span class="p">),</span> <span class="n">links</span><span class="p">,</span> <span class="n">invert</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span><span class="n">]</span>
-   <span class="nf">gsub</span><span class="p">(</span><span class="s">&#39;/url.q=&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="nf">gsub</span><span class="p">(</span><span class="s">&#39;&amp;sa.+$&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">links</span><span class="p">))</span>
-<span class="p">}</span>
+<input name="__tabbed_1" type="radio" id="__tabbed_1_1" checked="checked" /><label for="__tabbed_1_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="nf">library</span><span class="p">(</span><span class="n">RCurl</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">XML</span><span class="p">)</span>
 
 <span class="c1"># Search terms</span>
-<span class="n">search.term</span> <span class="o">&lt;-</span> <span class="s">&quot;frim1 dataset&quot;</span>
+<span class="n">searchTerms</span> <span class="o">&lt;-</span> <span class="s">&quot;frim1 dataset&quot;</span>
+<span class="n">language</span> <span class="o">&lt;-</span> <span class="s">&quot;en&quot;</span>
+
+<span class="c1"># Collapse search terms.</span>
+<span class="n">entry</span> <span class="o">&lt;-</span> <span class="nf">paste</span><span class="p">(</span><span class="n">searchTerms</span><span class="p">,</span> <span class="n">collapse</span><span class="o">=</span><span class="s">&quot;+&quot;</span><span class="p">)</span>
+<span class="c1"># Do the search </span>
+<span class="n">siteHTML</span> <span class="o">&lt;-</span> <span class="nf">getForm</span><span class="p">(</span><span class="s">&quot;http://www.google.com/search&quot;</span><span class="p">,</span>
+                    <span class="n">hl</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="n">entry</span><span class="p">,</span>
+                    <span class="n">btnG</span><span class="o">=</span><span class="s">&quot;Search&quot;</span><span class="p">)</span>
+<span class="c1"># Extract nodes with the links</span>
+<span class="n">html</span> <span class="o">&lt;-</span> <span class="nf">htmlTreeParse</span><span class="p">(</span><span class="n">siteHTML</span><span class="p">,</span> <span class="n">useInternalNodes</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="nf">function </span><span class="p">(</span><span class="kc">...</span><span class="p">){})</span>
+<span class="n">nodes</span> <span class="o">&lt;-</span> <span class="nf">getNodeSet</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s">&quot;//div[@class=&#39;kCrYT&#39;]//a&quot;</span><span class="p">)</span>
 
 <span class="c1"># Get all the links</span>
-<span class="n">links</span> <span class="o">&lt;-</span> <span class="nf">getGoogleLinks</span><span class="p">(</span><span class="n">search.term</span><span class="p">,</span> <span class="n">domain</span> <span class="o">=</span> <span class="s">&#39;.fr&#39;</span><span class="p">,</span> <span class="n">quotes</span><span class="o">=</span><span class="s">&quot;FALSE&quot;</span><span class="p">)</span>
-<span class="n">links</span>
+<span class="n">links</span> <span class="o">&lt;-</span> <span class="nf">sapply</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">x</span> <span class="o">&lt;-</span> <span class="nf">xmlAttrs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="n">[[</span><span class="s">&quot;href&quot;</span><span class="n">]]</span><span class="p">)</span>
+<span class="n">links</span> <span class="o">&lt;-</span> <span class="n">links</span><span class="nf">[grep</span><span class="p">(</span><span class="s">&quot;google.com/search&quot;</span><span class="p">,</span> <span class="n">links</span><span class="p">,</span> <span class="n">invert</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span><span class="n">]</span>
+<span class="n">links</span> <span class="o">&lt;-</span> <span class="nf">gsub</span><span class="p">(</span><span class="s">&#39;/url.q=&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="nf">gsub</span><span class="p">(</span><span class="s">&#39;&amp;sa.+$&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">links</span><span class="p">))</span>
 
-<span class="c1"># Select only those with a DOI</span>
-<span class="n">links[</span> <span class="nf">nchar</span><span class="p">(</span><span class="nf">gsub</span><span class="p">(</span><span class="s">&#39;^http.+$&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="nf">gsub</span><span class="p">(</span><span class="s">&#39;^.+doi:&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">links</span><span class="p">)))</span><span class="o">&gt;</span><span class="m">0</span> <span class="n">]</span>
+<span class="c1"># Compile into a data.frame</span>
+<span class="n">df</span> <span class="o">&lt;-</span> <span class="nf">data.frame</span><span class="p">(</span>
+   <span class="n">label</span><span class="o">=</span><span class="nf">sapply</span><span class="p">(</span> <span class="nf">getNodeSet</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s">&quot;//div[@class=&#39;BNeawe vvjwJb AP7Wnd&#39;]&quot;</span><span class="p">),</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>  <span class="nf">xmlValue</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">}</span> <span class="p">),</span>
+   <span class="n">links</span><span class="o">=</span><span class="n">links</span><span class="p">,</span>
+   <span class="n">stringsAsFactors</span><span class="o">=</span><span class="kc">FALSE</span>
+<span class="p">)</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">df</span><span class="p">,</span><span class="n">right</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>
 </code></pre></div></div>
-<input name="__tabbed_1" type="radio" id="__tabbed_1_2" /><label for="__tabbed_1_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="s">&quot;https://data.inra.fr/dataset.xhtml%3FpersistentId%3Ddoi:10.15454/95JUTK&quot;</span>                   
-<span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="s">&quot;https://github.com/INRA/ODAM/wiki&quot;</span>                                                         
-<span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="s">&quot;https://hal.archives-ouvertes.fr/hal-02070883/file/Howto_FAIR_DataLifecycle_Aprill2019.pdf&quot;</span>
-<span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="s">&quot;https://hal-cnrs.archives-ouvertes.fr/hal-02611223/document&quot;</span>                               
-<span class="p">[</span><span class="mi">5</span><span class="p">]</span> <span class="s">&quot;http://services.cbib.u-bordeaux.fr/MERYB/DATA/protocols_upload/1_5_Analytical_177.pdf&quot;</span>     
-<span class="p">[</span><span class="mi">6</span><span class="p">]</span> <span class="s">&quot;https://zenodo.org/record/154041&quot;</span>                                                          
-<span class="p">[</span><span class="mi">7</span><span class="p">]</span> <span class="s">&quot;https://fr.slideshare.net/danieljacob771282/odam-open-data-access-and-mining&quot;</span>              
-<span class="p">[</span><span class="mi">8</span><span class="p">]</span> <span class="s">&quot;https://zenodo.cern.ch/record/154041&quot;</span>                                                      
-<span class="p">[</span><span class="mi">9</span><span class="p">]</span> <span class="s">&quot;https://cran.r-project.org/web/packages/Rodam/vignettes/Rodam.html&quot;</span>
-
-<span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="s">&quot;https://data.inra.fr/dataset.xhtml%3FpersistentId%3Ddoi:10.15454/95JUTK&quot;</span>
+<input name="__tabbed_1" type="radio" id="__tabbed_1_2" /><label for="__tabbed_1_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>  <span class="n">label</span>                                                                    
+<span class="mi">1</span> <span class="n">FRIM</span> <span class="o">-</span> <span class="n">Fruit</span> <span class="n">Integrative</span> <span class="n">Modelling</span> <span class="o">-</span> <span class="n">Experimental</span> <span class="p">...</span> <span class="o">-</span> <span class="n">Data</span> <span class="n">Inra</span>        
+<span class="mi">2</span> <span class="p">[</span><span class="n">PDF</span><span class="p">]</span> <span class="n">pe</span><span class="o">-</span><span class="n">pa</span> <span class="err">–</span> <span class="n">tomato</span> <span class="n">frim1</span> <span class="o">-</span> <span class="n">CBIB</span>                                        
+<span class="mi">3</span> <span class="n">Home</span> <span class="err">·</span> <span class="n">inrae</span><span class="o">/</span><span class="n">ODAM</span> <span class="n">Wiki</span> <span class="err">·</span> <span class="n">GitHub</span>                                          
+<span class="mi">4</span> <span class="p">[</span><span class="n">PDF</span><span class="p">]</span> <span class="n">Data</span> <span class="n">Capture</span> <span class="o">?</span> <span class="n">Daniel</span> <span class="n">Jacob</span> <span class="n">INRA</span> <span class="n">UMR</span> <span class="mi">1332</span> <span class="n">BFP</span>                      
+<span class="mi">5</span> <span class="p">[</span><span class="n">PDF</span><span class="p">]</span> <span class="n">Modeling</span> <span class="n">the</span> <span class="n">growth</span> <span class="n">of</span> <span class="n">tomato</span> <span class="n">fruits</span> <span class="n">based</span> <span class="n">on</span> <span class="n">enzyme</span> <span class="p">...</span> <span class="o">-</span> <span class="n">HAL</span><span class="o">-</span><span class="n">CNRS</span>
+<span class="mi">6</span> <span class="n">FRIM</span> <span class="o">-</span> <span class="n">Fruit</span> <span class="n">Integrative</span> <span class="n">Modelling</span> <span class="o">|</span> <span class="n">Zenodo</span>                              
+<span class="mi">7</span> <span class="n">Rodam</span> <span class="n">package</span> <span class="o">-</span> <span class="n">CRAN</span>                                                     
+<span class="mi">8</span> <span class="nl">Odam</span><span class="p">:</span> <span class="n">Open</span> <span class="n">Data</span><span class="p">,</span> <span class="n">Access</span> <span class="n">and</span> <span class="n">Mining</span> <span class="o">-</span> <span class="n">SlideShare</span>                          
+<span class="mi">9</span> <span class="n">Make</span> <span class="n">your</span> <span class="n">data</span> <span class="n">great</span> <span class="n">now</span> <span class="o">-</span> <span class="n">SlideShare</span>                                    
+  <span class="n">links</span>                                                                                     
+<span class="mi">1</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//data.inra.fr/dataset.xhtml%3FpersistentId%3Ddoi:10.15454/95JUTK                   </span>
+<span class="mi">2</span> <span class="nl">http</span><span class="p">:</span><span class="c1">//services.cbib.u-bordeaux.fr/MERYB/DATA/protocols_upload/1_5_Analytical_177.pdf     </span>
+<span class="mi">3</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//github.com/INRA/ODAM/wiki                                                         </span>
+<span class="mi">4</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//hal.archives-ouvertes.fr/hal-02070883/file/Howto_FAIR_DataLifecycle_Aprill2019.pdf</span>
+<span class="mi">5</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//hal-cnrs.archives-ouvertes.fr/hal-02611223/document                               </span>
+<span class="mi">6</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//zenodo.org/record/154041                                                          </span>
+<span class="mi">7</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//cran.r-project.org/web/packages/Rodam/vignettes/Rodam.html                        </span>
+<span class="mi">8</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//www.slideshare.net/danieljacob771282/odam-open-data-access-and-mining             </span>
+<span class="mi">9</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//www.slideshare.net/danieljacob771282/make-your-data-great-now     </span>
 </code></pre></div></div>
 </div>
                 

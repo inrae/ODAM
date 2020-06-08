@@ -328,12 +328,17 @@
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
 <hr />
 <h3 id="odam-data-package-from-a-dataverse-repository">ODAM data-package from a Dataverse repository<a class="headerlink" href="#odam-data-package-from-a-dataverse-repository" title="Permanent link">&para;</a></h3>
-<p>Example of a session with R showing how it is possible to retrieve an ODAM <a href="https://datahub.io/docs/data-packages" target="_blank">datapackage</a> using a keyword from <a href="https://data.inra.fr" target="_blank">Data INRAE</a>, a <a href="https://dataverse.org/" target="_blank">Dataverse</a> repository.</p>
+<p>Example of a session with R showing how it is possible to retrieve an ODAM <a href="https://datahub.io/docs/data-packages" target="_blank">datapackage</a> using a keyword from <a href="https://data.inra.fr" target="_blank">Data INRAE</a><sup>1</sup>, a <a href="https://dataverse.org/" target="_blank">Dataverse</a> repository.</p>
+<p><font size=-1>1 re3data.org: Data INRAE; editing status 2020-01-16; re3data.org - Registry of Research Data Repositories. <a href="http://doi.org/10.17616/R3DJ4J" target="_blank">http://doi.org/10.17616/R3DJ4J</a></font></p>
+
+<hr>
+
 <p><strong>Introduction to Dataverse with R</strong></p>
 <ul>
 <li><a href="https://cran.r-project.org/web/packages/dataverse/vignettes/A-introduction.html" target="_blank">https://cran.r-project.org/web/packages/dataverse/vignettes/A-introduction.html</a></li>
 </ul>
-<div class="highlight"><pre><span></span><code><span class="nf">library</span><span class="p">(</span><span class="n">dataverse</span><span class="p">)</span>
+<div class="tabbed-set" data-tabs="1:2">
+<input name="__tabbed_1" type="radio" id="__tabbed_1_1" checked="checked" /><label for="__tabbed_1_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="nf">library</span><span class="p">(</span><span class="n">dataverse</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">jsonvalidate</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span>
@@ -402,9 +407,69 @@
 <span class="c1"># Parse the JSON object to a data.frame</span>
 <span class="n">dp</span> <span class="o">&lt;-</span> <span class="nf">fromJSON</span><span class="p">(</span><span class="n">dp_json</span><span class="p">)</span>
 
+<span class="c1"># View metadata</span>
+<span class="nf">sapply</span><span class="p">(</span> <span class="nf">ls</span><span class="p">(</span><span class="n">dflist</span><span class="p">),</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span> <span class="n">dflist[</span><span class="nf">[as.character</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="n">]][[idx]]</span> <span class="p">})</span>
+
 <span class="c1"># Do something with dp ...</span>
-<span class="n">dp</span><span class="o">$</span><span class="n">resources[</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;title&#39;</span><span class="p">,</span> <span class="s">&#39;cv_term_name&#39;</span><span class="p">)</span> <span class="n">]</span>
-</code></pre></div>
+<span class="c1"># dp$resources[ c(&#39;name&#39;, &#39;title&#39;, &#39;cv_term_name&#39;) ]</span>
+</code></pre></div></div>
+<input name="__tabbed_1" type="radio" id="__tabbed_1_2" /><label for="__tabbed_1_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>$`categories`
+[1] &quot;Data&quot;          &quot;Documentation&quot;
+
+$dataFile
+$dataFile$`id`
+[1] 99623
+
+$dataFile$persistentId
+[1] &quot;doi:10.15454/95JUTK/BYIUPT&quot;
+
+$dataFile$pidURL
+[1] &quot;https://doi.org/10.15454/95JUTK/BYIUPT&quot;
+
+$dataFile$filename
+[1] &quot;datapackage.json&quot;
+
+$dataFile$contentType
+[1] &quot;application/json&quot;
+
+$dataFile$filesize
+[1] 38124
+
+$dataFile$description
+[1] &quot;ODAM datapackage based on JSON Schema&quot;
+
+$dataFile$storageIdentifier
+[1] &quot;s3://prod-datainra:1725f91ea3a-ca07fb5b738a&quot;
+
+$dataFile$rootDataFileId
+[1] -1
+
+$dataFile$md5
+[1] &quot;795d1dfccf94106121b996734b2f8fdb&quot;
+
+$dataFile$checksum
+$dataFile$checksum$`type`
+[1] &quot;MD5&quot;
+
+$dataFile$checksum$value
+[1] &quot;795d1dfccf94106121b996734b2f8fdb&quot;
+
+$datasetVersionId
+[1] 261838
+
+$description
+[1] &quot;ODAM datapackage based on JSON Schema&quot;
+
+$label
+[1] &quot;datapackage.json&quot;
+
+$restricted
+[1] FALSE
+
+$version
+[1] 1
+</code></pre></div></div>
+</div>
                 
                   
                 

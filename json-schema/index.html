@@ -461,12 +461,22 @@
 <div class="tabbed-set" data-tabs="2:2">
 <input name="__tabbed_2" type="radio" id="__tabbed_2_1" checked="checked" /><label for="__tabbed_2_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Parse the JSON object to a data.frame</span>
 <span class="n">dp</span> <span class="o">&lt;-</span> <span class="nf">fromJSON</span><span class="p">(</span><span class="n">dp_json</span><span class="p">)</span>
-<span class="n">resources</span> <span class="o">&lt;-</span> <span class="n">dp</span><span class="o">$</span><span class="n">resources</span>
+
+<span class="c1"># View licenses</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">dp</span><span class="o">$</span><span class="n">licenses</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>
+</code></pre></div></div>
+<input name="__tabbed_2" type="radio" id="__tabbed_2_2" /><label for="__tabbed_2_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>  <span class="n">name</span>       <span class="n">path</span>                                     <span class="n">title</span>                                    
+<span class="mi">1</span> <span class="n">ODC</span><span class="o">-</span><span class="n">BY</span><span class="o">-</span><span class="mf">1.0</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//opendatacommons.org/licenses/by/ Open Data Commons Attribution License 1.0</span>
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="3:2">
+<input name="__tabbed_3" type="radio" id="__tabbed_3_1" checked="checked" /><label for="__tabbed_3_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="n">resources</span> <span class="o">&lt;-</span> <span class="n">dp</span><span class="o">$</span><span class="n">resources</span>
 
 <span class="c1"># List some metadata about the dataset</span>
 <span class="n">resources[</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">,</span> <span class="s">&quot;joinkey&quot;</span><span class="p">,</span> <span class="s">&quot;path&quot;</span><span class="p">)</span> <span class="n">]</span>
 </code></pre></div></div>
-<input name="__tabbed_2" type="radio" id="__tabbed_2_2" /><label for="__tabbed_2_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>                <span class="n">name</span>                                   <span class="n">title</span> <span class="n">identifier</span> <span class="n">obtainedFrom</span>   <span class="n">joinkey</span>                                                        <span class="n">path</span>
+<input name="__tabbed_3" type="radio" id="__tabbed_3_2" /><label for="__tabbed_3_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>                <span class="n">name</span>                                   <span class="n">title</span> <span class="n">identifier</span> <span class="n">obtainedFrom</span>   <span class="n">joinkey</span>                                                        <span class="n">path</span>
 <span class="mi">1</span>             <span class="n">plants</span>                          <span class="n">Plant</span> <span class="n">features</span>    <span class="n">PlantID</span>         <span class="o">&lt;</span><span class="n">NA</span><span class="o">&gt;</span>      <span class="o">&lt;</span><span class="n">NA</span><span class="o">&gt;</span>            <span class="nl">https</span><span class="p">:</span><span class="c1">//pmb-bordeaux.fr/getdata/tsv/frim1/plants</span>
 <span class="mi">2</span>            <span class="n">samples</span>                         <span class="n">Sample</span> <span class="n">features</span>   <span class="n">SampleID</span>       <span class="n">plants</span>   <span class="n">PlantID</span>           <span class="nl">https</span><span class="p">:</span><span class="c1">//pmb-bordeaux.fr/getdata/tsv/frim1/samples</span>
 <span class="mi">3</span>           <span class="n">aliquots</span>                       <span class="n">Aliquots</span> <span class="n">features</span>  <span class="n">AliquotID</span>      <span class="n">samples</span>  <span class="n">SampleID</span>          <span class="nl">https</span><span class="p">:</span><span class="c1">//pmb-bordeaux.fr/getdata/tsv/frim1/aliquots</span>
@@ -482,8 +492,8 @@
 </code></pre></div></div>
 </div>
 <hr />
-<div class="tabbed-set" data-tabs="3:2">
-<input name="__tabbed_3" type="radio" id="__tabbed_3_1" checked="checked" /><label for="__tabbed_3_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Read the &#39;samples&#39; data file - index=2</span>
+<div class="tabbed-set" data-tabs="4:2">
+<input name="__tabbed_4" type="radio" id="__tabbed_4_1" checked="checked" /><label for="__tabbed_4_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Read the &#39;samples&#39; data file - index=2</span>
 <span class="n">index</span> <span class="o">&lt;-</span> <span class="m">2</span>
 <span class="n">M</span> <span class="o">&lt;-</span> <span class="nf">read.table</span><span class="p">(</span><span class="nf">url</span><span class="p">(</span><span class="n">resources[</span> <span class="s">&quot;path&quot;</span> <span class="n">]</span><span class="o">$</span><span class="n">path[index]</span><span class="p">),</span> 
                 <span class="n">header</span><span class="o">=</span> <span class="n">resources</span><span class="o">$</span><span class="n">dialect</span><span class="o">$</span><span class="n">header[index]</span><span class="p">,</span> 
@@ -492,7 +502,7 @@
 <span class="c1"># Display an extract </span>
 <span class="n">M[1</span><span class="o">:</span><span class="m">10</span><span class="p">,</span><span class="n">]</span>
 </code></pre></div></div>
-<input name="__tabbed_3" type="radio" id="__tabbed_3_2" /><label for="__tabbed_3_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>   <span class="n">SampleID</span> <span class="n">PlantID</span> <span class="n">Truss</span> <span class="n">DevStage</span> <span class="n">FruitAge</span> <span class="n">HarvestDate</span> <span class="n">HarvestHour</span> <span class="n">FruitPosition</span> <span class="n">FruitDiameter</span> <span class="n">FruitHeight</span> <span class="n">FruitFW</span>  <span class="n">FruitDW</span> <span class="n">DW</span>
+<input name="__tabbed_4" type="radio" id="__tabbed_4_2" /><label for="__tabbed_4_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>   <span class="n">SampleID</span> <span class="n">PlantID</span> <span class="n">Truss</span> <span class="n">DevStage</span> <span class="n">FruitAge</span> <span class="n">HarvestDate</span> <span class="n">HarvestHour</span> <span class="n">FruitPosition</span> <span class="n">FruitDiameter</span> <span class="n">FruitHeight</span> <span class="n">FruitFW</span>  <span class="n">FruitDW</span> <span class="n">DW</span>
 <span class="mi">1</span>         <span class="mi">1</span>     <span class="n">A26</span>    <span class="n">T5</span>    <span class="n">FF</span><span class="mf">.01</span>    <span class="mi">08</span><span class="n">DPA</span>       <span class="mi">40379</span>         <span class="mf">0.5</span>             <span class="mi">2</span>            <span class="n">NA</span>          <span class="n">NA</span>    <span class="mf">0.72</span> <span class="mf">0.090216</span> <span class="n">NA</span>
 <span class="mi">2</span>         <span class="mi">1</span>      <span class="n">C2</span>    <span class="n">T5</span>    <span class="n">FF</span><span class="mf">.01</span>    <span class="mi">08</span><span class="n">DPA</span>       <span class="mi">40379</span>         <span class="mf">0.5</span>             <span class="mi">3</span>            <span class="n">NA</span>          <span class="n">NA</span>    <span class="mf">0.56</span> <span class="mf">0.070168</span> <span class="n">NA</span>
 <span class="mi">3</span>         <span class="mi">1</span>     <span class="n">D15</span>    <span class="n">T5</span>    <span class="n">FF</span><span class="mf">.01</span>    <span class="mi">08</span><span class="n">DPA</span>       <span class="mi">40379</span>         <span class="mf">0.5</span>             <span class="mi">4</span>            <span class="n">NA</span>          <span class="n">NA</span>    <span class="mf">0.78</span> <span class="mf">0.097734</span> <span class="n">NA</span>
@@ -506,15 +516,15 @@
 </code></pre></div></div>
 </div>
 <hr />
-<div class="tabbed-set" data-tabs="4:2">
-<input name="__tabbed_4" type="radio" id="__tabbed_4_1" checked="checked" /><label for="__tabbed_4_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the categories for the &#39;samples&#39; data subset</span>
+<div class="tabbed-set" data-tabs="5:2">
+<input name="__tabbed_5" type="radio" id="__tabbed_5_1" checked="checked" /><label for="__tabbed_5_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the categories for the &#39;samples&#39; data subset</span>
 <span class="n">categories</span> <span class="o">&lt;-</span> <span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">categories[[index]]</span>
 <span class="n">categories</span>
 
 <span class="c1"># List the &#39;quantitative&#39; variables for the &#39;samples&#39; data subset</span>
 <span class="n">categories</span><span class="o">$</span><span class="n">fields[</span> <span class="n">categories</span><span class="o">$</span><span class="n">name</span> <span class="o">==</span> <span class="s">&quot;quantitative&quot;</span> <span class="n">][[1]]</span>
 </code></pre></div></div>
-<input name="__tabbed_4" type="radio" id="__tabbed_4_2" /><label for="__tabbed_4_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>          <span class="n">name</span>                                           <span class="n">fields</span>
+<input name="__tabbed_5" type="radio" id="__tabbed_5_2" /><label for="__tabbed_5_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>          <span class="n">name</span>                                           <span class="n">fields</span>
 <span class="mi">1</span>   <span class="n">identifier</span>                                         <span class="n">SampleID</span>
 <span class="mi">2</span>       <span class="n">factor</span>                               <span class="n">DevStage</span><span class="p">,</span> <span class="n">FruitAge</span>
 <span class="mi">3</span> <span class="n">quantitative</span> <span class="n">FruitDiameter</span><span class="p">,</span> <span class="n">FruitHeight</span><span class="p">,</span> <span class="n">FruitFW</span><span class="p">,</span> <span class="n">FruitDW</span><span class="p">,</span> <span class="n">DW</span>
@@ -524,8 +534,8 @@
 </code></pre></div></div>
 </div>
 <hr />
-<div class="tabbed-set" data-tabs="5:2">
-<input name="__tabbed_5" type="radio" id="__tabbed_5_1" checked="checked" /><label for="__tabbed_5_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the list of data subsets that were obtained from the &#39;samples&#39;</span>
+<div class="tabbed-set" data-tabs="6:2">
+<input name="__tabbed_6" type="radio" id="__tabbed_6_1" checked="checked" /><label for="__tabbed_6_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the list of data subsets that were obtained from the &#39;samples&#39;</span>
 <span class="n">index</span> <span class="o">&lt;-</span> <span class="m">2</span>
 <span class="n">subsets</span> <span class="o">&lt;-</span> <span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">foreignKey[[index]]</span><span class="o">$</span><span class="n">reference[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span>
 <span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">subsets</span><span class="p">)</span> <span class="p">)</span> 
@@ -539,7 +549,7 @@
    <span class="n">resources[</span> <span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">subsets</span><span class="p">,</span>
                        <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">)</span> <span class="n">]</span>
 </code></pre></div></div>
-<input name="__tabbed_5" type="radio" id="__tabbed_5_2" /><label for="__tabbed_5_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="cp"># List of data subsets that were obtained from the &#39;samples&#39;</span>
+<input name="__tabbed_6" type="radio" id="__tabbed_6_2" /><label for="__tabbed_6_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="cp"># List of data subsets that were obtained from the &#39;samples&#39;</span>
         <span class="n">name</span>                     <span class="n">title</span>  <span class="n">identifier</span>  <span class="n">obtainedFrom</span>
 <span class="mi">3</span>   <span class="n">aliquots</span>         <span class="n">Aliquots</span> <span class="n">features</span>   <span class="n">AliquotID</span>       <span class="n">samples</span>
 <span class="mi">7</span>      <span class="n">pools</span>  <span class="n">Pools</span> <span class="n">of</span> <span class="n">remaining</span> <span class="n">pools</span>      <span class="n">PoolID</span>       <span class="n">samples</span>
@@ -555,8 +565,8 @@
 </code></pre></div></div>
 </div>
 <hr />
-<div class="tabbed-set" data-tabs="6:2">
-<input name="__tabbed_6" type="radio" id="__tabbed_6_1" checked="checked" /><label for="__tabbed_6_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># getMergedDataset : </span>
+<div class="tabbed-set" data-tabs="7:2">
+<input name="__tabbed_7" type="radio" id="__tabbed_7_1" checked="checked" /><label for="__tabbed_7_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># getMergedDataset : </span>
 <span class="c1">#    Returns the data subset resulting from the merging of each data subset from which</span>
 <span class="c1">#    the previous data subset was obtained (i.e. going back up the chain of linking </span>
 <span class="c1">#    data subsets)</span>
@@ -595,7 +605,7 @@
 <span class="c1"># Display column names of the merged data subset</span>
 <span class="nf">colnames</span><span class="p">(</span><span class="n">M</span><span class="p">)</span>
 </code></pre></div></div>
-<input name="__tabbed_6" type="radio" id="__tabbed_6_2" /><label for="__tabbed_6_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="n">data</span> <span class="n">subset</span>  <span class="n">activome</span> 
+<input name="__tabbed_7" type="radio" id="__tabbed_7_2" /><label for="__tabbed_7_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="n">data</span> <span class="n">subset</span>  <span class="n">activome</span> 
 <span class="n">data</span> <span class="n">subset</span>  <span class="n">aliquots</span> 
 <span class="n">data</span> <span class="n">subset</span>  <span class="n">samples</span> 
 <span class="n">data</span> <span class="n">subset</span>  <span class="n">plants</span> 
@@ -617,12 +627,12 @@
 </div>
 <hr />
 <h3 id="session-example-with-python-using-a-datapackage">Session example with Python using a datapackage<a class="headerlink" href="#session-example-with-python-using-a-datapackage" title="Permanent link">&para;</a></h3>
-<p>** datapackage-py **</p>
+<p><strong>datapackage-py</strong></p>
 <ul>
 <li><a href="https://pypi.org/project/datapackage/" target="_blank">https://pypi.org/project/datapackage/</a></li>
 </ul>
-<div class="tabbed-set" data-tabs="7:2">
-<input name="__tabbed_7" type="radio" id="__tabbed_7_1" checked="checked" /><label for="__tabbed_7_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span> 
+<div class="tabbed-set" data-tabs="8:2">
+<input name="__tabbed_8" type="radio" id="__tabbed_8_1" checked="checked" /><label for="__tabbed_8_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span> 
 <span class="kn">from</span> <span class="nn">datapackage</span> <span class="kn">import</span> <span class="n">Package</span><span class="p">,</span> <span class="n">Resource</span>
 
 <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://pmb-bordeaux.fr/getdata/json/frim1/datapackage?links=1&#39;</span>
@@ -630,7 +640,7 @@
 
 <span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span>
 </code></pre></div></div>
-<input name="__tabbed_7" type="radio" id="__tabbed_7_2" /><label for="__tabbed_7_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>[&#39;plants&#39;,
+<input name="__tabbed_8" type="radio" id="__tabbed_8_2" /><label for="__tabbed_8_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>[&#39;plants&#39;,
  &#39;samples&#39;,
  &#39;aliquots&#39;,
  &#39;cellwall_metabo&#39;,
@@ -645,15 +655,15 @@
 </code></pre></div></div>
 </div>
 <hr />
-<div class="tabbed-set" data-tabs="8:2">
-<input name="__tabbed_8" type="radio" id="__tabbed_8_1" checked="checked" /><label for="__tabbed_8_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the &#39;plants&#39; subsets into a data.frame</span>
+<div class="tabbed-set" data-tabs="9:2">
+<input name="__tabbed_9" type="radio" id="__tabbed_9_1" checked="checked" /><label for="__tabbed_9_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the &#39;plants&#39; subsets into a data.frame</span>
 <span class="nb">id</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;plants&#39;</span><span class="p">)</span>
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">keyed</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 
 <span class="c1"># Print the data.frame</span>
 <span class="n">df</span>
 </code></pre></div></div>
-<input name="__tabbed_8" type="radio" id="__tabbed_8_2" /><label for="__tabbed_8_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>    PlantID Rank PlantNum    Treatment
+<input name="__tabbed_9" type="radio" id="__tabbed_9_2" /><label for="__tabbed_9_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>    PlantID Rank PlantNum    Treatment
 0        A1    A        1      Control
 1        A2    A        2      Control
 2        A3    A        3      Control
@@ -670,11 +680,11 @@
 </code></pre></div></div>
 </div>
 <hr />
-<div class="tabbed-set" data-tabs="9:2">
-<input name="__tabbed_9" type="radio" id="__tabbed_9_1" checked="checked" /><label for="__tabbed_9_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the headers of the first resource (id=0)</span>
+<div class="tabbed-set" data-tabs="10:2">
+<input name="__tabbed_10" type="radio" id="__tabbed_10_1" checked="checked" /><label for="__tabbed_10_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the headers of the first resource (id=0)</span>
 <span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">_Resource__table_options</span>
 </code></pre></div></div>
-<input name="__tabbed_9" type="radio" id="__tabbed_9_2" /><label for="__tabbed_9_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>{&#39;scheme&#39;: None,
+<input name="__tabbed_10" type="radio" id="__tabbed_10_2" /><label for="__tabbed_10_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>{&#39;scheme&#39;: None,
  &#39;format&#39;: &#39;csv&#39;,
  &#39;encoding&#39;: &#39;utf-8&#39;,
  &#39;pick_fields&#39;: None,
@@ -688,8 +698,8 @@
 </code></pre></div></div>
 </div>
 <hr />
-<div class="tabbed-set" data-tabs="10:2">
-<input name="__tabbed_10" type="radio" id="__tabbed_10_1" checked="checked" /><label for="__tabbed_10_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the resource descriptor of the &#39;samples&#39;</span>
+<div class="tabbed-set" data-tabs="11:2">
+<input name="__tabbed_11" type="radio" id="__tabbed_11_1" checked="checked" /><label for="__tabbed_11_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the resource descriptor of the &#39;samples&#39;</span>
 <span class="nb">id</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;samples&#39;</span><span class="p">)</span>
 <span class="n">res</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">_Resource__current_descriptor</span>
 
@@ -697,7 +707,7 @@
 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;path&#39;</span><span class="p">,</span> <span class="s1">&#39;profile&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;identifier&#39;</span><span class="p">,</span> <span class="s1">&#39;obtainedFrom&#39;</span><span class="p">,</span> <span class="s1">&#39;joinkey&#39;</span><span class="p">]:</span>
     <span class="k">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">res</span><span class="p">[</span><span class="n">x</span><span class="p">]))</span>
 </code></pre></div></div>
-<input name="__tabbed_10" type="radio" id="__tabbed_10_2" /><label for="__tabbed_10_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>path: https://pmb-bordeaux.fr/getdata/tsv/frim1/samples
+<input name="__tabbed_11" type="radio" id="__tabbed_11_2" /><label for="__tabbed_11_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>path: https://pmb-bordeaux.fr/getdata/tsv/frim1/samples
 profile: https://inrae.github.io/ODAM/json-schema/odam-data-resource.json
 name: samples
 title: Sample features
@@ -707,11 +717,11 @@ joinkey: PlantID
 </code></pre></div></div>
 </div>
 <hr />
-<div class="tabbed-set" data-tabs="11:2">
-<input name="__tabbed_11" type="radio" id="__tabbed_11_1" checked="checked" /><label for="__tabbed_11_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the categories of the &#39;samples&#39;</span>
+<div class="tabbed-set" data-tabs="12:2">
+<input name="__tabbed_12" type="radio" id="__tabbed_12_1" checked="checked" /><label for="__tabbed_12_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the categories of the &#39;samples&#39;</span>
 <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;schema&#39;</span><span class="p">][</span><span class="s1">&#39;categories&#39;</span><span class="p">])</span>
 </code></pre></div></div>
-<input name="__tabbed_11" type="radio" id="__tabbed_11_2" /><label for="__tabbed_11_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>           name                                             fields
+<input name="__tabbed_12" type="radio" id="__tabbed_12_2" /><label for="__tabbed_12_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>           name                                             fields
 0    identifier                                         [SampleID]
 1        factor                               [DevStage, FruitAge]
 2  quantitative  [FruitDiameter, FruitHeight, FruitFW, FruitDW,...
@@ -719,8 +729,8 @@ joinkey: PlantID
 </code></pre></div></div>
 </div>
 <hr />
-<div class="tabbed-set" data-tabs="12:2">
-<input name="__tabbed_12" type="radio" id="__tabbed_12_1" checked="checked" /><label for="__tabbed_12_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the data subsets that were obtained from the &#39;samples&#39;</span>
+<div class="tabbed-set" data-tabs="13:2">
+<input name="__tabbed_13" type="radio" id="__tabbed_13_1" checked="checked" /><label for="__tabbed_13_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the data subsets that were obtained from the &#39;samples&#39;</span>
 <span class="k">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;schema&#39;</span><span class="p">][</span><span class="s1">&#39;foreignKey&#39;</span><span class="p">]))</span>
 
 <span class="n">the_list</span> <span class="o">=</span> <span class="p">[]</span>
@@ -729,7 +739,7 @@ joinkey: PlantID
 
 <span class="n">the_list</span>
 </code></pre></div></div>
-<input name="__tabbed_12" type="radio" id="__tabbed_12_2" /><label for="__tabbed_12_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>     fields                                       reference
+<input name="__tabbed_13" type="radio" id="__tabbed_13_2" /><label for="__tabbed_13_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>     fields                                       reference
 0  SampleID  {&#39;resource&#39;: &#39;aliquots&#39;, &#39;fields&#39;: &#39;SampleID&#39;}
 1  SampleID     {&#39;resource&#39;: &#39;pools&#39;, &#39;fields&#39;: &#39;SampleID&#39;}
 
@@ -737,8 +747,8 @@ joinkey: PlantID
 </code></pre></div></div>
 </div>
 <hr />
-<div class="tabbed-set" data-tabs="13:2">
-<input name="__tabbed_13" type="radio" id="__tabbed_13_1" checked="checked" /><label for="__tabbed_13_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Merge the &#39;samples&#39; subset with the data subset  from which it was obtained </span>
+<div class="tabbed-set" data-tabs="14:2">
+<input name="__tabbed_14" type="radio" id="__tabbed_14_1" checked="checked" /><label for="__tabbed_14_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Merge the &#39;samples&#39; subset with the data subset  from which it was obtained </span>
 <span class="nb">id</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;samples&#39;</span><span class="p">)</span>
 <span class="n">res</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resources</span><span class="p">[</span><span class="nb">id</span><span class="p">]</span><span class="o">.</span><span class="n">_Resource__current_descriptor</span>
 <span class="n">id_from</span> <span class="o">=</span> <span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;obtainedFrom&#39;</span><span class="p">])</span>
@@ -750,7 +760,7 @@ joinkey: PlantID
                         <span class="n">left_on</span><span class="o">=</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;joinkey&#39;</span><span class="p">],</span> <span class="n">right_on</span><span class="o">=</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;joinkey&#39;</span><span class="p">])</span>
 <span class="n">merged_inner</span>
 </code></pre></div></div>
-<input name="__tabbed_13" type="radio" id="__tabbed_13_2" /><label for="__tabbed_13_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>     PlantID Rank PlantNum    Treatment  ... FruitHeight FruitFW   FruitDW    DW
+<input name="__tabbed_14" type="radio" id="__tabbed_14_2" /><label for="__tabbed_14_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>     PlantID Rank PlantNum    Treatment  ... FruitHeight FruitFW   FruitDW    DW
 0         A1    A        1      Control  ...       10.42    0.81  0.098091  None
 1         A1    A        1      Control  ...       31.77   21.43  1.470098  None
 2         A1    A        1      Control  ...       46.85   64.05   4.18887  None

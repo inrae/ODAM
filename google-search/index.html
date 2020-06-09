@@ -303,8 +303,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#find-a-dataset-on-google-search" class="md-nav__link">
-    Find a dataset on Google Search
+  <a href="#find-a-dataverse-dataset-via-google-search" class="md-nav__link">
+    Find a Dataverse dataset via Google Search
   </a>
   
 </li>
@@ -327,13 +327,26 @@
                 
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
 <hr />
-<h3 id="find-a-dataset-on-google-search">Find a dataset on Google Search<a class="headerlink" href="#find-a-dataset-on-google-search" title="Permanent link">&para;</a></h3>
-<p>The purpose of this R script is to test if a dataset can be "findable" by a search engine such as Google. For this test, we have chosen our example dataset 'frim1'. The <strong>searched keywords</strong> are thus '<strong>frim1</strong>' associated with '<strong>dataset</strong>'. See the code and its results.</p>
+<h3 id="find-a-dataverse-dataset-via-google-search">Find a Dataverse dataset via Google Search<a class="headerlink" href="#find-a-dataverse-dataset-via-google-search" title="Permanent link">&para;</a></h3>
+<p>The purpose of this R script is to test if a dataset can be "findable" by a search engine such as Google. For this test, we have chosen our example dataset 'frim1'. The <strong>searched keywords</strong> are thus '<strong>frim1</strong>' associated with '<strong>dataset</strong>'. See the code and its results.
+The purpose of this R script is to search a Dataverse dataset via a search engine such as Google. To perform this test, we chose our example dataset "frim1". The <strong>searched keywords</strong> are thus '<strong>frim1</strong>' associated with '<strong>dataset</strong>'.</p>
+<ul>
+<li>Step 1:  Start by searching for the keywords in Google Search</li>
+<li>Step 2 - If found links in step 1, select those that correspond to a Dataverse dataset</li>
+<li>Step 3 - If found some in step 2,  then retrieve the metadata</li>
+</ul>
+<p>See below the code and its results.</p>
 <hr />
-<p>Find all the links that resulted from a keyword search on google</p>
 <div class="tabbed-set" data-tabs="1:2">
-<input name="__tabbed_1" type="radio" id="__tabbed_1_1" checked="checked" /><label for="__tabbed_1_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="nf">library</span><span class="p">(</span><span class="n">RCurl</span><span class="p">)</span>
+<input name="__tabbed_1" type="radio" id="__tabbed_1_1" checked="checked" /><label for="__tabbed_1_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="n">packages</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#39;RCurl&#39;</span><span class="p">,</span> <span class="s">&#39;XML&#39;</span><span class="p">,</span> <span class="s">&#39;dataverse&#39;</span> <span class="p">)</span>
+<span class="nf">if </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="nf">setdiff</span><span class="p">(</span><span class="n">packages</span><span class="p">,</span> <span class="nf">rownames</span><span class="p">(</span><span class="nf">installed.packages</span><span class="p">())))</span> <span class="o">&gt;</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nf">install.packages</span><span class="p">(</span><span class="nf">setdiff</span><span class="p">(</span><span class="n">packages</span><span class="p">,</span> <span class="nf">rownames</span><span class="p">(</span><span class="nf">installed.packages</span><span class="p">())),</span> 
+                    <span class="n">repos</span><span class="o">=</span><span class="s">&#39;http://cran.rstudio.com&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">library</span><span class="p">(</span><span class="n">RCurl</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">XML</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="s">&quot;dataverse&quot;</span><span class="p">)</span>
 
 <span class="c1"># Search terms</span>
 <span class="n">searchTerms</span> <span class="o">&lt;-</span> <span class="s">&quot;frim1 dataset&quot;</span>
@@ -353,6 +366,9 @@
 <span class="n">links</span> <span class="o">&lt;-</span> <span class="nf">sapply</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">x</span> <span class="o">&lt;-</span> <span class="nf">xmlAttrs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="n">[[</span><span class="s">&quot;href&quot;</span><span class="n">]]</span><span class="p">)</span>
 <span class="n">links</span> <span class="o">&lt;-</span> <span class="n">links</span><span class="nf">[grep</span><span class="p">(</span><span class="s">&quot;google.com/search&quot;</span><span class="p">,</span> <span class="n">links</span><span class="p">,</span> <span class="n">invert</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span><span class="n">]</span>
 <span class="n">links</span> <span class="o">&lt;-</span> <span class="nf">gsub</span><span class="p">(</span><span class="s">&#39;/url.q=&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="nf">gsub</span><span class="p">(</span><span class="s">&#39;&amp;sa.+$&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">links</span><span class="p">))</span>
+
+<span class="c1"># harmonizes the writing of URLs</span>
+<span class="n">links</span> <span class="o">&lt;-</span> <span class="nf">gsub</span><span class="p">(</span><span class="s">&quot;%3D&quot;</span><span class="p">,</span> <span class="s">&quot;=&quot;</span><span class="p">,</span> <span class="nf">gsub</span><span class="p">(</span> <span class="s">&quot;%3F&quot;</span><span class="p">,</span> <span class="s">&quot;?&quot;</span><span class="p">,</span> <span class="n">links</span> <span class="p">)</span> <span class="p">)</span>
 
 <span class="c1"># Compile into a data.frame</span>
 <span class="n">df</span> <span class="o">&lt;-</span> <span class="nf">data.frame</span><span class="p">(</span>
@@ -382,6 +398,58 @@
 <span class="mi">7</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//cran.r-project.org/web/packages/Rodam/vignettes/Rodam.html                        </span>
 <span class="mi">8</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//www.slideshare.net/danieljacob771282/odam-open-data-access-and-mining             </span>
 <span class="mi">9</span> <span class="nl">https</span><span class="p">:</span><span class="c1">//www.slideshare.net/danieljacob771282/make-your-data-great-now     </span>
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="2:2">
+<input name="__tabbed_2" type="radio" id="__tabbed_2_1" checked="checked" /><label for="__tabbed_2_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># is there a link to a dataverse site?</span>
+<span class="n">ret</span> <span class="o">&lt;-</span> <span class="nf">grep</span><span class="p">(</span> <span class="s">&quot;dataset.xhtml.persistentId=doi&quot;</span><span class="p">,</span> <span class="n">links</span> <span class="p">)</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">length</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+   <span class="c1"># Bingo !</span>
+   <span class="n">doi</span> <span class="o">&lt;-</span> <span class="nf">paste0</span><span class="p">(</span> <span class="s">&#39;doi:&#39;</span><span class="p">,</span> <span class="nf">gsub</span><span class="p">(</span><span class="s">&quot;^http.+doi:&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">links[ret[1]]</span><span class="p">)</span> <span class="p">)</span>
+   <span class="n">dataverse</span> <span class="o">&lt;-</span> <span class="nf">gsub</span><span class="p">(</span> <span class="s">&quot;/dataset.+&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">links[ret[1]]</span> <span class="p">)</span>
+
+   <span class="c1"># Retrieving Dataset and File Metadata</span>
+   <span class="nf">Sys.setenv</span><span class="p">(</span><span class="s">&quot;DATAVERSE_SERVER&quot;</span> <span class="o">=</span> <span class="n">dataverse</span><span class="p">)</span>
+   <span class="n">dataset</span> <span class="o">&lt;-</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="n">doi</span><span class="p">)</span>
+
+   <span class="c1"># Display the dataset information</span>
+   <span class="n">dataset</span>
+
+<span class="p">}</span>
+</code></pre></div></div>
+<input name="__tabbed_2" type="radio" id="__tabbed_2_2" /><label for="__tabbed_2_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="n">Dataset</span> <span class="p">(</span><span class="mi">261843</span><span class="p">)</span><span class="o">:</span> 
+<span class="nl">Version</span><span class="p">:</span> <span class="mf">4.2</span><span class="p">,</span> <span class="n">RELEASED</span>
+<span class="n">Release</span> <span class="nl">Date</span><span class="p">:</span> <span class="mi">2020</span><span class="o">-</span><span class="mo">06</span><span class="o">-</span><span class="mi">08</span><span class="nl">T14</span><span class="p">:</span><span class="mi">57</span><span class="o">:</span><span class="mi">17</span><span class="n">Z</span>
+<span class="nl">License</span><span class="p">:</span> <span class="n">NONE</span>
+<span class="mi">17</span> <span class="nl">Files</span><span class="p">:</span>
+             <span class="n">label</span> <span class="n">version</span>    <span class="n">id</span>      <span class="n">contentType</span>
+<span class="mi">1</span> <span class="n">datapackage</span><span class="p">.</span><span class="n">json</span>       <span class="mi">1</span> <span class="mi">99623</span> <span class="n">application</span><span class="o">/</span><span class="n">json</span>
+<span class="mi">2</span>        <span class="n">frim1</span><span class="p">.</span><span class="n">zip</span>       <span class="mi">3</span> <span class="mi">96878</span>  <span class="n">application</span><span class="o">/</span><span class="n">zip</span>
+</code></pre></div></div>
+</div>
+<hr />
+<div class="tabbed-set" data-tabs="3:2">
+<input name="__tabbed_3" type="radio" id="__tabbed_3_1" checked="checked" /><label for="__tabbed_3_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get more metadata</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">length</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+   <span class="n">metadata</span> <span class="o">&lt;-</span> <span class="nf">dataset_metadata</span><span class="p">(</span><span class="n">doi</span><span class="p">)</span>
+   <span class="n">metadata</span><span class="o">$</span><span class="n">fields[</span>  <span class="o">!</span> <span class="n">metadata</span><span class="o">$</span><span class="n">fields</span><span class="o">$</span><span class="n">multiple</span> <span class="o">|</span> 
+                      <span class="n">metadata</span><span class="o">$</span><span class="n">fields</span><span class="o">$</span><span class="n">typeClass</span><span class="o">==</span><span class="s">&quot;controlledVocabulary&quot;</span><span class="p">,</span>
+                      <span class="nf">c</span><span class="p">(</span><span class="s">&quot;typeName&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">)</span> <span class="n">]</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<input name="__tabbed_3" type="radio" id="__tabbed_3_2" /><label for="__tabbed_3_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>          <span class="n">typeName</span>                                                                       <span class="n">value</span>
+<span class="mi">1</span>            <span class="n">title</span>                                          <span class="n">FRIM</span> <span class="o">-</span> <span class="n">Fruit</span> <span class="n">Integrative</span> <span class="n">Modelling</span>
+<span class="mi">2</span>   <span class="n">alternativeURL</span>                              <span class="nl">https</span><span class="p">:</span><span class="c1">//pmb-bordeaux.fr/dataexplorer/?ds=frim1</span>
+<span class="mi">6</span>       <span class="n">kindOfData</span>                                                                     <span class="n">Dataset</span>
+<span class="mi">7</span>       <span class="n">dataOrigin</span>                                                           <span class="n">experimental</span> <span class="n">data</span>
+<span class="mi">8</span>          <span class="n">subject</span> <span class="n">Computer</span> <span class="n">science</span><span class="p">,</span> <span class="n">Information</span> <span class="n">management</span><span class="p">,</span> <span class="n">Omics</span><span class="p">,</span> <span class="n">Plant</span> <span class="n">Health</span> <span class="n">and</span> <span class="n">Pathology</span>
+<span class="mi">9</span>    <span class="n">lifeCycleStep</span>                                               <span class="n">Study</span> <span class="n">design</span><span class="p">,</span> <span class="n">Data</span> <span class="n">collection</span>
+<span class="mi">12</span>        <span class="n">language</span>                                                                     <span class="n">English</span>
+<span class="mi">14</span>  <span class="n">productionDate</span>                                                                        <span class="mi">2010</span>
+<span class="mi">15</span> <span class="n">productionPlace</span>                                                <span class="n">INVENIO</span><span class="p">,</span> <span class="n">Ste</span> <span class="n">Livrade</span><span class="p">,</span> <span class="n">France</span>
+<span class="mi">17</span>       <span class="n">depositor</span>                                                               <span class="n">Jacob</span><span class="p">,</span> <span class="n">Daniel</span>
+<span class="mi">18</span>   <span class="n">dateOfDeposit</span>                                                                  <span class="mi">2018</span><span class="o">-</span><span class="mi">10</span><span class="o">-</span><span class="mi">08</span>
 </code></pre></div></div>
 </div>
                 

@@ -427,7 +427,13 @@
 <li><a href="https://rdrr.io/cran/jsonvalidate/man/json_validate.html" target="_blank">https://rdrr.io/cran/jsonvalidate/man/json_validate.html</a></li>
 </ul>
 <div class="tabbed-set" data-tabs="1:2">
-<input name="__tabbed_1" type="radio" id="__tabbed_1_1" checked="checked" /><label for="__tabbed_1_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="nf">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span>
+<input name="__tabbed_1" type="radio" id="__tabbed_1_1" checked="checked" /><label for="__tabbed_1_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="n">packages</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#39;httr&#39;</span><span class="p">,</span> <span class="s">&#39;jsonlite&#39;</span><span class="p">,</span> <span class="s">&#39;jsonvalidate&#39;</span> <span class="p">)</span>
+<span class="nf">if </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="nf">setdiff</span><span class="p">(</span><span class="n">packages</span><span class="p">,</span> <span class="nf">rownames</span><span class="p">(</span><span class="nf">installed.packages</span><span class="p">())))</span> <span class="o">&gt;</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nf">install.packages</span><span class="p">(</span><span class="nf">setdiff</span><span class="p">(</span><span class="n">packages</span><span class="p">,</span> <span class="nf">rownames</span><span class="p">(</span><span class="nf">installed.packages</span><span class="p">())),</span> 
+                    <span class="n">repos</span><span class="o">=</span><span class="s">&#39;http://cran.rstudio.com&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">jsonvalidate</span><span class="p">)</span>
 <span class="nf">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span>
 

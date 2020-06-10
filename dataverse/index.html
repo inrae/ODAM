@@ -334,7 +334,7 @@
 <hr />
 <h3 id="odam-data-package-from-a-dataverse-repository">ODAM data-package from a Dataverse repository<a class="headerlink" href="#odam-data-package-from-a-dataverse-repository" title="Permanent link">&para;</a></h3>
 <p>Example of a session with R showing how it is possible to retrieve an ODAM <a href="https://datahub.io/docs/data-packages" target="_blank">datapackage</a> using a keyword from <a href="https://data.inra.fr" target="_blank">Data INRAE</a><sup>1</sup>, a <a href="https://dataverse.org/" target="_blank">Dataverse</a> repository.</p>
-<p><font size=-1>1 Institut National de Recherche pour l'Agriculture, l'Alimentation et l'Environnement. (2018). Data INRAE. INRAE. 
+<p><font size=-1>1 Institut National de Recherche pour l'Agriculture, l'Alimentation et l'Environnement. (2018). Data INRAE.
 <a href="https://doi.org/10.14758/9T8G-WJ20" target="_blank">https://doi.org/10.14758/9T8G-WJ20</a></font></p>
 
 <hr>
@@ -368,7 +368,7 @@
 <span class="n">ds</span> <span class="o">&lt;-</span> <span class="nf">dataverse_search</span><span class="p">(</span><span class="n">dataset_keyword</span><span class="p">,</span> <span class="s">&quot;dataset&quot;</span><span class="p">)</span>
 
 <span class="c1"># Check if a dataset found with the right type</span>
-<span class="nf">if </span><span class="p">(</span> <span class="nf">length</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span><span class="o">==</span><span class="m">0</span> <span class="p">)</span> 
+<span class="nf">if </span><span class="p">(</span> <span class="nf">dim</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span><span class="n">[1]</span><span class="o">==</span><span class="m">0</span> <span class="p">)</span> 
    <span class="nf">stop</span><span class="p">(</span><span class="s">&quot;No dataset found&quot;</span><span class="p">)</span>
 
 <span class="nf">if </span><span class="p">(</span> <span class="nf">length</span><span class="p">(</span><span class="s">&quot;dataset&quot;</span> <span class="o">%in%</span> <span class="n">ds</span><span class="o">$</span><span class="n">type</span><span class="p">)</span><span class="o">==</span><span class="m">0</span> <span class="p">)</span>

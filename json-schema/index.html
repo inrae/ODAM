@@ -643,25 +643,28 @@
 <li><a href="https://pypi.org/project/datapackage/" target="_blank">https://pypi.org/project/datapackage/</a></li>
 </ul>
 <div class="tabbed-set" data-tabs="8:2">
-<input name="__tabbed_8" type="radio" id="__tabbed_8_1" checked="checked" /><label for="__tabbed_8_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span> 
+<input name="__tabbed_8" type="radio" id="__tabbed_8_1" checked="checked" /><label for="__tabbed_8_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">jsonschema</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span> 
 <span class="kn">from</span> <span class="nn">datapackage</span> <span class="kn">import</span> <span class="n">Package</span><span class="p">,</span> <span class="n">Resource</span>
 
+<span class="c1"># Read the datapackage.json as a dict </span>
 <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://pmb-bordeaux.fr/getdata/json/frim1/datapackage?links=1&#39;</span>
 <span class="n">dp</span> <span class="o">=</span> <span class="n">Package</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 
-<span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span>
+<span class="c1"># Read the ODAM data package schema as a dict </span>
+<span class="n">url_schema</span> <span class="o">=</span> <span class="s1">&#39;https://inrae.github.io/ODAM/json-schema/odam-data-package.json&#39;</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url_schema</span><span class="p">)</span>
+<span class="n">schema</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+<span class="c1"># if the package is a valid ODAM data package, then shows its resource names</span>
+<span class="k">if</span> <span class="n">jsonschema</span><span class="o">.</span><span class="n">Draft7Validator</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span><span class="o">.</span><span class="n">is_valid</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">descriptor</span><span class="p">)</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">dp</span><span class="o">.</span><span class="n">resource_names</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;Error: datapackage is not a valid ODAM datapackage&quot;</span><span class="p">)</span>
 </code></pre></div></div>
-<input name="__tabbed_8" type="radio" id="__tabbed_8_2" /><label for="__tabbed_8_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>[&#39;plants&#39;,
- &#39;samples&#39;,
- &#39;aliquots&#39;,
- &#39;cellwall_metabo&#39;,
- &#39;cellwall_metaboFW&#39;,
- &#39;activome&#39;,
- &#39;pools&#39;,
- &#39;qMS_metabo&#39;,
- &#39;qNMR_metabo&#39;,
- &#39;plato_hexosesP&#39;,
- &#39;lipids_AG&#39;,
+<input name="__tabbed_8" type="radio" id="__tabbed_8_2" /><label for="__tabbed_8_2">Output</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code>[&#39;plants&#39;, &#39;samples&#39;, &#39;aliquots&#39;, &#39;cellwall_metabo&#39;, &#39;cellwall_metaboFW&#39;, 
+ &#39;activome&#39;, &#39;pools&#39;, &#39;qMS_metabo&#39;, &#39;qNMR_metabo&#39;, &#39;plato_hexosesP&#39;, &#39;lipids_AG&#39;,
  &#39;AminoAcid&#39;]
 </code></pre></div></div>
 </div>

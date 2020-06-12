@@ -649,8 +649,14 @@
 <span class="kn">import</span> <span class="nn">jsonschema</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span> 
 
+<span class="c1"># URL of the ODAM data repository</span>
+<span class="n">odam_url</span> <span class="o">=</span> <span class="s1">&#39;https://pmb-bordeaux.fr&#39;</span>
+
+<span class="c1"># ID of the dataset</span>
+<span class="n">dataset</span> <span class="o">=</span> <span class="s1">&#39;frim1&#39;</span>
+
 <span class="c1"># Read the datapackage.json as a dict </span>
-<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://pmb-bordeaux.fr/getdata/json/frim1/datapackage?links=1&#39;</span>
+<span class="n">url</span> <span class="o">=</span> <span class="n">odam_url</span> <span class="o">+</span> <span class="s1">&#39;/getdata/json/&#39;</span> <span class="o">+</span> <span class="n">dataset</span><span class="o">+</span><span class="s1">&#39;/datapackage?links=1&#39;</span>
 <span class="n">dp</span> <span class="o">=</span> <span class="n">Package</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 
 <span class="c1"># Read the ODAM data package schema as a dict </span>

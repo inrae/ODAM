@@ -1,0 +1,462 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="ODAM, Open data and access to data mining, Deployment and User's Guide">
+      
+      
+      
+        <meta name="author" content="Daniel Jacob">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1, mkdocs-material-5.2.2">
+    
+    
+      
+        <title>Publish your data</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.b8fb47b5.min.css">
+      
+      
+    
+    
+    
+    <script src="../js/jquery-2.1.1.min.js"></script>
+
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../css/extra.css">
+    
+      <link rel="stylesheet" href="../css/pdfextra.css">
+    
+      <link rel="stylesheet" href="../css/lightbox.css">
+    
+    
+      
+        
+<link rel="preconnect dns-prefetch" href="https://www.google-analytics.com">
+<script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-168923330-1","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){if(this.value){var e=document.location.pathname;ga("send","pageview",e+"?q="+this.value)}})}),document.addEventListener("DOMContentSwitch",function(){ga("send","pageview")})</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+      
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#odam-deployment-and-users-guide" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href=".." title="ODAM" class="md-header-nav__button md-logo" aria-label="ODAM">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            ODAM
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Publish your data
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ODAM" class="md-nav__button md-logo" aria-label="ODAM">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 003-3 3 3 0 00-3-3 3 3 0 00-3 3 3 3 0 003 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    ODAM
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../getting-started/" title="Getting started" class="md-nav__link">
+      Getting started
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../dataset-example/" title="A dataset example" class="md-nav__link">
+      A dataset example
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../install/" title="Installation" class="md-nav__link">
+      Installation
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../data-type/" title="Data collection and preparation" class="md-nav__link">
+      Data collection and preparation
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../services/" title="Using ODAM" class="md-nav__link">
+      Using ODAM
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../data-explorer/" title="Data Explorer" class="md-nav__link">
+      Data Explorer
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../api/" title="Web API" class="md-nav__link">
+      Web API
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../json-schema/" title="JSON Schema" class="md-nav__link">
+      JSON Schema
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../about/" title="About" class="md-nav__link">
+      About
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#publish-your-data" class="md-nav__link">
+    Publish your data
+  </a>
+  
+    <nav class="md-nav" aria-label="Publish your data">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#descriptive-metadata-and-structural-metadata" class="md-nav__link">
+    Descriptive metadata and Structural metadata
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#based-on-an-odam-repository" class="md-nav__link">
+    Based on an ODAM repository
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#without-odam-repository" class="md-nav__link">
+    Without ODAM repository
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
+<hr />
+<h3 id="publish-your-data">Publish your data<a class="headerlink" href="#publish-your-data" title="Permanent link">&para;</a></h3>
+<p>The main reasons for publishing your data in a long-term repository are :</p>
+<ul>
+<li>fulfill a journal requirement to publish data</li>
+<li>facilitate citing your dataset by assigning a permanent uniquely identifiable code (<a href="https://fr.wikipedia.org/wiki/Digital_Object_Identifier" target="_blank">DOI</a>)</li>
+<li>improve discovery of and access to your dataset for others</li>
+<li>enable versioning of your data</li>
+<li>enable re-use and greater visibility of your work</li>
+</ul>
+<p>Most of these reasons coincide with the <a href="https://www.go-fair.org/fair-principles/" target="_blank">FAIR principles</a>. But publishing data according to the FAIR principles involves much more, especially well-described, accessible data that complies with community standards. In the report "Turning FAIR into reality" produced by the EU <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, the authors propose as a basic minimum standard for FAIRification: discovery metadata, persistent identifiers and access to the data or metadata. Therefore, the fact of depositing one's data in a data repository (e.g. Dataverse) with descriptive metadata is sufficient to meet these criteria. However, according to Annika Jacobsen et al <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>, the FAIR principles can be seen as a consolidation of good data management practices to extend management with the notion of machine-driven data reuse. In others words, the FAIR principles define the attributes that data must have to enable and enhance its reuse, by humans and machines. Regarding implementation, the authors recommend that structural metadata (e.g. links between data tables) should also be provided along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions. This is precisely what is targeted in the implementation of data management by the ODAM software suite.</p>
+<p>Therefore, not only descriptive but also structural metadata should be provided.</p>
+<h4 id="descriptive-metadata-and-structural-metadata">Descriptive metadata and Structural metadata<a class="headerlink" href="#descriptive-metadata-and-structural-metadata" title="Permanent link">&para;</a></h4>
+<dl>
+<dt>Descriptive metadata</dt>
+<dd>is descriptive information about a resource. It is used for discovery and identification. It includes elements such as title, abstract, author, and keywords. They make it easier for both humans and machines to find them.</dd>
+<dt>Structural metadata</dt>
+<dd>is metadata about containers of data and indicates how compound objects are put together. It describes the types, versions, relationships and other characteristics of digital materials. They facilitate the reuse of data by providing structural metadata, thus avoiding that data consumers spend a disproportionate amount of time trying to understand the digital resources they need and devising specific ways to combine them.</dd>
+</dl>
+<p>Making data available online can be understood in different ways according to their nature and complexity, and the desired granularity. The simple approach is to deposit the data in flat files (generally a set of TSV/CSV files) in dedicated repositories, with only constraint to describe the data set as a whole with minimal metadata. But without structural metadata it is difficult if not impossible to understand the relationships between different data. Moreover, a dictionary describing each file (entity) as well as all the columns of the tables (attributes) offers a better guarantee in the correct (re)use of the data. Precisely, these last two points have been implemented in the ODAM software.</p>
+<p>Unlike data sharing, which is simply making data available to a community, data publishing also requires that the data could be referenceable (i.e. a stable identification system) and contextualizable (i.e. the who and what). These points and many others are precisely what the FAIR principles seek to establish as a frame of reference.</p>
+<h4 id="based-on-an-odam-repository">Based on an ODAM repository<a class="headerlink" href="#based-on-an-odam-repository" title="Permanent link">&para;</a></h4>
+<p>Because ODAM is primarily an Experimental Data Table Management System (EDTMS) for data sharing, it must be associated with a suitable data repository in order to support data publishing. </p>
+<p>So the ODAM approach has to be regarded as complementary with publication of the data online within an institutional data repository as described in re3data.org (e.g. INRAE Data Portal) associated or not with a scientific paper. </p>
+<p>As it is generally considered good practice in FAIR when the resource and its metadata are stored independently, but persistently linked,  the FAIR principles can be applied to a data ecosystem where each component contributes to meeting one or more of the criteria.</p>
+<p>Whereas institutional data repositories focus on the experiment description with the corresponding descriptive metadata, the ODAM approach, by adjoining some minimal but relevant structural metadata, gives access to the data themselves with the possibility to explore and mine them.</p>
+<p>While ODAM ensuring data sharing function allows direct access to subsets of data by API request, an institutional data repository ensuring data publishing function has to support an important part of the FAIR criteria. Thus, the combination of the two systems makes it possible to cover all the essential FAIR criteria</p>
+<h4 id="without-odam-repository">Without ODAM repository<a class="headerlink" href="#without-odam-repository" title="Permanent link">&para;</a></h4>
+<p>If you do not wish to set up your own ODAM repository, you can at least simply upload your data files with associated structural metadata to an institutional repository. Add a datapackage.json file within your collection of data files (see Appendix 4). Because, when disseminating data, defining an explicit schema for structural metadata along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions allows machines to better interpret the data for reuse. This will result in better annotated and more easily usable data that meets effortlessly the FAIR criteria for reusability. Indeed, concerning the FAIRification of data, this has a positive impact on the FAIR criteria 'Interoperable' and 'Reusable', encouraging structured data using a discoverable, community-endorsed schema or data model.
+In addition, for easy reuse, simply indicate that the data has been formatted and structured to be compatible with the ODAM software, so that users of the data can take advantage of all associated services and tools by installing it on their desktop or laptop.</p>
+<p><center>
+<a href="../images/fair1.png" data-lightbox="fair1"><img src="../images/fair1.png" width="600px"></a>
+<a href="../images/fair2.png" data-lightbox="fair2"><img src="../images/fair2.png" width="600px"></a>
+<a href="../images/fair3.png" data-lightbox="fair3"><img src="../images/fair3.png" width="600px"></a>
+<p class="plegend">Data INRAE repository as a hub (based on Dataverse)</p>
+</center><br></p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Turning FAIR into reality: Final Report and Action Plan from the European Commission Expert Group on FAIR Data (2018)  <a href="https://ec.europa.eu/info/publications/turning-fair-reality_en" target="_blank">https://ec.europa.eu/info/publications/turning-fair-reality_en</a>&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Annika Jacobsen et al (2020), FAIR Principles: Interpretations and Implementation Considerations, Data Intelligence 2020 2: 1-2, 10-29 <a href="https://doi.org/10.1162/dint_r_00024" target="_blank">https://doi.org/10.1162/dint_r_00024</a>&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            INRAE, 2020
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/vendor.de50e36d.min.js"></script>
+      <script src="../assets/javascripts/bundle.ff925e8b.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: "..",
+          features: [],
+          search: Object.assign({
+            worker: "../assets/javascripts/worker/search.27c6a5e6.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+        <script src="../js/lightbox.min.js"></script>
+      
+    
+  </body>
+</html>

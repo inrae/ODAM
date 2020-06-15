@@ -629,7 +629,7 @@ if %size% LSS %maxbytesize% (
     # name / profile / datapackage_version / keywords / licenses
         $json  ='{"name":"'.$this->dsname.'",';
         $json .='"profile":"https://inrae.github.io/ODAM/json-schema/odam-data-package.json",';
-        $json .='"datapackage_version":"1.0", "keywords":["Experimental Data Tables"],';
+        $json .='"datapackage_version":"1.0", "keywords":["Experimental Data Tables", "ODAM"],';
         $json .='"licenses":[{"name":"ODC-BY-1.0", "path":"https://opendatacommons.org/licenses/by/", "title":"Open Data Commons Attribution License 1.0"}],';
     # resources
         $json .='"resources":[';

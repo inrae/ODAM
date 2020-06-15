@@ -35,16 +35,6 @@ def getDataFromODAM(dataset, subset='', query=''):
     # Return Data.frame
     return df
 
-def getSubsetFromODAM(dataset, subset='', query=''):
-    df1 = getDataFromODAM(dataset, subset, query)
-    df2 = getDataFromODAM(dataset, subset, 'identifier')
-    df3 = getDataFromODAM(dataset, subset, 'factor')
-    df4 = getDataFromODAM(dataset, subset, 'quantitative')
-    df5 = getDataFromODAM(dataset, subset, 'qualitative')
-    list1, list2 = ['data', 'identifier', 'factor', 'quantitative', 'qualitative' ], [df1, df2, df3, df4, df5 ]
-    d = dict( zip( list1, list2 ))
-    return(d)
-
 def intersection(lst1, lst2): 
     lst3 = [value for value in lst1 if value in lst2] 
     return lst3 

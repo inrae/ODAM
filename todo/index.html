@@ -19,7 +19,7 @@
     
     
       
-        <title>About</title>
+        <title>TODO</title>
       
     
     
@@ -94,7 +94,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              About
+              TODO
             
           </span>
         </div>
@@ -286,60 +286,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        About
-        <span class="md-nav__icon md-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
-        </span>
-      </label>
-    
-    <a href="./" title="About" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="../about/" title="About" class="md-nav__link">
       About
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#online-resources-related-to-odam" class="md-nav__link">
-    Online resources related to ODAM
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#external-resources-used" class="md-nav__link">
-    External resources used
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
     
@@ -369,16 +320,29 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#online-resources-related-to-odam" class="md-nav__link">
-    Online resources related to ODAM
+  <a href="#todo" class="md-nav__link">
+    TODO
+  </a>
+  
+    <nav class="md-nav" aria-label="TODO">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-extraction" class="md-nav__link">
+    Data extraction
   </a>
   
 </li>
-      
-        <li class="md-nav__item">
-  <a href="#external-resources-used" class="md-nav__link">
-    External resources used
+        
+          <li class="md-nav__item">
+  <a href="#linked-data" class="md-nav__link">
+    Linked Data
   </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -399,223 +363,54 @@
                 
                 
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
-<p><img alt="" src="../images/odam-logo.png" />
-<br><br>
-<em>(C) INRAE UMR 1332 BFP, PMB - 2020 - Version 1.1</em></p>
 <hr />
-<h3 id="online-resources-related-to-odam">Online resources related to ODAM<a class="headerlink" href="#online-resources-related-to-odam" title="Permanent link">&para;</a></h3>
-<table>
-<thead>
-<tr>
-<th>Description</th>
-<th>Type</th>
-<th>Link</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Data Preparation Protocol for ODAM Compliance</td>
-<td>Documentation</td>
-<td><a href="https://www.protocols.io/view/data-preparation-protocol-for-odam-compliance-betcjeiw" target="_blank">doi:10.17504/protocols.io.betcjeiw</a></td>
-</tr>
-<tr>
-<td>API Documentation based on Swagger</td>
-<td>Web API Tool</td>
-<td><a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.0.1-oas3/" target="_blank">INRA-PMB/ODAM/1.0.1-oas3/</a></td>
-</tr>
-<tr>
-<td>R ODAM package and How to use it</td>
-<td>Package</td>
-<td><a href="https://cran.r-project.org/package=Rodam" target="_blank">https://cran.r-project.org/package=Rodam</a></td>
-</tr>
-<tr>
-<td>R ODAM package Vignette</td>
-<td>Package</td>
-<td><a href="https://cran.r-project.org/web/packages/Rodam/vignettes/Rodam.html" target="_blank">Rodam/vignettes/Rodam.html</a></td>
-</tr>
-<tr>
-<td>Virtual Machine embedding the ODAM software on Oracle VM VirtualBox along with its installation guide</td>
-<td>Virtual Machine + Documentation</td>
-<td><a href="https://doi.org/10.15454/C9LAEF" target="_blank">https://doi.org/10.15454/C9LAEF</a></td>
-</tr>
-<tr>
-<td>Docker containers on DockerHub for installing on a Linux machine</td>
-<td>Container</td>
-<td><a href="https://hub.docker.com/r/odam/getdata/" target="_blank">https://hub.docker.com/r/odam/getdata/</a><br><a href="https://hub.docker.com/r/odam/dataexplorer/" target="_blank">https://hub.docker.com/r/odam/dataexplorer/</a></td>
-</tr>
-<tr>
-<td>A very lightweight local web server for Windows to deploy the ODAM API</td>
-<td>Web API Tool</td>
-<td><a href="../install/#local-installation-odam-api-on-windows">ODAMwebserver</a></td>
-</tr>
-<tr>
-<td>Examples of Jupyter notebooks (R &amp; Python) based on the ODAM Web API</td>
-<td>Notebook</td>
-<td><a href="https://github.com/djacob65/binder_odam" target="_blank">https://github.com/djacob65/binder_odam</a><br><a href="https://doi.org/10.24433/CO.8981049.v1" target="_blank">https://doi.org/10.24433/CO.8981049.v1</a><br><a href="https://doi.org/10.24433/CO.0011270.v1" target="_blank">https://doi.org/10.24433/CO.0011270.v1</a></td>
-</tr>
-<tr>
-<td>Modeling the growth of tomato fruits based on enzyme activity profiles (Example of data analysis interfaced by ODAM)</td>
-<td>Notebook</td>
-<td><a href="https://hal.inrae.fr/hal-02611223">https://hal.inrae.fr/hal-02611223</a></td>
-</tr>
-<tr>
-<td>ODAM Source code on GitHub</td>
-<td>Source Code</td>
-<td><a href="https://github.com/inrae/ODAM" target="_blank">https://github.com/inrae/ODAM</a></td>
-</tr>
-<tr>
-<td>JSON Schema for ODAM data package</td>
-<td>Source Code</td>
-<td><a href="https://github.com/djacob65/odam-datapackage/" target="_blank">https://github.com/djacob65/odam-datapackage/</a></td>
-</tr>
-</tbody>
-</table>
-<p><strong>Note</strong> : In order either to improve the use of ODAM or to complement its toolbox, a number of <a href="../todo">additional developments</a> are planned.</p>
-<h3 id="external-resources-used">External resources used<a class="headerlink" href="#external-resources-used" title="Permanent link">&para;</a></h3>
-<p><strong>Tools</strong>
-<br></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Description</th>
-<th>Link</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>docker</td>
-<td>Container management tool</td>
-<td><a href="https://www.docker.com/" target="_blank">https://www.docker.com/</a></td>
-</tr>
-<tr>
-<td>Oracle VM VirtualBox</td>
-<td>Virtual Machine (VM) management tool</td>
-<td><a href="https://www.virtualbox.org/" target="_blank">https://www.virtualbox.org/</a></td>
-</tr>
-<tr>
-<td>Rstudio</td>
-<td>Integrated Development Environment (IDE) for R</td>
-<td><a href="https://rstudio.com/" target="_blank">https://rstudio.com/</a></td>
-</tr>
-<tr>
-<td>R shiny</td>
-<td>interactive web apps  for R</td>
-<td><a href="https://shiny.rstudio.com/" target="_blank">https://shiny.rstudio.com/</a></td>
-</tr>
-<tr>
-<td>jupyter notebook</td>
-<td>Web application for e-notebooks</td>
-<td><a href="https://jupyter.org/" target="_blank">https://jupyter.org/</a></td>
-</tr>
-<tr>
-<td>q-text-as-data</td>
-<td>A command line tool for Running SQL directly on CSV or TSV files</td>
-<td><a href="http://harelba.github.io/q/" target="_blank">http://harelba.github.io/q/</a></td>
-</tr>
-</tbody>
-</table>
-<hr />
-<p><strong>Repositories</strong>
-<br></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Link</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>GitHub</td>
-<td>Source code</td>
-<td><a href="https://github.com/" target="_blank">https://github.com/</a></td>
-</tr>
-<tr>
-<td>Docker Hub</td>
-<td>Containers</td>
-<td><a href="https://hub.docker.com/" target="_blank">https://hub.docker.com/</a></td>
-</tr>
-<tr>
-<td>Data INRAE</td>
-<td>Data</td>
-<td><a href="https://data.inrae.fr/" target="_blank">https://data.inrae.fr/</a></td>
-</tr>
-<tr>
-<td>HAL INRAE</td>
-<td>Documents</td>
-<td><a href="https://hal.inrae.fr/" target="_blank">https://hal.inrae.fr/</a></td>
-</tr>
-<tr>
-<td>protocols.io</td>
-<td>Documents</td>
-<td><a href="https://www.protocols.io/" target="_blank">https://www.protocols.io/</a></td>
-</tr>
-<tr>
-<td>Code Ocean</td>
-<td>Notebooks</td>
-<td><a href="https://codeocean.com/" target="_blank">https://codeocean.com/</a></td>
-</tr>
-<tr>
-<td>R cran</td>
-<td>Source code</td>
-<td><a href="https://cran.r-project.org/" target="_blank">https://cran.r-project.org/</a></td>
-</tr>
-</tbody>
-</table>
-<hr />
-<p><strong>Specifications</strong>
-<br></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Type</th>
-<th>Link</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>Swagger</td>
-<td>API schema</td>
-<td><a href="https://swagger.io/specification/" target="_blank">https://swagger.io/specification/</a></td>
-</tr>
-<tr>
-<td>Data Packages</td>
-<td>Data Schema</td>
-<td><a href="https://specs.frictionlessdata.io/data-package/" target="_blank">https://specs.frictionlessdata.io/data-package/</a></td>
-</tr>
-</tbody>
-</table>
-<hr />
-<p><strong>FAIR evaluation/assessment grids</strong>
-<br></p>
-<table>
-<thead>
-<tr>
-<th>Name</th>
-<th>Link</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>5 ★ Data Rating Tool</td>
-<td><a href="https://confluence.csiro.au/display/OZNOME/Oznome+5-star+Processes" target="_blank">https://confluence.csiro.au/display/OZNOME/Oznome+5-star+Processes</a></td>
-</tr>
-<tr>
-<td>RDA FAIR Data Maturity Model WG</td>
-<td><a href="https://www.rd-alliance.org/groups/fair-data-maturity-model-wg" target="_blank">https://www.rd-alliance.org/groups/fair-data-maturity-model-wg</a></td>
-</tr>
-<tr>
-<td>RDA Sharing Rewards and Credit IG</td>
-<td><a href="https://www.rd-alliance.org/groups/sharing-rewards-and-credit-sharc-ig" target="_blank">https://www.rd-alliance.org/groups/sharing-rewards-and-credit-sharc-ig</a></td>
-</tr>
-</tbody>
-</table>
+<h3 id="todo">TODO<a class="headerlink" href="#todo" title="Permanent link">&para;</a></h3>
+<h4 id="data-extraction">Data extraction<a class="headerlink" href="#data-extraction" title="Permanent link">&para;</a></h4>
+<ol>
+<li>
+<p>Build a lightweight interface (<a href="https://getbootstrap.com/docs/4.2/getting-started/introduction/" target="_blank">jQuery/Bootstrap</a>) for</p>
+<ul>
+<li>Data extraction - equivalent to API functions</li>
+<li>Generation of the <i>datapackage.json</i> file with additional metadata <ul>
+<li>e.g. description of the dataset, choice of license, keywords, sources, ...</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p>Extension of the Rodam package </p>
+<ul>
+<li>Data exploitation only based on the <i>datapackage.json</i> file - an equivalent of the <a href="https://cran.r-project.org/web/packages/datapackage.r/vignettes/using_data_packages_in_r.Rmd.html" target="_blank">datapackage-r</a> package for <a href="../json-schema">ODAM datapackage</a>.</li>
+<li>It will facilitate the reuse of the data provided with this structure by installing a single R package.</li>
+<li>Development of a python package equivalent to Rodam</li>
+</ul>
+</li>
+</ol>
+<hr>
+
+<h4 id="linked-data">Linked Data<a class="headerlink" href="#linked-data" title="Permanent link">&para;</a></h4>
+<ol>
+<li>
+<p>Build an ontology-based model to describe the structure of tabular and relational data, primarily focused on concepts of entity, subset, attributes, and categories of variables (identifier, factor, quantitative, qualitative), as shown below :</p>
+<ul>
+<li>See <a href="https://fr.slideshare.net/danieljacob771282/make-your-data-great-again-ver-2" target="_blank">Make your data great again</a> : How to ensure that open data works for research - Towards Linked Data</li>
+</ul>
+<p><center>
+<a href="../images/LOD1.png" data-lightbox="LOD1"><img src="../images/LOD1.png" width="400px"></a>
+<p class="plegend"></p>
+</center><br></p>
+</li>
+<li>
+<p>Make a proposal to convert a <a href="../json-schema">ODAM datapackage</a> to <a href="https://json-ld.org/" target="_blank">JSON-LD</a> and then to <a href="https://en.wikipedia.org/wiki/Resource_Description_Framework" target="_blank">RDF</a>.</p>
+<ul>
+<li>Mainly based on the ontology defined at point 1.</li>
+<li>the <a href="https://en.wikipedia.org/wiki/Tbox" target="_blank">Tbox</a> will be based on the <a href="http://agroportal.lirmm.fr/" target="_blank">AgroPortal</a> ontologies as a <a href="https://en.wikipedia.org/wiki/Proof_of_concept" target="_blank">Proof of concept</a>.</li>
+</ul>
+</li>
+</ol>
+<hr>
+
 <p><br><br><br></p>
-<hr />
-<p><a href="https://www6.bordeaux-aquitaine.inrae.fr/bfp_eng/"> <img alt="Inra" src="../images/inrae_logo.png" /></a></p>
                 
                   
                 
@@ -632,27 +427,6 @@
       
         
 <footer class="md-footer">
-  
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
-        
-          <a href="../publish/" title="Publish your data" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
-            <div class="md-footer-nav__button md-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-            </div>
-            <div class="md-footer-nav__title">
-              <div class="md-ellipsis">
-                <span class="md-footer-nav__direction">
-                  Previous
-                </span>
-                Publish your data
-              </div>
-            </div>
-          </a>
-        
-        
-      </nav>
-    </div>
   
   <div class="md-footer-meta md-typeset">
     <div class="md-footer-meta__inner md-grid">

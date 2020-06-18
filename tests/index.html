@@ -46,6 +46,8 @@
     
       <link rel="stylesheet" href="../css/lightbox.css">
     
+      <link rel="stylesheet" href="https://unpkg.com/mermaid@8.5.2/dist/mermaid.css">
+    
     
       
         
@@ -326,62 +328,36 @@
                 
                 
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
-<p><center>
-<a href="../images/DMP_RDM_FAIR.png" data-lightbox="DRF"><img src="../images/DMP_RDM_FAIR.png" width="600px"></a>
-<br><b><i>For good data management, it is necessary that the data life cycle be integrated into the scientific research process. Furthermore, by considering the FAIR principles as a guide to produce data that is reproducible and reusable by humans and machines, data FAIRification is accomplished without insurmountable effort.</i></b>
-</center>
-<br></p>
-<table>
-<thead>
-<tr>
-<th align="left">&nbsp;First Header&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</th>
-<th align="center">&nbsp;Second Header&nbsp;</th>
-<th align="right">&nbsp;Third Header&nbsp;</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td align="left">Left</td>
-<td align="center">Center</td>
-<td align="right">Right</td>
-</tr>
-<tr>
-<td align="left">Left</td>
-<td align="center">Center</td>
-<td align="right">Right</td>
-</tr>
-</tbody>
-</table>
-<table style="overflow: hidden;"><tr style="padding: 0 0 0 0;"><td style="padding: 0 0 0 0;"><img src="../images/bar.png" height="50px"></td>
-<td style="padding: 0 0 0 0;"><table ><tr>
-<td>Data Preparation Protocol for ODAM Compliance. protocols.io
-</td></tr><tr>
-<td><a href="https://dx.doi.org/10.17504/protocols.io.betcjeiw" target="_blank">https://dx.doi.org/10.17504/protocols.io.betcjeiw</a>
-</td></tr></table></td></tr></table>
+<div class="mermaid">graph LR;
+    A[Data Acquisition] --&gt;B(Raw Data)
+    B --&gt; C{FAIR by Design}
+    C --&gt;|Yes| D[Standard Compliant Data]
+    C --&gt;|No| E[Vendor locked Data]</div>
 
 <hr />
-<div class="admonition abstract">
-<p class="admonition-title">Data Preparation Protocol for ODAM Compliance. protocols.io</p>
-<p><a href="https://dx.doi.org/10.17504/protocols.io.betcjeiw" target="_blank"><a href="https://dx.doi.org/10.17504/protocols.io.betcjeiw">https://dx.doi.org/10.17504/protocols.io.betcjeiw</a></a></p>
-</div>
-<hr />
-<div class="tabbed-set" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">Tab 1</label><div class="tabbed-content">
-<p>Markdown <strong>content</strong>.</p>
-</div>
-<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">Tab 2</label><div class="tabbed-content">
-<p>More Markdown <strong>content</strong>.</p>
-<ul>
-<li>list item a</li>
-<li>list item b</li>
-</ul>
-</div>
-<input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><label for="__tabbed_1_3">Tab 3</label><div class="tabbed-content">
-<div class="highlight"><pre><span></span><code>More content.
-</code></pre></div>
+<div class="mermaid">graph LR;
+    A(Experimental Data Tables) --&gt;C(Add structural metadata)
+    C --&gt;D(Generate the dapapackage.json)
+    D --&gt;E[Standard Compliant Data]
+    click C "../data-type"
+    click D "../json-schema"</div>
 
-</div>
-</div>
 <hr />
+<div class="mermaid">sequenceDiagram;
+    Alice-&gt;&gt;John: Hello John, how are you?
+    loop Healthcheck
+        John-&gt;&gt;John: Fight against hypochondria
+    end
+    Note right of John: Rational thoughts!
+    John--&gt;&gt;Alice: Great!
+    John-&gt;&gt;Bob: How about you?
+    Bob--&gt;&gt;John: Jolly good!</div>
+
+<hr />
+<div class="mermaid">pie
+"Dogs" : 386
+"Cats" : 85
+"Rats" : 15</div>
                 
                   
                 
@@ -433,6 +409,8 @@
       </script>
       
         <script src="../js/lightbox.min.js"></script>
+      
+        <script src="https://unpkg.com/mermaid@8.5.2/dist/mermaid.min.js"></script>
       
     
   </body>

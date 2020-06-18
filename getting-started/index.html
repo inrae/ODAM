@@ -46,7 +46,7 @@
     
       <link rel="stylesheet" href="../css/lightbox.css">
     
-      <link rel="stylesheet" href="https://unpkg.com/mermaid@8.5.2/dist/mermaid.css">
+      <link rel="stylesheet" href="../css/mermaid.min.css">
     
     
       
@@ -488,6 +488,16 @@
 <a href="../images/DMP_RDM_FAIR.png" data-lightbox="DRF"><img src="../images/DMP_RDM_FAIR.png" width="500px"></a>
 </center>
 <br></p>
+<p><strong>ODAM data FAIRification workflow</strong></p>
+<div class="mermaid">graph LR
+    A(Experimental Data Tables) --&gt;B(Add structural metadata)
+    B --&gt;C(Generate the dapapackage.json)
+    C --&gt;D[FAIR Compliant Data]
+    click A "../data-type"
+    click B "../data-type"
+    click C "../json-schema"
+    click D "https://blog.okfn.org/2018/08/14/frictionless-data-and-fair-research-principles/"</div>
+
 <hr />
 <p>For this work, we made the choice to keep the good old way of scientist to use worksheets, thus using the same tool for both data files and metadata definition files.</p>
 
@@ -602,7 +612,7 @@ The ODAM software can be <a href="../install">deployed at multiple scales</a> (l
       
         <script src="../js/lightbox.min.js"></script>
       
-        <script src="https://unpkg.com/mermaid@8.5.2/dist/mermaid.min.js"></script>
+        <script src="../js/mermaid.min.js"></script>
       
     
   </body>

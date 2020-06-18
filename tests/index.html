@@ -46,7 +46,7 @@
     
       <link rel="stylesheet" href="../css/lightbox.css">
     
-      <link rel="stylesheet" href="https://unpkg.com/mermaid@8.5.2/dist/mermaid.css">
+      <link rel="stylesheet" href="../css/mermaid.min.css">
     
     
       
@@ -328,22 +328,14 @@
                 
                 
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
-<div class="mermaid">graph LR;
+<div class="mermaid">graph LR
     A[Data Acquisition] --&gt;B(Raw Data)
     B --&gt; C{FAIR by Design}
     C --&gt;|Yes| D[Standard Compliant Data]
     C --&gt;|No| E[Vendor locked Data]</div>
 
 <hr />
-<div class="mermaid">graph LR;
-    A(Experimental Data Tables) --&gt;C(Add structural metadata)
-    C --&gt;D(Generate the dapapackage.json)
-    D --&gt;E[Standard Compliant Data]
-    click C "../data-type"
-    click D "../json-schema"</div>
-
-<hr />
-<div class="mermaid">sequenceDiagram;
+<div class="mermaid">sequenceDiagram
     Alice-&gt;&gt;John: Hello John, how are you?
     loop Healthcheck
         John-&gt;&gt;John: Fight against hypochondria
@@ -358,6 +350,54 @@
 "Dogs" : 386
 "Cats" : 85
 "Rats" : 15</div>
+
+<hr />
+<div class="mermaid">journey
+    title My working day
+    section Go to work
+      Make tea: 5: Me
+      Go upstairs: 3: Me
+      Do work: 1: Me, Cat
+    section Go home
+      Go downstairs: 5: Me
+      Sit down: 3: Me</div>
+
+<hr />
+<div class="mermaid">gantt
+    section WP 1, Task 4
+       Completed: done, des1, 2020-06-10,2020-06-14
+       Active: active, des2, 2020-06-15, 10d
+       Parallel 1: des3, after des1, 2d
+       Parallel 3: des5, after des3, 5d
+       Parallel 2: des4, after des1, 3d
+       Parallel 4: des6, after des4, 4d</div>
+
+<hr />
+<div class="mermaid">stateDiagram
+    [*] --&gt; Still
+    Still --&gt; [*]
+    Still --&gt; Moving
+    Moving --&gt; Still
+    Moving --&gt; Crash
+    Crash --&gt; [*]</div>
+
+<hr />
+<div class="mermaid">classDiagram
+    Class01 &lt;|-- AveryLongClass : Cool
+    &lt;&lt;interface&gt;&gt; Class01
+    Class09 --&gt; C2 : Where am i?
+    Class09 --* C3
+    Class09 --|&gt; Class07
+    Class07 : equals()
+    Class07 : Object[] elementData
+    Class01 : size()
+    Class01 : int chimp
+    Class01 : int gorilla
+    class Class10 {
+        &lt;&lt;service&gt;&gt;
+        int id
+        size()
+    }</div>
                 
                   
                 
@@ -410,7 +450,7 @@
       
         <script src="../js/lightbox.min.js"></script>
       
-        <script src="https://unpkg.com/mermaid@8.5.2/dist/mermaid.min.js"></script>
+        <script src="../js/mermaid.min.js"></script>
       
     
   </body>

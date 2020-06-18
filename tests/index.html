@@ -329,6 +329,16 @@
                 
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
 <div class="mermaid">graph LR
+    A(Experimental&lt;br&gt;Data Tables) --&gt;B(Add structural&lt;br&gt;metadata)
+    B --&gt;C(Generate&lt;br&gt;a Datapackage&lt;br&gt;descriptor)
+    C --&gt;D[FAIR compliant data]
+    click A "../data-type"
+    click B "../data-type"
+    click C "../json-schema"
+    click D "https://blog.okfn.org/2018/08/14/frictionless-data-and-fair-research-principles/"</div>
+
+<hr />
+<div class="mermaid">graph LR
     A[Data Acquisition] --&gt;B(Raw Data)
     B --&gt; C{FAIR by Design}
     C --&gt;|Yes| D[Standard Compliant Data]

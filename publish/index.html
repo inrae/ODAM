@@ -465,7 +465,7 @@
 <li>enable versioning of your data</li>
 <li>enable re-use and greater visibility of your work</li>
 </ul>
-<p>Most of these reasons coincide with the <a href="https://www.go-fair.org/fair-principles/" target="_blank">FAIR principles</a>. But publishing data according to the FAIR principles involves much more, especially well-described, accessible data that complies with community standards. The FAIR principles can be seen as a consolidation of good data management practices to extend management with the notion of machine-driven data reuse. In others words, the FAIR principles define the attributes that data must have to enable and enhance its reuse, by humans and machines. It is recommended that structural metadata (e.g. links between data tables) should also be provided along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions. This is precisely what is targeted in the implementation of data management by the ODAM software suite.</p>
+<p>Most of these reasons coincide with the <a href="https://www.go-fair.org/fair-principles/" target="_blank">FAIR principles</a>. But publishing data according to the FAIR principles involves much more, especially well-described, accessible data that complies with community standards<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. The FAIR principles can be seen as a consolidation of good data management practices to extend management with the notion of machine-driven data reuse. In others words, the FAIR principles define the attributes that data must have to enable and enhance its reuse, by humans and machines. It is recommended that structural metadata (e.g. links between data tables) should also be provided along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>. This is precisely what is targeted in the implementation of data management by the ODAM software suite.</p>
 <p>Therefore, not only descriptive but also structural metadata should be provided.</p>
 <h4 id="descriptive-metadata-and-structural-metadata">Descriptive metadata and Structural metadata<a class="headerlink" href="#descriptive-metadata-and-structural-metadata" title="Permanent link">&para;</a></h4>
 <dl>
@@ -493,17 +493,27 @@
 </dl>
 <p><br></p>
 <h4 id="without-odam-repository">Without ODAM repository<a class="headerlink" href="#without-odam-repository" title="Permanent link">&para;</a></h4>
-<p>If you do not wish to set up your own ODAM repository, you can at least simply upload your data files with associated structural metadata to an institutional repository. Add a ODAM datapackage.json file within your collection of data files with relative path for files. (see <a href="../json-schema">JSON schema</a>).</p>
+<p>If you do not wish to set up your own ODAM repository on internet, you can at least simply upload your data files with associated structural metadata to an institutional repository. Add a ODAM datapackage.json file within your collection of data files with relative path for files. (see <a href="../json-schema">JSON schema</a>).</p>
 <dl>
 <dt>You can get the datapackage.json file from the <a href="../api">ODAM API</a> as follows:</dt>
 <dd><code>http://&lt;your local ODAM data reposity&gt;/getdata/json/&lt;your dataset&gt;/datapackage</code></dd>
 </dl>
 <p>In addition, for easy reuse, simply indicate that the data has been formatted and structured to be compatible with the ODAM software, so that users of the data can take advantage of all associated services and tools by installing it on their desktop or laptop.</p>
 <p><br><br><br><br></p>
-<!--
-[^1]: Turning FAIR into reality: Final Report and Action Plan from the European Commission Expert Group on FAIR Data (2018)  <https://ec.europa.eu/info/publications/turning-fair-reality_en>{:target="_blank"}
-[^2]: Annika Jacobsen et al (2020), FAIR Principles: Interpretations and Implementation Considerations, Data Intelligence 2020 2: 1-2, 10-29 <https://doi.org/10.1162/dint_r_00024>{:target="_blank"}
--->
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>Turning FAIR into reality: Final Report and Action Plan from the European Commission Expert Group on FAIR Data (2018)  <a href="https://ec.europa.eu/info/publications/turning-fair-reality_en" target="_blank">https://ec.europa.eu/info/publications/turning-fair-reality_en</a>&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>Annika Jacobsen et al (2020), FAIR Principles: Interpretations and Implementation Considerations, Data Intelligence 2020 2: 1-2, 10-29 <a href="https://doi.org/10.1162/dint_r_00024" target="_blank">https://doi.org/10.1162/dint_r_00024</a>&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>Making the data FAIR, EU FAIRplus project <a href="https://fairplus-project.eu/making-fair/" target="_blank">https://fairplus-project.eu/making-fair/</a>&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
                 
                   
                 

@@ -495,7 +495,18 @@
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
 <hr />
 <h2 id="installation">Installation<a class="headerlink" href="#installation" title="Permanent link">&para;</a></h2>
-<p>The ODAM software can be deployed at multiple scales (local, intranet, internet), depending on the need and the target community. </p>
+<p>The ODAM software can be deployed at multiple scales (local, intranet, internet), depending on the need and the target community. 
+<br></p>
+<p><div class="mermaid">graph LR
+    A([ODAM installation]) --&gt; B{MS&lt;br&gt;Windows 10}
+    B --&gt;|Yes| C{Full version}
+    C --&gt;|No| E(ODAMwebserver&lt;br&gt;Web API)
+    C --&gt;|Yes| D(VirtualBox VM)
+    B --&gt;|No| G{MacOS 10.x}
+    G --&gt;|yes| D
+    G --&gt;|yes| F(Docker containers)
+    G --&gt;|No| F</div>
+<center><i>Installation flow chart according to your operating system</i></center></p>
 <hr />
 <h3 id="local-installation-deployment-of-odam-with-full-functionality">Local installation : Deployment of ODAM with full functionality<a class="headerlink" href="#local-installation-deployment-of-odam-with-full-functionality" title="Permanent link">&para;</a></h3>
 <p>This type of deployment is reserved more specifically for computers running under MS Windows 10 and Apple MacOS 10.x. 

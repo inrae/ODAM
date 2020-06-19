@@ -512,6 +512,28 @@ The ODAM software can be <a href="../install">deployed at multiple scales</a> (l
 <br><p class="plegend justify">From the set of data files (which are uncombined tables, each corresponding to a particular observational unit that we name an entity), the user can: 1) Visualize the data associated with their metadata according to several criteria and in a completely interactive way with the help of the data explorer. 2) Export in tabular form subsets selected according to his criteria with combined, merged data. 3) Build and test its models more easily using a scripting language such as R, which allows it to repeat different scenarios according to a variety of parameters.  An R package allows to perform extractions according to the same criteria as those proposed in the data explorer. All this is possible thanks to the API layer, which opens up a whole ecosystem of potential applications.
 </p>
 </center><br></p>
+<div class="mermaid">graph LR
+    A([Using ODAM])
+    C(Dataexplorer)
+    D(R/Python scripts)
+    E(API by&lt;br&gt;Web Browser)
+    F(Spreadsheet&lt;br&gt;Excel, Google, ...)
+    G(Jupyter Notebooks)
+    H(Other tools)
+    A --&gt; E
+    A --&gt; D
+    A --&gt; C
+    E --&gt; F
+    C --&gt; F
+    E --&gt; D
+    D --&gt; G
+    F &lt;--&gt; G
+    F &lt;--&gt; D
+    F &lt;--&gt; H
+    click C "../data-explorer"
+    click E "../api"
+    click G "https://jupyter.org/try"</div>
+
 <hr />
 <h4 id="export-data-from-your-web-browser">Export data from your web browser<a class="headerlink" href="#export-data-from-your-web-browser" title="Permanent link">&para;</a></h4>
 <p>You can retrieve data directly from your web browser based on the API. To understand the syntax, see <a href="../api">Web API</a>. </p>

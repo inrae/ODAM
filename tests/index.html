@@ -331,16 +331,32 @@
 <div class="mermaid">graph LR
     A([ODAM installation]) --&gt; B{MS&lt;br&gt;Windows 10}
     B --&gt;|Yes| C{Full version}
-    C --&gt;|Yes| D(VirtualBox VM)
     C --&gt;|No| E(ODAMwebserver&lt;br&gt;Web API)
-    B --&gt;|No| F(Docker containers)</div>
+    C --&gt;|Yes| D(VirtualBox VM)
+    B --&gt;|No| G{MacOS 10.x}
+    G --&gt;|yes| D
+    G --&gt;|yes| F(Docker containers)
+    G --&gt;|No| F</div>
 
 <hr />
 <div class="mermaid">graph LR
-    A[Data Acquisition] --&gt;B(Raw Data)
-    B --&gt; C{FAIR by Design}
-    C --&gt;|Yes| D[Standard Compliant Data]
-    C --&gt;|No| E[Vendor locked Data]</div>
+    A([Using ODAM])
+    C(Dataexplorer)
+    D(R/Python scripts)
+    E(API by&lt;br&gt;Web Browser)
+    F(Spreadsheet&lt;br&gt;Excel, Google, ...)
+    G(Jupyter Notebooks)
+    H(Other tools)
+    A --&gt; E
+    A --&gt; D
+    A --&gt; C
+    E --&gt; F
+    C --&gt; F
+    E --&gt; D
+    D --&gt; G
+    F &lt;--&gt; G
+    F &lt;--&gt; D
+    F &lt;--&gt; H</div>
 
 <hr />
 <!--

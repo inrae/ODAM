@@ -328,36 +328,6 @@
                 
                 
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
-<div class="mermaid">graph LR
-    A([ODAM installation]) --&gt; B{MS&lt;br&gt;Windows 10}
-    B --&gt;|Yes| C{Full version}
-    C --&gt;|No| E(ODAMwebserver&lt;br&gt;Web API)
-    C --&gt;|Yes| D(VirtualBox VM)
-    B --&gt;|No| G{MacOS 10.x}
-    G --&gt;|yes| D
-    G --&gt;|yes| F(Docker containers)
-    G --&gt;|No| F</div>
-
-<hr />
-<div class="mermaid">graph LR
-    A([Using ODAM])
-    C(Dataexplorer)
-    D(R/Python scripts)
-    E(API by&lt;br&gt;Web Browser)
-    F(Spreadsheet&lt;br&gt;Excel, Google, ...)
-    G(Jupyter Notebooks)
-    H(Other tools)
-    A --&gt; E
-    A --&gt; D
-    A --&gt; C
-    E --&gt; F
-    C --&gt; F
-    E --&gt; D
-    D --&gt; G
-    F &lt;--&gt; G
-    F &lt;--&gt; D
-    F &lt;--&gt; H</div>
-
 <hr />
 <!--
 

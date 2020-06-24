@@ -498,7 +498,8 @@
 <h4 id="based-on-an-odam-repository">Based on an ODAM repository<a class="headerlink" href="#based-on-an-odam-repository" title="Permanent link">&para;</a></h4>
 <p>Because ODAM is primarily an Experimental Data Table Management System (EDTMS) for data sharing, it must be associated with a suitable data repository in order to support data publishing.</p>
 <p>So the ODAM approach has to be regarded as complementary with publication of the data online within an institutional data repository as described in <a href="http://re3data.org/" target="_blank">re3data.org</a> associated or not with a scientific paper. Whereas institutional data repositories focus on the experiment description with the corresponding descriptive metadata, the ODAM approach, by adjoining some minimal but relevant structural metadata, gives access to the data themselves with the possibility to explore and mine them. While ODAM ensuring data sharing function allows direct access to subsets of data by <a href="../api">Web API</a> request, an institutional data repository ensuring data publishing function has to support an important part of the FAIR criteria. Thus, the combination of the two systems makes it possible to cover all the essential FAIR criteria.</p>
-<p>In addition, even if an ODAM repository has its own API to exploit the data, it makes sense to attach an ODAM datapackage.json file (see <a href="../json-schema">JSON schema</a>) to the institutional data repository. This allows machines to use the data without directly requiring the ODAM API, since this datapackage file uses an explicit schema for the data and its organization. In this case, it is imperative to specify absolute URLs in the datapackage.json for the data files.</p>
+<p>The advantage of having an ODAM repository for data users is that it avoids the need to download data prior to any data analysis. This ensures that one starts from the data of the repository and not with the duplicate data that could have been changed between analyses without keeping track of it.</p>
+<p>In addition, it makes sense to attach an ODAM datapackage.json file (see <a href="../json-schema">JSON schema</a>) to the institutional data repository. This allows machines to use the data, since this datapackage file uses an explicit schema for the data and its organization. In this case, it is imperative to specify absolute URLs in the datapackage.json for the data files.</p>
 <dl>
 <dt>You can get the datapackage.json file from the <a href="../api">ODAM API</a> as follows:</dt>
 <dd><code>https://&lt;your ODAM data reposity&gt;/getdata/json/&lt;your dataset&gt;/datapackage?links=1</code></dd>
@@ -511,7 +512,7 @@
 <dd><code>http://&lt;your local ODAM data reposity&gt;/getdata/json/&lt;your dataset&gt;/datapackage</code></dd>
 </dl>
 <p>In addition, for easy reuse, simply indicate that the data has been formatted and structured to be compatible with the ODAM software, so that users of the data can take advantage of all associated services and tools by installing it on their desktop or laptop.</p>
-<p><br><br><br><br></p>
+<p><br><br><br></p>
 <div class="footnote">
 <hr />
 <ol>
@@ -526,6 +527,9 @@
 </li>
 <li id="fn:4">
 <p>Cost-Benefit analysis for FAIR research data - Cost of not having FAIR research data, European Commission, Directorate-General for Research and Innovation (2018) <a href="https://bit.ly/3dixEe1" target="_blank">https://bit.ly/3dixEe1</a>&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:5">
+<p>Bangert, Daniel, Hermans, Emilie, van Horik, René, de Jong, Maaike, Koers, Hylke, &amp; Mokrane, Mustapha. (2019, December 19). Recommendations for Services in a FAIR data ecosystem. Zenodo. <a href="http://doi.org/10.5281/zenodo.3585742" target="_blank">http://doi.org/10.5281/zenodo.3585742</a>&#160;<a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 5 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>

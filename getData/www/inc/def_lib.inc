@@ -675,11 +675,11 @@ if %size% LSS %maxbytesize% (
                 }
                 $json .='],';
           # schema - primaryKey
-                #$json .='"primaryKey": [ "'.$identifier.'" ], ';
+                $json .='"primaryKey": [ "'.$identifier.'" ], ';
           # schema - foreignKey
                 $threads = $this->_get_lists_of_threads($arr['idset']);
                 if (count($threads)>0) {
-                    $json .='"foreignKey": [ ';
+                    $json .='"foreignKeys": [ ';
                     $i=0;
                     foreach($threads as $thread) {
                         if ($i) $json .=','; $i++;

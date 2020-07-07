@@ -460,7 +460,32 @@
 <p><center>
 <a href="../images/ODAM-datapackage.png" data-lightbox="fod1"><img src="../images/ODAM-datapackage.png" width="500px"></a>
 </center><br></p>
+<!-- Example with the FRIM1 dataset : 
+[![Badge](images/odam-frim1-green.svg)](https://identifiers.org/odam:frim1){:target="_blank"} - <https://identifiers.org/odam:frim1>{:target="_blank"} -->
+
 <p>ODAM data package schema is very close to the <a href="https://frictionlessdata.io/" target="_blank">Frictionless Data</a> framework.</p>
+<p><div class="mermaid">graph TD
+ A(Data Source)
+ H(Table Schema)
+ B(ODAM Table Schema)
+ C(CSV Data Descriptor)
+ D(ODAM Categories)
+ E(ODAM Data Resource)
+ F(Data Package)
+ G(ODAM Data package)
+ H--&gt;B
+ D--&gt;B
+ A--&gt;E
+ B--&gt;E
+ C--&gt;E
+ E--&gt;G
+ F--&gt;G
+ style B fill:#f9f
+ style D fill:#f9f
+ style E fill:#f9f
+ style G fill:#f9f,stroke:#333,stroke-width:4px
+</div>
+<center><i>How the ODAM Data Package is composed out of Frictionless Data specs</i></center></p>
 <ul>
 <li><a href="odam-data-package">odam-data-package.json</a> : JSON Schema for ODAM datapackage</li>
 <li><a href="odam-data-resource">odam-data-resource.json</a> : JSON Schema for ODAM dataresource

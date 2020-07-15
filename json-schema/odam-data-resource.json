@@ -17,6 +17,13 @@
       "pattern": "^([a-zA-Z0-9_])+$",
       "context": "This is ideally a url-usable and human-readable name. Name `SHOULD` be invariant, meaning it `SHOULD NOT` change when its parent descriptor is updated."
     },
+    "label": {
+      "title": "Label",
+      "description": "A very short description where spaces are allowed.",
+      "type": "string",
+      "pattern": "^([a-zA-Z0-9 ])+$",
+      "context": "Ideally it corresponds to the label for CV Term"
+    },
     "title": {
       "title": "Title",
       "description": "A human-readable title.",
@@ -39,7 +46,7 @@
        "description": "Controlled Vocabulary based on ontology",
        "type": "object",
        "properties": {
-          "name": {
+          "label": {
             "$ref": "#/definitions/name"
           },
           "path": {

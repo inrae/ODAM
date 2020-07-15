@@ -266,6 +266,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#sructural-metadata" class="md-nav__link">
+    Sructural metadata
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-preparation-protocol-for-odam-compliance" class="md-nav__link">
+    Data Preparation Protocol for ODAM Compliance
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -396,6 +410,20 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#sructural-metadata" class="md-nav__link">
+    Sructural metadata
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#data-preparation-protocol-for-odam-compliance" class="md-nav__link">
+    Data Preparation Protocol for ODAM Compliance
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -414,19 +442,32 @@
                 
                 <h1 id="odam-data-collection-and-preparation">ODAM: Data collection and preparation<a class="headerlink" href="#odam-data-collection-and-preparation" title="Permanent link">&para;</a></h1>
 <hr />
-<h4 id="data-type">Data Type<a class="headerlink" href="#data-type" title="Permanent link">&para;</a></h4>
+<h3 id="data-type">Data Type<a class="headerlink" href="#data-type" title="Permanent link">&para;</a></h3>
 <p>Whatever the kind of experiment, this assumes a design of experiment (<a href="https://en.wikipedia.org/wiki/Design_of_experiments" target="_blank">DoE</a>) involving individuals, samples or whatever things, as the main objects of study and producing several <a href="https://www.google.com/search?safe=strict&amp;q=experimental+data+table&amp;tbm=isch&amp;source=univ&amp;sa=X&amp;biw=1549&amp;bih=768" target="_blank">experimental data tables</a>. This also assumes the observation of dependent variables resulting from effects of some controlled independent variables (<strong>factors</strong><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>). Moreover, the objects of study usually have an <strong>identifier</strong><sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> for each of them, and the variables can be <strong>quantitative</strong><sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup> or <strong>qualitative</strong><sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>.</p>
 <p><center>
 <a href="../images/figure5.png" data-lightbox="fig5"><img src="../images/figure5.png" width="600px"></a>
 <p class="plegend center">Example of an experiment data table viewed according to the repartition by category as introduced in the text</p>
 </center><br><br></p>
-<h4 id="data-management-promote-good-practices">Data management : promote good practices<a class="headerlink" href="#data-management-promote-good-practices" title="Permanent link">&para;</a></h4>
+<h3 id="data-management-promote-good-practices">Data management : promote good practices<a class="headerlink" href="#data-management-promote-good-practices" title="Permanent link">&para;</a></h3>
 <p>First and foremost, it is important to have well-organized data. The files generated during data collection have to be organized according to the entity-attribute relational model. Indeed, each entity corresponds to a type of collected data (samples, compounds, ...) for which is associated a set of attributes, i.e. observed or measured variables. Well organized data means that each variable forms a column, each observation forms a line, and each type of "unit observational" forms a table, i.e a file. Then, a link is established for each subset with the subset from which it was obtained, so that the links can be interpreted as "obtained from", since each column of each subset of data must be associated with a type of experimental data (called a category), especially those corresponding to identifiers that the links are based on.</p>
 <p><center>
 <a href="../images/figure6.png" data-lightbox="fig6"><img src="../images/figure6.png" width="600px"></a>
 <p class="plegend">A link is established for each subset with the subset from which it was obtained, so that the links can be interpreted as "obtained from", since each column of each subset of data must be associated with a type of experimental data (called a category), especially those corresponding to identifiers that the links are based on.</p>
 </center><br></p>
 <p>Another good practice is to promote non-proprietary formats such as <a href="https://en.wikipedia.org/wiki/Tab-separated_values" target="_blank">TSV</a>, which is a necessary and indispensable step towards "open linked data" (<a href="https://5stardata.info/en" target="_blank">5 gold stars</a> principle). Indeed, TSV is a popular method of data interchange among databases and spreadsheets. So an ODAM dataset is a bundle that contains a set of TSV files. The TSV files are simple tables containing the data of the dataset.</p>
+<h3 id="sructural-metadata">Sructural metadata<a class="headerlink" href="#sructural-metadata" title="Permanent link">&para;</a></h3>
+<p>ODAM provides a model for structuring both data and metadata that facilitates data handling and analysis. </p>
+<p>Since all the experimental data tables were generated as part of an experiment associated with a Design of Experiment (DoE), each file thus contains data acquired sequentially as the experiment progressed. There must therefore be a link between each file, i.e. information that connects them together. In most cases, this information corresponds to identifiers. Thus, we can depict all data tables as a tree, the implicit link that connects them together being "<i>obtained from</i>".</p>
+
+<p>We need two specific files (subsets &amp; attributes) to describe the structural metadata of the whole dataset. The figure below is an illustration of the two metadata files, based on the <a href="../dataset-example">frim1 dataset</a>, where only a part of each of them are shown here.</p>
+<p><center>
+<a href="../images/figure10.png" data-lightbox="fig10"><img src="../images/figure10.png" width="600px"></a>
+<br><p class="plegend center">ODAM-compliant structural metadata associated with the FRIM experimental data files</p>
+</center><br><br></p>
+<p><b>(1)</b>The subset metadata file makes it possible to associate each data subset with a key concept corresponding to the main entity of the subset, each subset being stored as a file (the grey rectangle). It also defines for each subset the link to the subset it originates. <b>(2)</b> The attribute metadata file allows to annotate each attribute (concept/variable) with some minimal but relevant metadata, such as: its description with its unit, the data type, but also its category. The category defined by controlled vocabulary (CV) is used to specify the type of each variable. In each of these two files (subsets and attributes), it is possible to annotate each of the terms with unambiguous definitions through links to accessible (standard) definitions. Thus constructed, this metadata constitutes a dictionary describing each file (subsets) as well as all the columns of the tables (attributes) offering a better guarantee in the correct (re)use of the data for users who have not produced these data.</p>
+
+<p>The full version of these two example metadata files can be viewed online: <a href="https://pmb-bordeaux.fr/getdata/xml/frim1" target="_blank">subset metadata</a>, <a href="https://pmb-bordeaux.fr/getdata/xml/frim1/metadata" target="_blank">attribute metadata</a></p>
+<h3 id="data-preparation-protocol-for-odam-compliance">Data Preparation Protocol for ODAM Compliance<a class="headerlink" href="#data-preparation-protocol-for-odam-compliance" title="Permanent link">&para;</a></h3>
 <p>All steps concerning the collection and preparation of data have been published and are available online at <a href="https://www.protocols.io/" target="_blank">protocols.io</a></p>
 <div class="admonition abstract">
 <p class="admonition-title">Data Preparation Protocol for ODAM Compliance. protocols.io</p>

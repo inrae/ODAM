@@ -703,7 +703,12 @@ if %size% LSS %maxbytesize% (
                 $json .='"encoding":"utf-8", "format":"csv", "mediatype":"text/tab-separated-values", "missingValues":[""]}';
             }
         }
-        $json .= ']}';
+        $json .= ']';
+    # sources
+        if (strlen($urlroot)>0) {
+            $json .=', "sources":[{"title":"Dataexplorer", "path":"'.dirname($urlroot).'/dataexplorer/?ds='.$this->dsname.'"}]';
+        }
+        $json .= '}';
         return $json;
     }
 

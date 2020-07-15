@@ -47,7 +47,7 @@
        "type": "object",
        "properties": {
           "label": {
-            "$ref": "#/definitions/name"
+            "$ref": "#/definitions/label"
           },
           "path": {
             "$ref": "#/definitions/path"

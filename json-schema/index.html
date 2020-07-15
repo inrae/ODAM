@@ -540,16 +540,16 @@
 <span class="n">dataset</span> <span class="o">&lt;-</span> <span class="s">&#39;frim1&#39;</span>
 
 <span class="c1"># Get the ODAM data package schema</span>
-<span class="n">response</span> <span class="o">&lt;-</span> <span class="nf">GET</span><span class="p">(</span><span class="s">&#39;https://inrae.github.io/ODAM/json-schema/odam-data-package.json&#39;</span><span class="p">,</span> 
+<span class="n">response</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">GET</span><span class="p">(</span><span class="s">&#39;https://inrae.github.io/ODAM/json-schema/odam-data-package.json&#39;</span><span class="p">,</span> 
                  <span class="nf">config</span><span class="p">(</span><span class="n">sslversion</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="n">ssl_verifypeer</span><span class="o">=</span><span class="m">1</span><span class="p">))</span>
-<span class="n">schema</span> <span class="o">&lt;-</span> <span class="nf">rawToChar</span><span class="p">(</span><span class="n">response</span><span class="o">$</span><span class="n">content</span><span class="p">)</span>
+<span class="n">schema</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">as</span> <span class="o">=</span><span class="s">&#39;text&#39;</span><span class="p">)</span>
 
 <span class="c1"># Get structural metadata information in datapackage format (json) for a dataset</span>
 <span class="c1"># directly from its ODAM repository. As the option links is set to 1, we will have</span>
 <span class="c1"># the absolute reference for data files (see &#39;path&#39; below)</span>
-<span class="n">response</span> <span class="o">&lt;-</span> <span class="nf">GET</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&#39;%s/getdata/json/%s/datapackage?links=1&#39;</span><span class="p">,</span> <span class="n">odam_url</span><span class="p">,</span> <span class="n">dataset</span><span class="p">),</span> 
+<span class="n">response</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">GET</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&#39;%s/getdata/json/%s/datapackage?links=1&#39;</span><span class="p">,</span> <span class="n">odam_url</span><span class="p">,</span> <span class="n">dataset</span><span class="p">),</span> 
                  <span class="nf">config</span><span class="p">(</span><span class="n">sslversion</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="n">ssl_verifypeer</span><span class="o">=</span><span class="m">1</span><span class="p">))</span>
-<span class="n">dp_json</span> <span class="o">&lt;-</span> <span class="nf">rawToChar</span><span class="p">(</span><span class="n">response</span><span class="o">$</span><span class="n">content</span><span class="p">)</span>
+<span class="n">dp_json</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">as</span> <span class="o">=</span><span class="s">&#39;text&#39;</span><span class="p">)</span>
 
 <span class="c1"># Validate the JSON against the ODAM data package schema</span>
 <span class="n">jsonvalidate</span><span class="o">::</span><span class="nf">json_validate</span><span class="p">(</span><span class="n">dp_json</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span>
@@ -560,7 +560,7 @@
 <hr />
 <div class="tabbed-set" data-tabs="2:2">
 <input name="__tabbed_2" type="radio" id="__tabbed_2_1" checked="checked" /><label for="__tabbed_2_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Parse the JSON object to a data.frame</span>
-<span class="n">dp</span> <span class="o">&lt;-</span> <span class="nf">fromJSON</span><span class="p">(</span><span class="n">dp_json</span><span class="p">)</span>
+<span class="n">dp</span> <span class="o">&lt;-</span> <span class="n">jsonlite</span><span class="o">::</span><span class="nf">fromJSON</span><span class="p">(</span><span class="n">dp_json</span><span class="p">)</span>
 
 <span class="c1"># View licenses</span>
 <span class="nf">print</span><span class="p">(</span><span class="n">dp</span><span class="o">$</span><span class="n">licenses</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="bp">F</span><span class="p">)</span>

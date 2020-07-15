@@ -654,8 +654,10 @@ if %size% LSS %maxbytesize% (
                     $json .='"obtainedFrom":"'.$subsets[$arr['idfather']-1].'", ';
                 if (strlen($arr['joinkey'])>0)
                     $json .='"joinkey":"'.$arr['joinkey'].'", ';
-                $json .='"cv_term_id":"'.$arr['cv_term_id'].'", '; 
-                $json .='"cv_term_name":"'.$arr['cv_term_name'].'", ';
+# Modif CV_TERM
+                #$json .='"cv_term_id":"'.$arr['cv_term_id'].'", '; 
+                #$json .='"cv_term_name":"'.$arr['cv_term_name'].'", ';
+                $json .='"cv_term": { "name":"'.$arr['cv_term_name'].'", "path":"'.$arr['cv_term_id'].'" }, ';
           # schema - fields
                 $json .='"schema": {"fields": [';
                 $i=0;
@@ -668,7 +670,9 @@ if %size% LSS %maxbytesize% (
                     else
                         $json .=', "title":"'.trim($subarr[0]).'"';
                     if (strlen($subarr[2]))
-                        $json .=', "cv_term_id":"'.$subarr[2].'", "cv_term_name":"'.$subarr[3].'"';
+# Modif CV_TERM
+                        #$json .=', "cv_term_id":"'.$subarr[2].'", "cv_term_name":"'.$subarr[3].'"';
+                        $json .=', "cv_term": { "name":"'.$subarr[3].'", "path":"'.$subarr[2].'" }';
                     $required = $field==$identifier || $field==$arr['joinkey'] ? 'true' : 'false' ;
                     $json .= ', "constraints": { "required":'.$required.' }';
                     $json .='}';

@@ -29,6 +29,12 @@
       "description": "A human-readable title.",
       "type": "string"
     },
+    "email": {
+      "title": "Email",
+      "description": "An email address.",
+      "type": "string",
+      "format": "email"
+    },
     "keywords": {
       "title": "Keywords",
       "description": "A list of keywords that describe this package.",
@@ -76,6 +82,34 @@
       "items": {
         "$ref": "https://inrae.github.io/ODAM/json-schema/odam-data-resource.json"
       }
+    },
+    "source": {
+      "title": "Source",
+      "description": "A source file.",
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "title": {
+          "$ref": "#/definitions/title"
+        },
+        "path": {
+          "$ref": "#/definitions/path"
+        },
+        "email": {
+          "$ref": "#/definitions/email"
+        }
+      }
+    },
+    "sources": {
+      "title": "Sources",
+      "description": "The raw sources for this resource.",
+      "type": "array",
+      "minItems": 0,
+      "items": {
+        "$ref": "#/definitions/source"
+      }
     }
   },
   "properties": {
@@ -97,6 +131,9 @@
      },
      "resources": {
         "$ref": "#/definitions/tabularDataResources"
+     },
+     "sources": {
+          "$ref": "#/definitions/sources"
      }
   },
   "required": [ "profile", "name", "licenses", "resources" ]

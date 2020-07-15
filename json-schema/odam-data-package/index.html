@@ -352,6 +352,12 @@
       <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;A human-readable title.&quot;</span><span class="p">,</span>
       <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
     <span class="p">},</span>
+    <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Email&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;An email address.&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;format&quot;</span><span class="p">:</span> <span class="s2">&quot;email&quot;</span>
+    <span class="p">},</span>
     <span class="nt">&quot;keywords&quot;</span><span class="p">:</span> <span class="p">{</span>
       <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Keywords&quot;</span><span class="p">,</span>
       <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;A list of keywords that describe this package.&quot;</span><span class="p">,</span>
@@ -399,6 +405,34 @@
       <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;https://inrae.github.io/ODAM/json-schema/odam-data-resource.json&quot;</span>
       <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;source&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Source&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;A source file.&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="s2">&quot;title&quot;</span>
+      <span class="p">],</span>
+      <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/title&quot;</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/path&quot;</span>
+        <span class="p">},</span>
+        <span class="nt">&quot;email&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/email&quot;</span>
+        <span class="p">}</span>
+      <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="nt">&quot;sources&quot;</span><span class="p">:</span> <span class="p">{</span>
+      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Sources&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;The raw sources for this resource.&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;array&quot;</span><span class="p">,</span>
+      <span class="nt">&quot;minItems&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nt">&quot;items&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/source&quot;</span>
+      <span class="p">}</span>
     <span class="p">}</span>
   <span class="p">},</span>
   <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
@@ -420,6 +454,9 @@
      <span class="p">},</span>
      <span class="nt">&quot;resources&quot;</span><span class="p">:</span> <span class="p">{</span>
         <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/tabularDataResources&quot;</span>
+     <span class="p">},</span>
+     <span class="nt">&quot;sources&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/sources&quot;</span>
      <span class="p">}</span>
   <span class="p">},</span>
   <span class="nt">&quot;required&quot;</span><span class="p">:</span> <span class="p">[</span> <span class="s2">&quot;profile&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;licenses&quot;</span><span class="p">,</span> <span class="s2">&quot;resources&quot;</span> <span class="p">]</span>

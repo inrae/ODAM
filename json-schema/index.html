@@ -456,13 +456,6 @@
 <hr />
 <h3 id="odam-data-package-based-on-json-schema">ODAM data-package based on JSON-Schema<a class="headerlink" href="#odam-data-package-based-on-json-schema" title="Permanent link">&para;</a></h3>
 <p>A data package is a simple container format based on <a href="https://json-schema.org/" target="_blank">JSON Schema specifications</a> used to describe and package a collection of data. Defining an explicit schema for structural metadata allows machines to better interpret the data for reuse. Thus, when disseminating data, a file named <a href="https://datahub.io/docs/data-packages" target="_blank">datapackage.json</a> by convention can be added to the collection of your data files. This <a href="https://datahub.io/docs/data-packages" target="_blank">datapackage.json</a> file contains all structural metadata along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions.</p>
-<p>The <a href="https://datahub.io/docs/data-packages" target="_blank">datapackage.json</a> file can be generated directly from the <a href="../api/">ODAM API</a> by specifying '<i><b>/datapackage</b></i>' at the end of the request. By default, the reference to the data files is relative. To have a URL as reference for the data files, it is necessary to add at the end of the request '<i><b>?links=1</b></i>'</p>
-<p><center>
-<a href="../images/ODAM-datapackage.png" data-lightbox="fod1"><img src="../images/ODAM-datapackage.png" width="500px"></a>
-</center><br></p>
-<!-- Example with the FRIM1 dataset : 
-[![Badge](images/odam-frim1-green.svg)](https://identifiers.org/odam:frim1){:target="_blank"} - <https://identifiers.org/odam:frim1>{:target="_blank"} -->
-
 <p>ODAM data package schema is very close to the <a href="https://frictionlessdata.io/" target="_blank">Frictionless Data</a> framework.</p>
 <p><center></p>
 <p><div class="mermaid">graph TD
@@ -490,16 +483,15 @@
 <br></p>
 <ul>
 <li><a href="odam-data-package">odam-data-package.json</a> : JSON Schema for ODAM datapackage</li>
-<li><a href="odam-data-resource">odam-data-resource.json</a> : JSON Schema for ODAM dataresource
-<!-- X --></li>
+<li><a href="odam-data-resource">odam-data-resource.json</a> : JSON Schema for ODAM dataresource</li>
 </ul>
+<p>The <a href="https://datahub.io/docs/data-packages" target="_blank">datapackage.json</a> file can be generated directly from the <a href="../api/">ODAM API</a> by specifying '<i><b>/datapackage</b></i>' at the end of the request. By default, the reference to the data files is relative. To have a URL as reference for the data files, it is necessary to add at the end of the request '<i><b>?links=1</b></i>'</p>
+<p><center>
+<a href="../images/ODAM-datapackage.png" data-lightbox="fod1"><img src="../images/ODAM-datapackage.png" width="500px"></a>
+</center><br></p>
+<!-- X -->
+
 <hr />
-<p><strong>Data Package and FAIR</strong></p>
-<ul>
-<li><a href="https://frictionlessdata.io/reproducible-research/#fair-data" target="_blank">Frictionless Data and FAIR Research Principles</a></li>
-<li><a href="http://frictionlessdata.io/blog/2018/07/16/visible-findable-shareable-data/" target="_blank">Visible, findable, shareable data</a></li>
-<li><a href="https://fairsharing.org/bsg-s001302/" target="_blank">Datapackage on FAIRsharing</a></li>
-</ul>
 <p><strong>ODAM data-package on github</strong></p>
 <ul>
 <li><a href="https://github.com/djacob65/odam-datapackage" target="_blank">https://github.com/djacob65/odam-datapackage</a><ul>
@@ -507,6 +499,17 @@
 <a href="https://goodtables.io/github/djacob65/odam-datapackage" target="_blank"><img alt="goodtables.io" src="https://goodtables.io/badge/github/djacob65/odam-datapackage.svg" /></a></li>
 </ul>
 </li>
+</ul>
+<p><strong>Frim1 datapackage as an example</strong></p>
+<p>The Identifiers.org URI for the Frim1 dataset: <i>odam:frim1</i> (after de-reification) returns the structural metadata returned according to the JSON datapackage schema</p>
+<ul>
+<li><a href="https://identifiers.org/odam:frim1" target="_blank"><img alt="Badge" src="../images/odam-frim1-green.svg" /></a> - <a href="https://identifiers.org/odam:frim1" target="_blank">https://identifiers.org/odam:frim1</a></li>
+</ul>
+<p><strong>Data Package and FAIR</strong></p>
+<ul>
+<li><a href="https://frictionlessdata.io/reproducible-research/#fair-data" target="_blank">Frictionless Data and FAIR Research Principles</a></li>
+<li><a href="http://frictionlessdata.io/blog/2018/07/16/visible-findable-shareable-data/" target="_blank">Visible, findable, shareable data</a></li>
+<li><a href="https://fairsharing.org/bsg-s001302/" target="_blank">Datapackage on FAIRsharing</a></li>
 </ul>
 <p><strong>Frictionless Data Specifications</strong></p>
 <ul>

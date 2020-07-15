@@ -357,15 +357,18 @@
       <span class="nt">&quot;pattern&quot;</span><span class="p">:</span> <span class="s2">&quot;^(?=^[^./~])(^((?!\\.{2}).)*$).*$&quot;</span><span class="p">,</span>
       <span class="nt">&quot;context&quot;</span><span class="p">:</span> <span class="s2">&quot;Implementations need to negotiate the type of path provided, and dereference the data accordingly.&quot;</span>
     <span class="p">},</span>
-    <span class="nt">&quot;anyTermId&quot;</span> <span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;CV Term id&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;URL of the controlled vocabulary&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
-    <span class="p">},</span>
-    <span class="nt">&quot;anyTermName&quot;</span> <span class="p">:</span> <span class="p">{</span>
-      <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;CV Term Name&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Short description of the controlled vocabulary&quot;</span><span class="p">,</span>
-      <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
+    <span class="nt">&quot;cv_term&quot;</span><span class="p">:</span> <span class="p">{</span>
+       <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;CV Term&quot;</span><span class="p">,</span>
+       <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Controlled Vocabulary based on ontology&quot;</span><span class="p">,</span>
+       <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+       <span class="nt">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+          <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/name&quot;</span>
+          <span class="p">},</span>
+          <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/path&quot;</span>
+          <span class="p">}</span>
+       <span class="p">}</span>
     <span class="p">},</span>
     <span class="nt">&quot;csvDialect&quot;</span><span class="p">:</span> <span class="p">{</span>
       <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;CSV Dialect&quot;</span><span class="p">,</span>
@@ -544,12 +547,9 @@
         <span class="nt">&quot;unit&quot;</span><span class="p">:</span> <span class="p">{</span>
            <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
         <span class="p">},</span>
-        <span class="nt">&quot;cv_term_id&quot;</span><span class="p">:</span> <span class="p">{</span>
-           <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/anyTermId&quot;</span>
+        <span class="nt">&quot;cv_term&quot;</span><span class="p">:</span> <span class="p">{</span>
+           <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/cv_term&quot;</span>
         <span class="p">},</span> 
-        <span class="nt">&quot;cv_term_name&quot;</span><span class="p">:</span> <span class="p">{</span>
-           <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/anyTermName&quot;</span>
-        <span class="p">},</span>
         <span class="nt">&quot;constraints&quot;</span><span class="p">:</span> <span class="p">{</span>
            <span class="nt">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Constraints&quot;</span><span class="p">,</span>
            <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;The following constraints are supported for `string` fields.&quot;</span><span class="p">,</span>
@@ -665,11 +665,8 @@
         <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;name of the identifier field (column name) that serves to link with its father file i.e same as foreignKey&quot;</span><span class="p">,</span>
         <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;string&quot;</span>
      <span class="p">},</span>
-     <span class="nt">&quot;cv_term_id&quot;</span> <span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/anyTermId&quot;</span>
-     <span class="p">},</span>
-     <span class="nt">&quot;cv_term_name&quot;</span> <span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/anyTermName&quot;</span>
+     <span class="nt">&quot;cv_term&quot;</span> <span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/cv_term&quot;</span>
      <span class="p">},</span>
      <span class="nt">&quot;schema&quot;</span><span class="p">:</span> <span class="p">{</span>  
         <span class="nt">&quot;$ref&quot;</span><span class="p">:</span> <span class="s2">&quot;#/definitions/tableSchema&quot;</span>

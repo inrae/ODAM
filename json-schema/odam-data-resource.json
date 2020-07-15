@@ -34,15 +34,18 @@
       "pattern": "^(?=^[^./~])(^((?!\\.{2}).)*$).*$",
       "context": "Implementations need to negotiate the type of path provided, and dereference the data accordingly."
     },
-    "anyTermId" : {
-      "title": "CV Term id",
-      "description": "URL of the controlled vocabulary",
-      "type": "string"
-    },
-    "anyTermName" : {
-      "title": "CV Term Name",
-      "description": "Short description of the controlled vocabulary",
-      "type": "string"
+    "cv_term": {
+       "title": "CV Term",
+       "description": "Controlled Vocabulary based on ontology",
+       "type": "object",
+       "properties": {
+          "name": {
+            "$ref": "#/definitions/name"
+          },
+          "path": {
+            "$ref": "#/definitions/path"
+          }
+       }
     },
     "csvDialect": {
       "title": "CSV Dialect",
@@ -221,12 +224,9 @@
         "unit": {
            "type": "string"
         },
-        "cv_term_id": {
-           "$ref": "#/definitions/anyTermId"
+        "cv_term": {
+           "$ref": "#/definitions/cv_term"
         }, 
-        "cv_term_name": {
-           "$ref": "#/definitions/anyTermName"
-        },
         "constraints": {
            "title": "Constraints",
            "description": "The following constraints are supported for `string` fields.",
@@ -342,11 +342,8 @@
         "description": "name of the identifier field (column name) that serves to link with its father file i.e same as foreignKey",
         "type": "string"
      },
-     "cv_term_id" : {
-        "$ref": "#/definitions/anyTermId"
-     },
-     "cv_term_name" : {
-        "$ref": "#/definitions/anyTermName"
+     "cv_term" : {
+        "$ref": "#/definitions/cv_term"
      },
      "schema": {  
         "$ref": "#/definitions/tableSchema"

@@ -385,15 +385,15 @@
 <span class="c1"># Collapse search terms.</span>
 <span class="n">entry</span> <span class="o">&lt;-</span> <span class="nf">paste</span><span class="p">(</span><span class="n">searchTerms</span><span class="p">,</span> <span class="n">collapse</span><span class="o">=</span><span class="s">&quot;+&quot;</span><span class="p">)</span>
 <span class="c1"># Do the search </span>
-<span class="n">siteHTML</span> <span class="o">&lt;-</span> <span class="nf">getForm</span><span class="p">(</span><span class="s">&quot;http://www.google.com/search&quot;</span><span class="p">,</span>
+<span class="n">siteHTML</span> <span class="o">&lt;-</span> <span class="n">RCurl</span><span class="o">::</span><span class="nf">getForm</span><span class="p">(</span><span class="s">&quot;http://www.google.com/search&quot;</span><span class="p">,</span>
                     <span class="n">hl</span><span class="o">=</span><span class="s">&quot;en&quot;</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="n">entry</span><span class="p">,</span>
                     <span class="n">btnG</span><span class="o">=</span><span class="s">&quot;Search&quot;</span><span class="p">)</span>
 <span class="c1"># Extract nodes with the links</span>
-<span class="n">html</span> <span class="o">&lt;-</span> <span class="nf">htmlTreeParse</span><span class="p">(</span><span class="n">siteHTML</span><span class="p">,</span> <span class="n">useInternalNodes</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="nf">function </span><span class="p">(</span><span class="kc">...</span><span class="p">){})</span>
-<span class="n">nodes</span> <span class="o">&lt;-</span> <span class="nf">getNodeSet</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s">&quot;//div[@class=&#39;kCrYT&#39;]//a&quot;</span><span class="p">)</span>
+<span class="n">html</span> <span class="o">&lt;-</span> <span class="n">XML</span><span class="o">::</span><span class="nf">htmlTreeParse</span><span class="p">(</span><span class="n">siteHTML</span><span class="p">,</span> <span class="n">useInternalNodes</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="nf">function </span><span class="p">(</span><span class="kc">...</span><span class="p">){})</span>
+<span class="n">nodes</span> <span class="o">&lt;-</span> <span class="n">XML</span><span class="o">::</span><span class="nf">getNodeSet</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s">&quot;//div[@class=&#39;kCrYT&#39;]//a&quot;</span><span class="p">)</span>
 
 <span class="c1"># Get all the links</span>
-<span class="n">links</span> <span class="o">&lt;-</span> <span class="nf">sapply</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">x</span> <span class="o">&lt;-</span> <span class="nf">xmlAttrs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="n">[[</span><span class="s">&quot;href&quot;</span><span class="n">]]</span><span class="p">)</span>
+<span class="n">links</span> <span class="o">&lt;-</span> <span class="nf">sapply</span><span class="p">(</span><span class="n">nodes</span><span class="p">,</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="n">x</span> <span class="o">&lt;-</span> <span class="n">XML</span><span class="o">::</span><span class="nf">xmlAttrs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="n">[[</span><span class="s">&quot;href&quot;</span><span class="n">]]</span><span class="p">)</span>
 <span class="n">links</span> <span class="o">&lt;-</span> <span class="n">links</span><span class="nf">[grep</span><span class="p">(</span><span class="s">&quot;google.com/search&quot;</span><span class="p">,</span> <span class="n">links</span><span class="p">,</span> <span class="n">invert</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span><span class="n">]</span>
 <span class="n">links</span> <span class="o">&lt;-</span> <span class="nf">gsub</span><span class="p">(</span><span class="s">&#39;/url.q=&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="nf">gsub</span><span class="p">(</span><span class="s">&#39;&amp;sa.+$&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">,</span> <span class="n">links</span><span class="p">))</span>
 
@@ -402,7 +402,7 @@
 
 <span class="c1"># Compile into a data.frame</span>
 <span class="n">df</span> <span class="o">&lt;-</span> <span class="nf">data.frame</span><span class="p">(</span>
-   <span class="n">label</span><span class="o">=</span><span class="nf">sapply</span><span class="p">(</span> <span class="nf">getNodeSet</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s">&quot;//div[@class=&#39;BNeawe vvjwJb AP7Wnd&#39;]&quot;</span><span class="p">),</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>  <span class="nf">xmlValue</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">}</span> <span class="p">),</span>
+   <span class="n">label</span><span class="o">=</span><span class="nf">sapply</span><span class="p">(</span> <span class="n">XML</span><span class="o">::</span><span class="nf">getNodeSet</span><span class="p">(</span><span class="n">html</span><span class="p">,</span> <span class="s">&quot;//div[@class=&#39;BNeawe vvjwJb AP7Wnd&#39;]&quot;</span><span class="p">),</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span> <span class="n">XML</span><span class="o">::</span><span class="nf">xmlValue</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="p">}</span> <span class="p">),</span>
    <span class="n">links</span><span class="o">=</span><span class="n">links</span><span class="p">,</span>
    <span class="n">stringsAsFactors</span><span class="o">=</span><span class="kc">FALSE</span>
 <span class="p">)</span>
@@ -441,7 +441,7 @@
 
    <span class="c1"># Retrieving Dataset and File Metadata</span>
    <span class="nf">Sys.setenv</span><span class="p">(</span><span class="s">&quot;DATAVERSE_SERVER&quot;</span> <span class="o">=</span> <span class="n">dataverse</span><span class="p">)</span>
-   <span class="n">dataset</span> <span class="o">&lt;-</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="n">doi</span><span class="p">)</span>
+   <span class="n">dataset</span> <span class="o">&lt;-</span> <span class="n">dataverse</span><span class="o">::</span><span class="nf">get_dataset</span><span class="p">(</span><span class="n">doi</span><span class="p">)</span>
 
    <span class="c1"># Display the dataset information</span>
    <span class="n">dataset</span>
@@ -462,7 +462,7 @@
 <div class="tabbed-set" data-tabs="3:2">
 <input name="__tabbed_3" type="radio" id="__tabbed_3_1" checked="checked" /><label for="__tabbed_3_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get more metadata</span>
 <span class="nf">if </span><span class="p">(</span> <span class="nf">length</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
-   <span class="n">metadata</span> <span class="o">&lt;-</span> <span class="nf">dataset_metadata</span><span class="p">(</span><span class="n">doi</span><span class="p">)</span>
+   <span class="n">metadata</span> <span class="o">&lt;-</span> <span class="n">dataverse</span><span class="o">::</span><span class="nf">dataset_metadata</span><span class="p">(</span><span class="n">doi</span><span class="p">)</span>
    <span class="n">metadata</span><span class="o">$</span><span class="n">fields[</span>  <span class="o">!</span> <span class="n">metadata</span><span class="o">$</span><span class="n">fields</span><span class="o">$</span><span class="n">multiple</span> <span class="o">|</span> 
                       <span class="n">metadata</span><span class="o">$</span><span class="n">fields</span><span class="o">$</span><span class="n">typeClass</span><span class="o">==</span><span class="s">&quot;controlledVocabulary&quot;</span><span class="p">,</span>
                       <span class="nf">c</span><span class="p">(</span><span class="s">&quot;typeName&quot;</span><span class="p">,</span> <span class="s">&quot;value&quot;</span><span class="p">)</span> <span class="n">]</span>

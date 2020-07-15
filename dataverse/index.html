@@ -391,7 +391,7 @@
 <span class="nf">Sys.setenv</span><span class="p">(</span><span class="s">&quot;DATAVERSE_SERVER&quot;</span> <span class="o">=</span> <span class="n">dataverse_server</span><span class="p">)</span>
 
 <span class="c1"># Data Search </span>
-<span class="n">ds</span> <span class="o">&lt;-</span> <span class="nf">dataverse_search</span><span class="p">(</span><span class="n">dataset_keyword</span><span class="p">,</span> <span class="s">&quot;dataset&quot;</span><span class="p">)</span>
+<span class="n">ds</span> <span class="o">&lt;-</span> <span class="n">dataverse</span><span class="o">::</span><span class="nf">dataverse_search</span><span class="p">(</span><span class="n">dataset_keyword</span><span class="p">,</span> <span class="s">&quot;dataset&quot;</span><span class="p">)</span>
 
 <span class="c1"># Check if a dataset found with the right type</span>
 <span class="nf">if </span><span class="p">(</span> <span class="nf">dim</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span><span class="n">[1]</span><span class="o">==</span><span class="m">0</span> <span class="p">)</span> 
@@ -407,9 +407,9 @@
 <span class="c1"># search for &#39;datapackage.json&#39;</span>
 <span class="n">ids</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">()</span>
 <span class="nf">for </span><span class="p">(</span><span class="n">i</span> <span class="n">in</span> <span class="n">ds</span><span class="o">$</span><span class="n">global_id</span><span class="p">)</span> <span class="p">{</span>
-     <span class="nf">if </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="nf">dataset_files</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">==</span><span class="m">0</span><span class="p">)</span>
+     <span class="nf">if </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">dataverse</span><span class="o">::</span><span class="nf">dataset_files</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">==</span><span class="m">0</span><span class="p">)</span>
          <span class="n">next</span>
-     <span class="n">dflist</span> <span class="o">&lt;-</span>  <span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">t</span><span class="p">(</span><span class="nf">simplify2array</span><span class="p">(</span><span class="nf">dataset_files</span><span class="p">(</span><span class="n">i</span><span class="p">))))</span>
+     <span class="n">dflist</span> <span class="o">&lt;-</span>  <span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">t</span><span class="p">(</span><span class="nf">simplify2array</span><span class="p">(</span><span class="n">dataverse</span><span class="o">::</span><span class="nf">dataset_files</span><span class="p">(</span><span class="n">i</span><span class="p">))))</span>
      <span class="nf">if </span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="n">dflist</span><span class="o">$</span><span class="n">label</span>  <span class="o">%in%</span> <span class="s">&quot;datapackage.json&quot;</span><span class="p">))</span>
          <span class="n">ids</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
 <span class="p">}</span>
@@ -421,29 +421,29 @@
 <span class="c1"># if many, take the first</span>
 <span class="n">id</span> <span class="o">&lt;-</span> <span class="n">ids[1]</span>
 <span class="nf">cat</span><span class="p">(</span><span class="s">&quot; Dataset found : &quot;</span><span class="p">,</span><span class="n">id</span><span class="p">,</span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
-<span class="n">dflist</span> <span class="o">&lt;-</span>  <span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">t</span><span class="p">(</span><span class="nf">simplify2array</span><span class="p">(</span><span class="nf">dataset_files</span><span class="p">(</span><span class="n">id</span><span class="p">))))</span>
+<span class="n">dflist</span> <span class="o">&lt;-</span>  <span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">t</span><span class="p">(</span><span class="nf">simplify2array</span><span class="p">(</span><span class="n">dataverse</span><span class="o">::</span><span class="nf">dataset_files</span><span class="p">(</span><span class="n">id</span><span class="p">))))</span>
 
 <span class="c1"># Get the datapackage.json content file</span>
 <span class="n">idx</span> <span class="o">&lt;-</span> <span class="nf">which</span><span class="p">(</span><span class="s">&quot;datapackage.json&quot;</span> <span class="o">%in%</span> <span class="n">dflist</span><span class="o">$</span><span class="n">label</span><span class="p">)</span>
 <span class="n">file_id</span> <span class="o">&lt;-</span> <span class="n">dflist</span><span class="o">$</span><span class="n">dataFile[[idx]]</span><span class="o">$</span><span class="n">id</span>
-<span class="n">dp_json</span> <span class="o">&lt;-</span> <span class="nf">rawToChar</span><span class="p">(</span><span class="nf">get_file</span><span class="p">(</span><span class="n">file_id</span><span class="p">))</span>
+<span class="n">dp_json</span> <span class="o">&lt;-</span> <span class="nf">rawToChar</span><span class="p">(</span><span class="n">dataverse</span><span class="o">::</span><span class="nf">get_file</span><span class="p">(</span><span class="n">file_id</span><span class="p">))</span>
 
 <span class="nf">if </span><span class="p">(</span><span class="nf">is.null</span><span class="p">(</span><span class="n">dp_json</span><span class="p">))</span>
    <span class="nf">stop</span><span class="p">(</span><span class="s">&quot;the datapackage returned as null&quot;</span><span class="p">)</span>
 
 <span class="c1"># Get the ODAM data package schema</span>
-<span class="n">response</span> <span class="o">&lt;-</span> <span class="nf">GET</span><span class="p">(</span><span class="n">url_schema</span><span class="p">,</span> <span class="nf">config</span><span class="p">(</span><span class="n">sslversion</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="n">ssl_verifypeer</span><span class="o">=</span><span class="m">1</span><span class="p">))</span>
+<span class="n">response</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">GET</span><span class="p">(</span><span class="n">url_schema</span><span class="p">,</span> <span class="nf">config</span><span class="p">(</span><span class="n">sslversion</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="n">ssl_verifypeer</span><span class="o">=</span><span class="m">1</span><span class="p">))</span>
 <span class="nf">if </span><span class="p">(</span><span class="n">response</span><span class="o">$</span><span class="n">status_code</span> <span class="o">!=</span> <span class="m">200</span><span class="p">)</span>
    <span class="nf">stop</span><span class="p">(</span><span class="s">&quot;Error while getting the ODAM data package schema&quot;</span><span class="p">)</span>
 
-<span class="n">schema</span> <span class="o">&lt;-</span> <span class="nf">rawToChar</span><span class="p">(</span><span class="n">response</span><span class="o">$</span><span class="n">content</span><span class="p">)</span>
+<span class="n">schema</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">as</span> <span class="o">=</span><span class="s">&#39;text&#39;</span><span class="p">)</span>
 
 <span class="c1"># Validate the JSON against the ODAM data package schema</span>
 <span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="n">jsonvalidate</span><span class="o">::</span><span class="nf">json_validate</span><span class="p">(</span><span class="n">dp_json</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span> <span class="p">)</span>
     <span class="nf">stop</span><span class="p">(</span><span class="s">&quot;the returned datapackage is not a valid ODAM datapackage&quot;</span><span class="p">)</span>
 
 <span class="c1"># Parse the JSON object to a data.frame</span>
-<span class="n">dp</span> <span class="o">&lt;-</span> <span class="nf">fromJSON</span><span class="p">(</span><span class="n">dp_json</span><span class="p">)</span>
+<span class="n">dp</span> <span class="o">&lt;-</span> <span class="n">jsonlite</span><span class="o">::</span><span class="nf">fromJSON</span><span class="p">(</span><span class="n">dp_json</span><span class="p">)</span>
 
 <span class="c1"># View metadata</span>
 <span class="nf">sapply</span><span class="p">(</span> <span class="nf">ls</span><span class="p">(</span><span class="n">dflist</span><span class="p">),</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span> <span class="n">dflist[</span><span class="nf">[as.character</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="n">]][[idx]]</span> <span class="p">})</span>

@@ -485,6 +485,7 @@
 <li><a href="odam-data-package">odam-data-package.json</a> : JSON Schema for ODAM datapackage</li>
 <li><a href="odam-data-resource">odam-data-resource.json</a> : JSON Schema for ODAM dataresource</li>
 </ul>
+<p><br></p>
 <p>Based on structural metadata previously defined using the <a href="../data-type">Data preparation protocol for ODAM compliance</a>, the <a href="https://datahub.io/docs/data-packages" target="_blank">datapackage.json</a> file can be generated directly from the <a href="../api/">ODAM API</a> by specifying '<i><b>/datapackage</b></i>' at the end of the request. By default, the reference to the data files is relative. To have a URL as reference for the data files, it is necessary to add at the end of the request '<i><b>?links=1</b></i>'</p>
 <p><center>
 <a href="../images/ODAM-datapackage.png" data-lightbox="fod1"><img src="../images/ODAM-datapackage.png" width="500px"></a>
@@ -543,15 +544,15 @@
 <span class="n">dataset</span> <span class="o">&lt;-</span> <span class="s">&#39;frim1&#39;</span>
 
 <span class="c1"># Get the ODAM data package schema</span>
-<span class="n">response</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">GET</span><span class="p">(</span><span class="s">&#39;https://inrae.github.io/ODAM/json-schema/odam-data-package.json&#39;</span><span class="p">,</span> 
-                 <span class="nf">config</span><span class="p">(</span><span class="n">sslversion</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="n">ssl_verifypeer</span><span class="o">=</span><span class="m">1</span><span class="p">))</span>
+<span class="n">URL</span> <span class="o">&lt;-</span> <span class="s">&#39;https://inrae.github.io/ODAM/json-schema/odam-data-package.json&#39;</span>
+<span class="n">response</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">GET</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="nf">config</span><span class="p">(</span><span class="n">sslversion</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="n">ssl_verifypeer</span><span class="o">=</span><span class="m">1</span><span class="p">))</span>
 <span class="n">schema</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">as</span> <span class="o">=</span><span class="s">&#39;text&#39;</span><span class="p">)</span>
 
 <span class="c1"># Get structural metadata information in datapackage format (json) for a dataset</span>
 <span class="c1"># directly from its ODAM repository. As the option links is set to 1, we will have</span>
 <span class="c1"># the absolute reference for data files (see &#39;path&#39; below)</span>
-<span class="n">response</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">GET</span><span class="p">(</span><span class="nf">sprintf</span><span class="p">(</span><span class="s">&#39;%s/getdata/json/%s/datapackage?links=1&#39;</span><span class="p">,</span> <span class="n">odam_url</span><span class="p">,</span> <span class="n">dataset</span><span class="p">),</span> 
-                 <span class="nf">config</span><span class="p">(</span><span class="n">sslversion</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="n">ssl_verifypeer</span><span class="o">=</span><span class="m">1</span><span class="p">))</span>
+<span class="n">URL</span> <span class="o">&lt;-</span> <span class="nf">sprintf</span><span class="p">(</span><span class="s">&#39;%s/getdata/json/%s/datapackage?links=1&#39;</span><span class="p">,</span> <span class="n">odam_url</span><span class="p">,</span> <span class="n">dataset</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">GET</span><span class="p">(</span><span class="n">URL</span><span class="p">,</span> <span class="nf">config</span><span class="p">(</span><span class="n">sslversion</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="n">ssl_verifypeer</span><span class="o">=</span><span class="m">1</span><span class="p">))</span>
 <span class="n">dp_json</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">as</span> <span class="o">=</span><span class="s">&#39;text&#39;</span><span class="p">)</span>
 
 <span class="c1"># Validate the JSON against the ODAM data package schema</span>

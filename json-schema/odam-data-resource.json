@@ -21,7 +21,6 @@
       "title": "Label",
       "description": "A very short description where spaces are allowed.",
       "type": "string",
-      "pattern": "^([a-zA-Z0-9 ])+$",
       "context": "Ideally it corresponds to the label for CV Term"
     },
     "title": {

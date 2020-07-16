@@ -93,7 +93,7 @@ In your Web browser, you can launch the Data Explorer connected to your dataset 
 ### Future improvements
     * A web page allowing users to annotate the attributes with ontologies (based on BioPortal API) 
     * Linked Data format / RDF export
-    * See <https://inrae.github.io/ODAM/todo/>
+    * See https://inrae.github.io/ODAM/todo/
 
 ### License
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 - See the included LICENSE file.

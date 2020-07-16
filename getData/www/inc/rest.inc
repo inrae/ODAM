@@ -207,6 +207,7 @@ do {
     if ($datapackage==1 && $format == 'json') {
         header('Content-Type: application/json; charset=ISO-8859-1');
         $urlroot = $links ? $URLSERVER : '';
+        $def->DPKG_INFOS = $DPKG_INFOS;
         echo $def->getJSONDataTable($urlroot);
         break;
     }

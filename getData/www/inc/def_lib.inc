@@ -23,7 +23,7 @@ class def_lib
      var $categories   = array('identifier','factor','quantitative','qualitative');
      var $attrtypes    = array('numeric', 'string');
      var $def_infos    = array(
-        's_subsets' => array( 
+        's_subsets' => array(
            1=> array('name'=>'rank',         'type'=>'numeric'),
            2=> array('name'=>'father_rank',  'type'=>'numeric'),
            3=> array('name'=>'subset',       'type'=>'string'),
@@ -49,6 +49,9 @@ class def_lib
      var $dir_input    = "";
      var $retmsg       = "OK";
      var $ret          = 0;
+     var $DPKG_INFOS = array( 'URL_JSONDEF' => 'https://inrae.github.io/ODAM/json-schema/',
+                              'DATAPACKAGE_VERSION' => '1.0',
+                              'LICENSE' => 'ODC-BY-1.0,https://opendatacommons.org/licenses/by/,Open Data Commons Attribution License 1.0' );
 
 /********************************************************
 * Init. Method / Constructor
@@ -146,7 +149,7 @@ class def_lib
         $ret=0;
         $this->retmsg = '';
         do {
-            $a_colshort=0; $a_name=1; $a_entry=2; $a_cat=3; $a_type=4; $a_descr=5; 
+            $a_colshort=0; $a_name=1; $a_entry=2; $a_cat=3; $a_type=4; $a_descr=5;
             $arr_msg = array();
             $f2=fopen($this->attrs_file,"r");
             $data = fgetcsv($f2,0,"\t");
@@ -285,7 +288,7 @@ class def_lib
                 }
                 $this->hDataset[$data[2]] = array('idset' => $data[0], 'idfather' => $data[1],
                                             'name' => $data[5], 'entries' => array(), 'entities' => array(),
-                                            'categories' => array(), 'file' => $idfile, 'filename' => $this->FILES[$idfile], 
+                                            'categories' => array(), 'file' => $idfile, 'filename' => $this->FILES[$idfile],
                                             'identifier' => $data[3],
                                             'cv_term_id' => $data[6], 'cv_term_name' => $data[7],
                                             'joinkey' => '' );
@@ -608,8 +611,8 @@ if %size% LSS %maxbytesize% (
     }
 
 /********************************************************
-* getJSONDataTable : Create a simple container format for describing a coherent 
-     collection of data in a single 'package'.  It provides the basis for convenient 
+* getJSONDataTable : Create a simple container format for describing a coherent
+     collection of data in a single 'package'.  It provides the basis for convenient
      delivery, installation and management of datasets.
      cf https://specs.frictionlessdata.io/data-package/
 ********************************************************/
@@ -628,9 +631,10 @@ if %size% LSS %maxbytesize% (
         $subsets = array_keys($this->hDataset);
     # name / profile / datapackage_version / keywords / licenses
         $json  ='{"name":"'.$this->dsname.'",';
-        $json .='"profile":"https://inrae.github.io/ODAM/json-schema/odam-data-package.json",';
-        $json .='"datapackage_version":"1.0", "keywords":["Experimental Data Tables", "ODAM"],';
-        $json .='"licenses":[{"name":"ODC-BY-1.0", "path":"https://opendatacommons.org/licenses/by/", "title":"Open Data Commons Attribution License 1.0"}],';
+        $json .='"profile":"'.$this->DPKG_INFOS['URL_JSONDEF'].'odam-data-package.json",';
+        $json .='"datapackage_version":"'.$this->DPKG_INFOS['DATAPACKAGE_VERSION'].'", "keywords":["Experimental Data Tables", "ODAM"],';
+        $license = explode(',', $this->DPKG_INFOS['LICENSE']);
+        $json .='"licenses":[{"name":"'.$license[0].'", "path":"'.$license[1].'", "title":"'.$license[2].'"}],';
     # resources
         $json .='"resources":[';
         $flg=0;
@@ -646,9 +650,9 @@ if %size% LSS %maxbytesize% (
                     $json .='{"path":"'."$urlroot/$format/".$this->dsname.'/'.$subset.'", ';
                 else
                     $json .='{"path":"'.$arr['filename'].'", ';
-                $json .='"profile": "https://inrae.github.io/ODAM/json-schema/odam-data-resource.json", ';                
+                $json .='"profile": "'.$this->DPKG_INFOS['URL_JSONDEF'].'odam-data-resource.json", ';
                 $json .='"name":"'.$subset.'", ';
-                $json .='"title":"'.$arr['name'].'", ';                           
+                $json .='"title":"'.$arr['name'].'", ';
                 $json .='"identifier":"'.$identifier.'", ';
                 if ($arr['idfather']>0)
                     $json .='"obtainedFrom":"'.$subsets[$arr['idfather']-1].'", ';
@@ -726,7 +730,7 @@ $FILES      = array ( 1 => 'plants.csv', 2 => 'harvests.csv', 3 => 'samples.csv'
 $hDataset = array(
      # List of differents possible pathways among the data subsets in order to optimize the building of the SQL queries.
      'dstree' => array(
-                   1 => array('plants'), 
+                   1 => array('plants'),
                    2 => array('plants', 'harvests' ),
                    3 => array('plants', 'harvests', 'samples' ),
                    4 => array('plants', 'harvests', 'samples', 'compounds' ),

@@ -43,4 +43,9 @@ $SESSID  = md5(uniqid(rand(),true));
 $set->TMPDIR = $TMPDIR;
 $set->SESSID = $SESSID;
 
+# Datapackage information
+$DPKG_INFOS = array( 'URL_JSONDEF' => $set->URL_JSONDEF,
+                     'DATAPACKAGE_VERSION' => $set->DATAPACKAGE_VERSION,
+                     'LICENSE' => $set->LICENSE );
+
 ?>

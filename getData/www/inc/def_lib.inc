@@ -705,7 +705,7 @@ if %size% LSS %maxbytesize% (
         $json .= ']';
     # sources
         if (strlen($urlroot)>0) {
-            $json .=', "sources":[{"title":"Dataexplorer", "path":"'.dirname($urlroot).'/dataexplorer/?ds='.$this->dsname.'"}]';
+            $json .=', "sources":[{"title":"ODAM Dataexplorer", "path":"'.dirname($urlroot).'/dataexplorer/?ds='.$this->dsname.'"}]';
         }
         $json .= '}';
         return $json;

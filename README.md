@@ -1,5 +1,7 @@
 ![Logo](odam-logo.png)
 
+[![GitHub release](https://img.shields.io/github/release/inrae/ODAM.svg)](https://GitHub.com/inrae/ODAM/releases/)
+
 # ODAM
 ### Open Data, Access and Mining
 

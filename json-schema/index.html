@@ -628,14 +628,14 @@
 <div class="tabbed-set" data-tabs="6:2">
 <input name="__tabbed_6" type="radio" id="__tabbed_6_1" checked="checked" /><label for="__tabbed_6_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the list of data subsets that were obtained from the &#39;samples&#39;</span>
 <span class="n">index</span> <span class="o">&lt;-</span> <span class="m">2</span>
-<span class="n">subsets</span> <span class="o">&lt;-</span> <span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">foreignKey[[index]]</span><span class="o">$</span><span class="n">reference[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span>
+<span class="n">subsets</span> <span class="o">&lt;-</span> <span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">foreignKeys[[index]]</span><span class="o">$</span><span class="n">reference[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span>
 <span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">subsets</span><span class="p">)</span> <span class="p">)</span> 
    <span class="n">resources[</span> <span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">subsets</span><span class="p">,</span>
                        <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">)</span> <span class="n">]</span>
 
 <span class="c1"># Get the list of data subsets that were obtained from the &#39;aliquots&#39;</span>
 <span class="n">index</span> <span class="o">&lt;-</span> <span class="m">3</span>
-<span class="n">subsets</span> <span class="o">&lt;-</span> <span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">foreignKey[[index]]</span><span class="o">$</span><span class="n">reference[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span>
+<span class="n">subsets</span> <span class="o">&lt;-</span> <span class="n">resources</span><span class="o">$</span><span class="n">schema</span><span class="o">$</span><span class="n">foreignKeys[[index]]</span><span class="o">$</span><span class="n">reference[</span><span class="p">,</span><span class="m">1</span><span class="n">]</span>
 <span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="nf">is.null</span><span class="p">(</span><span class="n">subsets</span><span class="p">)</span> <span class="p">)</span> 
    <span class="n">resources[</span> <span class="n">resources</span><span class="o">$</span><span class="n">name</span> <span class="o">%in%</span> <span class="n">subsets</span><span class="p">,</span>
                        <span class="nf">c</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;identifier&quot;</span><span class="p">,</span> <span class="s">&quot;obtainedFrom&quot;</span><span class="p">)</span> <span class="n">]</span>
@@ -832,10 +832,10 @@ joinkey: PlantID
 <hr />
 <div class="tabbed-set" data-tabs="13:2">
 <input name="__tabbed_13" type="radio" id="__tabbed_13_1" checked="checked" /><label for="__tabbed_13_1">Code</label><div class="tabbed-content"><div class="highlight"><pre><span></span><code><span class="c1"># Get the data subsets that were obtained from the &#39;samples&#39;</span>
-<span class="k">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;schema&#39;</span><span class="p">][</span><span class="s1">&#39;foreignKey&#39;</span><span class="p">]))</span>
+<span class="k">print</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s1">&#39;schema&#39;</span><span class="p">][</span><span class="s1">&#39;foreignKeys&#39;</span><span class="p">]))</span>
 
 <span class="n">the_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;schema&#39;</span><span class="p">][</span><span class="s1">&#39;foreignKey&#39;</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">res</span><span class="p">[</span><span class="s1">&#39;schema&#39;</span><span class="p">][</span><span class="s1">&#39;foreignKeys&#39;</span><span class="p">]:</span>
     <span class="n">the_list</span> <span class="o">+=</span> <span class="p">[</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;reference&#39;</span><span class="p">][</span><span class="s1">&#39;resource&#39;</span><span class="p">]</span> <span class="p">]</span>
 
 <span class="n">the_list</span>

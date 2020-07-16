@@ -55,7 +55,7 @@ Or you may prefer getting directly the docker images from the official [docker r
 
 ```
     $ cd /opt/DataRepos
-    $ wget https://data.inra.fr/api/access/datafile/:persistentId/?persistentId=doi:10.15454/95JUTK/P0ZJMJ -O frim1.zip
+    $ wget https://data.inrae.fr/api/access/datafile/:persistentId/?persistentId=doi:10.15454/95JUTK/P0ZJMJ -O frim1.zip
     $ unzip frim1.zip
     $ rm -f frim1.zip
 ```
@@ -93,6 +93,7 @@ In your Web browser, you can launch the Data Explorer connected to your dataset 
 ### Future improvements
     * A web page allowing users to annotate the attributes with ontologies (based on BioPortal API) 
     * Linked Data format / RDF export
+    * See https://inrae.github.io/ODAM/todo/
 
 ### License
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 - See the included LICENSE file.

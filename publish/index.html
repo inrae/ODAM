@@ -320,6 +320,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#data-publishing" class="md-nav__link">
+    Data publishing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#use-explicit-schema-for-both-data-and-metadata" class="md-nav__link">
     Use explicit schema for both data and metadata
   </a>
@@ -404,6 +411,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#data-publishing" class="md-nav__link">
+    Data publishing
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#use-explicit-schema-for-both-data-and-metadata" class="md-nav__link">
     Use explicit schema for both data and metadata
   </a>
@@ -461,6 +475,13 @@
 </dl>
 <p>Making data available online can be understood in different ways according to their nature and complexity, and the desired granularity. The simple approach is to deposit the data in flat files (generally a set of TSV/CSV files) in dedicated repositories, with only constraint to describe the data set as a whole with minimal metadata. But without structural metadata it is difficult if not impossible to understand the relationships between different data. Moreover, a dictionary describing each file (entity) as well as all the columns of the tables (attributes) offers a better guarantee in the correct (re)use of the data. Precisely, these last two points have been implemented in the ODAM software.</p>
 <p>Unlike data sharing, which is simply making data available to a community, data publishing also requires that the data could be referenceable (i.e. a stable identification system) and contextualizable (i.e. the who and what). These points and many others are precisely what the FAIR principles seek to establish as a frame of reference.</p>
+<h4 id="data-publishing">Data publishing<a class="headerlink" href="#data-publishing" title="Permanent link">&para;</a></h4>
+<p>Because ODAM is primarily an Experimental Data Table Management System (EDTMS) for data sharing, it must be associated with a suitable data repository in order to support data publishing.  So the ODAM approach has to be regarded as complementary with publication of the data online within an institutional data repository as described in <a href="http://re3data.org/" target="_blank">re3data.org</a> (e.g. <a href="https://www.re3data.org/repository/r3d100012673" target="_blank">Data INRAE</a>) associated or not with a scientific paper.</p>
+<p>To be compliant with the <a href="https://www.go-fair.org/fair-principles/" target="_blank">FAIR principles</a>, not all data, documents, workflows and other tools need to be located in a single system, but from a central repository, it is the set of links that constitutes the true information management system. It must be able to be traversed by a human being as well as by machines.</p>
+<p><center>
+<a href="../images/fair4.png" data-lightbox="fair4"><img src="../images/fair4.png" width="400px"></a>
+<br><p class="plegend center">Dataset information need to be  linked but not necessary in the same repository</p>
+</center><br><br></p>
 <h4 id="use-explicit-schema-for-both-data-and-metadata">Use explicit schema for both data and metadata<a class="headerlink" href="#use-explicit-schema-for-both-data-and-metadata" title="Permanent link">&para;</a></h4>
 <p>To publish your data, preferably use a data repository that complies with the JSON-LD standard.  Moreover, an ODAM datapackage.json file should be deposited in the repository, which will either contain absolute URLs if an ODAM repository for the data is used, or simply a relative reference to the files if the data are in the same repository. Thus, by relying on explicit schemas (<a href="https://json-ld.org/" target="_blank">JSON-LD</a>, <a href="https://json-schema.org/" target="_blank">JSON Schema</a>) for both metadata and data, it becomes possible to reuse the data without friction, both by humans and machines.</p>
 <p><center>
@@ -470,19 +491,21 @@
 <p>Because, when disseminating data, defining an explicit schema for structural metadata along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions allows machines to better interpret the data for reuse. This will result in better annotated and more easily usable data that meets effortlessly the FAIR criteria for reusability. Indeed, concerning the FAIRification of data, this has a positive impact on the FAIR criteria 'Interoperable' and 'Reusable', encouraging structured data using a discoverable, community-endorsed schema or data model.</p>
 <p><br></p>
 <p><strong>ODAM data FAIRification workflow</strong></p>
-<div class="mermaid">graph LR
+<p><div class="mermaid">graph LR
     A(Experimental&lt;br&gt;Data Tables) --&gt;B(Add structural&lt;br&gt;metadata)
     B --&gt;C(Generate&lt;br&gt;a Datapackage&lt;br&gt;descriptor)
-    C --&gt;D[FAIR compliant data]
+    C --&gt;|Publish|D(JSON-LD compliant &lt;br&gt; data repository)
+    D --&gt;E[FAIR compliant data]
     click A "../data-type"
     click B "../data-type/#sructural-metadata"
     click C "../json-schema"
-    click D "https://blog.okfn.org/2018/08/14/frictionless-data-and-fair-research-principles/"</div>
-
+    click D "https://figshare.com/articles/Listing_of_data_repositories_that_embed_schema_org_metadata_in_dataset_landing_pages/11506314/1"
+    click E "../fair-frim"</div>
+<!--    https://blog.okfn.org/2018/08/14/frictionless-data-and-fair-research-principles/" --></p>
 <p><br></p>
 <h4 id="based-on-an-odam-repository">Based on an ODAM repository<a class="headerlink" href="#based-on-an-odam-repository" title="Permanent link">&para;</a></h4>
 <p>Because ODAM is primarily an Experimental Data Table Management System (EDTMS) for data sharing, it must be associated with a suitable data repository in order to support data publishing.</p>
-<p>So the ODAM approach has to be regarded as complementary with publication of the data online within an institutional data repository as described in <a href="http://re3data.org/" target="_blank">re3data.org</a> associated or not with a scientific paper. Whereas institutional data repositories focus on the experiment description with the corresponding descriptive metadata, the ODAM approach, by adjoining some minimal but relevant structural metadata, gives access to the data themselves with the possibility to explore and mine them. While ODAM ensuring data sharing function allows direct access to subsets of data by <a href="../api">Web API</a> request, an institutional data repository ensuring data publishing function has to support an important part of the FAIR criteria. Thus, the combination of the two systems makes it possible to cover all the essential FAIR criteria.</p>
+<p>Whereas institutional data repositories focus on the experiment description with the corresponding descriptive metadata, the ODAM approach, by adjoining some minimal but relevant structural metadata, gives access to the data themselves with the possibility to explore and mine them. While ODAM ensuring data sharing function allows direct access to subsets of data by <a href="../api">Web API</a> request, an institutional data repository ensuring data publishing function has to support an important part of the FAIR criteria. Thus, the combination of the two systems makes it possible to cover all the essential FAIR criteria.</p>
 <p>One of the benefits of having an ODAM repository for data users is that it avoids the need to download data prior to any data analysis. This ensures that one starts from the data of the repository with help of the web API and not with the duplicate data that could have been changed between analyses without keeping track of it. In the same way, you can distribute your Jupiter notebooks, for example, without having to duplicate the data.</p>
 <p>In order to make the data fair, and even if there is already a web API for data access, it makes sense to attach an ODAM datapackage.json file (see <a href="../json-schema">JSON schema</a>) to the institutional data repository. This allows machines to use the data, since this datapackage file uses an explicit schema for the data and its organization. In this case, it is imperative to specify absolute URLs in the datapackage.json for the data files.</p>
 <dl>

@@ -319,7 +319,7 @@
         "type": "string"
       },
       "default": [
-        ""
+        "", "NA"
       ]
     }
   },

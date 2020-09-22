@@ -338,8 +338,18 @@
                 
                 
                 <h1 id="odam-deployment-and-users-guide">ODAM: Deployment and User's Guide<a class="headerlink" href="#odam-deployment-and-users-guide" title="Permanent link">&para;</a></h1>
-<hr />
 <!--
+
+<div class="mermaid">graph TD 
+  A(HTML page) --&gt; B{Page just&lt;br&gt;about one&lt;br&gt;dataset?}
+  B --&gt;|YES| C(Create markup for dataset)
+  B --&gt;|NO| F(Use DataCatalog Recipe)
+  C --&gt; D(Markup Template)
+  D --&gt;|Embed template in website| E(fa:fa-search fa:fa-cog fa:fa-fighter-jet Schema.org augmented HTML page)
+  classDef box fill:#2a9fc9,stroke:#666,color:#fff,stroke-width:1px,font-family:avenir,font-size:14px;
+  class A,B,C,D,E,F box</div>
+
+----
 
 <div class="mermaid">sequenceDiagram
     Alice-&gt;&gt;John: Hello John, how are you?

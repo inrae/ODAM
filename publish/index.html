@@ -332,6 +332,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#odam-data-fairification-workflow" class="md-nav__link">
+    ODAM data FAIRification workflow
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#based-on-an-odam-repository" class="md-nav__link">
     Based on an ODAM repository
   </a>
@@ -423,6 +430,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#odam-data-fairification-workflow" class="md-nav__link">
+    ODAM data FAIRification workflow
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#based-on-an-odam-repository" class="md-nav__link">
     Based on an ODAM repository
   </a>
@@ -488,7 +502,7 @@
 </center><br></p>
 <p>Because, when disseminating data, defining an explicit schema for structural metadata along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions allows machines to better interpret the data for reuse. This will result in better annotated and more easily usable data that meets effortlessly the FAIR criteria for reusability. Indeed, concerning the FAIRification of data, this has a positive impact on the FAIR criteria 'Interoperable' and 'Reusable', encouraging structured data using a discoverable, community-endorsed schema or data model.</p>
 <p><br></p>
-<p><strong>ODAM data FAIRification workflow</strong></p>
+<h4 id="odam-data-fairification-workflow">ODAM data FAIRification workflow<a class="headerlink" href="#odam-data-fairification-workflow" title="Permanent link">&para;</a></h4>
 <p><div class="mermaid">graph LR
     A(Experimental&lt;br&gt;Data Tables) --&gt;B(Add structural&lt;br&gt;metadata)
     B --&gt;C(Generate a &lt;br&gt;Datapackage&lt;br&gt;descriptor)
@@ -500,14 +514,14 @@
     click D "https://figshare.com/articles/Listing_of_data_repositories_that_embed_schema_org_metadata_in_dataset_landing_pages/11506314/1" _blank
     click E "../fair-frim"</div>
 <!--    https://blog.okfn.org/2018/08/14/frictionless-data-and-fair-research-principles/" --></p>
-<p>Exporting metadata in <a href="../json-schema/">datapackage format</a> offers a great flexibility of use data via scripting languages such as R and Python on the basis of existing packages. Furthermore, by linking data files from their URLs within the metadata, the metadata file can be distributed on its own while still allowing full exploitation of the data. </p>
+<p>Exporting metadata in <a href="../json-schema/">datapackage format</a> offers a great flexibility of use data via scripting languages such as R and Python on the basis of existing packages. Furthermore, by linking data files from their URLs within the metadata, the metadata file formatted in this way can be distributed on its own while still allowing full exploitation of the data. </p>
 <p>Besides, this type of format allows a great variety in the choice of data repository as a distinct separation is established between structural metadata described in the datapackage format on the one hand , and descriptive metadata depending on the type of repository on the other hand. </p>
-<p>Preferably, a data repository should be chosen that offers <a href="https://en.wikipedia.org/wiki/Web_API" target="_blank">API</a> use according to the <a href="http://spec.openapis.org/oas/v3.0.3" target="_blank">OpenAPI specification</a>. <a href="https://dataverse.org/" target="_blank">Dataverse</a>, <a href="https://datadryad.org/" target="_blank">Dryad</a>, <a href="https://figshare.com/" target="_blank">FigShare</a>, <a href="https://fairdomhub.org/" target="_blank">FAIRDOMHub</a> based on <a href="https://docs.seek4science.org/" target="_blank">SEEK platform</a>, <a href="https://zenodo.org/" target="_blank">Zenodo</a>  are some data repository examples which follow the OpenAPI Specification.</p>
+<p>Preferably the chosen data repository should offer the ability to query and retrieve data using an <a href="https://en.wikipedia.org/wiki/Web_API" target="_blank">API</a> that conforms to the <a href="http://spec.openapis.org/oas/v3.0.3" target="_blank">OpenAPI specification</a> and that meet the essential criteria of the FAIR principles. For example, the following data repositories can be cited without being exhaustive: <a href="https://dataverse.org/" target="_blank">Dataverse</a>, <a href="https://datadryad.org/" target="_blank">Dryad</a>, <a href="https://fairdomhub.org/" target="_blank">FAIRDOMHub</a> based on <a href="https://docs.seek4science.org/" target="_blank">SEEK platform</a>, <a href="https://figshare.com/" target="_blank">FigShare</a>, <a href="https://zenodo.org/" target="_blank">Zenodo</a>. Among them, Dataverse and the SEEK platform can even be installed and configured as an institutional repository.</p>
 <p><br></p>
 <h4 id="based-on-an-odam-repository">Based on an ODAM repository<a class="headerlink" href="#based-on-an-odam-repository" title="Permanent link">&para;</a></h4>
 <p>Because ODAM is primarily an Experimental Data Table Management System (EDTMS) for data sharing, it must be associated with a suitable data repository in order to support data publishing.</p>
 <p>Whereas institutional data repositories focus on the experiment description with the corresponding descriptive metadata, the ODAM approach, by adjoining some minimal but relevant structural metadata, gives access to the data themselves with the possibility to explore and mine them. While ODAM ensuring data sharing function allows direct access to subsets of data by <a href="../api">Web API</a> request, an institutional data repository ensuring data publishing function has to support an important part of the FAIR criteria. Thus, the combination of the two systems makes it possible to cover all the essential FAIR criteria.</p>
-<p>One of the benefits of having an ODAM repository for data users is that it avoids the need to download data prior to any data analysis. This ensures that one starts from the data of the repository with help of the web API and not with the duplicate data that could have been changed between analyses without keeping track of it. In the same way, you can distribute your Jupiter notebooks, for example, without having to duplicate the data.</p>
+<p>One of the benefits of having an ODAM repository for data users is that it avoids the need to download data prior to any data analysis. This ensures that one starts from the data of the repository with help of the web API and not with the duplicate data that could have been changed between analyses without keeping track of it. In the same way, you can distribute your <a href="https://jupyter.org/" target="_blank">Jupiter notebooks</a>, for example, without having to duplicate the data.</p>
 <p>In order to make the data fair, and even if there is already a web API for data access, it makes sense to attach an ODAM datapackage.json file (see <a href="../json-schema">JSON schema</a>) to the institutional data repository. This allows machines to use the data, since this datapackage file uses an explicit schema for the data and its organization. In this case, it is imperative to specify absolute URLs in the datapackage.json for the data files.</p>
 <dl>
 <dt>You can get the datapackage.json file from the <a href="../api">ODAM API</a> as follows:</dt>

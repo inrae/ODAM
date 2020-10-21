@@ -350,8 +350,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../about/" title="About" class="md-nav__link">
-      About
+    <a href="../todo/" title="ToDo" class="md-nav__link">
+      ToDo
     </a>
   </li>
 
@@ -362,8 +362,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../todo/" title="ToDo" class="md-nav__link">
-      ToDo
+    <a href="../about/" title="About" class="md-nav__link">
+      About
     </a>
   </li>
 
@@ -441,7 +441,7 @@
 <p>A data package is a simple container format based on <a href="https://json-schema.org/" target="_blank">JSON Schema specifications</a> used to describe and package a collection of data. Defining an explicit schema for structural metadata allows machines to better interpret the data for reuse. Thus, when disseminating data, a file named <a href="https://datahub.io/docs/data-packages" target="_blank">datapackage.json</a> by convention can be added to the collection of your data files. This <a href="https://datahub.io/docs/data-packages" target="_blank">datapackage.json</a> file contains all structural metadata along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions.</p>
 <p>ODAM data package schema is very close to the <a href="https://frictionlessdata.io/" target="_blank">Frictionless Data</a> framework.</p>
 <p><center></p>
-<p><div class="mermaid">graph TD
+<div class="mermaid">graph TD
  A(Data Source)
  H(Table Schema)
  B(ODAM Table Schema)
@@ -467,7 +467,8 @@
  click H "https://specs.frictionlessdata.io/table-schema/" _blank
  classDef ODAM fill:#f9f
  class B,D,E,G,K ODAM</div>
-</center></p>
+
+<p></center></p>
 <p><center><i>How the ODAM Data Package is composed out of Frictionless Data specs</i></center>
 <br></p>
 <ul>

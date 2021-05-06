@@ -164,7 +164,7 @@ class def_lib
                     $ret=1;
                     continue;
                  }
-                 if ( strlen($data[$a_descr])>0 && ! preg_match("/^[a-zA-Z0-9_(),:\-\[\]{}+%!|?\.\*\/ µ]+$/", $data[$a_descr]) ) {
+                 if ( strlen($data[$a_descr])>0 && ! preg_match("/^[a-zA-Z0-9_(),:\-\[\]{}+%!|?\.\*\/ µ°]+$/", $data[$a_descr]) ) {
                     array_push($arr_msg, "Descritpion for attribute '".$data[$a_name]."' should follow the convention described in note (6.4)");
                     $ret=1;
                     continue;

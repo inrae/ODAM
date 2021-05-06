@@ -3,7 +3,14 @@
         # Metadata preparation
         F1name <- as.character(LABELS[LABELS[,1]==F1,2])
         variables <-.C(varnames[.N(selectVars),]$Attribute)
-    
+
+        # Remove quantitative variables with all values at zero
+        V <- simplify2array( lapply(variables, function(v) { sum( which(data[, v]!=0) ) }) )
+        if (length(which(V==0))>0) {
+           data <- data[, ! colnames(data) %in% variables[c(which(V==0))] ]
+           variables <- variables[ -c(which(V==0)) ]
+        }
+
         facvals <- data[ , F1]
         if (is.numeric(facvals)) {
             fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')

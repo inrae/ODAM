@@ -74,15 +74,17 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), box(
            selectInput("SelFacX", "Select First Factor Levels", c(), multiple = TRUE, selectize=TRUE )
       ),
       column(4, conditionalPanel(condition="input.uniFacX != input.uniFacY", 
-           selectInput("SelFacY", "Select Second Factor Levels", c(), multiple = TRUE, selectize=TRUE ))
+           selectInput("SelFacY", "Select Second Factor Levels", c(), multiple = TRUE, selectize=TRUE )),
+           selectInput("uniAnnot", "Select Features as Labels", c() ),
+           selectInput("uniFeatures", "(Un)Select Items", c(), multiple = TRUE, , selectize=TRUE )
       ),
       column(4,
            column(6,
               checkboxInput('uniSmooth', 'Curve', TRUE),
               checkboxInput('uniLog', 'Log10', FALSE)
            ),
-           column(6,
-              checkboxInput('violin', 'Violin', FALSE)
+           column(6,conditionalPanel(condition="input.uniFacX == input.uniFacY", 
+              checkboxInput('violin', 'Violin', FALSE))
            )
       )
    ),

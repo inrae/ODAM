@@ -6,7 +6,7 @@ library(networkD3)
 library(plotly)
 library(markdown)
 
-source("R/ui_tabs.R", local=TRUE)
+source("Rsrc/ui_tabs.R", local=TRUE)
 
 meta <- tags$head(
    HTML('
@@ -71,7 +71,9 @@ ui <- dashboardPage(skin = "blue",
     #shinyjs::inlineCSS(list(.cplotbig = "height:800px")),
     #shinyjs::inlineCSS(list(.cplotmed = "height:500px")),
 
-    shinyjs::extendShinyjs("js/app.js"),
+    shinyjs::extendShinyjs(script="js/app.js", 
+              functions = c("hideMainHeader", "hideSidebar", "showSidebar", "hideSidebarToggle", 
+                            "hideinDselect", "showinDselect", "hideinDSselect", "showinDSselect", "openTab")),
     fluidRow(
       bsAlert("ErrAlertMain"),
       tabItems(

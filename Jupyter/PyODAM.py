@@ -1,10 +1,16 @@
 import requests
 import pandas as pd
+import warnings
 
 class Odam:
-   def __init__(self, repos, dataset):
+   def __init__(self, repos, dataset, ssl_verify=None):
        self.repos = repos
        self.dataset = dataset
+       if ssl_verify is None:
+           self.ssl_verify = False
+       else:
+           self.ssl_verify = ssl_verify
+       warnings.filterwarnings('ignore')
 
    def getDataFromODAM(self, subset='', query=''):
        headers = {'authorization': "Basic API Key Ommitted", 'accept': "text/csv"}
@@ -13,10 +19,10 @@ class Odam:
            urlapi = urlapi+'/('+subset+')'
        if query:
            urlapi = urlapi+'/'+query
-   
+
        ## API Call to retrieve report
-       response = requests.get(urlapi, headers=headers)
-   
+       response = requests.get(urlapi, headers=headers, verify=self.ssl_verify)
+
        ## API Results
        data = response.text
    
@@ -34,7 +40,7 @@ class Odam:
                df[l] = pd.to_numeric(df[l])
            except:
                pass
-   
+
        # Return Data.frame
        return df
 
@@ -50,7 +56,7 @@ class Odam:
        numvars = []
        for s in S:
            numvars = numvars + self.intersection(df4[df4.Subset==s]['Attribute'], self.getVarNum(df1))
-   
+
        list1, list2 = ['data', 'identifier', 'factor', 'quantitative', 'qualitative', 'numvars' ], \
                       [df1, df2, df3, df4, df5, numvars ]
        d = dict( zip( list1, list2 ))
@@ -76,7 +82,7 @@ class Odam:
    def convertDateToStr(DataNum):
        dateStr = [ ( pd.to_datetime('1899-12-30') + pd.to_timedelta(x,'D') ).strftime("%m/%d/%Y") for x in DataNum ]
        return(dateStr)
-   
+
    @staticmethod
    def convertTimeToStr(TimeNum):
        timeStr = [ ( pd.to_datetime('1899-12-30') + pd.to_timedelta(x,'D') ).strftime("%H:%M") for x in TimeNum ]

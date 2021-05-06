@@ -10,7 +10,6 @@ library(JADE)
 library(moments)
 library(scales)
 library(igraph)
-library(FastGGM)
 library(networkD3)
 library(magrittr)
 library(htmlwidgets)
@@ -19,6 +18,7 @@ library(ggpubr)
 library(ggdendro)
 library(plotly)
 
+library(FastGGM)
 library(RcppParallel)
 setThreadOptions(numThreads = 4) # set 4 threads for parallel computing
 
@@ -162,7 +162,7 @@ getInit <- function() {
     fs <<- -N + 45
 }
 
-getVars <- function(setID) {
+getVars <- function(setID, rmvars=FALSE) {
 
     inDSselect <<- setID
     setName <- subsetNames[setID]
@@ -203,8 +203,19 @@ getVars <- function(setID) {
     LABELS[,4] <<- sapply(.C(LABELS[,4]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
     LABELS[,5] <<- sapply(.C(LABELS[,5]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
 
+    # Numerical conversion
     for( i in 1:dim(varnames)[1]) { if (.C(varnames$Type[i]) == 'numeric') data[,.C(varnames$Attribute[i])] <<- .N(data[,.C(varnames$Attribute[i])]); }
     for( i in 1:dim(samplename)[1]) { if (.C(samplename$Type[i]) == 'numeric') data[,.C(samplename$Attribute[i])] <<- .N(data[,.C(samplename$Attribute[i])]); }
+
+    # Remove quantitative variables with all values at zero
+    if (rmvars){
+       V <- simplify2array( lapply(varnames$Attribute, function(v) { sum( which(data[, .C(v)]!=0) ) }) )
+       if (length(which(V==0))>0) {
+          data <<- data[, ! colnames(data) %in% .C(varnames$Attribute[ c(which(V==0))]) ]
+          LABELS <<- LABELS[! LABELS[,1] %in% .C(varnames$Attribute[c(which(V==0))]), ]
+          varnames <<- varnames[ -c(which(V==0)), ]
+       }
+    }
 }
 
 getLabels <- function() {

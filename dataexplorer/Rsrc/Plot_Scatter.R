@@ -87,8 +87,8 @@
         if (! is.null(input$inDSselect) && ! is.null(isolate(input$biFacX)) && ! is.null(input$SelFacX2) && 
             ! is.null(input$biVarSelect1) && ! is.null(input$biVarSelect2) && input$inDSselect>0) {
             values$launch
-            FA <- isolate(input$biAnnot)
             F1 <- isolate(input$biFacX)
+            FA <- isolate(input$biAnnot)
             FCOL <- ifelse( FA=="None", '', FA )
             selectFCOL <- input$biFeatures
             if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
@@ -139,7 +139,8 @@
         colnames(subdata) <- c ( varX, varY, samples, F1, FCOL )
         if (! is.null(selectF1)) {
             subdata <- subdata[subdata[ , F1 ] %in% levelFac[.N(selectF1)], ]
-            if (fannot && length(selectFCOL)>0) subdata <- subdata[subdata[ , FCOL ] %in% levelcFac[.N(selectFCOL)], ]
+            if (fannot && length(selectFCOL)>0)
+                subdata <- subdata[subdata[ , FCOL ] %in% levelcFac[.N(selectFCOL)], ]
         }
 
         # Deal with NA

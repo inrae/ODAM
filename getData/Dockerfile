@@ -1,47 +1,43 @@
-FROM php:5.6-apache
+FROM php:7.4.18-apache
 
 RUN apt-get update -qq && apt-get dist-upgrade -y
 
 # See https://github.com/docker-library/docs/tree/master/php
 
 RUN apt-get install -y \
-    python-minimal \
-    vim \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libmcrypt-dev \
-    libpng12-dev \
-    && docker-php-ext-install iconv mcrypt \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install gd
+    python-minimal vim \
+    libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev \
+ && pecl install mcrypt \
+ && docker-php-ext-enable mcrypt  \
+ && docker-php-ext-configure gd --with-freetype --with-jpeg \
+ && docker-php-ext-install gd
 
-RUN curl -sL https://deb.nodesource.com/setup_6.x | bash - \
-    && apt-get install -y nodejs build-essential \
-    && npm install -g csvtojson
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+ && apt-get install -y nodejs build-essential \
+ && npm install -g csvtojson
 
-ENV LC_ALL en_US.UTF-8
-ENV LANG en_US.UTF-8
-
-ENV APACHE_RUN_USER www-data
-ENV APACHE_RUN_GROUP www-data
-ENV APACHE_LOG_DIR /var/log/apache2
-ENV APACHE_PID_FILE /var/run/apache2.pid
-ENV APACHE_RUN_DIR /var/run/apache2
-ENV APACHE_LOCK_DIR /var/lock/apache2
-ENV APACHE_SERVERADMIN admin@localhost
-ENV APACHE_SERVERNAME localhost
-ENV APACHE_SERVERALIAS docker.localhost
-ENV APACHE_DOCUMENTROOT /var/www/html
+ENV LC_ALL=en_US.UTF-8 \
+    LANG=en_US.UTF-8 \
+    APACHE_RUN_USER=www-data \
+    APACHE_RUN_GROUP=www-data \
+    APACHE_LOG_DIR=/var/log/apache2 \
+    APACHE_PID_FILE=/var/run/apache2.pid \
+    APACHE_RUN_DIR=/var/run/apache2 \
+    APACHE_LOCK_DIR=/var/lock/apache2 \
+    APACHE_SERVERADMIN=admin@localhost \
+    APACHE_SERVERNAME=localhost \
+    APACHE_SERVERALIAS=docker.localhost \
+    APACHE_DOCUMENTROOT=/var/www/html
 
 COPY ./www/bin/q /usr/bin/q
 COPY ./launch-server.sh /usr/bin/launch-server.sh
 ADD ./www /var/www/html
 
 RUN chmod 755 /usr/bin/q \
-  && chmod -R 777 /var/www/html \
-  && chmod 755 /usr/bin/launch-server.sh
+ && chmod -R 777 /var/www/html \
+ && chmod 755 /usr/bin/launch-server.sh \
+ && mkdir -p /opt/data
 
-RUN mkdir -p /opt/data
 VOLUME /opt/data
 
 WORKDIR /var/www/html

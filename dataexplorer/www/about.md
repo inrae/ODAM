@@ -4,22 +4,19 @@ title: "About"
 
 ![](odam-logo.png)
 
-_(C) Daniel Jacob - INRA UMR 1332 BFP, PMB - 2020 - Version 1.1_
+_(C) Daniel Jacob - INRAE UMR 1332 BFP, PMB - 2021 - Version 1.2_
 
 ### Give an open access to your data and make them ready to be mined - A data explorer as bonus
 
 [![Badge](biotools-ODAM-blue.svg)](https://bio.tools/ODAM)<br><br>
 
-ODAM (Open Data for Access and Mining) is an Experiment Data Table Management System (EDTMS) that implements a simple way to make research data broadly accessible and fully available for reuse, including by script languages such as R and Python. The main purpose is to make a dataset accessible online with minimal effort from the data provider, and to allow any data scientists or researchers to be able to explore the dataset and then extract a subpart or the totality of the data according to their needs. For more information/explanation, see <a href="http://fr.slideshare.net/danieljacob771282/odam-open-data-access-and-mining" target="_blank">online presentation</a>
+ODAM (Open Data for Access and Mining) is an Experimental data table management software (EDTMS) to make research data accessible and available for reuse with minimal effort on the part of the data provider. Designed to manage experimental data tables in an easy way for users, ODAM provides a model for structuring both data and metadata that facilitates data handling and analysis. It also encourages data dissemination according to FAIR principles by making the data interoperable and reusable by both humans and machines, allowing the dataset to be explored and then extracted in whole or in part as needed. For more information/explanation, see <a href="https://inrae.github.io/ODAM/" target="_blank">ODAM: Deployment and User's Guide</a>
+
 <br>
 
 ----
 #### Test online with the <a href="?ds=frim1">FRIM dataset</a>
 ----
-
-* To install the ODAM software suite on your local harware (PC desktop/laptop), see the <a href="http://pmb-bordeaux.fr/odam/ODAM_install_VirtualBox.pdf" target="_blank">ODAM installation Guide</a> or on your own server, get the docker images and the installation instruction to the <a href="https://hub.docker.com/r/odam/getdata/" target="_blank">Docker Hub</a> site.
-
-* To prepare your own data subsets, see the <a href="https://www.protocols.io/view/data-preparation-protocol-for-odam-compliance-betcjeiw" target="_blank">Data Preparation Protocol for ODAM Compliance</a>
 
 * Test online the getData API through the web <a href="http://pmb-bordeaux.fr/odamsw/" target="_blank">swagger UI</a> (See <a href="https://github.com/inrae/ODAM/tree/master/API" target="_blank">Github ODAM/API</a> )
 
@@ -31,5 +28,6 @@ ODAM (Open Data for Access and Mining) is an Experiment Data Table Management Sy
 
 * All ontology terms were picked from <a href="http://agroportal.lirmm.fr/"  target="_blank">AgroPortal</a> and especially by levering on their very useful <a href="http://agroportal.lirmm.fr/annotator" target="_blank">Annotator module
 
+----
 
-[ ![Inra](inra_logo.png)](http://www.bordeaux-aquitaine.inra.fr/en)
+[ ![Inra](inrae_logo.png)](https://www6.bordeaux-aquitaine.inrae.fr/bfp_eng/Research/Team-Metabolism-META)

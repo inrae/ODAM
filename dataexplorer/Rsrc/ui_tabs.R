@@ -58,27 +58,17 @@ ui_aboutTab <-  tabItem("about", bsAlert("ErrAlertAbout"),
 ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), box(
    title="Univariate exploration", status = "primary", solidHeader = TRUE, width = 12,
    conditionalPanel(condition="input.inDSselect>0",
+   column(12,
       column(4,
-           selectInput("uniFacX", "Factor for X Axis", c() )
-      ),
-      column(4,
-           selectInput("uniFacY", "Factor for Grouping", c() )
-      ),
-      column(4,
-           selectInput("uniVarSelect", "Variable to explore", c() )
-      ),
-      column(12, conditionalPanel(condition="input.uniVarSelect>0", 
-            plotlyOutput("BoxPlot", height="500px") )
-      ),
-      column(4,
+           selectInput("uniFacX", "Factor for X Axis", c() ),
            selectInput("SelFacX", "Select First Factor Levels", c(), multiple = TRUE, selectize=TRUE )
       ),
-      column(4, conditionalPanel(condition="input.uniFacX != input.uniFacY", 
-           selectInput("SelFacY", "Select Second Factor Levels", c(), multiple = TRUE, selectize=TRUE )),
-           selectInput("uniAnnot", "Select Features as Labels", c() ),
-           selectInput("uniFeatures", "(Un)Select Items", c(), multiple = TRUE, , selectize=TRUE )
+      column(4,
+           selectInput("uniFacY", "Factor for Grouping", c() ),
+           selectInput("SelFacY", "Select Second Factor Levels", c(), multiple = TRUE, selectize=TRUE )
       ),
       column(4,
+           selectInput("uniVarSelect", "Variable to explore", c() ),
            column(6,
               checkboxInput('uniSmooth', 'Curve', TRUE),
               checkboxInput('uniLog', 'Log10', FALSE)
@@ -88,6 +78,17 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), box(
            )
       )
    ),
+   column(12,
+      column(4,
+           selectInput("uniAnnot", "Select Data based on Features", c() )
+      ),
+      column(4,
+           selectInput("uniFeatures", "(Un)Select Features", c(), multiple = TRUE, , selectize=TRUE )
+      )
+   ),   
+   column(12, conditionalPanel(condition="input.uniVarSelect>0", 
+            plotlyOutput("BoxPlot", height="500px") )
+   )),
    conditionalPanel(condition="input.inDSselect==0",
       h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
    )
@@ -99,6 +100,7 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), box(
 ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),box(
    title="Bivariate exploration", status = "primary", solidHeader = TRUE, width = 12,
    conditionalPanel(condition="input.inDSselect>0",
+   column(12,
       column(4,
            selectInput("biFacX", "Factor for Grouping", c() )
       ),
@@ -108,9 +110,6 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),box(
       column(4,
            selectInput("biVarSelect2", "Second Variable", c() )
       ),
-      column(12, conditionalPanel(condition="input.biVarSelect1>0 && input.biVarSelect2>0", 
-            plotlyOutput("ScatterPlot", height="500px")
-      )),
       column(4,
            selectInput("SelFacX2", "Select First Factor Levels", c(), multiple = TRUE, , selectize=TRUE )
       ),
@@ -130,6 +129,9 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),box(
            )
       )
    ),
+   column(12, conditionalPanel(condition="input.biVarSelect1>0 && input.biVarSelect2>0", 
+          plotlyOutput("ScatterPlot", height="500px")
+   ))),
    conditionalPanel(condition="input.inDSselect==0",
       h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
    )
@@ -142,11 +144,13 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), box(
    title="Multivariate exploration", status = "primary", solidHeader = TRUE, width = 12,
    conditionalPanel(condition="input.inDSselect>0",
    htmlOutput("Msg"),
+   column(12,
       column(4,
            selectInput("multiFacX", "Factor for highlighting the classification", c() ),
                 conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'",
                     checkboxInput('ellipse', 'Ellipses', TRUE)
-                )
+                ),
+           selectInput("listLevels", "Select Factor Levels", c(), multiple = TRUE, , selectize=TRUE )
       ),
       column(4,
            selectInput("multiType", "Analysis Type", 
@@ -200,22 +204,23 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), box(
                     numericInput("lambda", NULL, 0.3, min = 0.0001, max = 1, step=0.1)
               ))
            )
-      ),
-      column(12, conditionalPanel(condition="input.multiType != 'None' && input.outType != 'None' && input.listVars[2]", 
-            conditionalPanel(condition="input.multiType!='GGM'", plotlyOutput("MultiPlot", height="600px") ),
-            conditionalPanel(condition="input.multiType=='GGM'", forceNetworkOutput("ggmnet", width="85%", height="800px") )
-      )),
-      column(4,
-           selectInput("listLevels", "Select Factor Levels", c(), multiple = TRUE, , selectize=TRUE )
-      ), 
-      column(4,
-           selectInput("multiAnnot", "Select Features as Labels", c() )
-           , selectInput("listFeatures", "(Un)Select Items", c(), multiple = TRUE, , selectize=TRUE )
-      ), 
-      column(4,
-           selectInput("listVars", "Select Variables", c(), multiple = TRUE, , selectize=TRUE )
       )
    ),
+   column(12,
+      column(4,
+           selectInput("multiAnnot", "Select Data based on Features", c() )
+      ), 
+      column(4,
+           selectInput("listFeatures", "(Un)Select Features", c(), multiple = TRUE, , selectize=TRUE )
+      )
+   ),
+   column(12, conditionalPanel(condition="input.multiType != 'None' && input.outType != 'None' && input.listVars[2]", 
+       conditionalPanel(condition="input.multiType!='GGM'", plotlyOutput("MultiPlot", height="600px") ),
+       conditionalPanel(condition="input.multiType=='GGM'", forceNetworkOutput("ggmnet", width="85%", height="800px") )
+   )),
+   column(12,
+       selectInput("listVars", "Select Variables", c(), multiple = TRUE, , selectize=TRUE )
+   )),
    conditionalPanel(condition="input.inDSselect==0",
       h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
    )

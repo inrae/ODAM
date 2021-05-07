@@ -19,11 +19,11 @@ RUN apt-get update && apt-get install -y \
   # Install R / ...
     apt-get update && apt-get install -y \
     r-recommended r-base-dev r-cran-rcurl r-cran-base64enc r-cran-xml r-cran-stringr \
-    r-cran-rcpp r-cran-biocmanager r-cran-mime r-cran-inline r-cran-docopt \
+    r-cran-rcpp r-cran-biocmanager r-cran-mime r-cran-inline r-cran-docopt r-cran-remotes \
     r-cran-httpuv r-cran-xtable r-cran-htmlwidgets r-cran-jsonlite r-cran-htmltools \
     r-cran-igraph r-cran-magrittr r-cran-ellipse r-cran-whisker r-cran-reshape2 \
-    r-cran-markdown  r-cran-plotly r-cran-ggplot2 \
-    r-bioc-limma r-bioc-impute r-bioc-pcamethods \
+    r-cran-markdown  r-cran-plotly r-cran-ggplot2 r-cran-moments r-cran-ggpubr r-cran-ggdendro \
+    r-bioc-limma r-bioc-impute r-bioc-pcamethods r-cran-rcppeigen r-cran-rcppparallel \
     r-cran-shiny r-cran-shinybs r-cran-shinydashboard r-cran-shinyjs r-cran-dt && \
   # locale setting
     apt-get update && apt-get install -y locales && \
@@ -48,15 +48,9 @@ RUN wget --no-verbose http://download3.rstudio.org/ubuntu-12.04/x86_64/VERSION -
     rm -f version.txt ss-latest.deb
 
 # R packages installed in /usr/local/lib/R/site-library/
-RUN R -e "install.packages(c('moments', 'JADE', 'ggpubr', 'ggdendro'), repos='http://cran.rstudio.com/')"
-
-# 'networkD3'
-RUN R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz', repos=NULL)"
-
-RUN apt-get update && apt-get install -y r-cran-rcppeigen r-cran-rcppparallel && \
-    wget --no-verbose https://github.com/wt2015-github/FastGGM/tarball/master -O "FastGGM.tar.gz" && \
-    R -e "install.packages(pkgs = 'FastGGM.tar.gz', repos = NULL, type = 'source')" && \
-    rm -f FastGGM.tar.gz
+RUN R -e "install.packages(c('JADE'), repos='http://cran.rstudio.com/')" && \
+    R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz', repos=NULL)" && \
+    R -e "remotes::install_github('wt2015-github/FastGGM');"
 
 ADD ./ /srv/shiny-server
 

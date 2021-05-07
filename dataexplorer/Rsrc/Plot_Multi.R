@@ -17,7 +17,7 @@
             facvals <- as.character(sprintf(fmt, facvals))
         }
         levelFac <- .C( levels(as.factor(facvals)) )
-    
+
         fannot=TRUE
         if (is.null(FCOL) || nchar(FCOL)==0) { FCOL <- F1; fannot=FALSE; }
         FCOL <- tryCatch( { if(length(data[, FCOL ])) FCOL  }, error=function(e) { F1 })
@@ -32,12 +32,14 @@
         # Data extraction
         subdata <- cbind( data[ , c(samples,variables)] , facvals, cfacvals )
         #subdata <- na.omit(cbind( data[ , c(samples,variables)] , facvals, cfacvals ))
+        
         # Data imputation
         dataIn <- subdata[, variables ]
         if (scale) dataIn <- scale( dataIn, center=TRUE, scale=TRUE )
         resNIPALS <- pca(as.matrix(dataIn), method = "nipals", center = FALSE)
-        subdata[, variables ] <- resNIPALS@completeObs        
+        subdata[, variables ] <- resNIPALS@completeObs
         colnames(subdata) <- c ( samples, variables, F1, FCOL)
+        
         # Data selection
         subdata <- subdata[subdata[ , F1 ] %in% levelFac[.N(selectLevels)], ]
         if (fannot && length(selectFCOL)>0) subdata <- subdata[subdata[ , FCOL ] %in% levelcFac[.N(selectFCOL)], ]
@@ -86,17 +88,6 @@
 
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
-          # Annotation
-          fa_options <- c("None", .C(features[,2]))
-          names(fa_options) <- c('---', .C(features$Description))
-          updateSelectInput(session, "multiAnnot", choices = fa_options)
-          updateSelectInput(session, "outType", selected="None")
-          updateSelectInput(session, "multiType", selected="None")
-       }
-    }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 3:\n", e ); }) })
-
-    observe({ tryCatch({
        if ( ! is.null(input$inDSselect) && input$inDSselect>0 ) {
           if ( .C(input$multiType) %in% c('COR','GGM') ) {
              v_options <- c('VARS')
@@ -141,6 +132,18 @@
           updateSelectInput(session, "listLevels", choices = l_options, selected=l_options)
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 5:\n", e ); }) })
+
+    observe({ tryCatch({
+       input$inDselect
+       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
+          # Annotation
+          fa_options <- c("None", .C(features[,2]))
+          names(fa_options) <- c('---', .C(features$Description))
+          updateSelectInput(session, "multiAnnot", choices = fa_options)
+          #updateSelectInput(session, "outType", selected="None")
+          #updateSelectInput(session, "multiType", selected="None")
+       }
+    }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 3:\n", e ); }) })
 
     observe({ tryCatch({
        input$inDselect
@@ -303,7 +306,7 @@
             if (.C(multiType)=='COR') {
                 getCorPLot(F1, selectLevels=input$listLevels, FCOL=FCOL, selectFCOL=selectFCOL, selectVars=input$listVars, full=input$fullmatcor)
             } else if (.C(multiType) %in% c('PCA', 'ICA')) {
-                getMultiPLot(multiType, F1, selectLevels=input$listLevels, FCOL=FCOL, selectFCOL=selectFCOL, selectVars=input$listVars, outputVariables, ellipse=input$ellipse, scale=input$scale, blabels=input$multiLabels, f3D=input$f3D, GBG=input$GBG)
+                getMultiPLot(multiType, F1, selectLevels=input$listLevels, FCOL=FCOL, selectFCOL=selectFCOL, selectVars=input$listVars, outputVariables, fellipse=input$ellipse, scale=input$scale, blabels=input$multiLabels, f3D=input$f3D, GBG=input$GBG)
             }
        }, error=function(e) {}) })
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("RenderPlotly:\n", e ); })
@@ -363,7 +366,7 @@
     # Multivariate Plot
     #----------------------------------------------------
     getMultiPLot <- function(Analysis, F1, selectLevels, FCOL, selectFCOL, selectVars, 
-                              outputVariables=FALSE, ellipse=TRUE, scale=FALSE, blabels=TRUE, f3D=FALSE, GBG=FALSE) {
+                              outputVariables=FALSE, fellipse=TRUE, scale=FALSE, blabels=TRUE, f3D=FALSE, GBG=FALSE) {
         FUN <- ''
         if (nchar(Analysis)>0) FUN <- paste0(Analysis,'_fun')
         if ( ! exists(FUN) ) return(NULL)
@@ -390,7 +393,7 @@
            MA <- as.data.frame(cbind( Score[, c(pc1,pc2,pc3)], facvals))
            names(MA) <- c( 'C1','C2', 'C3', 'fac' )
            
-           if (! f3D) { # Compute ellipse for each factor level
+           if (! f3D && fellipse ) { # Compute ellipse for each factor level
               centroids <- aggregate(cbind(C1,C2) ~ fac , MA, mean)
               conf.rgn  <- do.call(rbind,lapply(unique(MA$fac),function(t)
                  data.frame(fac=as.character(t),
@@ -429,7 +432,7 @@
                   G1 <- G1 + ylab(sprintf("%s%d",prefix, pc2))
               }
               G1 <- G1 + labs(colour=F1name)
-              if (ellipse) G1 <- G1 + geom_path(data=conf.rgn)
+              if (fellipse) G1 <- G1 + geom_path(data=conf.rgn)
               G1 <- G1 + guides(colour = guide_legend(override.aes = list(size=3)))
               if (!GBG) G1 <- G1 + theme_bw()
               gg <- ggplotly(G1)

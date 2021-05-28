@@ -1,6 +1,6 @@
 <?php
-/* ID rest.inc v1.0
- * Copyright (C) 2015 INRA - DJ
+/* ID rest.inc v1.2
+ * Copyright (C) 2015-2021 INRAE - DJ
  *
     This file is part of ODAM
 
@@ -21,6 +21,7 @@
 $auth = isset($_GET['auth']) ?  $_GET['auth'] : '' ;
 $limit = isset($_GET['limit']) ?  $_GET['limit'] : 0 ;
 $links = isset($_GET['links']) ?  $_GET['links'] : 0 ;
+$restmsg = '';
 $debug=0;
 $metadata=0;
 $datapackage=0;
@@ -35,6 +36,9 @@ do {
 
     # count options
     $cntopt=count($urloptions);
+    if (strlen(end($urloptions))== 0) $cntopt--;
+
+    # check if debug
     if ($urloptions[$cntopt-1] == 'debug') {
         $cntopt--;
         $debug=1;
@@ -61,12 +65,12 @@ do {
 
     # get function
     $func = array_shift($urloptions);
-    $restmsg="cnt=$cntopt;func=$func";
 
     $cntopt--;
     if ($cntopt<1 || strlen($func)==0 ) $func = 'subset';
+    $restmsg = "cntopt=$cntopt; func=$func";
 
-    $doQuery = 0; $retval=0; $CMD='';
+    $doQuery = 0; $retval=0;
 
     # if check function
     if ($func == 'check') {
@@ -120,10 +124,14 @@ do {
     elseif ( preg_match('/\(/',$func)==1 && preg_match('/\)/',$func)==1 ) {
         if ( preg_match('/^\((.+)\)/', $func, $matches) ) {
             $tarr_DS = (preg_match('/,/',$func)>0) ? explode(',', $matches[1]) : array( $matches[1] );
-            $key=''; $value='';
+            $key=''; $value=''; $op='';
+            # Get list of entries
+            $arr_entry = array();
+            $list = $def->getEntryList($tarr_DS);
+            foreach($list as $var => $arr) array_push($arr_entry, $arr[2]);
             # ... all rows of the merged subsets
             if ($cntopt==1) {
-                $query = $def->getSelectMulti($tarr_DS, $key,$value);
+                $query = $def->getSelectMulti($tarr_DS, $key,$value,$op);
                 $doQuery = 1;
             }
             elseif ($cntopt==2) {
@@ -137,7 +145,7 @@ do {
                     $fp=fwrite($fw,$line);
                     fclose($fw);
                  }
-                 if ($key=="entry") {
+                 elseif ($key=="entry") {
                     $list = $def->getEntryList($tarr_DS);
                     $line = implode($sep, array('Subset','Attribute','WSEntry'))."\n";
                     foreach($list as $key => $arr) $line .= implode($sep,$arr)."\n";
@@ -145,14 +153,28 @@ do {
                     $fp=fwrite($fw,$line);
                     fclose($fw);
                  }
+                 else {
+                    echo "ERROR: either $key is not a valid keyword or requires a value";
+                    break;
+                 }
             }
             # ... based on a  value of a specific attribute 
             elseif ($cntopt==3) {
                 $key = array_shift($urloptions);
                 $value = array_shift($urloptions);
-                $restmsg .=";$key=$value";
-                $query = $def->getSelectMulti($tarr_DS, $key,$value);
-                $doQuery = 1;
+                if (in_array($key, $arr_entry)) {
+                    if ( strpos($value,'>') !== false || strpos($value,'<') !== false ) {
+                        $op = substr($value, 0, 1);
+                        $value = substr($value, 1);
+                    }
+                    $restmsg .="; $key$op=$value";
+                    $query = $def->getSelectMulti($tarr_DS, $key,$value,$op);
+                    $doQuery = 1;
+                }
+                else {
+                    echo "ERROR: the entry $key is not a valid entry";
+                    break;
+                }
             }
         }
     }
@@ -161,27 +183,51 @@ do {
     # Get data from one subset ...
     #-------------------------
     elseif (array_key_exists($func,$def->hDataset)) {
-       if ($cntopt==1) {
-            # ... all rows of the subset
-           $query=$def->getSelect1($func,'','');
-           $doQuery = 1;
-       } else {
-           $key = array_shift($urloptions);
-           # ... based on an entry value 
-           if (array_key_exists($key,$def->hDataset[$func]['entries']) && $cntopt==3) {
-               $value = array_shift($urloptions);
-               $query=$def->getSelect1($func,$key,$value);
-               $restmsg .=";$key=$value";
-               $doQuery = 1;
-           }
-           # ... based on a category in the Category List =(factor|quantitative|qualitative|identifier)
-           elseif (array_key_exists($key,$def->hDataset[$func]['categories'])) {
-               # get a list of a specific catagory ($key)
-               if ($cntopt==2) {
-               } else {
-               }
-           }
-       }
+        $key=''; $value=''; $op='';
+        if ($cntopt==1) {
+             # ... all rows of the subset
+            $query=$def->getSelect1($func,$key,$value,$op);
+            $doQuery = 1;
+        } else {
+            $key = array_shift($urloptions);
+            # ... based on an entry value 
+            if (array_key_exists($key,$def->hDataset[$func]['entries']) && $cntopt==3) {
+                $value = array_shift($urloptions);
+                if ( strpos($value,'>') !== false || strpos($value,'<') !== false ) {
+                    $op = substr($value, 0, 1);
+                    $value = substr($value, 1);
+                }
+                $query=$def->getSelect1($func,$key,$value,$op);
+                $restmsg .="; $key=$value";
+                $doQuery = 1;
+            }
+            elseif (array_key_exists($key,$def->hDataset[$func]['entries']) && $cntopt==2) {
+                echo "ERROR: the entry $key requires a value";
+                break;
+            }
+            # ... based on a category in the Category List =(factor|quantitative|qualitative|identifier)
+            elseif (array_key_exists($key,$def->hDataset[$func]['categories']) && $cntopt==2) {
+                # get a list of a specific category ($key)
+                $list = $def->getCategoryList(array($func), $key, 0);
+                $line = implode($sep, array('Subset','Attribute','Description','Type','CV_Term_ID','CV_Term_Name'))."\n";
+                foreach($list as $lkey => $arr) $line .= implode($sep,$arr)."\n";
+                $fw=fopen($stdout,"w");
+                $fp=fwrite($fw,$line);
+                fclose($fw);
+            }
+            elseif ($key=="entry") {
+                $list = $def->getEntryList(array($func), 0);
+                $line = implode($sep, array('Subset','Attribute','WSEntry'))."\n";
+                foreach($list as $key => $arr) $line .= implode($sep,$arr)."\n";
+                $fw=fopen($stdout,"w");
+                $fp=fwrite($fw,$line);
+                fclose($fw);
+            }
+            else {
+                echo "ERROR: $key is neither a category nor a valid entry";
+                break;
+            }
+        }
     }
 
     # Nothing
@@ -190,6 +236,12 @@ do {
     if ($limit>0) $query .= " LIMIT $limit";
 
     # Launch query if needed
+    if ($debug) {
+      $time_start = microtime(true);
+      $retvald = $doQuery ?  doQuery($DSNAME, $query, 0) : 0;
+      $time_end = microtime(true);
+      $execution_time = $time_end - $time_start;
+    }
     $retval = $doQuery ?  doQuery($DSNAME, $query, $debug) : 0;
 
     # Get metadata
@@ -231,17 +283,31 @@ do {
               }
            }
         }
-        echo "OK $restmsg - $cntopt - $CMD - $retval - $stdout<br>";
+        echo "OK $restmsg<br><br>CMD = $retval<br>"; echo "<br>STDOUT = $stdout<br>";
+        $rescnt=0;
+        $retvald=trim(`ls -l $stderr | cut -d' ' -f5`);
+        if (! $retvald) $rescnt=trim(`cat $stdout | wc -l`);
+        $rescnt--;
+        echo "<br>doQuery: $doQuery - Execution time: $execution_time - Nb records: $rescnt<br>";
+        if ($retvald) echo "<br>".`cat $stderr`."<br>";
         if ($doQuery) echo"<br><pre>$query</pre>";
+        #if (! $retvald) echo_results($format);
         echo "<pre>"; print_r($def->hDataset); echo "</pre>";
         break;
     }
 
     if ($retval) {
-       $ERRORMSG='QUERY:&nbsp;'.$query.'<BR>===>&nbsp;'.`cat $stderr`.'<BR><BR>';
-       echo $ERRORMSG;
-       break;
+        $ERRORMSG='QUERY:&nbsp;'.$query.'<BR>===>&nbsp;'.`cat $stderr`.'<BR><BR>';
+        echo $ERRORMSG;
+        break;
     }
+
+#    # No errors but no results found
+#    $rescnt=trim(`cat $stdout | wc -l`);
+#    if ($rescnt==1 && $format == 'xml') {
+#        echo "<pre>No results</pre>";
+#        break;
+#    }
 
     # Output the results
     echo_results($format);

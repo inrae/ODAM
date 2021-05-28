@@ -144,24 +144,30 @@
         }
 
         # Deal with NA
-        dat <- NULL
-        subS <- S[ S %in% sort(subdata[ ,samples ]) ]
-        for (si in 1:length(subS)) {
-           D <- subdata[subdata[, samples] == subS[si],]
-           if ( (length(D[, varX]) - sum(is.na(D[ ,varX])))/length(D[, varX]) <0.5 ) next
-           if ( (length(D[, varY]) - sum(is.na(D[ ,varY])))/length(D[, varY]) <0.5 ) next
-           if (fMean) {
-               Mx <- mean(D[, varX], na.rm=T)
-               My <- mean(D[, varY], na.rm=T)
-               D[1, varX] <- Mx
-               D[1, varY] <- My
-               dat <- rbind(dat,D[1,])
-           } else {
-               D[is.na(D[, varX]), varX] <- mean(D[, varX], na.rm=T)
-               D[is.na(D[, varY]), varY] <- mean(D[, varY], na.rm=T)
-               dat <- rbind(dat,D)
+        if (dim(subdata)[1]<2000) {
+           dat <- NULL
+           subS <- S[ S %in% sort(subdata[ ,samples ]) ]
+           for (si in 1:length(subS)) {
+              D <- subdata[subdata[, samples] == subS[si],]
+              if ( (length(D[, varX]) - sum(is.na(D[ ,varX])))/length(D[, varX]) <0.5 ) next
+              if ( (length(D[, varY]) - sum(is.na(D[ ,varY])))/length(D[, varY]) <0.5 ) next
+              if (fMean) {
+                  Mx <- mean(D[, varX], na.rm=T)
+                  My <- mean(D[, varY], na.rm=T)
+                  D[1, varX] <- Mx
+                  D[1, varY] <- My
+                  dat <- rbind(dat,D[1,])
+              } else {
+                  D[is.na(D[, varX]), varX] <- mean(D[, varX], na.rm=T)
+                  D[is.na(D[, varY]), varY] <- mean(D[, varY], na.rm=T)
+                  dat <- rbind(dat,D)
+              }
            }
+        } else {
+           T1 <- subdata[!is.na(subdata[,varX]), ]
+           dat <- T1[!is.na(T1[,varY]), ]
         }
+        #dat <- subdata
 
         # Select type of IDS as labels
         xvar=.N(dat[, varX]); if (blog[1]) xvar <- log10( xvar + 1 );

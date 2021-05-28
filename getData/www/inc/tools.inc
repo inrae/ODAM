@@ -1,11 +1,9 @@
 <?php
 # Auteur(s): D.JACOB 
-# Copyright: (c) INRA - 2015
+# Copyright: (c) 2015-2021 INRAE
 
 $theIP       = $_SERVER["REMOTE_ADDR"];
 $theURI      = $_SERVER["REQUEST_URI"];
-
-$restmsg="no options";
 
 $tFormat   = array('tsv', 'xml', 'json');
 

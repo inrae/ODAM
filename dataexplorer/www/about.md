@@ -10,7 +10,9 @@ _(C) Daniel Jacob - INRAE UMR 1332 BFP, PMB - 2021 - Version 1.2_
 
 [![Badge](biotools-ODAM-blue.svg)](https://bio.tools/ODAM)<br><br>
 
-ODAM (Open Data for Access and Mining) is an Experimental data table management software (EDTMS) to make research data accessible and available for reuse with minimal effort on the part of the data provider. Designed to manage experimental data tables in an easy way for users, ODAM provides a model for structuring both data and metadata that facilitates data handling and analysis. It also encourages data dissemination according to FAIR principles by making the data interoperable and reusable by both humans and machines, allowing the dataset to be explored and then extracted in whole or in part as needed. For more information/explanation, see <a href="https://inrae.github.io/ODAM/" target="_blank">ODAM: Deployment and User's Guide</a>
+ODAM (Open Data for Access and Mining) is an Experimental data table management software (EDTMS) to make research data accessible and available for reuse with minimal effort on the part of the data provider. Designed to manage experimental data tables in an easy way for users, ODAM provides a model for structuring both data and metadata that facilitates data handling and analysis. It also encourages data dissemination according to FAIR principles by making the data interoperable and reusable by both humans and machines, allowing the dataset to be explored and then extracted in whole or in part as needed.<br>
+<br>
+For more information/explanation, see <a href="https://inrae.github.io/ODAM/" target="_blank">ODAM: Deployment and User's Guide</a>
 
 <br>
 

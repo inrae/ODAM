@@ -1,6 +1,6 @@
 <?php
 /* ID def_lib.inc v1.0
- * Copyright (C) 2015 INRA - DJ
+ * Copyright (C) 2015-2021 INRAE - DJ
  *
     This file is part of ODAM
 
@@ -334,7 +334,7 @@ class def_lib
 /********************************************************
 * getSQLparts
 ********************************************************/
-    function getSQLparts ($ds,$func,$value)
+    function getSQLparts ($ds,$func,$value,$op='')
     {
        $falias = 'f'.$this->hDataset[$ds]['file'];
        $file = $this->FILES[ $this->hDataset[$ds]['file'] ].' '.$falias;
@@ -346,7 +346,7 @@ class def_lib
           $type = $entities[$key][1];
           if (strlen("$value")>0) {
              if ($type=='string') $value = "'$value'";
-             $where .= "$field=$value";
+             $where .= "$field$op=$value";
           }
        }
        $fields = '';
@@ -362,9 +362,9 @@ class def_lib
 /********************************************************
 * getSelect1
 ********************************************************/
-    function getSelect1($ds,$func,$value)
+    function getSelect1($ds,$func,$value,$op='')
     {
-       list ($falias, $file, $fields, $where) = $this->getSQLparts ($ds,$func,$value);
+       list ($falias, $file, $fields, $where) = $this->getSQLparts ($ds,$func,$value,$op);
        $query = "select $fields from $file";
        if (strlen("$where")>0) $query .= " where $where";
        return $query;
@@ -373,7 +373,7 @@ class def_lib
 /********************************************************
 * getSelectMulti
 ********************************************************/
-    function getSelectMulti($tarr_DS, $func,$value)
+    function getSelectMulti($tarr_DS, $func,$value,$op='')
     {
        $gfields='';  $gfrom=''; $gwhere=''; $query='';
        do {
@@ -411,7 +411,7 @@ class def_lib
           $nbds=count($dstree);
           for ($i = 0; $i <= $nbds-1; $i++ ) {
                $ds=$dstree[$i];
-               list ($falias, $file, $fields, $where) = $this->getSQLparts ($ds,$func,$value);
+               list ($falias, $file, $fields, $where) = $this->getSQLparts ($ds,$func,$value,$op);
                if (strlen($gfields)>0) $gfields .= ', ';
                $gfields .= $fields;
                array_push($tAlias,$falias);
@@ -446,7 +446,7 @@ class def_lib
 /********************************************************
 * getCategoryList
 ********************************************************/
-    function getCategoryList($tarr_DS, $category)
+    function getCategoryList($tarr_DS, $category, $multi=1)
     {
        $list = array();
        $dstree = array();
@@ -455,14 +455,18 @@ class def_lib
           if ($nbds==0) break;
 
           if ( in_array($category, $this->categories) ) {
-              if ($nbds==1) {
+              if ($nbds==1 && $multi==1) {
                  foreach ($this->hDataset['_dstree_'] as $keyid => $arr ) {
                     if ($arr[count($arr)-1] == $tarr_DS[0]) {
                        $dstree = $arr;
                        break;
                     }
                  }
-              } else {
+              }
+              elseif ($nbds==1 && $multi==0) {
+                 $dstree = $tarr_DS;
+              }
+              else {
                  for ($i = 0; $i <= $nbds-1; $i++ ) {
                      $dsarr = array();
                      foreach ($this->hDataset['_dstree_'] as $keyid => $arr ) {
@@ -495,10 +499,10 @@ class def_lib
 /********************************************************
 * getEntryList
 ********************************************************/
-    function getEntryList($tarr_DS)
+    function getEntryList($tarr_DS, $multi=1)
     {
         $list = array();
-        if (count($tarr_DS)==1) {
+        if (count($tarr_DS)==1 && $multi==1) {
            foreach ($this->hDataset['_dstree_'] as $keyid => $arr ) {
               if ($arr[count($arr)-1] == $tarr_DS[0]) {
                  $tarr_DS = $arr;
@@ -546,15 +550,18 @@ class def_lib
         if ( ($headers = fgetcsv($fo,0,"\t") ) !== FALSE) {
             $nbcol = count($headers);
             while ( ($data = fgetcsv($fo,0,"\t") ) !== FALSE ) {
-                $nbrow++;
+                $nbrows++;
                 $ds_rows .= "<Row>";
                 for ($i = 0; $i < $nbcol; $i++ ) {
                    $elem_xml=$headers[$i];
                    $elem_value=$data[$i];
+                   if ( preg_match('/https?/', $elem_value) )
+                       $elem_value = preg_replace('/&/', '&amp;', $elem_value);
                    $ds_rows .= "<$elem_xml>$elem_value</$elem_xml>";
                 }
                 $ds_rows .= "</Row>";
             }
+            if (strlen($ds_rows)==0) $ds_rows = "<Row><Result>No results</Result></Row>";
         }
         fclose($fo);
 

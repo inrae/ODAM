@@ -95,8 +95,8 @@ getWS <- function(cdata) {
         tabname <- params[['tab']]
     }
     headerflag <- NULL
-    if (!is.null(params[['banner']])) {
-        headerflag <- params[['banner']]
+    if (!is.null(params[['frame']])) {
+        headerflag <- params[['frame']]
     }
     c(  internalURL, dsname, auth, externalURL, dcname, subsetname, tabname, headerflag )
 }
@@ -122,9 +122,13 @@ getAbout <- function () {
 }
 
 getInfos <- function (ws) {
-    myurl <- paste(ws[4],'/infos/', ws[2], "?auth=",ws[3],sep="");
-    imgurl <- paste(ws[4],'/image/', ws[2], sep="");
-    gsub('@@IMAGE@@', imgurl,  getURL(myurl, ssl.verifypeer = FALSE) )
+    gsub('@@PDF@@', paste(ws[4],'/pdf/', ws[2], sep=""),  
+        gsub('@@IMAGE@@', paste(ws[4],'/image/', ws[2], sep=""),  
+            getURL(paste(ws[4],'/infos/', ws[2], "?auth=",ws[3],sep=""),
+                ssl.verifypeer = FALSE
+            )
+        )
+    )
 }
 
 getData <- function (ws, query) {

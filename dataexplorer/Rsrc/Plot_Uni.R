@@ -32,35 +32,23 @@
                 subdata <- subdata[subdata[ , FCOL ] %in% levelcFac[.N(selectFCOL)], ]
         }
 
-        # Deal with NA
-        dat <- NULL
-        subS <- S[ S %in% sort(subdata[ ,samples ]) ]
-        for (si in 1:length(subS)) {
-           D <- subdata[subdata[, samples] == subS[si],]
-           if ( (length(D[, varX]) - sum(is.na(D[ ,varX])))/length(D[, varX]) <0.5 ) next
-           if (fMean) {
-               Mx <- mean(D[, varX], na.rm=T)
-               D[1, varX] <- Mx
-               dat <- rbind(dat,D[1,])
-           } else {
-               if (length(D[is.na(D[, varX]), varX])>0) {
-                   D[is.na(D[, varX]), varX] <- mean(D[, varX], na.rm=T)
-               }
-               dat <- rbind(dat,D)
-           }
-        }
-        dat <- unique(dat)
-
-        # define the summary function
-        f <- function(x) {
-          r <- quantile(x, probs = c(0.05, 0.25, 0.5, 0.75, 0.95))
-          names(r) <- c("ymin", "lower", "middle", "upper", "ymax")
-          r
-        }
-        # define outlier function, beyound 5 and 95% percentiles
-        o <- function(x) {
-          subset(x, x < quantile(x,probs=c(0.05))[1] | quantile(x,probs=c(0.95))[1] < x)
-        }
+#        # Deal with NA
+#        subS <- S[ S %in% sort(subdata[ ,samples ]) ]
+#        dat <- NULL
+#        for (si in 1:length(subS)) {
+#           D <- subdata[subdata[, samples] == subS[si],]
+#           V <- D[ ,varX]
+#           na.V <- is.na(V)
+#           na.sum <- sum(na.V)
+#           if (na.sum>0) {
+#             lenD <- length(V)
+#             if ( (lenD - na.sum)/lenD <0.5 ) next
+#             D[na.V, varX] <- mean(V, na.rm=T)
+#           }
+#           dat <- rbind(dat,D)
+#        }
+#        dat <- unique(dat)
+dat <- subdata
 
         colorid <- F1
         xid <- F1
@@ -85,8 +73,8 @@
         G2 <- G2 + labs(x=xname, y=yname, colour=colorname)
         G2 <- G2 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"), 
                          axis.text.x = element_text(angle = 45, vjust = 1, size = 8, hjust = 1))
-        p <- ggplotly(G2)
-        p
+        #ggplotly(G2)
+        G2
     }
 
     # Two factors
@@ -130,24 +118,25 @@
         if ((! is.null(selectF1) || ! is.null(selectF2)) && fannot && length(selectFCOL)>0)
             subdata <- subdata[subdata[ , FCOL ] %in% levelcFac[.N(selectFCOL)], ]
 
-        # Deal with NA
-        dat <- NULL
-        subS <- S[ S %in% sort(subdata[ ,samples ]) ]
-        for (si in 1:length(subS)) {
-           D <- subdata[subdata[, samples] == subS[si],]
-           if ( (length(D[, varX]) - sum(is.na(D[ ,varX])))/length(D[, varX]) <0.5 ) next
-           if (fMean) {
-               Mx <- mean(D[, varX], na.rm=T)
-               D[1, varX] <- Mx
-               dat <- rbind(dat,D[1,])
-           } else {
-               if (length(D[is.na(D[, varX]), varX])>0) {
-                   D[is.na(D[, varX]), varX] <- mean(D[, varX], na.rm=T)
-               }
-               dat <- rbind(dat,D)
-           }
-        }
-        dat <- unique(dat)
+#        # Deal with NA
+#        dat <- NULL
+#        subS <- S[ S %in% sort(subdata[ ,samples ]) ]
+#        for (si in 1:length(subS)) {
+#           D <- subdata[subdata[, samples] == subS[si],]
+#           if ( (length(D[, varX]) - sum(is.na(D[ ,varX])))/length(D[, varX]) <0.5 ) next
+#           if (fMean) {
+#               Mx <- mean(D[, varX], na.rm=T)
+#               D[1, varX] <- Mx
+#               dat <- rbind(dat,D[1,])
+#           } else {
+#               if (length(D[is.na(D[, varX]), varX])>0) {
+#                   D[is.na(D[, varX]), varX] <- mean(D[, varX], na.rm=T)
+#               }
+#               dat <- rbind(dat,D)
+#           }
+#        }
+#        dat <- unique(dat)
+dat <- subdata
 
         # define the summary function
         f <- function(x) {
@@ -181,8 +170,8 @@
         G2 <- G2 + labs(x=xname, y=yname, colour=colorname)
         G2 <- G2 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"))
         if (bsmooth) G2 <- G2 + stat_smooth(aes(group=colour), size=2, se = FALSE )
-        ggplotly(G2)
-        #G2
+        #ggplotly(G2)
+        G2
     }
 
     #----------------------------------------------------

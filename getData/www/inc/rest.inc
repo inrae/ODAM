@@ -242,7 +242,7 @@ do {
     # if debug, display information then exit
     if ($debug) {
         $retval = $doQuery ?  $def->do_SQL_query($query, 1) : 0;
-        echo "OK $restmsg<br><br>CMD = $retval<br>"; echo "<br>STDOUT = $stdout<br>";
+        echo "URL QUERY : $restmsg<br><br>CMD = $retval<br>"; echo "<br>STDOUT = $stdout<br>";
         if ($doQuery) {
          # Execute the query and return some information
            $time_start = microtime(true);

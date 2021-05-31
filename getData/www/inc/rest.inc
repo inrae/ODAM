@@ -115,13 +115,13 @@ do {
     }
     $IS_FILES = ($NB_FILES == count($def->FILES)) ? 1 : 0 ;
 
-    # Inner loop : parses parameters and builds the query
+    #-----------------------------------------------------
+    # Inner block : parses parameters and builds the query
+    #-----------------------------------------------------
     do {
         $MSG ='';
-    
-        #-------------------------
+
         # Get Subsets information
-        #-------------------------
         if ($func == 'subset') {
             $list = $def->getSubsetList();
             $line = "Subset;Description;Identifier;WSEntry;SetID;LinkID;CV_Term_ID;CV_Term_Name\n";
@@ -132,7 +132,7 @@ do {
             fclose($fw);
             break;
         }
-    
+
         # Get data from merging of some subsets (columns)
         if ( preg_match('/^\((.+)\)/', $func, $matches) ) {
             $tarr_DS = (preg_match('/,/',$func)>0) ? explode(',', $matches[1]) : array( $matches[1] );
@@ -151,8 +151,8 @@ do {
             $arr_entry = array_unique($arr_entry);
             $queryMulti=1;
         }
-        elseif (array_key_exists($func,$def->hDataset)) {
         # Get data from only one subset
+        elseif (array_key_exists($func,$def->hDataset)) {
             $arr_entry = array();
             $list = $def->getEntryList(array($func), 0);
             foreach($list as $var => $arr) array_push($arr_entry, $arr[2]);
@@ -170,7 +170,7 @@ do {
             $doQuery = 1;
             break;
         }
-    
+
         # Get the category / entry list
         if ($cntopt==2) {
             $key = array_shift($urloptions);
@@ -207,7 +207,7 @@ do {
             }
             break;
         }
-    
+
         # Get data based a value of a specific attribute 
         if ($cntopt==3) {
             $key = array_shift($urloptions);
@@ -236,20 +236,26 @@ do {
         break;
     }
 
+    # if limit is specified
     if ($limit>0) $query .= " LIMIT $limit";
 
-    # Launch query if needed
+    # if debug, display information then exit
     if ($debug) {
-      $time_start = microtime(true);
-      $retvald = $doQuery ?  $def->do_SQL_query($query, 0) : 0;
-      $time_end = microtime(true);
-      $execution_time = $time_end - $time_start;
-    }
-
-    $retval = $doQuery ?  $def->do_SQL_query($query, $debug) : 0;
-
-    if ($debug==1) {
+        $retval = $doQuery ?  $def->do_SQL_query($query, 1) : 0;
+        echo "OK $restmsg<br><br>CMD = $retval<br>"; echo "<br>STDOUT = $stdout<br>";
         if ($doQuery) {
+         # Execute the query and return some information
+           $time_start = microtime(true);
+           $retvald = $doQuery ?  $def->do_SQL_query($query, 0) : 0;
+           $time_end = microtime(true);
+           $execution_time = $time_end - $time_start;
+           $rescnt=0;
+           $retvald=trim(`ls -l $stderr | cut -d' ' -f5`);
+           if (! $retvald) $rescnt=trim(`cat $stdout | wc -l`);
+           $rescnt--;
+           echo "<br>doQuery: $doQuery - Execution time: $execution_time - Nb records: $rescnt<br>";
+           if ($retvald) echo "<br>".`cat $stderr`."<br>";
+         # display the formated query
            $query = str_replace("JOIN", "\nJOIN", str_replace("from", "\nFROM", $query));
            $query = str_replace("select", "SELECT", str_replace("where", "\nWHERE", $query));
            $nbds = count($def->hDataset);
@@ -266,22 +272,9 @@ do {
                  $query = str_replace($str_split[0].',', $str_split[0].",\n      ", $query);
               }
            }
+           echo"<br><pre>$query</pre>";
         }
-        echo "OK $restmsg<br><br>CMD = $retval<br>"; echo "<br>STDOUT = $stdout<br>";
-        $rescnt=0;
-        $retvald=trim(`ls -l $stderr | cut -d' ' -f5`);
-        if (! $retvald) $rescnt=trim(`cat $stdout | wc -l`);
-        $rescnt--;
-        echo "<br>doQuery: $doQuery - Execution time: $execution_time - Nb records: $rescnt<br>";
-        if ($retvald) echo "<br>".`cat $stderr`."<br>";
-        if ($doQuery) echo"<br><pre>$query</pre>";
         echo "<pre>"; print_r($def->hDataset); echo "</pre>";
-        break;
-    }
-
-    if ($retval) {
-        $ERRORMSG='QUERY:&nbsp;'.$query.'<BR>===>&nbsp;'.`cat $stderr`.'<BR><BR>';
-        echo $ERRORMSG;
         break;
     }
 
@@ -295,13 +288,21 @@ do {
         }
         break;
     }
-    
+
     # Get metadata into a data-package schema
     if ($datapackage==1 && $format == 'json') {
         header('Content-Type: application/json; charset=ISO-8859-1');
         $urlroot = $links ? $URLSERVER : '';
         $def->DPKG_INFOS = $DPKG_INFOS;
         echo $def->getJSONDataTable($urlroot);
+        break;
+    }
+
+    # Launch query if needed
+    $retval = $doQuery ?  $def->do_SQL_query($query, 0) : 0;
+    if ($retval) {
+        $ERRORMSG='QUERY:&nbsp;'.$query.'<BR>===>&nbsp;'.`cat $stderr`.'<BR><BR>';
+        echo $ERRORMSG;
         break;
     }
 

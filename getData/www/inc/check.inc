@@ -1,6 +1,6 @@
 <?php
-# Auteur(s): D.JACOB 
-# Copyright: (c) INRA - 2015
+# ID check.inc v1.2
+# Copyright: (c) 2015-2021 INRAE - DJ
 
 include ('inc/def_lib_ext.inc');
 
@@ -27,7 +27,7 @@ do {
         break;
     }
 
-# New instance of def_tools object
+# New instance of the def_lib object
     $def = new def_lib_ext("$DATADIR/$dataset");
 
 # Check dataset directory

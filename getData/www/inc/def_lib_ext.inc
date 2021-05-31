@@ -1,6 +1,6 @@
 <?php
-/* ID def_lib_ext.inc v1.0
- * Copyright (C) 2015 INRA - DJ
+/* ID def_lib_ext.inc v1.2
+ * Copyright (C) 2015-2021 INRAE - DJ
  *
     This file is part of ODAM
 
@@ -24,14 +24,6 @@ ob_end_clean();
 
 class def_lib_ext extends def_lib
 {
-
-    /* environment and tool variables involved in the SQL querying of the CSV data subset files (cf do_SQL_query-) */
-    var $OS        = "LINUX";
-    var $TMPDIR    = "";
-    var $SESSID    = "";
-    var $QSQL      =  "";
-    var $error_msg = "";
-
     var $check_flag = 1;
 
     var $status_tag = array( 'ok' => 'ok', 'bad' => 'Error');
@@ -256,33 +248,6 @@ class def_lib_ext extends def_lib
         foreach ( get_object_vars($object) as $var => $val) $this->$var=$val;
     }
 */
-
-# do SQL query 
-    function do_SQL_query($query)
-    {
-        $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
-        $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
-        $QSQL = $this->QSQL;  
-        if ($this->OS == "LINUX") {
-           $CMD = "(cd ".$this->dir_input."; $QSQL \"$query\" | uniq)";
-           $retval=trim(`$CMD 1>$stdout 2>$stderr; ls -l $stderr | cut -d' ' -f5`);
-           if ($retval) {
-              $CMD = "(cd ".$this->dir_input."; cat $stderr |  sed -e \"s|.*Error|Error|\")";
-              $this->error_msg = trim(`$CMD`);
-           }
-        }
-        if ($this->OS == "WIN") {
-           $CMD = "(cd ".$this->dir_input." && $QSQL \"$query\" | uniq)";
-           $filebatch = dirname($stdout)."/cmdbatch.bat";
-           $this->cmd_Batch($filebatch, $CMD, $stdout, $stderr);
-           $retval=trim(`$filebatch`);
-           if ($retval) {
-              $CMD = "(cd ".$this->dir_input." && type $stderr\")";
-              $this->error_msg = trim(`$CMD`);
-           }
-        }
-        return $retval;
-    }
 
 # Check if SQL on each subset file works
     function check_SQL_subsets($merge)

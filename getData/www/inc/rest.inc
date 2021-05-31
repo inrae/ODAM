@@ -80,11 +80,20 @@ do {
     
     ob_start();
     include ('inc/def_lib.inc');
-    include ('inc/tools.inc');
     ob_end_clean();
 
-    # check if metadata files
+    # New instance of the def_lib object
     $def = new def_lib("$DATADIR/$dataset");
+
+# Populate the '$def' instance with configuration variables coming from the '$set' instance (Set_Config object)
+#  => Environment and tool variables involved in the SQL querying of the TSV data subset files (cf do_SQL_query)
+    $def->OS = $OS ;
+    $def->TMPDIR = $TMPDIR ;
+    $def->SESSID = $SESSID ;
+    $def->QSQL   = $QSQL ;
+    $def->GETDATA_URL_PROXY = $GETDATA_URL_PROXY ;
+
+    # check if metadata files
     if ( $def->check_deffile('s_subsets') ) {
        echo 's_subsets: '.$def->retmsg;
        break;
@@ -106,163 +115,138 @@ do {
     }
     $IS_FILES = ($NB_FILES == count($def->FILES)) ? 1 : 0 ;
 
-    #-------------------------
-    # Get Subsets information
-    #-------------------------
-    if ($func == 'subset') {
-        $list = $def->getSubsetList();
-        $line = "Subset;Description;Identifier;WSEntry;SetID;LinkID;CV_Term_ID;CV_Term_Name\n";
-        $line = implode($sep, array('Subset','Description','Identifier','WSEntry','SetID','LinkID','CV_Term_ID','CV_Term_Name'))."\n";
-        foreach($list as $key => $arr) $line .= implode($sep,$arr)."\n";
-        $fw=fopen($stdout,"w+");
-        $fp=fwrite($fw,$line);
-        fclose($fw);
-    }
-    #-------------------------
-    # Get data from merging of some subsets (columns) ...
-    #-------------------------
-    elseif ( preg_match('/\(/',$func)==1 && preg_match('/\)/',$func)==1 ) {
+    # Inner loop : parses parameters and builds the query
+    do {
+        $MSG ='';
+    
+        #-------------------------
+        # Get Subsets information
+        #-------------------------
+        if ($func == 'subset') {
+            $list = $def->getSubsetList();
+            $line = "Subset;Description;Identifier;WSEntry;SetID;LinkID;CV_Term_ID;CV_Term_Name\n";
+            $line = implode($sep, array('Subset','Description','Identifier','WSEntry','SetID','LinkID','CV_Term_ID','CV_Term_Name'))."\n";
+            foreach($list as $key => $arr) $line .= implode($sep,$arr)."\n";
+            $fw=fopen($stdout,"w+");
+            $fp=fwrite($fw,$line);
+            fclose($fw);
+            break;
+        }
+    
+        # Get data from merging of some subsets (columns)
         if ( preg_match('/^\((.+)\)/', $func, $matches) ) {
             $tarr_DS = (preg_match('/,/',$func)>0) ? explode(',', $matches[1]) : array( $matches[1] );
             $key=''; $value=''; $op='';
             # Get list of entries
             $arr_entry = array();
-            $list = $def->getEntryList($tarr_DS);
-            foreach($list as $var => $arr) array_push($arr_entry, $arr[2]);
-            # ... all rows of the merged subsets
-            if ($cntopt==1) {
-                $query = $def->getSelectMulti($tarr_DS, $key,$value,$op);
-                $doQuery = 1;
-            }
-            elseif ($cntopt==2) {
-                 $key = array_shift($urloptions);
-                 # ... based on a category in the Category List =(factor|quantitative|qualitative|identifier)
-                 if (in_array($key, $def->categories) ) {
-                    $list = $def->getCategoryList($tarr_DS, $key);
-                    $line = implode($sep, array('Subset','Attribute','Description','Type','CV_Term_ID','CV_Term_Name'))."\n";
-                    foreach($list as $lkey => $arr) $line .= implode($sep,$arr)."\n";
-                    $fw=fopen($stdout,"w");
-                    $fp=fwrite($fw,$line);
-                    fclose($fw);
-                 }
-                 elseif ($key=="entry") {
-                    $list = $def->getEntryList($tarr_DS);
-                    $line = implode($sep, array('Subset','Attribute','WSEntry'))."\n";
-                    foreach($list as $key => $arr) $line .= implode($sep,$arr)."\n";
-                    $fw=fopen($stdout,"w");
-                    $fp=fwrite($fw,$line);
-                    fclose($fw);
-                 }
-                 else {
-                    echo "ERROR: either $key is not a valid keyword or requires a value";
-                    break;
-                 }
-            }
-            # ... based on a  value of a specific attribute 
-            elseif ($cntopt==3) {
-                $key = array_shift($urloptions);
-                $value = array_shift($urloptions);
-                if (in_array($key, $arr_entry)) {
-                    if ( strpos($value,'>') !== false || strpos($value,'<') !== false ) {
-                        $op = substr($value, 0, 1);
-                        $value = substr($value, 1);
-                    }
-                    $restmsg .="; $key$op=$value";
-                    $query = $def->getSelectMulti($tarr_DS, $key,$value,$op);
-                    $doQuery = 1;
-                }
-                else {
-                    echo "ERROR: the entry $key is not a valid entry";
+            foreach ($tarr_DS as $ds) {
+                if (! array_key_exists($ds,$def->hDataset) ) {
+                    $MSG = "ERROR: $ds is not a valid data subset";
                     break;
                 }
+                $list = $def->getEntryList(array($ds), 1);
+                foreach($list as $var => $arr) array_push($arr_entry, $arr[2]);
             }
+            if (strlen($MSG)>0) break;
+            $arr_entry = array_unique($arr_entry);
+            $queryMulti=1;
         }
-    }
-
-    #-------------------------
-    # Get data from one subset ...
-    #-------------------------
-    elseif (array_key_exists($func,$def->hDataset)) {
-        $key=''; $value=''; $op='';
+        elseif (array_key_exists($func,$def->hDataset)) {
+        # Get data from only one subset
+            $arr_entry = array();
+            $list = $def->getEntryList(array($func), 0);
+            foreach($list as $var => $arr) array_push($arr_entry, $arr[2]);
+            $queryMulti=0;
+        }
+        else {
+            $MSG = "ERROR: $func is not a valid data subset";
+            break;
+        }
+    
+        # all rows of the (merged) subset(s)
         if ($cntopt==1) {
-             # ... all rows of the subset
-            $query=$def->getSelect1($func,$key,$value,$op);
+            $query = $queryMulti ? $def->getSelectMulti($tarr_DS, $key,$value,$op) : 
+                                   $def->getSelect1($func,$key,$value,$op);
             $doQuery = 1;
-        } else {
+            break;
+        }
+    
+        # Get the category / entry list
+        if ($cntopt==2) {
             $key = array_shift($urloptions);
-            # ... based on an entry value 
-            if (array_key_exists($key,$def->hDataset[$func]['entries']) && $cntopt==3) {
-                $value = array_shift($urloptions);
-                if ( strpos($value,'>') !== false || strpos($value,'<') !== false ) {
-                    $op = substr($value, 0, 1);
-                    $value = substr($value, 1);
-                }
-                $query=$def->getSelect1($func,$key,$value,$op);
-                $restmsg .="; $key=$value";
-                $doQuery = 1;
-            }
-            elseif (array_key_exists($key,$def->hDataset[$func]['entries']) && $cntopt==2) {
-                echo "ERROR: the entry $key requires a value";
-                break;
-            }
-            # ... based on a category in the Category List =(factor|quantitative|qualitative|identifier)
-            elseif (array_key_exists($key,$def->hDataset[$func]['categories']) && $cntopt==2) {
-                # get a list of a specific category ($key)
-                $list = $def->getCategoryList(array($func), $key, 0);
+            # a category in the Category List =(factor|quantitative|qualitative|identifier)
+            if (in_array($key, $def->categories) ) {
+                $list = $queryMulti ? $def->getCategoryList($tarr_DS, $key) :
+                                      $def->getCategoryList(array($func), $key, 0);
                 $line = implode($sep, array('Subset','Attribute','Description','Type','CV_Term_ID','CV_Term_Name'))."\n";
                 foreach($list as $lkey => $arr) $line .= implode($sep,$arr)."\n";
                 $fw=fopen($stdout,"w");
                 $fp=fwrite($fw,$line);
                 fclose($fw);
             }
+            # entry list
             elseif ($key=="entry") {
-                $list = $def->getEntryList(array($func), 0);
                 $line = implode($sep, array('Subset','Attribute','WSEntry'))."\n";
-                foreach($list as $key => $arr) $line .= implode($sep,$arr)."\n";
+                if ($queryMulti) {
+                    foreach ($tarr_DS as $ds) {
+                        $list = $def->getEntryList(array($ds), 1);
+                        foreach($list as $key => $arr) $line .= implode($sep,$arr)."\n";
+                    }
+                } else {
+                    $list = $def->getEntryList(array($func), 0);
+                    $line = implode($sep, array('Subset','Attribute','WSEntry'))."\n";
+                    foreach($list as $key => $arr) $line .= implode($sep,$arr)."\n";
+                }
+                $line = implode("\n",array_unique(explode("\n", $line)));
                 $fw=fopen($stdout,"w");
                 $fp=fwrite($fw,$line);
                 fclose($fw);
             }
             else {
-                echo "ERROR: $key is neither a category nor a valid entry";
-                break;
+                $MSG = "Error: either $key is not a valid keyword or requires a value";
             }
+            break;
         }
-    }
+    
+        # Get data based a value of a specific attribute 
+        if ($cntopt==3) {
+            $key = array_shift($urloptions);
+            $value = array_shift($urloptions);
+            if (in_array($key, $arr_entry)) {
+                if ( strpos($value,'>') !== false || strpos($value,'<') !== false ) {
+                    $op = substr($value, 0, 1);
+                    $value = substr($value, 1);
+                }
+                $restmsg .="; $key$op=$value";
+                $query = $queryMulti ? $def->getSelectMulti($tarr_DS, $key,$value,$op) : 
+                                       $def->getSelect1($func,$key,$value,$op);
+                $doQuery = 1;
+            }
+            else {
+                $MSG = "Error: the entry $key is not a valid entry";
+            }
+            break;
+       }
 
-    # Nothing
-    else break;
+    } while(0);
+
+    # If ERROR, display message then exit
+    if (strlen($MSG)>0) {
+        echo $MSG;
+        break;
+    }
 
     if ($limit>0) $query .= " LIMIT $limit";
 
     # Launch query if needed
     if ($debug) {
       $time_start = microtime(true);
-      $retvald = $doQuery ?  doQuery($DSNAME, $query, 0) : 0;
+      $retvald = $doQuery ?  $def->do_SQL_query($query, 0) : 0;
       $time_end = microtime(true);
       $execution_time = $time_end - $time_start;
     }
-    $retval = $doQuery ?  doQuery($DSNAME, $query, $debug) : 0;
 
-    # Get metadata
-    if ($metadata==1) {
-        if ($format == 'json') {
-           header('Content-Type: application/json; charset=ISO-8859-1');
-           echo json_encode($def->hDataset);
-        } else {
-           echo_results($format, $file=$def->attrs_file);
-        }
-        break;
-    }
-    
-    # Get metadata into a data-package schema
-    if ($datapackage==1 && $format == 'json') {
-        header('Content-Type: application/json; charset=ISO-8859-1');
-        $urlroot = $links ? $URLSERVER : '';
-        $def->DPKG_INFOS = $DPKG_INFOS;
-        echo $def->getJSONDataTable($urlroot);
-        break;
-    }
+    $retval = $doQuery ?  $def->do_SQL_query($query, $debug) : 0;
 
     if ($debug==1) {
         if ($doQuery) {
@@ -291,7 +275,6 @@ do {
         echo "<br>doQuery: $doQuery - Execution time: $execution_time - Nb records: $rescnt<br>";
         if ($retvald) echo "<br>".`cat $stderr`."<br>";
         if ($doQuery) echo"<br><pre>$query</pre>";
-        #if (! $retvald) echo_results($format);
         echo "<pre>"; print_r($def->hDataset); echo "</pre>";
         break;
     }
@@ -302,15 +285,28 @@ do {
         break;
     }
 
-#    # No errors but no results found
-#    $rescnt=trim(`cat $stdout | wc -l`);
-#    if ($rescnt==1 && $format == 'xml') {
-#        echo "<pre>No results</pre>";
-#        break;
-#    }
+    # Get metadata
+    if ($metadata==1) {
+        if ($format == 'json') {
+           header('Content-Type: application/json; charset=ISO-8859-1');
+           echo json_encode($def->hDataset);
+        } else {
+           $def->echo_results($format, $file=$def->attrs_file);
+        }
+        break;
+    }
+    
+    # Get metadata into a data-package schema
+    if ($datapackage==1 && $format == 'json') {
+        header('Content-Type: application/json; charset=ISO-8859-1');
+        $urlroot = $links ? $URLSERVER : '';
+        $def->DPKG_INFOS = $DPKG_INFOS;
+        echo $def->getJSONDataTable($urlroot);
+        break;
+    }
 
     # Output the results
-    echo_results($format);
+    $def->echo_results($format);
 
 } while (0);
 

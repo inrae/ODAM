@@ -1,6 +1,6 @@
 <?php
-/* ID config.inc v1.0
- * Copyright (C) 2015 INRA - DJ
+/* ID config.inc v1.2
+ * Copyright (C) 2021 INRA - DJ
 
  */
 
@@ -42,10 +42,15 @@ if ($OS=='LINUX') {
 $SESSID  = md5(uniqid(rand(),true));
 $set->TMPDIR = $TMPDIR;
 $set->SESSID = $SESSID;
+$stderr = "$TMPDIR/$SESSID.err";
+$stdout = "$TMPDIR/$SESSID.out";
 
 # Datapackage information
 $DPKG_INFOS = array( 'URL_JSONDEF' => $set->URL_JSONDEF,
                      'DATAPACKAGE_VERSION' => $set->DATAPACKAGE_VERSION,
                      'LICENSE' => $set->LICENSE );
+
+
+$sep = "\t";
 
 ?>

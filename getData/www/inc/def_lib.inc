@@ -1,5 +1,5 @@
 <?php
-/* ID def_lib.inc v1.0
+/* ID def_lib.inc v1.2
  * Copyright (C) 2015-2021 INRAE - DJ
  *
     This file is part of ODAM
@@ -49,9 +49,17 @@ class def_lib
      var $dir_input    = "";
      var $retmsg       = "OK";
      var $ret          = 0;
+     var $GETDATA_URL_PROXY = "";
      var $DPKG_INFOS = array( 'URL_JSONDEF' => 'https://inrae.github.io/ODAM/json-schema/',
                               'DATAPACKAGE_VERSION' => '1.0',
                               'LICENSE' => 'ODC-BY-1.0,https://opendatacommons.org/licenses/by/,Open Data Commons Attribution License 1.0' );
+
+    /* environment and tool variables involved in the SQL querying of the CSV data subset files (cf do_SQL_query-) */
+     var $OS        = "LINUX";
+     var $TMPDIR    = "";
+     var $SESSID    = "";
+     var $QSQL      =  "";
+     var $error_msg = "";
 
 /********************************************************
 * Init. Method / Constructor
@@ -616,6 +624,66 @@ if %size% LSS %maxbytesize% (
 ";
        file_put_contents($filebatch, $content);
     }
+
+/********************************************************
+* genKEY: Generate a KEY (30  alpha-num. char. )
+********************************************************/
+    function genKEY() {
+       return md5(uniqid(rand(),true));
+    }
+    
+/********************************************************
+* do_SQL_query: Execute the SQL query on the dataset $dsname
+********************************************************/
+    function do_SQL_query($query, $debug=0)
+    {
+          $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
+          $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
+          $QSQL = $this->QSQL;  
+          if ($this->OS == "LINUX") {
+              $CMD = "(cd ".$this->dir_input."; $QSQL \"$query\" | uniq)";
+              if ($debug== 0) $retval=trim(`$CMD 1>$stdout 2>$stderr; ls -l $stderr | cut -d' ' -f5`);
+              if ($retval) {
+                 $CMD = "(cd ".$this->dir_input."; cat $stderr |  sed -e \"s|.*Error|Error|\")";
+                 $this->error_msg = trim(`$CMD`);
+              }
+          }
+          if ($this->OS == "WIN") {
+              $CMD = "cd ".$this->dir_input." && $QSQL \"$query\"";
+              $filebatch = dirname($stdout)."/cmdbatch.bat";
+              $this->cmd_Batch($filebatch, $CMD, $stdout, $stderr);
+              if ($debug== 0) $retval=trim(`$filebatch`);
+              if ($retval) {
+                 $CMD = "(cd ".$this->dir_input." && type $stderr\")";
+                 $this->error_msg = trim(`$CMD`);
+              }
+          }
+          if ($debug>0) $retval=$CMD;
+          return $retval;
+    }
+    
+/********************************************************
+* echo_results: Format the result and send it to the output
+*     the result could be a specified file or the stdout file
+********************************************************/
+    function echo_results($format, $file='') {
+          $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
+          if (strlen($file)==0) $file=$stdout;
+          if ($format == 'xml') {
+              header('Content-Type: text/xml; charset=ISO-8859-1');
+              echo $this->getdata_xml_output($file, $this->GETDATA_URL_PROXY."xsl/query_report2.xsl");
+          }
+          elseif ($format == 'json') {
+              header('Content-Type: application/json; charset=ISO-8859-1');
+              echo $this->getdata_json_output($file);
+          }
+          elseif ($format == 'tsv') {
+              header('Content-Type: text/tab-separated-values; charset=ISO-8859-1');
+              header('Content-Disposition: inline; filename="data-'.$this->genKEY().'.txt"');
+              echo `cat $file`;
+          }
+    }
+
 
 /********************************************************
 * getJSONDataTable : Create a simple container format for describing a coherent

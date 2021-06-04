@@ -253,7 +253,8 @@ dat <- subdata
 
     observe({ tryCatch({
        input$inDselect
-       if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$uniFacX) && nchar(input$uniFacX)>0) {
+       if (! is.null(input$inDSselect) && input$inDSselect>0 && 
+           ! is.null(input$uniFacX) && nchar(input$uniFacX)>0 && input$uniFacX %in% colnames(data) ) {
            facvals <- data[ , input$uniFacX]
            if (is.numeric(facvals)) {
                fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
@@ -263,12 +264,17 @@ dat <- subdata
            l_options <- c( 1:length(levelFac) )
            names(l_options) <- c(as.character(c(levelFac)))
            updateSelectInput(session, "SelFacX", choices = l_options, selected=l_options)
+           # Second Factor
+           f2_options <- .C(facnames[,2])
+           names(f2_options) <- .C(facnames$Description)
+           updateSelectInput(session, "uniFacY", choices = f2_options, selected=input$uniFacX)
        }
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 2:\n", e ); }) })
 
     observe({ tryCatch({
        input$inDselect
-       if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$uniFacY) && nchar(input$uniFacY)>0) {
+       if (! is.null(input$inDSselect) && input$inDSselect>0 && 
+           ! is.null(input$uniFacY) && nchar(input$uniFacY)>0 && input$uniFacY %in% colnames(data) ) {
            facvals <- data[ , input$uniFacY]
            if (is.numeric(facvals)) {
                fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
@@ -288,8 +294,8 @@ dat <- subdata
     tryCatch({ 
         if (input$inDSselect==0) return( NULL )
         values$launch
-        input$SelFacX
         input$SelFacY
+        SelFacX <- isolate(input$SelFacX)
         FA <- isolate(input$uniAnnot)
         FCOL <- ifelse( FA=="None", '', FA )
         selectFCOL <- input$uniFeatures
@@ -304,9 +310,9 @@ dat <- subdata
             withProgress(message = 'Calculation in progress', detail = '... ', value = 0, {
                tryCatch({
                    if (F1==F2) {
-                       getBoxPLot1(F1, input$SelFacX, FCOL, selectFCOL, varX, fMean, bsmooth=input$uniSmooth, blog=input$uniLog, bviolin=input$violin)
+                       getBoxPLot1(F1, SelFacX, FCOL, selectFCOL, varX, fMean, bsmooth=input$uniSmooth, blog=input$uniLog, bviolin=input$violin)
                    } else {
-                       getBoxPLot2(F1, F2, input$SelFacX, input$SelFacY, FCOL, selectFCOL, varX, fMean, bsmooth=input$uniSmooth, blog=input$uniLog, bviolin=FALSE)
+                       getBoxPLot2(F1, F2, SelFacX, input$SelFacY, FCOL, selectFCOL, varX, fMean, bsmooth=input$uniSmooth, blog=input$uniLog, bviolin=FALSE)
                    }
                }, error=function(e) {})
             })

@@ -147,9 +147,11 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), box(
    column(12,
       column(4,
            selectInput("multiFacX", "Factor for highlighting the classification", c() ),
-                conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'",
-                    checkboxInput('ellipse', 'Ellipses', TRUE)
-                ),
+           conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'",
+           column(12,
+                column(6, checkboxInput('ellipse', 'Ellipses', TRUE)),
+                column(6, selectInput("conflevel", NULL, c("0.9"="0.9", "0.95"="0.95", "0.99"="0.99"), selected="0.95" ))
+           )),
            selectInput("listLevels", "Select Factor Levels", c(), multiple = TRUE, , selectize=TRUE )
       ),
       column(4,

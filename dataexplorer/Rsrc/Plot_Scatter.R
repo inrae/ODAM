@@ -36,8 +36,11 @@
        input$inDselect
        if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
           # Select the variable to be analysed
-          v_options <- c(0, 1:dim(varnames)[1] )
-          names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",varnames$Description)))
+          v_options <- c()
+          if ("data.frame" %in% class(varnames)) {
+             v_options <- c(0, 1:dim(varnames)[1] )
+             names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",varnames$Description)))
+          }
           updateSelectInput(session, "biVarSelect1", choices = v_options)
           updateSelectInput(session, "biVarSelect2", choices = v_options)
        }

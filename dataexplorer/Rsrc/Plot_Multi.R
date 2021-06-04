@@ -306,7 +306,7 @@
             if (.C(multiType)=='COR') {
                 getCorPLot(F1, selectLevels=input$listLevels, FCOL=FCOL, selectFCOL=selectFCOL, selectVars=input$listVars, full=input$fullmatcor)
             } else if (.C(multiType) %in% c('PCA', 'ICA')) {
-                getMultiPLot(multiType, F1, selectLevels=input$listLevels, FCOL=FCOL, selectFCOL=selectFCOL, selectVars=input$listVars, outputVariables, fellipse=input$ellipse, scale=input$scale, blabels=input$multiLabels, f3D=input$f3D, GBG=input$GBG)
+                getMultiPLot(multiType, F1, selectLevels=input$listLevels, FCOL=FCOL, selectFCOL=selectFCOL, selectVars=input$listVars, outputVariables, fellipse=input$ellipse, scale=input$scale, blabels=input$multiLabels, f3D=input$f3D, GBG=input$GBG,conflevel=as.numeric(input$conflevel))
             }
        }, error=function(e) {}) })
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("RenderPlotly:\n", e ); })
@@ -366,7 +366,8 @@
     # Multivariate Plot
     #----------------------------------------------------
     getMultiPLot <- function(Analysis, F1, selectLevels, FCOL, selectFCOL, selectVars, 
-                              outputVariables=FALSE, fellipse=TRUE, scale=FALSE, blabels=TRUE, f3D=FALSE, GBG=FALSE) {
+                             outputVariables=FALSE, fellipse=TRUE, scale=FALSE, blabels=TRUE, f3D=FALSE, GBG=FALSE, conflevel=0.95)
+    {
         FUN <- ''
         if (nchar(Analysis)>0) FUN <- paste0(Analysis,'_fun')
         if ( ! exists(FUN) ) return(NULL)
@@ -399,7 +400,7 @@
                  data.frame(fac=as.character(t),
                            ellipse(cov(MA[MA$fac==t,1:2]),
                                    centre=as.matrix(centroids[centroids$fac==t,2:3]),
-                                   level=0.95, npoints=50),
+                                   level=conflevel, npoints=50),
                            stringsAsFactors=FALSE)))
               for( i in 1:length(levels(facvals)) ) conf.rgn$fac[ conf.rgn$fac==i ] <- levels(facvals)[i]
            }

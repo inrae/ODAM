@@ -19,18 +19,31 @@
 */
 
 $auth = isset($_GET['auth']) ?  $_GET['auth'] : '' ;
+$debug = isset($_GET['debug']) ?  $_GET['debug'] : 0 ;
 $limit = isset($_GET['limit']) ?  $_GET['limit'] : 0 ;
 $links = isset($_GET['links']) ?  $_GET['links'] : 0 ;
 $restmsg = '';
-$debug=0;
 $metadata=0;
 $datapackage=0;
+
+
+# Check format
+if (! in_array( $format, array('xml','json','tsv') )) {
+   echo "Error: format $format does not recognize.";
+   exit(1);
+}
+
+# Check limit
+if (is_numeric($limit))
+   $limit = $limit + 0;
+else
+   $limit = 0;
 
 # Parse PATH_INFO if needed
 #if ($_SERVER['PATH_INFO'] && $auth==$AUTHKEY)
 if ($_SERVER['PATH_INFO'])
-do {
-
+do
+{
     $urloptions = explode("/",$_SERVER['PATH_INFO']);
     array_shift($urloptions);
 
@@ -159,7 +172,7 @@ do {
             $queryMulti=0;
         }
         else {
-            $MSG = "ERROR: $func is not a valid data subset";
+            $MSG = "Error: $func is not a valid data subset";
             break;
         }
     
@@ -241,10 +254,10 @@ do {
 
     # if debug, display information then exit
     if ($debug) {
-        if ($OS=='LINUX')
+        if ($OS=='LINUX' && $doQuery)
            echo "<pre>".`$QSQL -v 2>&1  | grep -v Python  | tr "\n" " - "`."</pre><hr>";
-        $retval = $doQuery ?  $def->do_SQL_query($query, '', 1) : 0;
-        echo "URL QUERY : $restmsg<br><br>CMD = $retval<br>"; echo "<br>STDOUT = $stdout<br>";
+        $CMD = $doQuery ?  $def->do_SQL_query($query, '', 1) : 0;
+        echo "URL QUERY : $restmsg<br><br>CMD = $CMD<br>"; echo "<br>STDOUT = $stdout<br>";
         if ($doQuery) {
          # Execute the query and return some information
            $time_start = microtime(true);

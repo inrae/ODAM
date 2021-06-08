@@ -184,8 +184,8 @@ do {
                 $fp=fwrite($fw,$line);
                 fclose($fw);
             }
-            # entry list
-            elseif ($key=="entry") {
+            # entry/alias list
+            elseif ($key=="entry" || $key=="alias") {
                 $line = implode($sep, array('Subset','Attribute','WSEntry'))."\n";
                 if ($queryMulti) {
                     foreach ($tarr_DS as $ds) {
@@ -241,12 +241,14 @@ do {
 
     # if debug, display information then exit
     if ($debug) {
-        $retval = $doQuery ?  $def->do_SQL_query($query, 1) : 0;
+        if ($OS=='LINUX')
+           echo "<pre>".`$QSQL -v 2>&1  | grep -v Python  | tr "\n" " - "`."</pre><hr>";
+        $retval = $doQuery ?  $def->do_SQL_query($query, '', 1) : 0;
         echo "URL QUERY : $restmsg<br><br>CMD = $retval<br>"; echo "<br>STDOUT = $stdout<br>";
         if ($doQuery) {
          # Execute the query and return some information
            $time_start = microtime(true);
-           $retvald = $doQuery ?  $def->do_SQL_query($query, 0) : 0;
+           $retvald = $def->do_SQL_query($query);
            $time_end = microtime(true);
            $execution_time = $time_end - $time_start;
            $rescnt=0;
@@ -256,6 +258,7 @@ do {
            echo "<br>doQuery: $doQuery - Execution time: $execution_time - Nb records: $rescnt<br>";
            if ($retvald) echo "<br>".`cat $stderr`."<br>";
          # display the formated query
+           $strquery = $query;
            $query = str_replace("JOIN", "\nJOIN", str_replace("from", "\nFROM", $query));
            $query = str_replace("select", "SELECT", str_replace("where", "\nWHERE", $query));
            $nbds = count($def->hDataset);
@@ -273,8 +276,14 @@ do {
               }
            }
            echo"<br><pre>$query</pre>";
+         # Analyse query
+           $retvald = $def->do_SQL_query($strquery, '-A', 0);
+           if (! $retvald) echo "<pre>".trim(`cat $stdout`)."</pre>";
+        } else {
+         # Display dataset structure
+           echo "<hr>";
+           echo "<pre>"; print_r($def->hDataset); echo "</pre>";
         }
-        echo "<pre>"; print_r($def->hDataset); echo "</pre>";
         break;
     }
 
@@ -299,7 +308,7 @@ do {
     }
 
     # Launch query if needed
-    $retval = $doQuery ?  $def->do_SQL_query($query, 0) : 0;
+    $retval = $doQuery ?  $def->do_SQL_query($query) : 0;
     if ($retval) {
         $ERRORMSG='QUERY:&nbsp;'.$query.'<BR>===>&nbsp;'.`cat $stderr`.'<BR><BR>';
         echo $ERRORMSG;

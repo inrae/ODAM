@@ -1,6 +1,6 @@
 <?php
 
-# Nom du fichier: check
+# Nom du fichier: query
 # Auteur(s): D.JACOB 
 # Copyright: (c) INRAE - 2015-2021
 #
@@ -11,9 +11,9 @@ ini_set('error_reporting', E_ALL & ~E_NOTICE);
 ini_set("include_path", ".:/usr/share/php");
 ini_set("display_errors", 1);
 
-$format = isset($_GET['format']) ?  $_GET['format'] : 'xml' ;
+$format = isset($_GET['format']) ?  $_GET['format'] : 'json' ;
 
 include ('inc/config.inc');
-include ('inc/check.inc');
+include ('inc/rest.inc');
 
 ?>

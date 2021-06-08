@@ -12,6 +12,13 @@ Options FollowSymLinks Includes MultiViews SymLinksIfOwnerMatch
   ForceType application/x-httpd-php
 </Files>
 
+<Files ~ "^index.php$">
+  Order allow,deny
+  allow from all
+  AcceptPathInfo On
+  ForceType application/x-httpd-php
+</Files>
+
 # Others Scripts
 <Files ~ "\.(css|js|tsv)$">
   Order allow,deny
@@ -26,7 +33,7 @@ Options FollowSymLinks Includes MultiViews SymLinksIfOwnerMatch
 
 
 # Index
-<Files ~ "(tsv|xml|json|check|infos|image|pdf)$">
+<Files ~ "(query|tsv|xml|json|check|infos|image|pdf)$">
   Order allow,deny
   allow from all
   AcceptPathInfo On

@@ -635,13 +635,13 @@ if %size% LSS %maxbytesize% (
 /********************************************************
 * do_SQL_query: Execute the SQL query on the dataset $dsname
 ********************************************************/
-    function do_SQL_query($query, $debug=0)
+    function do_SQL_query($query, $qopt='', $debug=0)
     {
           $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
           $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
           $QSQL = $this->QSQL;  
           if ($this->OS == "LINUX") {
-              $CMD = "(cd ".$this->dir_input."; $QSQL \"$query\" | uniq)";
+              $CMD = "(cd ".$this->dir_input."; $QSQL $qopt \"$query\" | uniq)";
               if ($debug== 0) $retval=trim(`$CMD 1>$stdout 2>$stderr; ls -l $stderr | cut -d' ' -f5`);
               if ($retval) {
                  $CMD = "(cd ".$this->dir_input."; cat $stderr |  sed -e \"s|.*Error|Error|\")";
@@ -649,7 +649,7 @@ if %size% LSS %maxbytesize% (
               }
           }
           if ($this->OS == "WIN") {
-              $CMD = "cd ".$this->dir_input." && $QSQL \"$query\"";
+              $CMD = "cd ".$this->dir_input." && $QSQL $qopt \"$query\"";
               $filebatch = dirname($stdout)."/cmdbatch.bat";
               $this->cmd_Batch($filebatch, $CMD, $stdout, $stderr);
               if ($debug== 0) $retval=trim(`$filebatch`);

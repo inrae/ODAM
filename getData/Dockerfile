@@ -5,15 +5,20 @@ RUN apt-get update -qq && apt-get dist-upgrade -y
 # See https://github.com/docker-library/docs/tree/master/php
 
 RUN apt-get install -y \
-    python-minimal vim \
+    python-minimal vim curl \
     libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev \
-    && docker-php-ext-install iconv mcrypt \
-    && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install gd
+ && docker-php-ext-install iconv mcrypt \
+ && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+ && docker-php-ext-install gd
 
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
-    && apt-get install -y nodejs build-essential \
-    && npm install -g csvtojson
+ && apt-get install -y nodejs build-essential \
+ && npm install -g csvtojson
+
+RUN cd /home \
+ && curl -L https://github.com/harelba/q/releases/download/2.0.19/q-text-as-data_2.0.19-2_amd64.deb -o q-text-as-data.deb \
+ && dpkg -i q-text-as-data.deb \
+ && rm -f q-text-as-data.deb
 
 ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
@@ -29,13 +34,12 @@ ENV APACHE_SERVERNAME localhost
 ENV APACHE_SERVERALIAS docker.localhost
 ENV APACHE_DOCUMENTROOT /var/www/html
 
-COPY ./www/bin/q /usr/bin/q
 COPY ./launch-server.sh /usr/bin/launch-server.sh
 ADD ./www /var/www/html
 
 RUN chmod 755 /usr/bin/q \
-  && chmod -R 777 /var/www/html \
-  && chmod 755 /usr/bin/launch-server.sh
+ && chmod -R 777 /var/www/html \
+ && chmod 755 /usr/bin/launch-server.sh
 
 RUN mkdir -p /opt/data
 VOLUME /opt/data

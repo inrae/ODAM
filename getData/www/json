@@ -13,6 +13,6 @@ ini_set("display_errors", 1);
 
 include ('inc/config.inc');
 $format = 'json';
-include ('inc/rest.inc');
+include ('inc/query.inc');
 
 ?>

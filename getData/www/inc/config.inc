@@ -1,8 +1,22 @@
 <?php
 /* ID config.inc v1.2
- * Copyright (C) 2021 INRA - DJ
+ * Copyright (C) 2015-2021 INRAE - DJ
+ *
+    This file is part of ODAM
 
- */
+    ODAM is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    ODAM is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 include_once ('inc/Set_Config.inc');
 
@@ -23,7 +37,7 @@ else {
 # DEBUG status
 $DEBUG = isset($set->DEBUG) ? $set->DEBUG : 0 ;
 
-$GETDATA_URL_PROXY = isset($_ENV["GETDATA_URL_PROXY"]) ? $_ENV["GETDATA_URL_PROXY"] : $set->GETDATA_URL_PROXY;
+$GETDATA_URL_PROXY = getenv("GETDATA_URL_PROXY", true) ? getenv("GETDATA_URL_PROXY") : $set->GETDATA_URL_PROXY;
 
 $URLSERVER = preg_replace('/\/$/', '', $GETDATA_URL_PROXY);
 
@@ -50,7 +64,7 @@ $DPKG_INFOS = array( 'URL_JSONDEF' => $set->URL_JSONDEF,
                      'DATAPACKAGE_VERSION' => $set->DATAPACKAGE_VERSION,
                      'LICENSE' => $set->LICENSE );
 
-
+$EXTFILES = $set->EXTFILES;
 $sep = "\t";
 
 ?>

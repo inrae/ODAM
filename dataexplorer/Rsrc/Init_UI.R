@@ -118,3 +118,19 @@
              as.character(dclist$collection$Description)
           }
     })
+
+    #----------------------------------------------------
+    # Reactive - Dataset subset varnames 
+    #----------------------------------------------------
+    output$nbvarsEvent <- reactive({
+        input$inDselect
+        ret <- 0
+        if (! is.null(input$inDSselect) && input$inDSselect>0) {
+           if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
+           if (dim(varnames)[1]>maxVariables) ret <- 1
+        }
+        return(ret)
+    })
+    outputOptions(output, 'nbvarsEvent', suspendWhenHidden=FALSE)
+    outputOptions(output, 'nbvarsEvent', priority=1)
+

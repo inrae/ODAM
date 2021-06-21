@@ -53,6 +53,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
                     <xsl:if test="normalize-space($status)='Error'">
                         <xsl:attribute  name="style">background-color:#EF0000</xsl:attribute>
                     </xsl:if>
+                    <xsl:if test="normalize-space($status)='Warning'">
+                        <xsl:attribute  name="style">background-color:#dcba41</xsl:attribute>
+                    </xsl:if>
                     <font size="+1"><strong><xsl:value-of select="$status" /> </strong></font>
                 </xsl:element>
             </xsl:element>

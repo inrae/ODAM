@@ -14,6 +14,6 @@ ini_set("display_errors", 1);
 $format = isset($_GET['format']) ?  $_GET['format'] : 'json' ;
 
 include ('inc/config.inc');
-include ('inc/rest.inc');
+include ('inc/query.inc');
 
 ?>

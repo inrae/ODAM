@@ -1,5 +1,5 @@
 <?php
-/* ID def_lib_ext.inc v1.2
+/* ID check_lib.inc v1.2
  * Copyright (C) 2015-2021 INRAE - DJ
  *
     This file is part of ODAM
@@ -18,15 +18,13 @@
     along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-ob_start();
 include('def_lib.inc');
-ob_end_clean();
 
-class def_lib_ext extends def_lib
+class check_lib extends def_lib
 {
     var $check_flag = 1;
 
-    var $status_tag = array( 'ok' => 'ok', 'bad' => 'Error');
+    var $status_tag = array( 'ok' => 'ok', 'bad' => 'Error', 'warning' => 'Warning');
 
     var $ds_items = array( 'directory'    => array( 'msg' => 'the dataset directory', 
                                             'info'=>'', 'status' => 'not checked', 'cat'=>'General' ),
@@ -57,10 +55,10 @@ class def_lib_ext extends def_lib
 /********************************************************
 * Init. Method / Constructor
 ********************************************************/
-    function __construct($input) { $this->def_lib_ext($input); } # PHP 5.3-compliant
+    function __construct($input) { $this->check_lib($input); } # PHP 5.3-compliant
 
     # Init. Vars.
-    function def_lib_ext($input)
+    function check_lib($input)
     {
         parent::__construct($input);
         if (!strlen($input)) $this->check_flag=0;
@@ -249,6 +247,19 @@ class def_lib_ext extends def_lib
     }
 */
 
+# Check if the database is correctly built
+    function check_SQL_db()
+    {
+        $db = $this->dir_input.'/'.$this->dbname;
+        $msg = 'Check if the database has been created';
+        $ret = is_file($db) ? 0 : 1;
+        $info = "The file ".$this->dbname." is ";
+        $info .= $ret==0 ? 'present' : 'not present';
+        $status = $ret==0 ? $this->status_tag['ok'] : $this->status_tag['warning'] ;
+        $this->ds_items['database'] = array( 'msg' => $msg, 'info' => $info, 'status' => $status, 'cat' => 'database' );
+        return $ret;
+    }
+
 # Check if SQL on each subset file works
     function check_SQL_subsets($merge)
     {
@@ -289,6 +300,7 @@ class def_lib_ext extends def_lib
     {
         $nbrows=0;
         $nberrors=0;
+        $warnings=0;
         $ds_checks="";
         if ($this->check_flag) {
            $nbrows=count($this->ds_items);
@@ -299,6 +311,7 @@ class def_lib_ext extends def_lib
               $ds_checks .= "<Information>".$arr['info']."</Information>";
               $ds_checks .= "</Row>";
               if ($arr['status']==$this->status_tag['bad']) $nberrors++;
+              if ($arr['status']==$this->status_tag['warning']) $warnings++;
            }
         }
 
@@ -308,7 +321,7 @@ class def_lib_ext extends def_lib
             foreach ($this->ref_notes as $key => $val) $chk_notes .= "<Note id=\"$key\">$val</Note>";
 
         $xml_output  = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<?xml-stylesheet type=\"text/xsl\" href=\"$xsl_url_file\"?>\n";
-        $xml_output .= "<WSCheck><Rows count=\"$nbrows\" errors=\"$nberrors\">$ds_checks</Rows><Notes count=\"$nbnotes\">$chk_notes</Notes></WSCheck>\n";
+        $xml_output .= "<WSCheck><Rows count=\"$nbrows\" errors=\"$nberrors\" warnings=\"$warnings\">$ds_checks</Rows><Notes count=\"$nbnotes\">$chk_notes</Notes></WSCheck>\n";
         
         return $xml_output;
     }
@@ -318,15 +331,18 @@ class def_lib_ext extends def_lib
     {
         $nbrows=0;
         $nberrors=0;
+        $warnings=0;
         $hlist = array();
         if ($this->check_flag) {
            foreach ($this->ds_items as $key => $arr) {
               $nbrows++;
               $hlist[$nbrows] = $arr;
               if ($arr['status']==$this->status_tag['bad']) $nberrors++;
+              if ($arr['status']==$this->status_tag['warning']) $warnings++;
            }
            $hlist['rows'] = count($this->ds_items);
            $hlist['errors'] = $nberrors;
+           $hlist['warnings'] = $warnings;
         }
 
         $nbnotes = count($this->ref_notes);

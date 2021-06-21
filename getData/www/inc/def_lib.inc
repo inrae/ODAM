@@ -41,24 +41,28 @@ class def_lib
            6=> array('name'=>'description',  'type'=>'string'),
            7=> array('name'=>'CV_term_id',   'type'=>'string'),
            8=> array('name'=>'CV_term_name', 'type'=>'string') ) );
-     var $dsname       = "";
      var $FILES        = array ();
      var $hDataset     = array();
+     var $dsname       = "";
+     var $dir_input    = "";
      var $subsets_file = "";
      var $attrs_file   = "";
-     var $dir_input    = "";
      var $retmsg       = "OK";
      var $ret          = 0;
-     var $GETDATA_URL_PROXY = "";
+     var $FIELD_LIMIT  = -1;
+     var $GETDATA_URL_PROXY = "http://localhost/getdata/";
      var $DPKG_INFOS = array( 'URL_JSONDEF' => 'https://inrae.github.io/ODAM/json-schema/',
                               'DATAPACKAGE_VERSION' => '1.0',
                               'LICENSE' => 'ODC-BY-1.0,https://opendatacommons.org/licenses/by/,Open Data Commons Attribution License 1.0' );
 
-    /* environment and tool variables involved in the SQL querying of the CSV data subset files (cf do_SQL_query-) */
+    /* environment and tool variables involved in the SQL querying of the TXT data subset files (cf do_SQL_query) */
      var $OS        = "LINUX";
+     var $SQLITE    = "/usr/bin/sqlite3";
+     var $dbname    = "sqlite3.db";
+     var $QSQL      =  "/usr/bin/q -H -O -t  -e iso-8859-1";
+     var $EXTFILES  = "txt";
      var $TMPDIR    = "";
      var $SESSID    = "";
-     var $QSQL      =  "";
      var $error_msg = "";
 
 /********************************************************
@@ -83,17 +87,17 @@ class def_lib
     {
         $ret=0;
         $this->retmsg = '';
-        $csvfile=$this->dir_input.'/'.$defname.'.tsv';
+        $tsvfile=$this->dir_input.'/'.$defname.'.tsv';
         $arr_col = $this->def_infos[$defname];
         $nbcol = count($arr_col);
         do {
             # files exist ?
-            if (! is_file("$csvfile")) {
+            if (! is_file("$tsvfile")) {
                $this->retmsg = "the file is missing";
                $ret=1;
                break;
             }
-            $fo=fopen($csvfile,"r");
+            $fo=fopen($tsvfile,"r");
             if ( ($data = fgetcsv($fo,0,"\t") ) == FALSE) {
                $this->retmsg = "the file does not seem to be compliant with the TSV standard";
                $ret=1;
@@ -200,10 +204,10 @@ class def_lib
     {
         $ret=0;
         $this->retmsg = '';
-        $csvfile=$this->dir_input.'/'.$subsetfile;
+        $tsvfile=$this->dir_input.'/'.$subsetfile;
         $arr_subset = array();
         do {
-            $fo=fopen($csvfile,"r");
+            $fo=fopen($tsvfile,"r");
             if ( ($data = fgetcsv($fo,0,"\t") ) == FALSE ) {
                $this->retmsg = "the file does not seem to be compliant with the TSV standard, See note (5)";
                $ret=1;
@@ -257,7 +261,8 @@ class def_lib
     }
 
 /********************************************************
-* build_hashDS: Building of the data structure (mainly as a hash table) by parsing both metadata files, (s_subsets.tsv and a_attributes.tsv)
+* build_hashDS: Building of the data structure (mainly as a hash table) 
+* by parsing both metadata files, (s_subsets.tsv and a_attributes.tsv)
 ********************************************************/
     function build_hashDS ()
     {
@@ -311,7 +316,8 @@ class def_lib
                 $arr_tmp = array();
                 $k=$i;
                 while ($k>0) {
-                    array_push($arr_tmp, $subsets[$father_rank[$k]-1]);
+                    if (($father_rank[$k]-1)>=0)
+                       array_push($arr_tmp, $subsets[$father_rank[$k]-1]);
                     $k = $father_rank[$father_rank[$k]-1];
                 }
                 $arr_tmp = array_reverse($arr_tmp);
@@ -362,6 +368,7 @@ class def_lib
        foreach ($entities as $key => $arr) {
            if ($i>0) $fields .= ', ';
            $fields .= "$falias.$key";
+           if ($this->FIELD_LIMIT>0 && $i>$this->FIELD_LIMIT) break;
            $i++;
        }
        return array($falias, $file, $fields, $where);
@@ -509,24 +516,24 @@ class def_lib
 ********************************************************/
     function getEntryList($tarr_DS, $multi=1)
     {
-        $list = array();
-        if (count($tarr_DS)==1 && $multi==1) {
-           foreach ($this->hDataset['_dstree_'] as $keyid => $arr ) {
-              if ($arr[count($arr)-1] == $tarr_DS[0]) {
-                 $tarr_DS = $arr;
-                 break;
-              }
-           }
-        }
-        $cnt=0;
-        foreach ($tarr_DS as $keyid => $ds) {
-           if (! isset($this->hDataset[$ds]['entries']) || count($this->hDataset[$ds]['entries'])==0 ) continue;
-           $hEntry = array();
-           foreach ($this->hDataset[$ds]['entries'] as $entry => $attributes) {
-                if ( ! array_key_exists($entry, $hEntry) ) { $hEntry[$entry]=$attributes; $list[$cnt++] = array( $ds, $attributes, $entry ); }
-           }
-        }
-        return $list;
+       $list = array();
+       if (count($tarr_DS)==1 && $multi==1) {
+          foreach ($this->hDataset['_dstree_'] as $keyid => $arr ) {
+             if ($arr[count($arr)-1] == $tarr_DS[0]) {
+                $tarr_DS = $arr;
+                break;
+             }
+          }
+       }
+       $cnt=0;
+       foreach ($tarr_DS as $keyid => $ds) {
+          if (! isset($this->hDataset[$ds]['entries']) || count($this->hDataset[$ds]['entries'])==0 ) continue;
+          $hEntry = array();
+          foreach ($this->hDataset[$ds]['entries'] as $entry => $attributes) {
+               if ( ! array_key_exists($entry, $hEntry) ) { $hEntry[$entry]=$attributes; $list[$cnt++] = array( $ds, $attributes, $entry ); }
+          }
+       }
+       return $list;
     }
 
 /********************************************************
@@ -534,69 +541,68 @@ class def_lib
 ********************************************************/
     function getSubsetList()
     {
-        $list = array();
-        $cnt=0;
-        foreach ($this->hDataset as $subset => $arr ) {
-            if (is_array($arr) && isset($arr['name'])) {
-                $identifier = $arr['categories']['identifier'][0];
-                $ent_rev = array_flip($arr['entries']);
-                $list[$cnt++] = array ( $subset, $arr['name'], $identifier, $ent_rev[$identifier],
-                                        $arr['idset'], $arr['idfather'], $arr['cv_term_id'], $arr['cv_term_name'] );
-            }
-        }
-        return $list;
+       $list = array();
+       $cnt=0;
+       foreach ($this->hDataset as $subset => $arr ) {
+           if (is_array($arr) && isset($arr['name'])) {
+               $identifier = $arr['categories']['identifier'][0];
+               $ent_rev = array_flip($arr['entries']);
+               $list[$cnt++] = array ( $subset, $arr['name'], $identifier, $ent_rev[$identifier],
+                                       $arr['idset'], $arr['idfather'], $arr['cv_term_id'], $arr['cv_term_name'] );
+           }
+       }
+       return $list;
     }
 
 /********************************************************
 * getdata_xml_output: Generate the results within a XML structure
 ********************************************************/
-    function getdata_xml_output($csvfile, $xsl_url_file)
+    function getdata_xml_output($tsvfile, $xsl_url_file)
     {
-        $nbrows=0;
-        $ds_rows="";
-        $fo=fopen($csvfile,"r");
-        if ( ($headers = fgetcsv($fo,0,"\t") ) !== FALSE) {
-            $nbcol = count($headers);
-            while ( ($data = fgetcsv($fo,0,"\t") ) !== FALSE ) {
-                $nbrows++;
-                $ds_rows .= "<Row>";
-                for ($i = 0; $i < $nbcol; $i++ ) {
-                   $elem_xml=$headers[$i];
-                   $elem_value=$data[$i];
-                   if ( preg_match('/https?/', $elem_value) )
-                       $elem_value = preg_replace('/&/', '&amp;', $elem_value);
-                   $ds_rows .= "<$elem_xml>$elem_value</$elem_xml>";
-                }
-                $ds_rows .= "</Row>";
-            }
-            if (strlen($ds_rows)==0) $ds_rows = "<Row><Result>No results</Result></Row>";
-        }
-        fclose($fo);
+       $nbrows=0;
+       $ds_rows="";
+       $fo=fopen($tsvfile,"r");
+       if ( ($headers = fgetcsv($fo,0,"\t") ) !== FALSE) {
+           $nbcol = count($headers);
+           while ( ($data = fgetcsv($fo,0,"\t") ) !== FALSE ) {
+               $nbrows++;
+               $ds_rows .= "<Row>";
+               for ($i = 0; $i < $nbcol; $i++ ) {
+                  $elem_xml=$headers[$i];
+                  $elem_value=$data[$i];
+                  $elem_value = preg_replace('/&/', '&amp;', $elem_value);
+                  $ds_rows .= "<$elem_xml>$elem_value</$elem_xml>";
+               }
+               $ds_rows .= "</Row>";
+           }
+           if (strlen($ds_rows)==0) $ds_rows = "<Row><Result>No results</Result></Row>";
+       }
+       fclose($fo);
 
-        $xml_output  = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<?xml-stylesheet type=\"text/xsl\" href=\"$xsl_url_file\"?>\n";
-        $xml_output .= "<Array><Rows count=\"$nbrows\">$ds_rows</Rows></Array>\n";
-        return $xml_output;
+       $xml_output  = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<?xml-stylesheet type=\"text/xsl\" href=\"$xsl_url_file\"?>\n";
+       $xml_output .= "<Array><Rows count=\"$nbrows\">$ds_rows</Rows></Array>\n";
+       return $xml_output;
     }
 
 /********************************************************
 * getdata_json_output: Generate the results within a json structure
 ********************************************************/
-    function getdata_json_output($csvfile)
+    function getdata_json_output($tsvfile)
     {
-        $nbrows=0;
-        $hlist = array();
-        $fo=fopen($csvfile,"r");
-        if ( ($headers = fgetcsv($fo,0,"\t") ) !== FALSE) {
-            $nbcol = count($headers);
-            while ( ($data = fgetcsv($fo,0,"\t") ) !== FALSE ) {
-                $arr = array();
-                for ($i = 0; $i < $nbcol; $i++ )
-                   $arr[$headers[$i]]=$data[$i];
-              $hlist[$nbrows++] = $arr;
-            }
-        }
-        fclose($fo);
-        return json_encode($hlist);
+       $nbrows=0;
+       $hlist = array();
+       $fo=fopen($tsvfile,"r");
+       if ( ($headers = fgetcsv($fo,0,"\t") ) !== FALSE) {
+           $nbcol = count($headers);
+           while ( ($data = fgetcsv($fo,0,"\t") ) !== FALSE ) {
+               $arr = array();
+               for ($i = 0; $i < $nbcol; $i++ )
+                  $arr[$headers[$i]]=$data[$i];
+             $hlist[$nbrows++] = $arr;
+           }
+       }
+       fclose($fo);
+       return json_encode($hlist);
     }
 
 /********************************************************
@@ -631,35 +637,81 @@ if %size% LSS %maxbytesize% (
     function genKEY() {
        return md5(uniqid(rand(),true));
     }
-    
+
+/********************************************************
+* build_sqlite_db: build the sqlite3 db into the data folder
+********************************************************/
+    function build_sqlite_db($debug=0)
+    {
+       $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
+       $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
+       $dbcmd =  $this->TMPDIR.'/'.$this->SESSID.'.cmd';
+       $db = $this->dir_input.'/'.$this->dbname;
+       $extfile = $this->EXTFILES;
+       `echo ".mode tabs" > $dbcmd`;
+       $scan = scandir($this->dir_input);
+       foreach($scan as $file)
+           if (!is_dir($this->dir_input.'/'.$file) && preg_match("/\.$extfile/", $file)>0) {
+               $line = ".import $file ".basename($file,".$extfile");
+               `echo $line >> $dbcmd`;
+           }
+       if ($debug==0) {
+           if (is_file($db)) @unlink($db);
+           $retval = is_file($db) ? 1 : 0 ;
+           if (!$retval) {
+              $CMD="( cd ".$this->dir_input."; cat $dbcmd | ".$this->SQLITE.' '.$this->dbname." )";
+              $retval=trim(`$CMD 1>$stdout 2>$stderr; echo \$?`);
+           } else
+              `echo -n "Permission denied" > $stderr` ;
+       } else {
+           $retval=trim(`cat $dbcmd`);
+       }
+       return $retval;
+    }
+
 /********************************************************
 * do_SQL_query: Execute the SQL query on the dataset $dsname
 ********************************************************/
     function do_SQL_query($query, $qopt='', $debug=0)
     {
+       do {
           $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
           $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
-          $QSQL = $this->QSQL;  
+          $QSQL = $this->QSQL;
+          $extfile = $this->EXTFILES;
+          $sqlite3 = $this->SQLITE;
           if ($this->OS == "LINUX") {
-              $CMD = "(cd ".$this->dir_input."; $QSQL $qopt \"$query\" | uniq)";
-              if ($debug== 0) $retval=trim(`$CMD 1>$stdout 2>$stderr; ls -l $stderr | cut -d' ' -f5`);
-              if ($retval) {
-                 $CMD = "(cd ".$this->dir_input."; cat $stderr |  sed -e \"s|.*Error|Error|\")";
-                 $this->error_msg = trim(`$CMD`);
+              $db = $this->dir_input.'/'.$this->dbname;
+              if (is_file($db) && strlen($qopt)==0) {
+              # Mode sqlite : apply the query directly on the db
+                  $CMD ="echo \".headers on\n";
+                  $CMD.="$query\" | sed -e \"s/\.$extfile//g\" | $sqlite3 $db | uniq | sed -e \"s/|/\t/g\"";
+                  if ($debug>0) break;
+              } else {
+              # Mode no sqlite : apply the query help with q tool
+                  $CMD = "(cd ".$this->dir_input."; $QSQL $qopt \"$query\" | uniq)";
+                  if ($debug>0) break;
               }
+              $retval=trim(`$CMD 1>$stdout 2>$stderr; ls -l $stderr | cut -d' ' -f5`);
+              if ($retval) {
+                  $CMD = "(cat $stderr |  sed -e \"s|.*Error|Error|\")";
+                  $this->error_msg = trim(`$CMD`);
+              }
+              break;
           }
           if ($this->OS == "WIN") {
               $CMD = "cd ".$this->dir_input." && $QSQL $qopt \"$query\"";
+              if ($debug>0) break;
               $filebatch = dirname($stdout)."/cmdbatch.bat";
               $this->cmd_Batch($filebatch, $CMD, $stdout, $stderr);
-              if ($debug== 0) $retval=trim(`$filebatch`);
-              if ($retval) {
-                 $CMD = "(cd ".$this->dir_input." && type $stderr\")";
-                 $this->error_msg = trim(`$CMD`);
-              }
+              $retval=trim(`$filebatch`);
+              if ($retval==0) break;
+              $CMD = "type $stderr";
+              $this->error_msg = trim(`$CMD`);
           }
-          if ($debug>0) $retval=$CMD;
-          return $retval;
+       } while(0);
+       if ($debug>0) $retval=$CMD;
+       return $retval;
     }
     
 /********************************************************
@@ -677,10 +729,20 @@ if %size% LSS %maxbytesize% (
               header('Content-Type: application/json; charset=ISO-8859-1');
               echo $this->getdata_json_output($file);
           }
-          elseif ($format == 'tsv') {
+          elseif ($format == 'tsv' || $format == 'txt') {
               header('Content-Type: text/tab-separated-values; charset=ISO-8859-1');
               header('Content-Disposition: inline; filename="data-'.$this->genKEY().'.txt"');
               echo `cat $file`;
+          }
+          elseif ($format == 'csv') {
+              header('Content-Type: text/csv; charset=ISO-8859-1');
+              header('Content-Disposition: inline; filename="data-'.$this->genKEY().'.csv"');
+              echo `cat $file | sed -e "s/\t/,/g"`;
+          }
+          elseif ($format == 'ssv') {
+              header('Content-Type: text/csv; charset=ISO-8859-1');
+              header('Content-Disposition: inline; filename="data-'.$this->genKEY().'.csv"');
+              echo `cat $file | sed -e "s/\t/;/g"`;
           }
     }
 
@@ -709,7 +771,7 @@ if %size% LSS %maxbytesize% (
         $json .='"profile":"'.$this->DPKG_INFOS['URL_JSONDEF'].'odam-data-package.json",';
         $json .='"datapackage_version":"'.$this->DPKG_INFOS['DATAPACKAGE_VERSION'].'", "keywords":["Experimental Data Tables", "ODAM"],';
         $license = explode(',', $this->DPKG_INFOS['LICENSE']);
-        $json .='"licenses":[{"name":"'.$license[0].'", "path":"'.$license[1].'", "title":"'.$license[2].'"}],';
+        $json .='"licenses":[{"name":"'.trim($license[0]).'", "path":"'.trim($license[1]).'", "title":"'.trim($license[2]).'"}],';
     # resources
         $json .='"resources":[';
         $flg=0;
@@ -792,162 +854,5 @@ if %size% LSS %maxbytesize% (
 
 }
 
-/*
-
-build_hashDS: Building of the data structure (mainly as a hash table) by parsing both metadata files, (s_subsets.tsv and a_attributes.tsv)
-
---------------------------------------------------------------------------------
- EXAMPLE OF AN OBJECT INSTANCE POPULATES WITH SOME SUBSETS OF THE FRIM1 DATASET
---------------------------------------------------------------------------------
-
-$FILES      = array ( 1 => 'plants.csv', 2 => 'harvests.csv', 3 => 'samples.csv', 4 => 'compounds.csv' );
-
-$hDataset = array(
-     # List of differents possible pathways among the data subsets in order to optimize the building of the SQL queries.
-     'dstree' => array(
-                   1 => array('plants'),
-                   2 => array('plants', 'harvests' ),
-                   3 => array('plants', 'harvests', 'samples' ),
-                   4 => array('plants', 'harvests', 'samples', 'compounds' ),
-                   5 => array('plants', 'harvests', 'samples', 'compoundsFW' )
-     ),
-     # data subset 'plants'
-     'plants' => array (
-                   'name'     => 'Plant identities',
-                   'entries'  => array(
-                                      'plantid' => 'PlanteID',
-                                      'plant' => 'Plant',
-                                      'row' => 'Row',
-                                      'treatment' => 'Treatment'
-                   ),
-                   'entities' => array(
-                                      'Genotype' => array('Genotype','string'),
-                                      'PlanteID' => array('Plant Identifier','numeric'),
-                                      'Plant' => array('Plant code name','string'),
-                                      'Row' => array('Row of the plant on the table','string'),
-                                      'Treatment' => array('Treatment', 'string'),
-                   ),
-                   'categories' => array(
-                                      'identifier' => array('PlanteID'),
-                                      'factor' => array('Treatment', 'Row'),
-                                      'quantitative' => array(),
-                                      'qualitative' => array('Row', 'Genotype')
-                   ),
-                   'file' => 1,
-                   'joinkey' => ''
-     ),
-     # data subset 'harvests'
-     'harvests' => array (
-                   'name'     => 'Harvest features',
-                   'entries'  => array(
-                                      'lot' => 'Lot',
-                                      'age' => 'FruitAge',
-                                      'position' => 'FruitPosition',
-                                      'truss' => 'Truss',
-                                      'date' => 'HarvestDate'
-                   ),
-                   'entities' => array(
-                                      'PlanteID' => array('Plant Identifier','numeric'),
-                                      'Lot' => array('Lot identifier','numeric'),
-                                      'Truss' => array('Rank identifier of truss','string'),
-                                      'FruitAge' => array('Fruit Age(dpa targeted)','string'),
-                                      'HarvestDate' => array('Harvest Date','string'),
-                                      'FruitPosition' => array('Fruit Position','numeric'),
-                                      'HarvestHour' => array('Harvest Hour','string'),
-                                      'FruitFW' => array('Fruit Fresh Weight(g)','numeric'),
-                                      'FruitDiameter' => array('Fruit Diameter (mm)','numeric'),
-                                      'FruitHeight' => array('Fruit Height (mm)','numeric')
-                   ),
-                   'categories' => array(
-                                      'identifier' => array('Lot'),
-                                      'factor' => array('FruitAge', 'FruitPosition'),
-                                      'quantitative' => array('FruitFW', 'FruitDiameter', 'FruitHeight'),
-                                      'qualitative' => array('Truss', 'FruitPosition')
-                   ),
-                   'file' => 2,
-                   'joinkey' => 'PlanteID'
-      ),
-     # data subset 'samples'
-     'samples' => array (
-                   'name'     => 'Sample features',
-                   'entries'  => array(
-                                      'sampleid' => 'SampleID'
-                   ),
-                   'entities' => array(
-                                      'Lot' => array('Lot identifier','numeric'),
-                                      'SampleID' => array('Sample identifier','numeric'),
-                                      'NbFruit' => array('Fruit Number per sample','numeric'),
-                                      'GellyFW' => array('Gelly Fred Weight(g) per sample','numeric'),
-                                      'GellyFruit' => array('Gelly per Fruit (estimated g)','numeric'),
-                                      'BER' => array('BER')
-                   ),
-                   'categories' => array(
-                                      'identifier' => array('SampleID'),
-                                      'factor' => array(),
-                                      'quantitative' => array('GellyFW', 'GellyFruit'),
-                                      'qualitative' => array()
-                   ),
-                   'file' => 3,
-                   'joinkey' => 'Lot'
-     ),
-     # data subset 'compounds'
-     'compounds' => array (
-                   'name'     => 'quantifications of compounds (% weight/MIA)',
-                   'entries'  => array(
-                                      'sampleid' => 'SampleID',
-                    ),
-                   'entities' => array(
-                                      'SampleID' => array('Sample identifier','numeric'),
-                                      'MassBefore' => array('m av.extraction  (g)','numeric'),
-                                      'MassMIA' => array('masse MIA (g)','numeric'),
-                                      'RDT' => array('Rdt (% MIA/DW)','numeric'),
-                                      'Starch1' => array('Dosage amidon (%poids/MIA)','numeric'),
-                                      'Starch2' => array('amidon (g/gDW) ','numeric'),
-                                      'RHAMNOSE' => array('RHAMNOSE','numeric'),
-                                      'ARABINOSE' => array('ARABINOSE','numeric'),
-                                      'XYLOSE' => array('XYLOSE','numeric'),
-                                      'MANNOSE' => array('MANNOSE','numeric'),
-                                      'GALACTOSE' => array('GALACTOSE','numeric'),
-                                      'GLUCOSE' => array('GLUCOSE (- % amidon)','numeric'),
-                                      'OsesN' => array('Oses N (% poids total)','numeric'),
-                                      'PoidsAU' => array('%poids AU/MIA','numeric'),
-                                      'PoidsTotal' => array('% poids total ','numeric'),
-                                      'PP' => array('Polysaccharides des parois (%)','numeric')
-                   ),
-                   'categories' => array(
-                                      'identifier' => array('SampleID'),
-                                      'factor' => array(),
-                                      'quantitative' => array('MassBefore', 'MassMIA', 'RDT', 'Starch1', 'Starch2', 'RHAMNOSE', 'ARABINOSE', 'XYLOSE', 'MANNOSE', 'GALACTOSE', 'GLUCOSE', 'OsesN', 'PoidsAU', 'PoidsTotal', 'PP')
-                   ),
-                   'file' => 4,
-                   'joinkey' => 'SampleID'
-     ),
-     # data subset 'compoundsFW'
-     'compoundsFW' => array (
-                   'name'     => 'quantifications of compounds (FW unit)',
-                   'entries'  => array(
-                                      'sampleid' => 'SampleID',
-                    ),
-                   'entities' => array(
-                                      'SampleID' => array('Sample identifier','numeric'),
-                                      'RhamnoseFW' => array('Rhamnose FW','numeric'),
-                                      'ArabinoseFW' => array('Arabinose FW','numeric'),
-                                      'XyloseFW' => array('Xylose FW','numeric'),
-                                      'MannoseFW' => array('Mannose FW','numeric'),
-                                      'GalactoseFW' => array('Galactose FW','numeric'),
-                                      'GlucoseFW' => array('Glucose FW','numeric'),
-                                      'OsesAcidsFW' => array('oses acides FW','numeric')
-                   ),
-                   'categories' => array(
-                                      'identifier' => array('SampleID'),
-                                      'factor' => array(),
-                                      'quantitative' => array('RhamnoseFW', 'ArabinoseFW', 'XyloseFW', 'MannoseFW', 'GalactoseFW', 'GlucoseFW', 'OsesAcidsFW')
-                   ),
-                   'file' => 4,
-                   'joinkey' => 'SampleID'
-     )
-);
-
-*/
 ?>
 

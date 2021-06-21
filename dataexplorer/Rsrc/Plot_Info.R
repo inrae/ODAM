@@ -106,7 +106,7 @@
            }
            setinfo <- NULL
            for( i in 1:dim(tsets)[1]) {
-               urlSubset <- paste0(ws[4],'xml/', ws[2], '/(',.C(tsets[i,1]) ,")?auth=",ws[3]);
+               urlSubset <- paste0(ws[4],'query/', ws[2], '/(',.C(tsets[i,1]) ,")?format=xml");
                linkSubset <- paste0("<a href='",urlSubset,"' target='_blank'>",.C(tsets[i,1]),"</a>")
                linkOnto <- paste0("<a href='",.C(tsets[i,5]),"' target='_blank'>[", basename(.C(tsets[i,5])),'] ', .C(tsets[i,6]),"</a>")
                setinfo <- rbind( setinfo , c( linkSubset, .C(tsets[i,c(2:4)]), linkOnto ) )

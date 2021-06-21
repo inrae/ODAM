@@ -33,7 +33,7 @@ Options FollowSymLinks Includes MultiViews SymLinksIfOwnerMatch
 
 
 # Index
-<Files ~ "(query|tsv|xml|json|check|infos|image|pdf)$">
+<Files ~ "(query|tsv|xml|json|check|build|infos|image|pdf)$">
   Order allow,deny
   allow from all
   AcceptPathInfo On

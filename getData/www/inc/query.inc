@@ -1,5 +1,5 @@
 <?php
-/* ID rest.inc v1.2
+/* ID query.inc v1.2
  * Copyright (C) 2015-2021 INRAE - DJ
  *
     This file is part of ODAM
@@ -18,7 +18,7 @@
     along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-$auth = isset($_GET['auth']) ?  $_GET['auth'] : '' ;
+$auth  = isset($_GET['auth'])  ?  $_GET['auth']  : '' ;
 $debug = isset($_GET['debug']) ?  $_GET['debug'] : 0 ;
 $limit = isset($_GET['limit']) ?  $_GET['limit'] : 0 ;
 $links = isset($_GET['links']) ?  $_GET['links'] : 0 ;
@@ -26,9 +26,9 @@ $restmsg = '';
 $metadata=0;
 $datapackage=0;
 
-
 # Check format
-if (! in_array( $format, array('xml','json','tsv') )) {
+if (! in_array( $format, array('xml','json','tsv','txt','csv','ssv') ))
+{
    echo "Error: format $format does not recognize.";
    exit(1);
 }
@@ -39,6 +39,11 @@ if (is_numeric($limit))
 else
    $limit = 0;
 
+#-----------------------------------------------------
+# Outer block : checks and parses parameters, 
+#               builds the query
+#               outputs the result
+#-----------------------------------------------------
 # Parse PATH_INFO if needed
 #if ($_SERVER['PATH_INFO'] && $auth==$AUTHKEY)
 if ($_SERVER['PATH_INFO'])
@@ -52,26 +57,30 @@ do
     if (strlen(end($urloptions))== 0) $cntopt--;
 
     # check if debug
-    if ($urloptions[$cntopt-1] == 'debug') {
+    if ($urloptions[$cntopt-1] == 'debug')
+    {
         $cntopt--;
         $debug=1;
     }
 
     # check if metadata|attribute
-    if (in_array($urloptions[$cntopt-1], array('metadata','attribute'))) {
+    if (in_array($urloptions[$cntopt-1], array('metadata','attribute')))
+    {
         $cntopt--;
         $metadata=1;
     }
     
     # check if datapackage
-    if (in_array($urloptions[$cntopt-1], array('datapackage'))) {
+    if (in_array($urloptions[$cntopt-1], array('datapackage')))
+    {
         $cntopt--;
         $datapackage=1;
     }
 
     # check if dataset present
     $dataset = array_shift($urloptions);
-    if (! is_dir("$DATADIR/$dataset")) {
+    if (! is_dir("$DATADIR/$dataset"))
+   {
         echo "ERROR: the dataset directory is not available";
         break;
     }
@@ -104,18 +113,22 @@ do
     $def->TMPDIR = $TMPDIR ;
     $def->SESSID = $SESSID ;
     $def->QSQL   = $QSQL ;
+    $def->EXTFILES = $EXTFILES;
     $def->GETDATA_URL_PROXY = $GETDATA_URL_PROXY ;
 
     # check if metadata files
-    if ( $def->check_deffile('s_subsets') ) {
+    if ( $def->check_deffile('s_subsets') )
+    {
        echo 's_subsets: '.$def->retmsg;
        break;
     }
-    if ( $def->check_deffile('a_attributes') ) {
+    if ( $def->check_deffile('a_attributes') )
+    {
        echo 'a_attributes: '.$def->retmsg;
        break;
     }
-    if ($def->build_hashDS () != 0) {
+    if ($def->build_hashDS () != 0)
+    {
        echo $def->retmsg;
        break;
     }
@@ -123,7 +136,8 @@ do
 
     $DSNAME=$dataset;
     $NB_FILES = 0;
-    foreach ($def->FILES as $id => $file) {
+    foreach ($def->FILES as $id => $file)
+    {
          if (is_file("$DATADIR/$DSNAME/$file")) $NB_FILES++;
     }
     $IS_FILES = ($NB_FILES == count($def->FILES)) ? 1 : 0 ;
@@ -131,13 +145,16 @@ do
     #-----------------------------------------------------
     # Inner block : parses parameters and builds the query
     #-----------------------------------------------------
-    do {
+    do
+    {
         $MSG ='';
+        $tarr_DS = array();      # Array of data subsets
+        $arr_entry = array();    # Array of entries / aliases
 
         # Get Subsets information
-        if ($func == 'subset') {
+        if ($func == 'subset')
+        {
             $list = $def->getSubsetList();
-            $line = "Subset;Description;Identifier;WSEntry;SetID;LinkID;CV_Term_ID;CV_Term_Name\n";
             $line = implode($sep, array('Subset','Description','Identifier','WSEntry','SetID','LinkID','CV_Term_ID','CV_Term_Name'))."\n";
             foreach($list as $key => $arr) $line .= implode($sep,$arr)."\n";
             $fw=fopen($stdout,"w+");
@@ -147,11 +164,11 @@ do
         }
 
         # Get data from merging of some subsets (columns)
-        if ( preg_match('/^\((.+)\)/', $func, $matches) ) {
+        if ( preg_match('/^\((.+)\)/', $func, $matches) )
+        {
             $tarr_DS = (preg_match('/,/',$func)>0) ? explode(',', $matches[1]) : array( $matches[1] );
             $key=''; $value=''; $op='';
             # Get list of entries
-            $arr_entry = array();
             foreach ($tarr_DS as $ds) {
                 if (! array_key_exists($ds,$def->hDataset) ) {
                     $MSG = "ERROR: $ds is not a valid data subset";
@@ -165,32 +182,36 @@ do
             $queryMulti=1;
         }
         # Get data from only one subset
-        elseif (array_key_exists($func,$def->hDataset)) {
-            $arr_entry = array();
+        elseif (array_key_exists($func,$def->hDataset))
+        {
             $list = $def->getEntryList(array($func), 0);
             foreach($list as $var => $arr) array_push($arr_entry, $arr[2]);
+            $tarr_DS = array($func);
             $queryMulti=0;
         }
-        else {
+        else
+        {
             $MSG = "Error: $func is not a valid data subset";
             break;
         }
     
         # all rows of the (merged) subset(s)
-        if ($cntopt==1) {
-            $query = $queryMulti ? $def->getSelectMulti($tarr_DS, $key,$value,$op) : 
-                                   $def->getSelect1($func,$key,$value,$op);
+        if ($cntopt==1)
+        {
+            $query = $queryMulti ? $def->getSelectMulti($tarr_DS, $key, $value, $op) : 
+                                   $def->getSelect1($func, $key, $value, $op);
             $doQuery = 1;
             break;
         }
 
         # Get the category / entry list
-        if ($cntopt==2) {
+        if ($cntopt==2)
+        {
             $key = array_shift($urloptions);
             # a category in the Category List =(factor|quantitative|qualitative|identifier)
             if (in_array($key, $def->categories) ) {
-                $list = $queryMulti ? $def->getCategoryList($tarr_DS, $key) :
-                                      $def->getCategoryList(array($func), $key, 0);
+                $list = $queryMulti ? $def->getCategoryList($tarr_DS, $key, 1) :
+                                      $def->getCategoryList($tarr_DS, $key, 0);
                 $line = implode($sep, array('Subset','Attribute','Description','Type','CV_Term_ID','CV_Term_Name'))."\n";
                 foreach($list as $lkey => $arr) $line .= implode($sep,$arr)."\n";
                 $fw=fopen($stdout,"w");
@@ -198,7 +219,8 @@ do
                 fclose($fw);
             }
             # entry/alias list
-            elseif ($key=="entry" || $key=="alias") {
+            elseif ($key=="entry" || $key=="alias")
+            {
                 $line = implode($sep, array('Subset','Attribute','WSEntry'))."\n";
                 if ($queryMulti) {
                     foreach ($tarr_DS as $ds) {
@@ -215,36 +237,41 @@ do
                 $fp=fwrite($fw,$line);
                 fclose($fw);
             }
-            else {
+            else
+            {
                 $MSG = "Error: either $key is not a valid keyword or requires a value";
             }
             break;
         }
 
         # Get data based a value of a specific attribute 
-        if ($cntopt==3) {
+        if ($cntopt==3)
+        {
             $key = array_shift($urloptions);
             $value = array_shift($urloptions);
-            if (in_array($key, $arr_entry)) {
+            if (in_array($key, $arr_entry))
+            {
                 if ( strpos($value,'>') !== false || strpos($value,'<') !== false ) {
                     $op = substr($value, 0, 1);
                     $value = substr($value, 1);
                 }
                 $restmsg .="; $key$op=$value";
-                $query = $queryMulti ? $def->getSelectMulti($tarr_DS, $key,$value,$op) : 
-                                       $def->getSelect1($func,$key,$value,$op);
+                $query = $queryMulti ? $def->getSelectMulti($tarr_DS, $key, $value, $op) : 
+                                       $def->getSelect1($func, $key, $value, $op);
                 $doQuery = 1;
             }
-            else {
+            else
+            {
                 $MSG = "Error: the entry $key is not a valid entry";
             }
             break;
-       }
+        }
 
     } while(0);
 
     # If ERROR, display message then exit
-    if (strlen($MSG)>0) {
+    if (strlen($MSG)>0)
+    {
         echo $MSG;
         break;
     }
@@ -252,45 +279,60 @@ do
     # if limit is specified
     if ($limit>0) $query .= " LIMIT $limit";
 
-    # if debug, display information then exit
-    if ($debug) {
-        if ($OS=='LINUX' && $doQuery)
-           echo "<pre>".`$QSQL -v 2>&1  | grep -v Python  | tr "\n" " - "`."</pre><hr>";
+    #-----------------------------------------------------
+    # DEBUG : display information
+    #-----------------------------------------------------
+    if ($debug)
+    {
+        $db = "$DATADIR/$dataset/".$def->dbname;
+        if ($OS=='LINUX' && $doQuery) {
+           if (is_file($db))
+               echo "<pre>sqlite ".`$def->SQLITE -version`."</pre><hr>";
+           else
+               echo "<pre>".`$QSQL -v 2>&1 | tr "\n" " - " | sed -e "s/(default,.*\]//" `."</pre><hr>";
+        }
         $CMD = $doQuery ?  $def->do_SQL_query($query, '', 1) : 0;
         echo "URL QUERY : $restmsg<br><br>CMD = $CMD<br>"; echo "<br>STDOUT = $stdout<br>";
+
         if ($doQuery) {
          # Execute the query and return some information
            $time_start = microtime(true);
            $retvald = $def->do_SQL_query($query);
            $time_end = microtime(true);
-           $execution_time = $time_end - $time_start;
-           $rescnt=0;
+           $execution_time = round($time_end - $time_start,4);
+           $resrow=$rescol=0;
            $retvald=trim(`ls -l $stderr | cut -d' ' -f5`);
-           if (! $retvald) $rescnt=trim(`cat $stdout | wc -l`);
-           $rescnt--;
-           echo "<br>doQuery: $doQuery - Execution time: $execution_time - Nb records: $rescnt<br>";
+           if (! $retvald) { $resrow=trim(`cat $stdout | wc -l`); $rescol=trim(`echo "$query" | tr "," "\n" | wc -l`); }
+           $resrow--;
+           echo "<br>doQuery: $doQuery - Nb rows: $resrow - Nb cols: $rescol - Execution time: $execution_time sec<br>";
            if ($retvald) echo "<br>".`cat $stderr`."<br>";
+           else echo "<br>Size of the output file before formatting: ".round(filesize($stdout)/1024,2)." Kb<br>";
          # display the formated query
-           $strquery = $query;
-           $query = str_replace("JOIN", "\nJOIN", str_replace("from", "\nFROM", $query));
-           $query = str_replace("select", "SELECT", str_replace("where", "\nWHERE", $query));
+           $fmtquery = $query;
+           $fmtquery = str_replace("JOIN", "\nJOIN", str_replace("from", "\nFROM", $fmtquery));
+           $fmtquery = str_replace("select", "SELECT", str_replace("where", "\nWHERE", $fmtquery));
            $nbds = count($def->hDataset);
-           for ($i=1; $i<$nbds; $i++) {
+           for ($i=1; $i<$nbds; $i++){
               $j=$i+1; $ret=0;
               while($j<=$nbds) {
                  $match = 'f'.$i.'.[^,]+, f'.$j.'.';
-                 $ret = preg_match("/$match/", $query, $str_match);
+                 $ret = preg_match("/$match/", $fmtquery, $str_match);
                  if ($ret) break;
                  $j++;
               }
               if ($ret) {
                  $str_split = preg_split("/,/", $str_match[0]);
-                 $query = str_replace($str_split[0].',', $str_split[0].",\n      ", $query);
+                 $fmtquery = str_replace($str_split[0].',', $str_split[0].",\n      ", $fmtquery);
               }
            }
-           echo"<br><pre>$query</pre>";
-         # Analyse query
-           $retvald = $def->do_SQL_query($strquery, '-A', 0);
+           echo"<br><pre>$fmtquery</pre>";
+         # Show schema of tables in case the database is created
+           if ($OS=='LINUX' && is_file($db)) {
+              $CMD="echo \".schema\" | ".$def->SQLITE. " $db";
+              $retvald = trim(`$CMD | tr -d "\n" | tr ";" "\n" 1>$stdout 2>$stderr; echo$?`);
+           } else
+         # Analyse query based on the q tool
+              $retvald = $def->do_SQL_query($query, '-A');
            if (! $retvald) echo "<pre>".trim(`cat $stdout`)."</pre>";
         } else {
          # Display dataset structure
@@ -300,19 +342,56 @@ do
         break;
     }
 
-    # Get metadata
-    if ($metadata==1) {
+    #-----------------------------------------------------
+    # metadata
+    #-----------------------------------------------------
+    if ($metadata==1)
+    {
+        # if subset(s) specified then select corresponding metadata
+        if (count($tarr_DS)>0) {
+           $dstree = array();
+           $hDataset = array();
+           foreach ($tarr_DS as $ds) {
+              array_push($dstree, $ds);
+              $hDataset[$ds] = array_values($def->hDataset[$ds]);
+              if ($queryMulti==0) break;
+              foreach ($def->hDataset['_dstree_'] as $keyid => $arr )
+                 if ($arr[count($arr)-1] == $ds)
+                     for ($i = 0; $i < count($arr)-1; $i++ )
+                        if ( ! in_array ( $arr[$i], $dstree) ) {
+                            array_push($dstree, $arr[$i]);
+                            $hDataset[$arr[$i]] = array_values($def->hDataset[$arr[$i]]);
+                        }
+           }
+           if ($format !== 'json') {
+              $stdtmp = "$TMPDIR/$SESSID.tmp";
+              $attrs_file = $def->attrs_file;
+              `head -1 $attrs_file > $stdtmp`;
+              $regexp = '('.implode('|',$dstree).')';
+              `grep -E "^$regexp" $attrs_file >> $stdtmp`;
+              $attrs_file = $stdtmp;
+           }
+        } else {
+           $hDataset = $def->hDataset;
+           $attrs_file = $def->attrs_file;
+        }
+
+        # Output metadata depending on the format
         if ($format == 'json') {
            header('Content-Type: application/json; charset=ISO-8859-1');
-           echo json_encode($def->hDataset);
+           echo json_encode($hDataset);
+           #echo "<pre>"; print_r($hDataset); echo "</pre>";
         } else {
-           $def->echo_results($format, $file=$def->attrs_file);
+           $def->echo_results($format, $file=$attrs_file);
         }
         break;
     }
 
-    # Get metadata into a data-package schema
-    if ($datapackage==1 && $format == 'json') {
+    #-----------------------------------------------------
+    # datapackage
+    #-----------------------------------------------------
+    if ($datapackage==1 && $format == 'json')
+    {
         header('Content-Type: application/json; charset=ISO-8859-1');
         $urlroot = $links ? $URLSERVER : '';
         $def->DPKG_INFOS = $DPKG_INFOS;
@@ -320,15 +399,16 @@ do
         break;
     }
 
-    # Launch query if needed
+    #-----------------------------------------------------
+    # Output:  Launch query if needed
+    #-----------------------------------------------------
     $retval = $doQuery ?  $def->do_SQL_query($query) : 0;
-    if ($retval) {
+    if ($retval)
+    {
         $ERRORMSG='QUERY:&nbsp;'.$query.'<BR>===>&nbsp;'.`cat $stderr`.'<BR><BR>';
         echo $ERRORMSG;
         break;
     }
-
-    # Output the results
     $def->echo_results($format);
 
 } while (0);

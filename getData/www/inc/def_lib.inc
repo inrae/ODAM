@@ -58,7 +58,9 @@ class def_lib
     /* environment and tool variables involved in the SQL querying of the TXT data subset files (cf do_SQL_query) */
      var $OS        = "LINUX";
      var $SQLITE    = "/usr/bin/sqlite3";
-     var $dbname    = "sqlite3.db";
+     var $SQLOPT    = "-tabs";
+     var $DBNAME    = "sqlite3.db";
+     var $TRANSAC   = 0;
      var $QSQL      =  "/usr/bin/q -H -O -t  -e iso-8859-1";
      var $EXTFILES  = "txt";
      var $TMPDIR    = "";
@@ -646,9 +648,9 @@ if %size% LSS %maxbytesize% (
        $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
        $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
        $dbcmd =  $this->TMPDIR.'/'.$this->SESSID.'.cmd';
-       $db = $this->dir_input.'/'.$this->dbname;
+       $db = $this->dir_input.'/'.$this->DBNAME;
        $extfile = $this->EXTFILES;
-       `echo ".mode tabs" > $dbcmd`;
+       $SQLOPT = $this->SQLOPT;
        $scan = scandir($this->dir_input);
        foreach($scan as $file)
            if (!is_dir($this->dir_input.'/'.$file) && preg_match("/\.$extfile/", $file)>0) {
@@ -659,8 +661,16 @@ if %size% LSS %maxbytesize% (
            if (is_file($db)) @unlink($db);
            $retval = is_file($db) ? 1 : 0 ;
            if (!$retval) {
-              $CMD="( cd ".$this->dir_input."; cat $dbcmd | ".$this->SQLITE.' '.$this->dbname." )";
-              $retval=trim(`$CMD 1>$stdout 2>$stderr; echo \$?`);
+              if ($this->OS == "LINUX") {
+                 $CMD="( cd ".$this->dir_input."; cat $dbcmd | ".$this->SQLITE." $SQLOPT ".$this->DBNAME." )";
+                 $retval=trim(`$CMD 1>$stdout 2>$stderr; echo \$?`);
+              } else {
+                 $sqlite = preg_replace('|/|', '\\', $this->SQLITE);
+                 $CMD = "cd ".$this->dir_input." && cat $dbcmd | $sqlite $SQLOPT ".$this->DBNAME;
+                 $filebatch = dirname($stdout).'/'.$this->SESSID.'.bat';
+                 $this->cmd_Batch($filebatch, $CMD, $stdout, $stderr);
+                 $retval=trim(`$filebatch`);
+              }
            } else
               `echo -n "Permission denied" > $stderr` ;
        } else {
@@ -677,15 +687,16 @@ if %size% LSS %maxbytesize% (
        do {
           $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
           $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
+          $dbcmd =  $this->TMPDIR.'/'.$this->SESSID.'.cmd';
           $QSQL = $this->QSQL;
+          $SQLOPT = $this->SQLOPT;
           $extfile = $this->EXTFILES;
-          $sqlite3 = $this->SQLITE;
+          $db = $this->dir_input.'/'.$this->DBNAME;
           if ($this->OS == "LINUX") {
-              $db = $this->dir_input.'/'.$this->dbname;
               if (is_file($db) && strlen($qopt)==0) {
               # Mode sqlite : apply the query directly on the db
-                  $CMD ="echo \".headers on\n";
-                  $CMD.="$query\" | sed -e \"s/\.$extfile//g\" | $sqlite3 $db | uniq | sed -e \"s/|/\t/g\"";
+                  $query = preg_replace("/\.$extfile/", '', $query);
+                  $CMD ="echo \".headers on\n$query;\" | ".$this->SQLITE." $SQLOPT $db | uniq";
                   if ($debug>0) break;
               } else {
               # Mode no sqlite : apply the query help with q tool
@@ -700,9 +711,22 @@ if %size% LSS %maxbytesize% (
               break;
           }
           if ($this->OS == "WIN") {
-              $CMD = "cd ".$this->dir_input." && $QSQL $qopt \"$query\"";
-              if ($debug>0) break;
-              $filebatch = dirname($stdout)."/cmdbatch.bat";
+              if (is_file($db) && strlen($qopt)==0) {
+              # Mode sqlite : apply the query directly on the db
+                  $sqlite = preg_replace('|/|', '\\', $this->SQLITE);
+                  $query = preg_replace("/\.$extfile/", '', $query);
+                  `echo .headers on > $dbcmd`; 
+                  if ($this->TRANSAC) `echo BEGIN TRANSACTION; >> $dbcmd`;
+                  `echo $query ; >> $dbcmd`;
+                  if ($this->TRANSAC) `echo COMMIT; >> $dbcmd`;
+                  $CMD = "cd ".$this->dir_input." && cat $dbcmd | $sqlite $SQLOPT ".$this->DBNAME;
+                  if ($debug>0) break;
+              } else {
+              # Mode no sqlite : apply the query help with q tool
+                  $CMD = "cd ".$this->dir_input." && $QSQL $qopt \"$query\"";
+                  if ($debug>0) break;
+              }
+              $filebatch = dirname($stdout).'/'.$this->SESSID.'.bat';
               $this->cmd_Batch($filebatch, $CMD, $stdout, $stderr);
               $retval=trim(`$filebatch`);
               if ($retval==0) break;

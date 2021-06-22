@@ -250,10 +250,10 @@ class check_lib extends def_lib
 # Check if the database is correctly built
     function check_SQL_db()
     {
-        $db = $this->dir_input.'/'.$this->dbname;
+        $db = $this->dir_input.'/'.$this->DBNAME;
         $msg = 'Check if the database has been created';
         $ret = is_file($db) ? 0 : 1;
-        $info = "The file ".$this->dbname." is ";
+        $info = "The file ".$this->DBNAME." is ";
         $info .= $ret==0 ? 'present' : 'not present';
         $status = $ret==0 ? $this->status_tag['ok'] : $this->status_tag['warning'] ;
         $this->ds_items['database'] = array( 'msg' => $msg, 'info' => $info, 'status' => $status, 'cat' => 'database' );

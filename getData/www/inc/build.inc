@@ -64,6 +64,7 @@ do
     $def->TMPDIR = $TMPDIR ;
     $def->SESSID = $SESSID ;
     $def->EXTFILES = $EXTFILES;
+    $def->SQLITE = $SQLITE;
     $def->GETDATA_URL_PROXY = $GETDATA_URL_PROXY ;
 
   # Build the database
@@ -75,6 +76,7 @@ do
   # Status
     $status = ($retval==0) ? 'Success' : 'Error' ;
 
+  # Output if debug
     if ($debug) {
        if ($format == 'cli')
            echo "$retval\n";
@@ -91,6 +93,7 @@ do
        break;
     }
 
+  # Output - format cli
     if ($format == 'cli') {
        echo "$status - Execution time: $execution_time sec\n";
        if ($retval>0)
@@ -98,12 +101,23 @@ do
        break;
     }
 
+  # Output - format xml,json, ...
     $headers = "Status\tExecution_time";
-    if ($retval>0) $headers .= "\tErrors";
     $line = "$status\t$execution_time";
-    if ($retval>0) $line .= "\t".trim(`cat $stderr | sed -e "s/Error://" | tr "\n" ";" | tr -d "\r"`);
-    trim(`echo "$headers\n$line" > $stdout`);
+    if ($retval>0) {
+       $headers .= "\tErrors";
+       if ($OS=="LINUX")
+           $line .= "\t".trim(`cat $stderr | sed -e "s/Error://" | tr "\n" ";" | tr -d "\r"`);
+       else
+           $line .= "\t".preg_replace('/Error:/', '', preg_replace("/[\n\r]/", ";", `cat $stderr`));
+    }
 
+    if ($OS=="LINUX")
+       `echo "$headers\n$line" > $stdout`;
+    else {
+      `echo $headers > $stdout`;
+      `echo $line >> $stdout`;
+    }
     $def->echo_results($format);
 
 } while (0);

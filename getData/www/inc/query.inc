@@ -114,6 +114,7 @@ do
     $def->SESSID = $SESSID ;
     $def->QSQL   = $QSQL ;
     $def->EXTFILES = $EXTFILES;
+    $def->SQLITE = $SQLITE;
     $def->GETDATA_URL_PROXY = $GETDATA_URL_PROXY ;
 
     # check if metadata files
@@ -284,16 +285,19 @@ do
     #-----------------------------------------------------
     if ($debug)
     {
-        $db = "$DATADIR/$dataset/".$def->dbname;
-        if ($OS=='LINUX' && $doQuery) {
+      # Information about the used tool
+        $db = "$DATADIR/$dataset/".$def->DBNAME;
+        if ($doQuery) {
            if (is_file($db))
-               echo "<pre>sqlite ".`$def->SQLITE -version`."</pre><hr>";
+               echo '<pre>sqlite '.`$def->SQLITE -version`.'</pre><hr>';
            else
-               echo "<pre>".`$QSQL -v 2>&1 | tr "\n" " - " | sed -e "s/(default,.*\]//" `."</pre><hr>";
+               echo '<pre>'.trim(`$QSQL -v 2>&1`).'</pre><hr>';
         }
+      # Display the full command
         $CMD = $doQuery ?  $def->do_SQL_query($query, '', 1) : 0;
         echo "URL QUERY : $restmsg<br><br>CMD = $CMD<br>"; echo "<br>STDOUT = $stdout<br>";
 
+      # Display information on the query
         if ($doQuery) {
          # Execute the query and return some information
            $time_start = microtime(true);
@@ -330,12 +334,14 @@ do
            if ($OS=='LINUX' && is_file($db)) {
               $CMD="echo \".schema\" | ".$def->SQLITE. " $db";
               $retvald = trim(`$CMD | tr -d "\n" | tr ";" "\n" 1>$stdout 2>$stderr; echo$?`);
-           } else
+           }
          # Analyse query based on the q tool
+           else 
               $retvald = $def->do_SQL_query($query, '-A');
            if (! $retvald) echo "<pre>".trim(`cat $stdout`)."</pre>";
-        } else {
-         # Display dataset structure
+        }
+      # Display dataset structure
+        else {
            echo "<hr>";
            echo "<pre>"; print_r($def->hDataset); echo "</pre>";
         }

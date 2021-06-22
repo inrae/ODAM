@@ -88,10 +88,11 @@ do {
     $def->SESSID = $SESSID ;
     $def->EXTFILES = $EXTFILES;
     $def->QSQL   = $QSQL ;
+    $def->SQLITE = $SQLITE;
+    $def->GETDATA_URL_PROXY = $GETDATA_URL_PROXY ;
 
 # Check if the database is correctly built
-    if ($def->OS == "LINUX")
-       $def->check_SQL_db();
+    $def->check_SQL_db();
 
 # Check if SQL on each subset file works
     if ($def->check_SQL_subsets(0)) break;

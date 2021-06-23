@@ -19,7 +19,7 @@
 */
 
 $debug = isset($_GET['debug']) ?  $_GET['debug'] : 0 ;
-$dbindex = isset($_GET['idx']) ?  $_GET['idx'] : 0 ;
+$dbindex = isset($_GET['idx']) ?  $_GET['idx'] : 1 ;
 
 # Check format
 if (! in_array( $format, array('cli', 'xml','json','tsv','txt','csv','ssv') ))

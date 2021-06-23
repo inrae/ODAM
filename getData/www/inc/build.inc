@@ -19,6 +19,7 @@
 */
 
 $debug = isset($_GET['debug']) ?  $_GET['debug'] : 0 ;
+$dbindex = isset($_GET['idx']) ?  $_GET['idx'] : 0 ;
 
 # Check format
 if (! in_array( $format, array('cli', 'xml','json','tsv','txt','csv','ssv') ))
@@ -59,6 +60,12 @@ do
   # New instance of the def_lib object
     $def = new def_lib("$DATADIR/$dataset");
 
+    if ($def->build_hashDS () != 0)
+    {
+       echo $def->retmsg;
+       break;
+    }
+
   # Populate the '$def' instance with configuration variables coming from the '$set' instance (Set_Config object)
     $def->OS = $OS ;
     $def->TMPDIR = $TMPDIR ;
@@ -69,7 +76,7 @@ do
 
   # Build the database
     $time_start = microtime(true);
-    $retval = $def->build_sqlite_db($debug);
+    $retval = $def->build_sqlite_db($dbindex,$debug);
     $time_end = microtime(true);
     $execution_time = round($time_end - $time_start,4);
 

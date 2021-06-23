@@ -643,21 +643,35 @@ if %size% LSS %maxbytesize% (
 /********************************************************
 * build_sqlite_db: build the sqlite3 db into the data folder
 ********************************************************/
-    function build_sqlite_db($debug=0)
+    function build_sqlite_db($dbindex,$debug=0)
     {
+     # Init
        $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
        $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
        $dbcmd =  $this->TMPDIR.'/'.$this->SESSID.'.cmd';
        $db = $this->dir_input.'/'.$this->DBNAME;
        $extfile = $this->EXTFILES;
        $SQLOPT = $this->SQLOPT;
+
+     # SQL statements for creating tables
        $scan = scandir($this->dir_input);
-       foreach($scan as $file)
-           if (!is_dir($this->dir_input.'/'.$file) && preg_match("/\.$extfile/", $file)>0) {
-               $line = ".import $file ".basename($file,".$extfile");
+       foreach($scan as $file) {
+           if (is_dir($this->dir_input.'/'.$file) || ! preg_match("/\.$extfile/", $file)>0) continue;
+           $line = ".import $file ".basename($file,".$extfile");
+           `echo $line >> $dbcmd`;
+       }
+     # SQL statements for creating indexes
+       if ($dbindex) foreach ($this->hDataset as $subset => $arr ) {
+           if ($subset=='_dstree_') continue;
+           $line = "CREATE INDEX $subset"."_idx ON ".basename($arr['filename'],".$extfile")." (".$arr['identifier'].");";
+           if ($this->OS == "LINUX")
+               `echo "$line" >> $dbcmd`;
+           else
                `echo $line >> $dbcmd`;
-           }
+       }
+
        if ($debug==0) {
+     # Execute the SQL statements if not debug
            if (is_file($db)) @unlink($db);
            $retval = is_file($db) ? 1 : 0 ;
            if (!$retval) {
@@ -674,6 +688,7 @@ if %size% LSS %maxbytesize% (
            } else
               `echo -n "Permission denied" > $stderr` ;
        } else {
+     # Return the full SQL statements if debug
            $retval=trim(`cat $dbcmd`);
        }
        return $retval;
@@ -684,14 +699,18 @@ if %size% LSS %maxbytesize% (
 ********************************************************/
     function do_SQL_query($query, $qopt='', $debug=0)
     {
+     # Init
+       $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
+       $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
+       $dbcmd =  $this->TMPDIR.'/'.$this->SESSID.'.cmd';
+       $QSQL = $this->QSQL;
+       $SQLOPT = $this->SQLOPT;
+       $extfile = $this->EXTFILES;
+       $db = $this->dir_input.'/'.$this->DBNAME;
+ 
+     # Execute the SQL query if not debug
        do {
-          $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
-          $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
-          $dbcmd =  $this->TMPDIR.'/'.$this->SESSID.'.cmd';
-          $QSQL = $this->QSQL;
-          $SQLOPT = $this->SQLOPT;
-          $extfile = $this->EXTFILES;
-          $db = $this->dir_input.'/'.$this->DBNAME;
+        # Linux / MaxOS system
           if ($this->OS == "LINUX") {
               if (is_file($db) && strlen($qopt)==0) {
               # Mode sqlite : apply the query directly on the db
@@ -710,6 +729,8 @@ if %size% LSS %maxbytesize% (
               }
               break;
           }
+
+        # Windows 10 system
           if ($this->OS == "WIN") {
               if (is_file($db) && strlen($qopt)==0) {
               # Mode sqlite : apply the query directly on the db
@@ -734,7 +755,10 @@ if %size% LSS %maxbytesize% (
               $this->error_msg = trim(`$CMD`);
           }
        } while(0);
+
+     # Return the full command if debug
        if ($debug>0) $retval=$CMD;
+
        return $retval;
     }
     

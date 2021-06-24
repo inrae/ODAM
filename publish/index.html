@@ -525,14 +525,14 @@
 <p>In order to make the data fair, and even if there is already a web API for data access, it makes sense to attach an ODAM datapackage.json file (see <a href="../json-schema">JSON schema</a>) to the institutional data repository. This allows machines to use the data, since this datapackage file uses an explicit schema for the data and its organization. In this case, it is imperative to specify absolute URLs in the datapackage.json for the data files.</p>
 <dl>
 <dt>You can get the datapackage.json file from the <a href="../api">ODAM API</a> as follows:</dt>
-<dd><code>https://&lt;your ODAM data reposity&gt;/getdata/json/&lt;your dataset&gt;/datapackage?links=1</code></dd>
+<dd><code>https://&lt;your ODAM data reposity&gt;/getdata/query/&lt;your dataset&gt;/datapackage?links=1</code></dd>
 </dl>
 <p><br></p>
 <h4 id="without-odam-repository">Without ODAM repository<a class="headerlink" href="#without-odam-repository" title="Permanent link">&para;</a></h4>
 <p>If you do not wish to set up your own ODAM repository on internet, you can at least simply upload your data files with associated structural metadata to an institutional repository. Add a ODAM datapackage.json file within your collection of data files with relative path for files. (see <a href="../json-schema">JSON schema</a>).</p>
 <dl>
 <dt>You can get the datapackage.json file from the <a href="../api">ODAM API</a> as follows:</dt>
-<dd><code>http://&lt;your local ODAM data reposity&gt;/getdata/json/&lt;your dataset&gt;/datapackage</code></dd>
+<dd><code>http://&lt;your local ODAM data reposity&gt;/getdata/query/&lt;your dataset&gt;/datapackage</code></dd>
 </dl>
 <p>In addition, for easy reuse, simply indicate that the data has been formatted and structured to be compatible with the ODAM software, so that users of the data can take advantage of all associated services and tools by installing it on their desktop or laptop.</p>
 <p><br><br><br></p>

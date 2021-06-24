@@ -419,11 +419,6 @@ Even if Web API outputs are not dedicated to human readers (script languages as 
 </thead>
 <tbody>
 <tr>
-<td><strong>&lt;data format&gt;</strong></td>
-<td>Format of the retrieved data; possible values are: 'xml', ‘json’ or ‘tsv'</td>
-<td>tsv</td>
-</tr>
-<tr>
 <td><strong>&lt;dataset name&gt;</strong></td>
 <td>Short name (tag) of your dataset</td>
 <td>frim1</td>
@@ -453,10 +448,15 @@ Even if Web API outputs are not dedicated to human readers (script languages as 
 <td>Exact value of the desired entry or category</td>
 <td>1 (for subset) or <br> Factor (for category)</td>
 </tr>
+<tr>
+<td><strong>&lt;data format&gt;</strong></td>
+<td>Format of the retrieved data; possible values are: 'xml', ‘json’ or ‘tsv'</td>
+<td>tsv</td>
+</tr>
 </tbody>
 </table>
 <ul>
-<li>API Documentation on SwaggerHub : <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.0.1-oas3/" target="_blank">INRA-PMB/ODAM/1.0.1-oas3</a></li>
+<li>API Documentation on SwaggerHub : <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.2.0/" target="_blank">INRA-PMB/ODAM/1.2.0</a></li>
 </ul>
 <p><center>
 <a href="../images/web2.png" data-lightbox="web2"><img src="../images/web2.png" width="600px"></a>
@@ -489,20 +489,29 @@ Thus, our complete API query would be this one:</p>
 <a href="../images/figure44.png" data-lightbox="fig44"><img src="../images/figure44.png" width="600px"></a>
 <br><p class="plegend center">Complete API query</p>
 </center><br><br></p>
-<p>To test this query by yourself, you can go to <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.0.1-oas3/" target="_blank">ODAM's Swagger interface</a> and play with the followed specific query :</p>
+<p>To test this query by yourself, you can go to <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.2.0/" target="_blank">ODAM's Swagger interface</a> and play with the followed specific query :</p>
 <p><center>
 <a href="../images/figure45.png" data-lightbox="fig45"><img src="../images/figure45.png" width="600px"></a>
 <br><p class="plegend center">ODAM API in Swagger</p>
 </center><br><br></p>
 <p>Finally, how does it work internally? How are the different subsets of data combined in practice?
-Since each data subset being a data file, and linked to one or more other data subsets by means of common identifiers, it is possible to apply a SQL query from the data files thanks to the powerful tool  <a href="http://harelba.github.io/q/" target="_blank">q - Text as Data</a> which allows to apply SQL queries directly to CSV and TSV files as shown below:</p>
+Since each data subset being a data file, and linked to one or more other data subsets by means of common identifiers, it is possible to apply a SQL query from the data files as shown below: </p>
 <p><center>
 <a href="../images/figure41.png" data-lightbox="fig41"><img src="../images/figure41.png" width="600px"></a>
 <br><p class="plegend center">SQL query corresponding to the API query</p>
 </center><br><br></p>
+<p>The application of SQL queries is performed</p>
+<ul>
+<li>
+<p>either with the <a href="http://harelba.github.io/q/" target="_blank">q - Text as Data</a> tool which allows to apply SQL queries directly on CSV and TSV files. It is the default tool.</p>
+</li>
+<li>
+<p>or with the <a href="https://www.sqlite.org/cli.html" target="_blank">sqlite3</a> tool which, by building a database and indexing it, allows to accelerate considerably the response times on large files. To proceed with the creation and indexing of the database, a call to the API is necessary (/getdata/build/{dataset}).</p>
+</li>
+</ul>
 <p>In addition, if you want to display information about the API query, just add '/debug' at the end of the query, as shown below:
 <br>
-<a href="http://pmb-bordeaux.fr/getdata/tsv/frim1/(activome,qNMR_metabo)/treatment/Control/debug" target="_blank">http://pmb-bordeaux.fr/getdata/tsv/frim1/(activome,qNMR_metabo)/treatment/Control/debug</a></p>
+<a href="https://pmb-bordeaux.fr/getdata/query/frim1/(activome,qNMR_metabo)/treatment/Control/debug" target="_blank">https://pmb-bordeaux.fr/getdata/query/frim1/(activome,qNMR_metabo)/treatment/Control/debug</a></p>
 <p><br><br><br><br></p>
                 
                   

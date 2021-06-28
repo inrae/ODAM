@@ -18,6 +18,13 @@
     along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+# Check format
+if (! in_array( $format, array('xml','json') ))
+{
+   echo "Error: format $format does not recognize.";
+   exit(1);
+}
+
 ob_start();
 include ('inc/check_lib.inc');
 ob_end_clean();

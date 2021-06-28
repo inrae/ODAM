@@ -42,7 +42,7 @@ do {
     }
 
     if (! is_dir("$DATADIR/$dataset")) {
-        $INFOS_TEXT = '## ERROR: dataset $dataset is not available';
+        $INFOS_TEXT = "## ERROR: dataset $dataset is not available";
         break;
     }
 

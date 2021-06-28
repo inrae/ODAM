@@ -81,7 +81,7 @@ do
     $dataset = array_shift($urloptions);
     if (! is_dir("$DATADIR/$dataset"))
    {
-        echo "ERROR: the dataset directory is not available";
+        echo "ERROR: the dataset directory named $dataset is not available";
         break;
     }
 
@@ -289,13 +289,13 @@ do
         $db = "$DATADIR/$dataset/".$def->DBNAME;
         if ($doQuery) {
            if (is_file($db))
-               echo '<pre>sqlite '.`$def->SQLITE -version`.'</pre><hr>';
+               echo '<pre>sqlite '.trim(`$def->SQLITE -version`)."</pre><hr>\n";
            else
                echo '<pre>'.trim(`$QSQL -v 2>&1`).'</pre><hr>';
         }
       # Display the full command
         $CMD = $doQuery ?  $def->do_SQL_query($query, '', 1) : 0;
-        echo "URL QUERY : $restmsg<br><br>CMD = $CMD<br>"; echo "<br>STDOUT = $stdout<br>";
+        echo "URL QUERY : $restmsg<br><br>\n\nCMD = $CMD<br>\n\n"; echo "<br>STDOUT = $stdout<br>\n\n";
 
       # Display information on the query
         if ($doQuery) {
@@ -308,9 +308,9 @@ do
            $retvald=trim(`ls -l $stderr | cut -d' ' -f5`);
            if (! $retvald) { $resrow=trim(`cat $stdout | wc -l`); $rescol=trim(`echo "$query" | tr "," "\n" | wc -l`); }
            $resrow--;
-           echo "<br>doQuery: $doQuery - Nb rows: $resrow - Nb cols: $rescol - Execution time: $execution_time sec<br>";
+           echo "<br>doQuery: $doQuery - Nb rows: $resrow - Nb cols: $rescol - Execution time: $execution_time sec<br>\n\n";
            if ($retvald) echo "<br>".`cat $stderr`."<br>";
-           else echo "<br>Size of the output file before formatting: ".round(filesize($stdout)/1024,2)." Kb<br>";
+           else echo "<br>Size of the output file before formatting: ".round(filesize($stdout)/1024,2)." Kb<br>\n\n";
          # display the formated query
            $fmtquery = $query;
            $fmtquery = str_replace("JOIN", "\nJOIN", str_replace("from", "\nFROM", $fmtquery));
@@ -329,7 +329,7 @@ do
                  $fmtquery = str_replace($str_split[0].',', $str_split[0].",\n      ", $fmtquery);
               }
            }
-           echo"<br><pre>$fmtquery</pre>";
+           echo"<br><pre>$fmtquery</pre>\n\n";
          # Show schema of tables in case the database is created
            if ($OS=='LINUX' && is_file($db)) {
               $CMD="echo \".schema\" | ".$def->SQLITE. " $db";

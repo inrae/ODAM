@@ -84,7 +84,7 @@ Then, start the docker containers
 
 Normally if everything is ok, you can access your data via web-services. You can test for example with the command curl (depending on the GETDATA_URL_PROXY and GETDATA_PORT settings in the ./odam.sh file ):
 ```
-    $ curl "http://my_host:8081/query/<your_dataset_name>
+    $ curl "http://my_host.com:8081/query/<your_dataset_name>
 ```
 Or test your getData API through the web swagger UI (go to [API](https://github.com/INRA/ODAM/tree/master/API) folder)
 

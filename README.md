@@ -7,10 +7,10 @@
 
 ODAM is an Experiment Data Table Management System (EDTMS) that gives you an open access to your data and make them ready to be mined - A data explorer as bonus
 
-See [presentation](http://fr.slideshare.net/danieljacob771282/odam-open-data-access-and-mining) on fr.slideshare.net
+For more information, see [ODAM: Deployment and User's Guide](https://inrae.github.io/ODAM/)
 
 ------
-**Maintainer**: Daniel Jacob - INRA - UMR 1332 BFP (2017-2020)
+**Maintainer**: Daniel Jacob - INRAE - UMR 1332 BFP (2017-2021)
 
 
 ### Installation
@@ -84,11 +84,41 @@ Then, start the docker containers
 
 Normally if everything is ok, you can access your data via web-services. You can test for example with the command curl (depending on the GETDATA_URL_PROXY and GETDATA_PORT settings in the ./odam.sh file ):
 ```
-    $ curl "http://localhost:8080/tsv/your_dataset_name
+    $ curl "http://my_host:8081/query/<your_dataset_name>
 ```
 Or test your getData API through the web swagger UI (go to [API](https://github.com/INRA/ODAM/tree/master/API) folder)
 
-In your Web browser, you can launch the Data Explorer connected to your dataset with the URL http://localhost/?ds=your_dataset_name (depending on the GETDATA_URL_PROXY and DATAEXPLORER_PORT settings in the ./odam.sh file ).
+In your Web browser, you can launch the Data Explorer connected to your dataset with the URL http://my_host.com:8080/?ds=your_dataset_name (depending on the GETDATA_URL_PROXY and DATAEXPLORER_PORT settings in the ./odam.sh file ).
+
+
+### NGINX configuration (Linux)
+
+For avanced users: In case you would like to use a proxy server, the better is to install and set NGINX, an HTTP and reverse proxy server.
+
+In the /etc/nginx/conf.d/my-site.conf, you should add two 'location' sections as shown below:
+
+```
+server {
+    listen 80 default;
+    server_name $host;
+
+    ...
+
+   location /getdata/ {
+        proxy_pass http://$host:8081;
+    }
+
+    location /dataexplorer/ {
+        proxy_pass http://$host:8080;
+    }
+
+    ...
+
+}
+```
+
+In this way, you can use the URL http://my_host.com/getdata/... for API and the URL http://my_host.com/dataexplorer/... for the data explorer
+
 
 ### Future improvements
     * A web page allowing users to annotate the attributes with ontologies (based on BioPortal API) 

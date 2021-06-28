@@ -5,18 +5,18 @@ MYDIR=`dirname $0` && [ ! `echo "$0" | grep '^\/'` ] && MYDIR=`pwd`/$MYDIR
 DEV=0
 
 # URL Proxy for the "getdata" web-services
-GETDATA_URL_PROXY=http://localhost:8080/
+GETDATA_URL_PROXY=http://my_host.com:8081/
 
 # Path root of the data repository
 GETDATA_DATAREPOS=/opt/DataRepos
 
 # GetData Container
-GETDATA_PORT=8080
+GETDATA_PORT=8081
 GETDATA_IMAGE=docker.io/odam/getdata
 GETDATA_CONTAINER=gdata
 
 # Dataexplorer Container
-DATAEXPLORER_PORT=80
+DATAEXPLORER_PORT=8080
 DATAEXPLORER_IMAGE=docker.io/odam/dataexplorer
 DATAEXPLORER_CONTAINER=dataexplorer
 

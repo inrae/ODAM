@@ -62,7 +62,7 @@ Or you may prefer getting directly the docker images from the official [docker r
 
 ### Configuration
 
-Edit the ./odam.sh file , change the GETDATA_URL_PROXY, GETDATA_DATAREPOS, GETDATA_PORT and DATAEXPLORER_PORT  parameters according to your local configuration
+**Edit the ./odam.sh file** , change the **GETDATA_URL_PROXY**, **GETDATA_DATAREPOS**, **GETDATA_PORT** and **DATAEXPLORER_PORT**  parameters according to your local configuration
 
 ### Usage
 

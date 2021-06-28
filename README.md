@@ -48,8 +48,8 @@ Or you may prefer getting directly the docker images from the official [docker r
     $ mkdir /opt/DataRepos
 ```
 
-  * Create / add a dataset into your data repository (see [presentation](http://fr.slideshare.net/danieljacob771282/odam-open-data-access-and-mining))
-  * To prepare your own data subsets, see the [tutorial on metadata files](https://github.com/INRA/ODAM/blob/master/doc/tutorial_on_metadata_files.pdf)
+  * Create / add a dataset into your data repository (see [presentation](https://inrae.github.io/ODAM/pdf/FAIR_and_DataLife_DJ_Oct2019.pdf))
+  * To prepare your own data subsets, see the [ODAM: Data collection and preparation](https://inrae.github.io/ODAM/data-type/)
 
 ### Get the complete FRIM dataset as an example
 
@@ -84,11 +84,11 @@ Then, start the docker containers
 
 Normally if everything is ok, you can access your data via web-services. You can test for example with the command curl (depending on the GETDATA_URL_PROXY and GETDATA_PORT settings in the ./odam.sh file ):
 ```
-    $ curl "http://my_host.com:8081/query/<your_dataset_name>
+    $ curl "http://myhost.org:8081/query/<your_dataset_name>
 ```
 Or test your getData API through the web swagger UI (go to [API](https://github.com/INRA/ODAM/tree/master/API) folder)
 
-In your Web browser, you can launch the Data Explorer connected to your dataset with the URL http://my_host.com:8080/?ds=your_dataset_name (depending on the GETDATA_URL_PROXY and DATAEXPLORER_PORT settings in the ./odam.sh file ).
+In your Web browser, you can launch the Data Explorer connected to your dataset with the URL http://myhost.org:8080/?ds=your_dataset_name (depending on the GETDATA_URL_PROXY and DATAEXPLORER_PORT settings in the ./odam.sh file ).
 
 
 ### NGINX configuration (Linux)
@@ -117,7 +117,7 @@ server {
 }
 ```
 
-In this way, you can use the URL http://my_host.com/getdata/... for API and the URL http://my_host.com/dataexplorer/... for the data explorer
+In this way, you can use the URL http://myhost.org/getdata/... for API and the URL http://myhost.org/dataexplorer/... for the data explorer
 
 
 ### Future improvements

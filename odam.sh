@@ -5,7 +5,7 @@ MYDIR=`dirname $0` && [ ! `echo "$0" | grep '^\/'` ] && MYDIR=`pwd`/$MYDIR
 DEV=0
 
 # URL Proxy for the "getdata" web-services
-GETDATA_URL_PROXY=http://my_host.com:8081/
+GETDATA_URL_PROXY=http://myhost.org:8081/
 
 # Path root of the data repository
 GETDATA_DATAREPOS=/opt/DataRepos

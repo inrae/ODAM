@@ -45,7 +45,6 @@ else
 #               outputs the result
 #-----------------------------------------------------
 # Parse PATH_INFO if needed
-#if ($_SERVER['PATH_INFO'] && $auth==$AUTHKEY)
 if ($_SERVER['PATH_INFO'])
 do
 {
@@ -84,6 +83,27 @@ do
         echo "ERROR: the dataset directory named $dataset is not available";
         break;
     }
+
+    # check if authkey is valid for this dataset
+    if (is_file("$DATADIR/authkeys.txt")) {
+        $okauth = TRUE;
+        $handle = fopen("$DATADIR/authkeys.txt", "r");
+        if ($handle) {
+           while (($line = fgets($handle)) !== false) {
+              $arr = explode("\t",$line);
+              if (trim($arr[0])==$dataset && trim($arr[1])!==$auth) {
+                 $okauth = FALSE;
+                 break;
+              }
+           }
+        }
+        fclose($handle);
+        if (!$okauth) {
+           echo "ERROR: invalid authorization key for the $dataset dataset ";
+           break;
+        }
+    }
+
 
     # get function
     $func = array_shift($urloptions);

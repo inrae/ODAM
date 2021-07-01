@@ -18,6 +18,8 @@
     along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+$auth  = isset($_GET['auth'])  ?  $_GET['auth']  : '' ;
+
 # Check format
 if (! in_array( $format, array('xml','json') ))
 {
@@ -41,7 +43,7 @@ do {
     $dataset='';
     $cntopt=0;
     
-    # Parse PATH_INFO if needed
+# Parse PATH_INFO if needed
     if ($_SERVER['PATH_INFO']) {
         $urloptions = explode("/",$_SERVER['PATH_INFO']);
         array_shift($urloptions);
@@ -54,6 +56,27 @@ do {
         $def = new check_lib('');
         break;
     }
+
+# check if authkey is valid for this dataset
+    $okauth = FALSE;
+    if (is_file("$DATADIR/authkeys.txt")) {
+        $handle = fopen("$DATADIR/authkeys.txt", "r");
+        if ($handle) {
+           while (($line = fgets($handle)) !== false) {
+              $arr = explode("\t",$line);
+              if (trim($arr[0])==$dataset && trim($arr[1])==$auth) {  
+                 $okauth = TRUE;
+                 break;
+              }
+           }
+        }
+        fclose($handle);
+        if (!$okauth) {
+           echo "ERROR: invalid authorization key for the $dataset dataset ";
+           break;
+        }
+    } else 
+        $okauth = TRUE;
 
 # New instance of the def_lib object
     $def = new check_lib("$DATADIR/$dataset");
@@ -113,13 +136,15 @@ do {
 #-----------------------------------------------------
 # Generate the checking results as output 
 #-----------------------------------------------------
-if ($format == 'xml') { # within a XML structure 
-   header('Content-Type: text/xml; charset=ISO-8859-1');
-   echo $def->check_xml_output("$GETDATA_URL_PROXY"."xsl/check_report.xsl");
-}
-elseif ($format == 'json') { # within a JSON structure
-   header('Content-Type: application/json; charset=ISO-8859-1');
-   echo $def->check_json_output();
+if ($okauth) {
+  if ($format == 'xml') { # within a XML structure 
+     header('Content-Type: text/xml; charset=ISO-8859-1');
+     echo $def->check_xml_output("$GETDATA_URL_PROXY"."xsl/check_report.xsl");
+  }
+  elseif ($format == 'json') { # within a JSON structure
+     header('Content-Type: application/json; charset=ISO-8859-1');
+     echo $def->check_json_output();
+  }
 }
 
 `rm -f $TMPDIR/$SESSID.*`;

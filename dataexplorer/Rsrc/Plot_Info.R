@@ -36,9 +36,11 @@
             print(sessionInfo())
           } else {
            # Run JS code  
+            authstr <- ifelse( nchar(ws[3])>0, paste0(", '", ws[3],"'"), '' );
+            odamws_params <- paste0("'",ws[4],"', '",ws[2],"'", authstr);
             cat("\noptions(width=256)\n", "options(warn=-1)\n","options(stringsAsFactors=FALSE)\n","\n",
                 "library(Rodam)\n","\n",
-                "# Initialize the 'ODAM' object \n", "dh <- new('odamws', '",ws[4],"', '",ws[2],"')\n","\n",
+                "# Initialize the 'ODAM' object \n", "dh <- new('odamws',",odamws_params,")\n","\n",
                 "# Get the Data Tree\n","show(dh)\n","\n",
                 "# Get the data subsets list\n","dh$subsetNames\n","\n",
                 sep=""
@@ -96,7 +98,7 @@
     })
 
     output$subsets <- renderDataTable({
-       tryCatch({ 
+       tryCatch({ if (nchar(msgError)==0) {
            if ( !is.DS(cdata) || values$init==0 ||  is.null(input$inDSselect)) return(NULL)
            if ( is.null(subsets) ) return(NULL)
            if (input$inDSselect>0) {
@@ -105,8 +107,9 @@
                tsets <- subsets
            }
            setinfo <- NULL
+           authstr <- ifelse( nchar(ws[3])>0, paste0('auth=', ws[3],'&'), '' );
            for( i in 1:dim(tsets)[1]) {
-               urlSubset <- paste0(ws[4],'query/', ws[2], '/(',.C(tsets[i,1]) ,")?format=xml");
+               urlSubset <- paste0(ws[4],'query/', ws[2], '/(',.C(tsets[i,1]) ,')?', authstr, 'format=xml');
                linkSubset <- paste0("<a href='",urlSubset,"' target='_blank'>",.C(tsets[i,1]),"</a>")
                linkOnto <- paste0("<a href='",.C(tsets[i,5]),"' target='_blank'>[", basename(.C(tsets[i,5])),'] ', .C(tsets[i,6]),"</a>")
                setinfo <- rbind( setinfo , c( linkSubset, .C(tsets[i,c(2:4)]), linkOnto ) )
@@ -114,7 +117,7 @@
            df <- as.data.frame(setinfo)
            names(df) <- c("Subset","Description","Identifier", "WSEntry", "CV_Term")
            df
-       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Subsets \n", e ); })
+       }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Subsets \n", e ); })
     }, options = list(searching=FALSE, paging=FALSE), escape=c(2:4))
 
     output$infos <- renderDataTable({

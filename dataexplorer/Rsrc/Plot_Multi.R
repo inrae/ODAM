@@ -105,6 +105,7 @@
        input$inDselect
        if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
           if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
+          if (dim(varnames)[1]>maxVariables) return(NULL)
           # First Factor
           f1_options <- .C(facnames[,2])
           names(f1_options) <- .C(facnames$Description)

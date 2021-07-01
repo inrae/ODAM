@@ -213,7 +213,7 @@ dat <- subdata
        input$inDselect
        if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
           if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
-          # Select the variable to be analysed
+          if (dim(varnames)[1]>maxVariables) return(NULL)
           v_options <- c(0, 1:dim(varnames)[1] )
           names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",varnames$Description)))
           updateSelectInput(session, "uniVarSelect", choices = v_options)

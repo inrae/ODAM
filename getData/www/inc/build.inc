@@ -18,6 +18,7 @@
     along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+$auth  = isset($_GET['auth'])  ?  $_GET['auth']  : '' ;
 $debug = isset($_GET['debug']) ?  $_GET['debug'] : 0 ;
 $dbindex = isset($_GET['idx']) ?  $_GET['idx'] : 1 ;
 
@@ -48,9 +49,30 @@ do
   # check if dataset present
     $dataset = array_shift($urloptions);
     if (! is_dir("$DATADIR/$dataset"))
-   {
+    {
         echo "ERROR: the dataset directory is not available";
         break;
+    }
+
+    # check if authkey is valid for this dataset
+    if (is_file("$DATADIR/authkeys.txt"))
+    {
+        $okauth = TRUE;
+        $handle = fopen("$DATADIR/authkeys.txt", "r");
+        if ($handle) {
+           while (($line = fgets($handle)) !== false) {
+              $arr = explode("\t",$line);
+              if (trim($arr[0])==$dataset && trim($arr[1])!==$auth) {
+                 $okauth = FALSE;
+                 break;
+              }
+           }
+        }
+        fclose($handle);
+        if (!$okauth) {
+           echo "ERROR: invalid authorization key for the $dataset dataset ";
+           break;
+        }
     }
 
     ob_start();

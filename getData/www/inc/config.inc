@@ -46,13 +46,11 @@ $DATADIR  = $set->DATAROOT;
 if ($OS=='LINUX') {
     $TMPDIR  = "$ROOTDIR/tmp";
     $QSQL    = $set->QBIN.' '.$set->QOPTIONS;
-    $AUTHKEY  = $set->AUTHKEY;
     $SQLITE   = $set->SQLITE;
     $BB       = '';
 } else {
     $TMPDIR  = str_replace( '\\', '/', getenv('TEMP'));
     $QSQL     = $ROOTDIR.'/../bin/q '.$set->QOPTIONS;
-    $AUTHKEY  = "";
     $SQLITE   = $ROOTDIR.'/../bin/sqlite3.exe';
     $BB       = $ROOTDIR.'/../bin/busybox.exe';
 }

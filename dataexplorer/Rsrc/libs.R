@@ -33,6 +33,7 @@ subsets <- NULL
 inDSselect <- 0
 subsetNames <- NULL
 connectList <- NULL
+msgError <- ''
 dn <- NULL
 fs <- 10
 
@@ -103,7 +104,7 @@ getWS <- function(cdata) {
 
 getDataCol <- function (ws) {
     dclist <- NULL
-    myurl <- paste(ws[4],'/tsv/', ws[5], "?auth=",ws[3],sep="");
+    myurl <- paste(ws[4],'/tsv/', ws[5], "?auth=",ws[3], sep="");
     dc <- read.csv(textConnection(getURL(myurl, ssl.verifypeer = FALSE)), head=TRUE, sep="\t");
     if (length(dc$Subset)==1 && dc$Subset=="collection") {
         myurl <- paste(ws[4],'/tsv/', ws[5], '/collection',"?auth=",ws[3],sep="");
@@ -133,7 +134,12 @@ getInfos <- function (ws) {
 
 getData <- function (ws, query) {
     myurl <- paste(ws[4],'/tsv/', ws[2], '/', query,"?auth=",ws[3],sep="");
-    read.csv(textConnection(getURL(myurl, ssl.verifypeer = FALSE)), head=TRUE, sep="\t");
+    out <- read.csv(textConnection(getURL(myurl, ssl.verifypeer = FALSE)), head=TRUE, sep="\t");
+    msgError <<- ''
+    if (dim(out)[1]==0) {
+        msgError <<- gsub("\\.", " ", colnames(out))[1]
+    }
+    out
 }
 
 getXML <- function (ws, query) {
@@ -145,25 +151,26 @@ getInit <- function() {
 
     # Get subsets information
     subsets <<- getData(ws, 'subset')
-    subsets <<- subsets[order(subsets$SetID),]
-    subsetNames <<- .C(subsets$Subset)
-    connectList <<- cbind( subsets[subsets$LinkID>0, ]$LinkID , subsets[subsets$LinkID>0, ]$SetID )
-    subsets$LinkID <<- NULL
-
-    # Filtering of subset depending on quantitative attributes
-    setnames <<- as.vector(subsets[,'Subset'])
-    nq <- simplify2array(lapply(setnames, function (x) { V <- as.vector(getData(ws,paste('(',x,')/quantitative',sep=''))[,1]); length(V[V==x]); }))
-    setnames <<- setnames[ nq>0 ]
-    subsets <<- subsets[ subsets[, 'Subset'] %in% setnames, ]
-    DSL <<- c(0,subsets$SetID)
-    names(DSL) <<- c('-- Select a Data Subset --',.C(subsets$Description))
-    subsets$SetID <<- NULL
-    subsets[,5] <<- sapply(.C(subsets[,5]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
-    subsets[,6] <<- sapply(.C(subsets[,6]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
-    dn <<- fillDN(dn, min(connectList[,1]))
-    Lev <- NULL; Lev <- cntLevelDN(Lev, dn , 1); N <- min(max(Lev),25)
-    N <- (trunc(N/5)+1*(N %% 5 >0))*5
-    fs <<- -N + 45
+    if (nchar(msgError)==0) {
+       subsets <<- subsets[order(subsets$SetID),]
+       subsetNames <<- .C(subsets$Subset)
+       connectList <<- cbind( subsets[subsets$LinkID>0, ]$LinkID , subsets[subsets$LinkID>0, ]$SetID )
+       subsets$LinkID <<- NULL
+       # Filtering of subset depending on quantitative attributes
+       setnames <<- as.vector(subsets[,'Subset'])
+       nq <- simplify2array(lapply(setnames, function (x) { V <- as.vector(getData(ws,paste('(',x,')/quantitative',sep=''))[,1]); length(V[V==x]); }))
+       setnames <<- setnames[ nq>0 ]
+       subsets <<- subsets[ subsets[, 'Subset'] %in% setnames, ]
+       DSL <<- c(0,subsets$SetID)
+       names(DSL) <<- c('-- Select a Data Subset --',.C(subsets$Description))
+       subsets$SetID <<- NULL
+       subsets[,5] <<- sapply(.C(subsets[,5]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
+       subsets[,6] <<- sapply(.C(subsets[,6]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
+       dn <<- fillDN(dn, min(connectList[,1]))
+       Lev <- NULL; Lev <- cntLevelDN(Lev, dn , 1); N <- min(max(Lev),25)
+       N <- (trunc(N/5)+1*(N %% 5 >0))*5
+       fs <<- -N + 45
+    }
 }
 
 getVars <- function(setID, rmvars=FALSE) {
@@ -173,52 +180,55 @@ getVars <- function(setID, rmvars=FALSE) {
 
     # Get DATA
     data <<- getData(ws,paste('(',setName,')',sep=''))
-
-    # Get Samples: attribute features, list of identifiers
-    I <- getData(ws,paste('(',setName,')/identifier',sep=''))
-    samplename <<- I[I$Subset == setName, ]
-    samples <<- .C(samplename$Attribute)
-    S <<- unique(data[ , samples])
-    S <<- S[ order(S) ]
-
-    # Get quantitative variable features
-    Q <- getData(ws,paste('(',setName,')/quantitative',sep=''))
-    varnames <<- Q[Q$Subset == setName, ]
-
-    # Get qualitative variable features
-    Q <- getData(ws,paste('(',setName,')/qualitative',sep=''))
-    #qualnames <<- Q[Q$Subset == setName, ]
-    qualnames <<- Q
-
-    # Get factor features
-    facnames <<- getData(ws,paste('(',setName,')/factor',sep=''))
-
-    # Get all qualitative features
-    features <<- rbind(I, facnames, qualnames)
-
-    # Merge all labels
-    LABELS <<- rbind(
-      matrix( c( as.matrix(samplename)[,c(2:3)], 'Identifier', as.matrix(samplename)[,c(5:6)]), ncol=5, byrow=FALSE  ),
-      matrix( c( as.matrix(facnames)[,c(2:3)], replicate(dim(facnames)[1],'Factor'  ), as.matrix(facnames)[,c(5:6)] ), ncol=5, byrow=FALSE  ),
-      matrix( c( as.matrix(varnames)[,c(2:3)], replicate(dim(varnames)[1],'Variable'), as.matrix(varnames)[,c(5:6)] ), ncol=5, byrow=FALSE  )
-    )
-    if (dim(as.matrix(qualnames))[1]>0 ) LABELS <<- rbind ( LABELS, matrix( c( as.matrix(qualnames)[,c(2:3)], replicate(dim(qualnames)[1],'Feature'), as.matrix(qualnames)[,c(5:6)] ), ncol=5, byrow=FALSE ) )
-    colnames(LABELS) <<- c( 'Attribute', 'Description', 'Type', 'CV_Term_ID ', 'CV_Term_Name' )
-    LABELS[,4] <<- sapply(.C(LABELS[,4]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
-    LABELS[,5] <<- sapply(.C(LABELS[,5]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
-
-    # Numerical conversion
-    for( i in 1:dim(varnames)[1]) { if (.C(varnames$Type[i]) == 'numeric') data[,.C(varnames$Attribute[i])] <<- .N(data[,.C(varnames$Attribute[i])]); }
-    for( i in 1:dim(samplename)[1]) { if (.C(samplename$Type[i]) == 'numeric') data[,.C(samplename$Attribute[i])] <<- .N(data[,.C(samplename$Attribute[i])]); }
-
-    # Remove quantitative variables with all values at zero
-    if (rmvars){
-       V <- simplify2array( lapply(varnames$Attribute, function(v) { sum( which(data[, .C(v)]!=0) ) }) )
-       if (length(which(V==0))>0) {
-          data <<- data[, ! colnames(data) %in% .C(varnames$Attribute[ c(which(V==0))]) ]
-          LABELS <<- LABELS[! LABELS[,1] %in% .C(varnames$Attribute[c(which(V==0))]), ]
-          varnames <<- varnames[ -c(which(V==0)), ]
+    if (dim(data)[2]<=maxVariables) {
+       # Get Samples: attribute features, list of identifiers
+       I <- getData(ws,paste('(',setName,')/identifier',sep=''))
+       samplename <<- I[I$Subset == setName, ]
+       samples <<- .C(samplename$Attribute)
+       S <<- unique(data[ , samples])
+       S <<- S[ order(S) ]
+       
+       # Get quantitative variable features
+       Q <- getData(ws,paste('(',setName,')/quantitative',sep=''))
+       varnames <<- Q[Q$Subset == setName, ]
+       
+       # Get qualitative variable features
+       Q <- getData(ws,paste('(',setName,')/qualitative',sep=''))
+       #qualnames <<- Q[Q$Subset == setName, ]
+       qualnames <<- Q
+       
+       # Get factor features
+       facnames <<- getData(ws,paste('(',setName,')/factor',sep=''))
+       
+       # Get all qualitative features
+       features <<- rbind(I, facnames, qualnames)
+       
+       # Merge all labels
+       LABELS <<- rbind(
+         matrix( c( as.matrix(samplename)[,c(2:3)], 'Identifier', as.matrix(samplename)[,c(5:6)]), ncol=5, byrow=FALSE  ),
+         matrix( c( as.matrix(facnames)[,c(2:3)], replicate(dim(facnames)[1],'Factor'  ), as.matrix(facnames)[,c(5:6)] ), ncol=5, byrow=FALSE  ),
+         matrix( c( as.matrix(varnames)[,c(2:3)], replicate(dim(varnames)[1],'Variable'), as.matrix(varnames)[,c(5:6)] ), ncol=5, byrow=FALSE  )
+       )
+       if (dim(as.matrix(qualnames))[1]>0 ) LABELS <<- rbind ( LABELS, matrix( c( as.matrix(qualnames)[,c(2:3)], replicate(dim(qualnames)[1],'Feature'), as.matrix(qualnames)[,c(5:6)] ), ncol=5, byrow=FALSE ) )
+       colnames(LABELS) <<- c( 'Attribute', 'Description', 'Type', 'CV_Term_ID ', 'CV_Term_Name' )
+       LABELS[,4] <<- sapply(.C(LABELS[,4]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
+       LABELS[,5] <<- sapply(.C(LABELS[,5]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
+       
+       # Numerical conversion
+       for( i in 1:dim(varnames)[1]) { if (.C(varnames$Type[i]) == 'numeric') data[,.C(varnames$Attribute[i])] <<- .N(data[,.C(varnames$Attribute[i])]); }
+       for( i in 1:dim(samplename)[1]) { if (.C(samplename$Type[i]) == 'numeric') data[,.C(samplename$Attribute[i])] <<- .N(data[,.C(samplename$Attribute[i])]); }
+       
+       # Remove quantitative variables with all values at zero
+       if (rmvars){
+          V <- simplify2array( lapply(varnames$Attribute, function(v) { sum( which(data[, .C(v)]!=0) ) }) )
+          if (length(which(V==0))>0) {
+             data <<- data[, ! colnames(data) %in% .C(varnames$Attribute[ c(which(V==0))]) ]
+             LABELS <<- LABELS[! LABELS[,1] %in% .C(varnames$Attribute[c(which(V==0))]), ]
+             varnames <<- varnames[ -c(which(V==0)), ]
+          }
        }
+    } else {
+       varnames <<- t(data[1:2,])
     }
 }
 

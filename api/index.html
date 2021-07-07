@@ -287,6 +287,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#authorization-mechanism" class="md-nav__link">
+    Authorization mechanism
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#very-detailed-example-of-api-querying" class="md-nav__link">
     Very detailed example of API querying
   </a>
@@ -374,6 +381,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#authorization-mechanism" class="md-nav__link">
+    Authorization mechanism
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#very-detailed-example-of-api-querying" class="md-nav__link">
     Very detailed example of API querying
   </a>
@@ -407,7 +421,7 @@ Even if Web API outputs are not dedicated to human readers (script languages as 
 <a href="../images/web1.png" data-lightbox="web1"><img src="../images/web1.png" width="600px"></a>
 </center><br><br></p>
 <ul>
-<li>Using the two metadata files, it is possible to build a tree structure from which the data files can be queried to extract a subset. The tree structure is built on the Entity-Attribute-Value scheme.</li>
+<li>Using the two metadata files namely <strong>a_attributes.tsv</strong> and <strong>s_subsets.tsv</strong>, it is possible to build a tree structure from which the data files can be queried to extract a subset. The tree structure is built on the Entity-Attribute-Value scheme.</li>
 </ul>
 <table>
 <thead>
@@ -456,11 +470,132 @@ Even if Web API outputs are not dedicated to human readers (script languages as 
 </tbody>
 </table>
 <ul>
+<li>Four types of services (i.e query-paths) are provided, as described below: </li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>check</td>
+<td>Check the structure and consistency of the metadata files with the data files</td>
+</tr>
+<tr>
+<td>build</td>
+<td>Build the sqlite3 database allowing an acceleration of the queries</td>
+</tr>
+<tr>
+<td>query</td>
+<td>Query data based on metadata</td>
+</tr>
+<tr>
+<td>infos</td>
+<td>Get the content of the infos.md file (markdown format)</td>
+</tr>
+</tbody>
+</table>
+<ul>
 <li>API Documentation on SwaggerHub : <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.2.0/" target="_blank">INRA-PMB/ODAM/1.2.0</a></li>
 </ul>
 <p><center>
 <a href="../images/web2.png" data-lightbox="web2"><img src="../images/web2.png" width="600px"></a>
 </center><br></p>
+<h2 id="authorization-mechanism">Authorization mechanism<a class="headerlink" href="#authorization-mechanism" title="Permanent link">&para;</a></h2>
+<p>Currently, the ODAM API implements a key-based authorization mechanism, which is different from the authentication mechanism. (see this <a href="https://blog.restcase.com/4-most-used-rest-api-authentication-methods/" target="_blank">blog</a>). This latter implies to manage users along their specific rights whereas the key-based authorization mechanism associates keys for each resource. In addition, we have associated to these keys the possibility to limit their use according to the internet address (IP) of the machines from which the users make their requests.</p>
+<p>There is no centralized management of these keys. The management is done for each dataset independently. The principle is simple: if you want to put a key protection on a dataset, just create a file named <strong>authkeys.tsv</strong> (<a href="https://en.wikipedia.org/wiki/Tab-separated_values" target="_blank">TSV</a> format) and add it in the same directory as the dataset. Without this file, the dataset is completely open. </p>
+<ul>
+<li>The file <strong>authkeys.tsv</strong> (<a href="https://en.wikipedia.org/wiki/Tab-separated_values" target="_blank">TSV</a> format) has three columns as described below: </li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>column</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1<sup>st</sup></td>
+<td>IP Address or sub-network : in case of sub-network, only the common part of all IP adresses in the sub-network have to be specified. To signify all IPs, the character '*' will be used</td>
+</tr>
+<tr>
+<td>2<sup>nd</sup></td>
+<td>Can be either the API key or one of the two following keywords: 'deny' or 'allow'. 'deny' to forbid access (with or without API key), and 'allow' to allow access without API key.</td>
+</tr>
+<tr>
+<td>3<sup>rd</sup></td>
+<td>Comment or description</td>
+</tr>
+</tbody>
+</table>
+<p>Knowing that as soon as a rule is satisfied, the other rules are not read, it is important to order the rules according to a decreasing priority, the first one being the most important and so on.</p>
+<ul>
+<li>Example of Authorization file (authkeys.tsv)</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>IP</th>
+<th>Authorization</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>77.111</td>
+<td>deny</td>
+<td>VPN Opera Browser</td>
+</tr>
+<tr>
+<td>10.0.0</td>
+<td>allow</td>
+<td>local VMs</td>
+</tr>
+<tr>
+<td>192.168.100.50</td>
+<td>allow</td>
+<td>a PC Desktop</td>
+</tr>
+<tr>
+<td>192.168.100.51</td>
+<td>allow</td>
+<td>another one PC Desktop</td>
+</tr>
+<tr>
+<td>*</td>
+<td>secret.key</td>
+<td>Others</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p>The API key, when required, can be specified:</p>
+<ul>
+<li>in the API URL by adding 'auth={API key}' as a query parameter (i.e query string) :</li>
+</ul>
+<div class="highlight"><pre><span></span><code>https:/myserver/{query-paths}/{dataset}/.../?format={format}&amp;auth={API key}
+</code></pre></div>
+
+<ul>
+<li>in the HTTP header :</li>
+</ul>
+<div class="highlight"><pre><span></span><code>curl &quot;https:/myserver/{query-paths}/{dataset}/.../?format={format}&quot; -H &quot;X-Api-Key: {API key}&quot;
+</code></pre></div>
+
+</li>
+</ul>
+<p><br></p>
+<p><strong>Note</strong>: If an application hosted on a remote server makes requests, then of course the IP address of that server (which is not the IP of the client) will be taken as the default for comparison with the authorization settings. However, it is possible to implement a mechanism to modify the API query header by specifying the client's originating IP (see <a href="https://en.wikipedia.org/wiki/X-Forwarded-For" target="_blank">X-Forwarded-For</a>). This is what has been done for example in the data explorer.</p>
+<p>The approach used in the data explorer is as follows:</p>
+<ol>
+<li>using a javascript, we retrieve the client's IP address which is sent to the server side (see <a href="https://stackoverflow.com/questions/391979/how-to-get-clients-ip-address-using-javascript" target="_blank">examples</a>)</li>
+<li>On the server side, we modify the API request header by adding the X-Forwarded-For parameter positioned with the client IP address (using the R package httr, see <a href="https://rdrr.io/cran/httr/man/add_headers.html" target="_blank">add_headers</a>)</li>
+</ol>
 <h2 id="very-detailed-example-of-api-querying">Very detailed example of API querying<a class="headerlink" href="#very-detailed-example-of-api-querying" title="Permanent link">&para;</a></h2>
 <p>Since all the experimental data tables were generated as part of an experiment associated with a Design of Experiment (<a href="https://en.wikipedia.org/wiki/Design_of_experiments" target="_blank">DoE</a>), each file thus contains data acquired sequentially as the experiment progressed. There must therefore be a link between each file, i.e. information that connects them together. In most cases (if not all), this information corresponds to identifiers that make it possible to precisely reference within the experiment each of the elements belonging to the same observation entity forming a coherent observation unit. For example, each plant, each sample has its own identifier, and each of these entities corresponds to a separate data file.
 <br><br>

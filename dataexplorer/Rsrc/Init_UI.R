@@ -21,8 +21,11 @@
     #----------------------------------------------------
     # Observer - Init
     #----------------------------------------------------
+
     observe({ tryCatch({
-        if (is.DS(cdata)) {
+        input$ipclient
+        if (nchar(input$ipclient)>0) { if (is.DS(cdata)) {
+           IPClient <<- input$ipclient
            ws <<-getWS(cdata)
            if ( nchar(ws[5])>0 ) {
               dclist <<- getDataCol(ws)
@@ -37,15 +40,17 @@
            js$hideSidebar()
            js$hideSidebarToggle()
            js$hideinDSselect()
-        }
+        }}
     }, error=function(e) { ERROR$MsgErrorMain <-  paste("Init Obs:\n", e, ", ws: ", paste( ws , collapse=" - ") ); }) })
 
     #----------------------------------------------------
     # Observer - Dataset list
     #----------------------------------------------------
     observe({ tryCatch({
+        input$ipclient
         values$initcol
-        if (values$initcol==1 && ! is.null(dclist)) {
+        if (nchar(input$ipclient)>0 && values$initcol==1 && ! is.null(dclist)) {
+            IPClient <<- input$ipclient
             #listlabels <- dclist$list$description
             listlabels <- dclist$list$label
             indx <- order(listlabels)
@@ -67,13 +72,16 @@
     # Observer - Dataset subset init
     #----------------------------------------------------
     observe({ tryCatch({
+        input$ipclient
         values$initds
-        if ( values$initds==1 || (! is.null(input$inDselect) && nchar(input$inDselect)>0 )) {
+        if ( nchar(input$ipclient)>0 && 
+            ((values$initds==1) || (! is.null(input$inDselect) && nchar(input$inDselect)>0)) ) {
            if (! is.null(input$inDselect) && nchar(input$inDselect)>0 ) {
                ws[2] <<- input$inDselect
                ws[4] <<- getURLfromList()
                values$init <<- 0
            }
+           IPClient <<- input$ipclient
            tryCatch({ getInit() }, error=function(e) { ERROR$MsgErrorMain <- paste("getInit: ", e, ", ws: ", paste( ws , collapse=" - ") ); })
            inDSselect <<- 0
            # Default data subset

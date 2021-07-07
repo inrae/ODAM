@@ -55,13 +55,13 @@ class check_lib extends def_lib
 /********************************************************
 * Init. Method / Constructor
 ********************************************************/
-    function __construct($ENV, $dsname) { $this->check_lib($ENV, $dsname); } # PHP 5.3-compliant
+    function __construct($input) { $this->check_lib($input); } # PHP 5.3-compliant
 
     # Init. Vars.
-    function check_lib($ENV, $dsname)
+    function check_lib($input)
     {
-        parent::__construct($ENV, $dsname);
-        if (!strlen($dsname)) $this->check_flag=0;
+        parent::__construct($input);
+        if (!strlen($input)) $this->check_flag=0;
     }
 
 # Check dataset directory
@@ -250,10 +250,10 @@ class check_lib extends def_lib
 # Check if the database is correctly built
     function check_SQL_db()
     {
-        $db = $this->dir_input.'/'.$this->ENV['DBNAME'];
+        $db = $this->dir_input.'/'.$this->DBNAME;
         $msg = 'Check if the database has been created';
         $ret = is_file($db) ? 0 : 1;
-        $info = "The file ".$this->ENV['DBNAME']." is ";
+        $info = "The file ".$this->DBNAME." is ";
         $info .= $ret==0 ? 'present' : 'not present';
         $status = $ret==0 ? $this->status_tag['ok'] : $this->status_tag['warning'] ;
         $this->ds_items['database'] = array( 'msg' => $msg, 'info' => $info, 'status' => $status, 'cat' => 'database' );
@@ -296,7 +296,7 @@ class check_lib extends def_lib
     }
 
 # Generate the checking results within a XML structure
-    function check_xml_output()
+    function check_xml_output($xsl_url_file)
     {
         $nbrows=0;
         $nberrors=0;
@@ -320,7 +320,6 @@ class check_lib extends def_lib
         if ($nbnotes>0)
             foreach ($this->ref_notes as $key => $val) $chk_notes .= "<Note id=\"$key\">$val</Note>";
 
-        $xsl_url_file = $this->ENV['GETDATA_URL_PROXY']."xsl/check_report.xsl";
         $xml_output  = "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<?xml-stylesheet type=\"text/xsl\" href=\"$xsl_url_file\"?>\n";
         $xml_output .= "<WSCheck><Rows count=\"$nbrows\" errors=\"$nberrors\" warnings=\"$warnings\">$ds_checks</Rows><Notes count=\"$nbnotes\">$chk_notes</Notes></WSCheck>\n";
         

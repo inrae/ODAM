@@ -20,10 +20,6 @@
 
 $auth  = isset($_GET['auth'])  ?  $_GET['auth']  : '' ;
 
-ob_start();
-include ('inc/def_lib.inc');
-ob_end_clean();
-
 do {
 
     $urloptions=array();
@@ -47,27 +43,37 @@ do {
         break;
     }
 
-    if (! is_dir($ENV['DATADIR']."/$dataset")) {
+    if (! is_dir("$DATADIR/$dataset")) {
         $INFOS_TEXT = "## ERROR: dataset $dataset is not available";
         break;
     }
 
-    # New instance of the def_lib object
-    $def = new def_lib($ENV, $dataset);
-
     # check if authkey is valid for this dataset
-    if ( $def->check_authorization($auth) )
-    {
-       $INFOS_TEXT = '## '.$def->retmsg;
-       break;
+    if (is_file("$DATADIR/authkeys.txt")) {
+        $okauth = TRUE;
+        $handle = fopen("$DATADIR/authkeys.txt", "r");
+        if ($handle) {
+           while (($line = fgets($handle)) !== false) {
+              $arr = explode("\t",$line);
+              if (trim($arr[0])==$dataset && trim($arr[1])!==$auth) {
+                 $okauth = FALSE;
+                 break;
+              }
+           }
+        }
+        fclose($handle);
+        if (!$okauth) {
+           $INFOS_TEXT = '## invalid authorization key';
+           break;
+        }
     }
 
-    if (! is_file($ENV['DATADIR']."/$dataset/infos.md")) {
+    if (! is_file("$DATADIR/$dataset/infos.md")) {
         $INFOS_TEXT = '## No dataset information';
         break;
     }
 
-    $INFOS_TEXT = file_get_contents($ENV['DATADIR']."/$dataset/infos.md");
+    $INFOS_TEXT = file_get_contents("$DATADIR/$dataset/infos.md");
 
 } while (0);
 

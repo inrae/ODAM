@@ -24,7 +24,6 @@ include_once ('inc/Set_Config.inc');
 # Populate some variables 
 #----------------------------------------------
 
-# Configuration variables depending on OS
 $ROOTDIR  = $_SERVER['DOCUMENT_ROOT'];
 if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
     $set = new Set_Config(array('-conf'=>"$ROOTDIR/../settings/getdata.conf",'-global'=>FALSE));
@@ -35,10 +34,15 @@ else {
     $OS = isset($set->OS) ? $set->OS : 'LINUX';
 }
 
-# URL Proxy for the Getdata API
+# DEBUG status
+$DEBUG = isset($set->DEBUG) ? $set->DEBUG : 0 ;
+
 $GETDATA_URL_PROXY = getenv("GETDATA_URL_PROXY", true) ? getenv("GETDATA_URL_PROXY") : $set->GETDATA_URL_PROXY;
 
-# Environment variables depending on OS
+$URLSERVER = preg_replace('/\/$/', '', $GETDATA_URL_PROXY);
+
+$DATADIR  = $set->DATAROOT;
+
 if ($OS=='LINUX') {
     $TMPDIR  = "$ROOTDIR/tmp";
     $QSQL    = $set->QBIN.' '.$set->QOPTIONS;
@@ -51,63 +55,22 @@ if ($OS=='LINUX') {
     $BB       = $ROOTDIR.'/../bin/busybox.exe';
 }
 
-# Get dataset name
-$dataset='';
-if ($_SERVER['PATH_INFO']) {
-    $urloptions = explode("/",$_SERVER['PATH_INFO']);
-    array_shift($urloptions);
-    $dataset = array_shift($urloptions);
-}
-
-# Get authorization key code
-$auth0='';
-if (isset($_COOKIE['odam'])) {
-    foreach ($_COOKIE['odam'] as $name => $value) {
-        $name = htmlspecialchars($name);
-        $value = htmlspecialchars($value);
-        if ($name !== $dataset) continue;
-        $auth0=$value;
-    }
-}
-$auth1 = isset($_SERVER['HTTP_X_API_KEY']) ? $_SERVER['HTTP_X_API_KEY'] : $auth0;
-$auth = isset($_GET['auth'])  ?  $_GET['auth']  : $auth1 ;
-setcookie('odam['.$dataset.']', $auth, time()+3600, "/", "", 1);
-
-# Set authorization message
-if (isset($_GET['auth']))
-   $auth_msg='authorization by url query';
-elseif (isset($_SERVER['HTTP_X_API_KEY']))
-   $auth_msg='authorization fixzed by url header';
-elseif (strlen($auth0))
-   $auth_msg='authorization fixed by cookie';
-else
-   $auth_msg='authorization fixed by rules';
-
-# X_Forwarded - get first IP
-if (strpos($_SERVER['HTTP_X_FORWARDED_FOR'], ',')) {
-   $arr = explode(',',$_SERVER['HTTP_X_FORWARDED_FOR']);
-   $X_Forwarded = trim($arr[0]);
-} else
-   $X_Forwarded = $_SERVER['HTTP_X_FORWARDED_FOR'];
-
-# Internal Session Identifier
 $SESSID  = md5(uniqid(rand(),true));
+$stderr = "$TMPDIR/$SESSID.err";
+$stdout = "$TMPDIR/$SESSID.out";
 
 # Environment variables
 $ENV = array( 'OS' => $OS,
+              'DEBUG' => $DEBUG,
               'DATADIR' => $set->DATAROOT,
               'TMPDIR' => $TMPDIR,
               'SESSID' => $SESSID,
               'QSQL' => $QSQL,
               'SQLITE' => $SQLITE,
-              'SQLOPT' => '-tabs',
-              'DBNAME' => 'sqlite3.db',
-              'TRANSAC' => 0,
-              'FIELD_LIMIT' => -1,
               'EXTFILES' => $set->EXTFILES,
               'X_API_KEY' => $_SERVER['HTTP_X_API_KEY'],
               'X_REAL_IP' => $_SERVER['HTTP_X_REAL_IP'],
-              'X_Forwarded' => $X_Forwarded,
+              'X_Forwarded' => $_SERVER['HTTP_X_FORWARDED_FOR'],
               'HOST' => $_SERVER['HTTP_HOST'],
               'GETDATA_URL_PROXY' => $GETDATA_URL_PROXY );
 
@@ -116,8 +79,7 @@ $DPKG_INFOS = array( 'URL_JSONDEF' => $set->URL_JSONDEF,
                      'DATAPACKAGE_VERSION' => $set->DATAPACKAGE_VERSION,
                      'LICENSE' => $set->LICENSE );
 
-$stderr = "$TMPDIR/$SESSID.err";
-$stdout = "$TMPDIR/$SESSID.out";
+$EXTFILES = $set->EXTFILES;
 $sep = "\t";
 
 ?>

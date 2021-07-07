@@ -20,7 +20,6 @@
 
 class def_lib
 {
-     /* Categories and header names of metadata files */
      var $categories   = array('identifier','factor','quantitative','qualitative');
      var $attrtypes    = array('numeric', 'string');
      var $def_infos    = array(
@@ -41,38 +40,47 @@ class def_lib
            5=> array('name'=>'type',         'type'=>'string'),
            6=> array('name'=>'description',  'type'=>'string'),
            7=> array('name'=>'CV_term_id',   'type'=>'string'),
-           8=> array('name'=>'CV_term_name', 'type'=>'string') )
-     );
-     /* Datapackage information */
-     var $DPKG_INFOS   = array( 'URL_JSONDEF' => 'https://inrae.github.io/ODAM/json-schema/',
+           8=> array('name'=>'CV_term_name', 'type'=>'string') ) );
+     var $FILES        = array ();
+     var $hDataset     = array();
+     var $dsname       = "";
+     var $dir_input    = "";
+     var $subsets_file = "";
+     var $attrs_file   = "";
+     var $retmsg       = "OK";
+     var $ret          = 0;
+     var $FIELD_LIMIT  = -1;
+     var $GETDATA_URL_PROXY = "http://localhost/getdata/";
+     var $DPKG_INFOS = array( 'URL_JSONDEF' => 'https://inrae.github.io/ODAM/json-schema/',
                               'DATAPACKAGE_VERSION' => '1.0',
                               'LICENSE' => 'ODC-BY-1.0,https://opendatacommons.org/licenses/by/,Open Data Commons Attribution License 1.0' );
-     var $ENV          = array( );  /* environment and tool variables */
-     var $FILES        = array ();  /* list of files */
-     var $hDataset     = array();   /* hash table of all metadata */
-     var $dsname       = "";        /* dataset name */
-     var $dir_input    = "";        /* full path of the dataset */
-     var $subsets_file = "";        /* full path of the s_subsets file */
-     var $attrs_file   = "";        /* full path of the a_attributes file */
-     var $retmsg       = "OK";      /* return message */
-     var $ret          = 0;         /* return code */
-     var $error_msg = "";           /* error message */
+
+    /* environment and tool variables involved in the SQL querying of the TXT data subset files (cf do_SQL_query) */
+     var $OS        = "LINUX";
+     var $SQLITE    = "/usr/bin/sqlite3";
+     var $SQLOPT    = "-tabs";
+     var $DBNAME    = "sqlite3.db";
+     var $TRANSAC   = 0;
+     var $QSQL      =  "/usr/bin/q -H -O -t  -e iso-8859-1";
+     var $EXTFILES  = "txt";
+     var $TMPDIR    = "";
+     var $SESSID    = "";
+     var $error_msg = "";
 
 /********************************************************
 * Init. Method / Constructor
 ********************************************************/
-    function __construct($ENV, $dsname) { $this->def_lib($ENV, $dsname); } # PHP 5.3-compliant
+    function __construct($input) { $this->def_lib($input); } # PHP 5.3-compliant
 
     # Init. Vars.
-    function def_lib($ENV, $dsname)
+    function def_lib($input)
     {
-        $this->ENV = $ENV;
-        $this->dir_input = $ENV['DATADIR']."/$dsname";
-        $this->dsname = $dsname;
-        $this->subsets_file = $this->dir_input.'/s_subsets.tsv';
-        $this->attrs_file   = $this->dir_input.'/a_attributes.tsv';
-        $this->auth_file    = $this->dir_input.'/authkeys.tsv';
+        $this->dir_input = $input;
+        $this->dsname = basename($this->dir_input);
         $this->ret=0;
+        $this->subsets_file ="$input/s_subsets.tsv";
+        $this->attrs_file ="$input/a_attributes.tsv";
+        $this->auth_file ="$input/../authkeys.txt";
     }
 
 /********************************************************
@@ -86,17 +94,12 @@ class def_lib
            if (!is_file($this->auth_file)) break;
            $handle = fopen($this->auth_file, "r");
            if (!$handle) break;
-           $ret=1;
            while (($line = fgets($handle)) !== false) {
               $arr = explode("\t",$line);
-              $ip = str_replace('*', '\*',trim($arr[0]));
-              $authkey=trim($arr[1]);
-              if( ! preg_match("/^$ip/", $this->ENV['X_Forwarded']) && $ip !== '\*') continue;
-              if( $authkey == 'allow' || $authkey == $auth) {
-                  $ret=0;
+              if (trim($arr[0])==$this->dsname && trim($arr[1])!==$auth) {
+                  $ret = 1;
                   break;
               }
-              if( $authkey == 'deny' || $authkey !== $auth) break;
            }
            fclose($handle);
            if ($ret) {
@@ -395,7 +398,7 @@ class def_lib
        foreach ($entities as $key => $arr) {
            if ($i>0) $fields .= ', ';
            $fields .= "$falias.$key";
-           if ($this->ENV['FIELD_LIMIT']>0 && $i>$this->ENV['FIELD_LIMIT']) break;
+           if ($this->FIELD_LIMIT>0 && $i>$this->FIELD_LIMIT) break;
            $i++;
        }
        return array($falias, $file, $fields, $where);
@@ -671,12 +674,12 @@ if %size% LSS %maxbytesize% (
     function build_sqlite_db($dbindex,$debug=0)
     {
      # Init
-       $stderr = $this->ENV['TMPDIR'].'/'.$this->ENV['SESSID'].'.err';
-       $stdout = $this->ENV['TMPDIR'].'/'.$this->ENV['SESSID'].'.out';
-       $dbcmd =  $this->ENV['TMPDIR'].'/'.$this->ENV['SESSID'].'.cmd';
-       $SQLOPT = $this->ENV['SQLOPT'];
-       $extfile = $this->ENV['EXTFILES'];
-       $db = $this->dir_input.'/'.$this->ENV['DBNAME'];
+       $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
+       $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
+       $dbcmd =  $this->TMPDIR.'/'.$this->SESSID.'.cmd';
+       $db = $this->dir_input.'/'.$this->DBNAME;
+       $extfile = $this->EXTFILES;
+       $SQLOPT = $this->SQLOPT;
 
      # SQL statements for creating tables
        $scan = scandir($this->dir_input);
@@ -689,7 +692,7 @@ if %size% LSS %maxbytesize% (
        if ($dbindex) foreach ($this->hDataset as $subset => $arr ) {
            if ($subset=='_dstree_') continue;
            $line = "CREATE INDEX $subset"."_idx ON ".basename($arr['filename'],".$extfile")." (".$arr['identifier'].");";
-           if ($this->ENV['OS'] == "LINUX")
+           if ($this->OS == "LINUX")
                `echo "$line" >> $dbcmd`;
            else
                `echo $line >> $dbcmd`;
@@ -700,13 +703,13 @@ if %size% LSS %maxbytesize% (
            if (is_file($db)) @unlink($db);
            $retval = is_file($db) ? 1 : 0 ;
            if (!$retval) {
-              if ($this->ENV['OS'] == "LINUX") {
-                 $CMD="( cd ".$this->dir_input."; cat $dbcmd | ".$this->ENV['SQLITE']." $SQLOPT ".$this->ENV['DBNAME']." )";
+              if ($this->OS == "LINUX") {
+                 $CMD="( cd ".$this->dir_input."; cat $dbcmd | ".$this->SQLITE." $SQLOPT ".$this->DBNAME." )";
                  $retval=trim(`$CMD 1>$stdout 2>$stderr; echo \$?`);
               } else {
-                 $sqlite = preg_replace('|/|', '\\', $this->ENV['SQLITE']);
-                 $CMD = "cd ".$this->dir_input." && cat $dbcmd | $sqlite $SQLOPT ".$this->ENV['DBNAME'];
-			  $filebatch = dirname($stdout).'/'.$this->ENV['SESSID'].'.bat';
+                 $sqlite = preg_replace('|/|', '\\', $this->SQLITE);
+                 $CMD = "cd ".$this->dir_input." && cat $dbcmd | $sqlite $SQLOPT ".$this->DBNAME;
+                 $filebatch = dirname($stdout).'/'.$this->SESSID.'.bat';
                  $this->cmd_Batch($filebatch, $CMD, $stdout, $stderr);
                  $retval=trim(`$filebatch`);
               }
@@ -725,22 +728,22 @@ if %size% LSS %maxbytesize% (
     function do_SQL_query($query, $qopt='', $debug=0)
     {
      # Init
-       $stderr = $this->ENV['TMPDIR'].'/'.$this->ENV['SESSID'].'.err';
-       $stdout = $this->ENV['TMPDIR'].'/'.$this->ENV['SESSID'].'.out';
-       $dbcmd =  $this->ENV['TMPDIR'].'/'.$this->ENV['SESSID'].'.cmd';
-       $QSQL = $this->ENV['QSQL'];
-       $SQLOPT = $this->ENV['SQLOPT'];
-       $db = $this->dir_input.'/'.$this->ENV['DBNAME'];
-       $extfile = $this->ENV['EXTFILES'];
+       $stderr = $this->TMPDIR.'/'.$this->SESSID.'.err';
+       $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
+       $dbcmd =  $this->TMPDIR.'/'.$this->SESSID.'.cmd';
+       $QSQL = $this->QSQL;
+       $SQLOPT = $this->SQLOPT;
+       $extfile = $this->EXTFILES;
+       $db = $this->dir_input.'/'.$this->DBNAME;
  
      # Execute the SQL query if not debug
        do {
         # Linux / MaxOS system
-          if ($this->ENV['OS'] == "LINUX") {
+          if ($this->OS == "LINUX") {
               if (is_file($db) && strlen($qopt)==0) {
               # Mode sqlite : apply the query directly on the db
                   $query = preg_replace("/\.$extfile/", '', $query);
-                  $CMD ="echo \".headers on\n$query;\" | ".$this->ENV['SQLITE']." $SQLOPT $db | uniq";
+                  $CMD ="echo \".headers on\n$query;\" | ".$this->SQLITE." $SQLOPT $db | uniq";
                   if ($debug>0) break;
               } else {
               # Mode no sqlite : apply the query help with q tool
@@ -756,23 +759,23 @@ if %size% LSS %maxbytesize% (
           }
 
         # Windows 10 system
-          if ($this->ENV['OS'] == "WIN") {
+          if ($this->OS == "WIN") {
               if (is_file($db) && strlen($qopt)==0) {
               # Mode sqlite : apply the query directly on the db
-                  $sqlite = preg_replace('|/|', '\\', $this->ENV['SQLITE']);
+                  $sqlite = preg_replace('|/|', '\\', $this->SQLITE);
                   $query = preg_replace("/\.$extfile/", '', $query);
                   `echo .headers on > $dbcmd`; 
-                  if ($this->ENV['TRANSAC']) `echo BEGIN TRANSACTION; >> $dbcmd`;
+                  if ($this->TRANSAC) `echo BEGIN TRANSACTION; >> $dbcmd`;
                   `echo $query ; >> $dbcmd`;
-                  if ($this->ENV['TRANSAC']) `echo COMMIT; >> $dbcmd`;
-                  $CMD = "cd ".$this->dir_input." && cat $dbcmd | $sqlite $SQLOPT ".$this->ENV['DBNAME'];
+                  if ($this->TRANSAC) `echo COMMIT; >> $dbcmd`;
+                  $CMD = "cd ".$this->dir_input." && cat $dbcmd | $sqlite $SQLOPT ".$this->DBNAME;
                   if ($debug>0) break;
               } else {
               # Mode no sqlite : apply the query help with q tool
                   $CMD = "cd ".$this->dir_input." && $QSQL $qopt \"$query\"";
                   if ($debug>0) break;
               }
-              $filebatch = dirname($stdout).'/'.$this->ENV['SESSID'].'.bat';
+              $filebatch = dirname($stdout).'/'.$this->SESSID.'.bat';
               $this->cmd_Batch($filebatch, $CMD, $stdout, $stderr);
               $retval=trim(`$filebatch`);
               if ($retval==0) break;
@@ -792,11 +795,11 @@ if %size% LSS %maxbytesize% (
 *     the result could be a specified file or the stdout file
 ********************************************************/
     function echo_results($format, $file='') {
-          $stdout = $this->ENV['TMPDIR'].'/'.$this->ENV['SESSID'].'.out';
+          $stdout = $this->TMPDIR.'/'.$this->SESSID.'.out';
           if (strlen($file)==0) $file=$stdout;
           if ($format == 'xml') {
               header('Content-Type: text/xml; charset=ISO-8859-1');
-              echo $this->getdata_xml_output($file, $this->ENV['GETDATA_URL_PROXY']."xsl/query_report2.xsl");
+              echo $this->getdata_xml_output($file, $this->GETDATA_URL_PROXY."xsl/query_report2.xsl");
           }
           elseif ($format == 'json') {
               header('Content-Type: application/json; charset=ISO-8859-1');

@@ -18,6 +18,7 @@
     along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+$auth  = isset($_GET['auth'])  ?  $_GET['auth']  : '' ;
 $debug = isset($_GET['debug']) ?  $_GET['debug'] : 0 ;
 $dbindex = isset($_GET['idx']) ?  $_GET['idx'] : 1 ;
 
@@ -47,7 +48,7 @@ do
 
   # check if dataset present
     $dataset = array_shift($urloptions);
-    if (! is_dir($ENV['DATADIR']."/$dataset"))
+    if (! is_dir("$DATADIR/$dataset"))
     {
         echo "ERROR: the dataset directory is not available";
         break;
@@ -58,7 +59,7 @@ do
     ob_end_clean();
 
   # New instance of the def_lib object
-    $def = new def_lib($ENV, $dataset);
+    $def = new def_lib("$DATADIR/$dataset");
 
     # check if authkey is valid for this dataset
     if ( $def->check_authorization($auth) )
@@ -72,6 +73,14 @@ do
        echo $def->retmsg;
        break;
     }
+
+  # Populate the '$def' instance with configuration variables coming from the '$set' instance (Set_Config object)
+    $def->OS = $OS ;
+    $def->TMPDIR = $TMPDIR ;
+    $def->SESSID = $SESSID ;
+    $def->EXTFILES = $EXTFILES;
+    $def->SQLITE = $SQLITE;
+    $def->GETDATA_URL_PROXY = $GETDATA_URL_PROXY ;
 
   # Build the database
     $time_start = microtime(true);
@@ -118,7 +127,7 @@ do
            $line .= "\t".preg_replace('/Error:/', '', preg_replace("/[\n\r]/", ";", `cat $stderr`));
     }
 
-    if ($ENV['OS']=="LINUX")
+    if ($OS=="LINUX")
        `echo "$headers\n$line" > $stdout`;
     else {
       `echo $headers > $stdout`;

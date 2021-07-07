@@ -1,5 +1,5 @@
 <?php
-/* ID pdf.inc v1.2
+/* ID image.inc v1.2
  * Copyright (C) 2015-2021 INRAE - DJ
  *
     This file is part of ODAM
@@ -17,12 +17,6 @@
     You should have received a copy of the GNU General Public License
     along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
 */
-
-ob_start();
-include ('inc/def_lib.inc');
-ob_end_clean();
-
-$xff = isset($_GET['xff']) ?  base64_decode($_GET['xff'],TRUE) : '' ;
 
 if ($_SERVER['PATH_INFO'])
 do {
@@ -42,43 +36,28 @@ do {
         break;
     }
 
-    if (! is_dir($ENV['DATADIR']."/$dataset")) {
-        echo "<pre>Error: No dataset $dataset</pre>";
+    if (! is_dir("$DATADIR/$dataset")) {
         break;
-    }
-
-    # New instance of the def_lib object
-    $def = new def_lib($ENV, $dataset);
-
-    # If xff is specified, then use it as 'X_Forwarded'
-    if (strlen($xff)>0) $def->ENV['X_Forwarded']=$xff;
-
-    # check if authkey is valid for this dataset
-    if ( $def->check_authorization($auth) )
-    {
-       echo $def->retmsg;
-       break;
     }
 
     $cntopt--;
-    $pdf_name = array_shift($urloptions);
-    if ($cntopt<1 || strlen($pdf_name)==0 ) {
-        echo "<pre>Error : PDF name required</pre>";
+    $image = array_shift($urloptions);
+    if ($cntopt<1 || strlen($image)==0 ) {
         break;
     }
 
-    $filename = $ENV['DATADIR']."/$dataset/pdf/$pdf_name";
+    $filename = "$DATADIR/$dataset/images/$image";
     if (! is_file($filename)) {
-        echo "<pre>Error : PDF file $pdf_name.pdf does not exist</pre>";
         break;
     }
+    $fp = fopen($filename, 'rb');
 
     // send the right headers
-    header("Content-Type: application/pdf");
+    header("Content-Type: image/png");
     header("Content-Length: " . filesize($filename));
 
-    // Send the file to the browser.
-    readfile($filename);
+    // dump the picture and stop the script
+    fpassthru($fp);
 
 } while (0);
 

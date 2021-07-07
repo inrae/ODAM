@@ -18,10 +18,10 @@
     along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+$auth  = isset($_GET['auth'])  ?  $_GET['auth']  : '' ;
 $debug = isset($_GET['debug']) ?  $_GET['debug'] : 0 ;
 $limit = isset($_GET['limit']) ?  $_GET['limit'] : 0 ;
 $links = isset($_GET['links']) ?  $_GET['links'] : 0 ;
-
 $restmsg = '';
 $metadata=0;
 $datapackage=0;
@@ -82,14 +82,14 @@ do
 
     # check if dataset present
     $dataset = array_shift($urloptions);
-    if (! is_dir($ENV['DATADIR']."/$dataset"))
+    if (! is_dir("$DATADIR/$dataset"))
     {
         echo "ERROR: the dataset directory named $dataset is not available";
         break;
     }
 
     # New instance of the def_lib object
-    $def = new def_lib($ENV, $dataset);
+    $def = new def_lib("$DATADIR/$dataset");
 
     # check if authkey is valid for this dataset
     if ( $def->check_authorization($auth) )
@@ -97,6 +97,16 @@ do
        echo $def->retmsg;
        break;
     }
+
+# Populate the '$def' instance with configuration variables coming from the '$set' instance (Set_Config object)
+#  => Environment and tool variables involved in the SQL querying of the TSV data subset files (cf do_SQL_query)
+    $def->OS = $OS ;
+    $def->TMPDIR = $TMPDIR ;
+    $def->SESSID = $SESSID ;
+    $def->QSQL   = $QSQL ;
+    $def->EXTFILES = $EXTFILES;
+    $def->SQLITE = $SQLITE;
+    $def->GETDATA_URL_PROXY = $GETDATA_URL_PROXY ;
 
     # get function
     $func = array_shift($urloptions);
@@ -129,7 +139,7 @@ do
     $NB_FILES = 0;
     foreach ($def->FILES as $id => $file)
     {
-         if (is_file($ENV['DATADIR']."/$DSNAME/$file")) $NB_FILES++;
+         if (is_file("$DATADIR/$DSNAME/$file")) $NB_FILES++;
     }
     $IS_FILES = ($NB_FILES == count($def->FILES)) ? 1 : 0 ;
 
@@ -276,15 +286,17 @@ do
     if ($debug)
     {
       # Information about the used tool
-        $db = $ENV['DATADIR']."/$dataset/".$def->ENV['DBNAME'];
+        $db = "$DATADIR/$dataset/".$def->DBNAME;
         if ($doQuery) {
-           $sqlite=$ENV['SQLITE']; $qsql=$ENV['QSQL'];
            if (is_file($db))
-               echo '<pre>sqlite '.trim(`$sqlite -version`)."</pre><hr>\n";
+               echo '<pre>sqlite '.trim(`$def->SQLITE -version`)."</pre><hr>\n";
            else
-               echo '<pre>'.trim(`$qsql -v 2>&1`).'</pre><hr>';
+               echo '<pre>'.trim(`$QSQL -v 2>&1`).'</pre><hr>';
         }
-        echo "<pre>X_REAL_IP=".$ENV['X_REAL_IP']." - X_Forwarded=".$ENV['X_Forwarded'].", Host=".$ENV['HOST']." - $auth_msg</pre>\n";
+        echo "<pre>REMOTE_ADDR = $REMOTE_ADDR - X_REAL_IP= $X_REAL_IP - X_Forwarded=$X_Forwarded, Host=$HOST</pre>\n";
+        $nbdot=substr_count($X_Forwarded,'.'); $ip2long = ip2long($X_Forwarded); $arr = explode('.',$X_Forwarded);
+        echo "<pre>X_Forwarded=$X_Forwarded ($ip2long)- Min addr=".implode('.', array($arr[0],$arr[1],$arr[2],0))." (".ip2long(implode('.', array($arr[0],$arr[1],$arr[2],0))).") - Max addr=".implode('.', array($arr[0],$arr[1],$arr[2],255))." (".ip2long(implode('.', array($arr[0],$arr[1],$arr[2],255))).")</pre>\n";
+
       # Display the full command
         $CMD = $doQuery ?  $def->do_SQL_query($query, '', 1) : 0;
         echo "URL QUERY : $restmsg<br><br>\n\nCMD = $CMD<br>\n\n"; echo "<br>STDOUT = $stdout<br>\n\n";
@@ -324,7 +336,7 @@ do
            echo"<br><pre>$fmtquery</pre>\n\n";
          # Show schema of tables in case the database is created
            if ($OS=='LINUX' && is_file($db)) {
-              $CMD="echo \".schema\" | ".$def->ENV['SQLITE']. " $db";
+              $CMD="echo \".schema\" | ".$def->SQLITE. " $db";
               $retvald = trim(`$CMD | tr -d "\n" | tr ";" "\n" 1>$stdout 2>$stderr; echo$?`);
            }
          # Analyse query based on the q tool
@@ -362,7 +374,7 @@ do
                         }
            }
            if ($format !== 'json') {
-              $stdtmp = $ENV['TMPDIR'].'/'.$ENV['SESSID'].'.tmp';
+              $stdtmp = "$TMPDIR/$SESSID.tmp";
               $attrs_file = $def->attrs_file;
               `head -1 $attrs_file > $stdtmp`;
               $regexp = '('.implode('|',$dstree).')';
@@ -391,7 +403,7 @@ do
     if ($datapackage==1 && $format == 'json')
     {
         header('Content-Type: application/json; charset=ISO-8859-1');
-        $urlroot = $links ? preg_replace('/\/$/', '', $ENV['GETDATA_URL_PROXY']) : '';
+        $urlroot = $links ? $URLSERVER : '';
         $def->DPKG_INFOS = $DPKG_INFOS;
         echo $def->getJSONDataTable($urlroot);
         break;

@@ -1,7 +1,10 @@
 library(shiny)
 library(shinyjs)
 library(shinydashboard)
+library(jsonlite)
 library(RCurl)
+library(httr)
+library(iptools)
 library(reshape2)
 library(pcaMethods)
 library(grid)
@@ -17,15 +20,18 @@ library(htmltools)
 library(ggpubr)
 library(ggdendro)
 library(plotly)
-
+library(stringr)
 library(FastGGM)
 library(RcppParallel)
+
 setThreadOptions(numThreads = 4) # set 4 threads for parallel computing
 
 auth <- ''
 dsname <- ''
 dcname <- ''
 ws <- c(internalURL, dsname, auth, externalURL, dcname, NULL, NULL, NULL)
+hostname <- gsub("^(http[s]?|ftp)://", "", stringr::str_extract(externalURL, "^(http[s]?|ftp)://([^/:])+"))
+hostip <- as.character(iptools::hostname_to_ip(hostname))
 
 dclist <- NULL
 inDselect <- NULL
@@ -53,6 +59,17 @@ trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 .N <- function(x) { as.numeric(as.vector(x)) }
 .C <- function(x) { as.vector(x) }
 
+httr_get <- function(ws, query, fsplit=TRUE) {
+    ipforward <- ifelse( nchar(IPClient)>0, IPClient, hostip )
+    str_auth <- ifelse( nchar(ws[3])>0, paste0("?auth=", ws[3]), '' )
+    resp <- httr::GET(paste0(ws[4], query, str_auth), 
+                      config = httr::config(ssl_verifypeer = FALSE),
+                      add_headers('X-Forwarded-For' = ipforward))
+    T <- httr::content(resp, as='text')
+    if (fsplit) T <- simplify2array(strsplit(T,"\n"))
+    T
+}
+
 is.DS <- function(cdata) {
     lparams <- unlist(strsplit(gsub("\\?", "", cdata[['url_search']]),  '&'))
     ret <- FALSE
@@ -69,8 +86,6 @@ getME <- function(cdata) {
 }
 
 getWS <- function(cdata) {
-    #   hostname <- cdata[['url_hostname']]
-    #   port <- cdata[['url_port']]
     params <- parseQueryString(cdata$url_search)
     if (!is.null(params[['ws']])) {
         externalURL <<- params[['ws']]
@@ -104,11 +119,10 @@ getWS <- function(cdata) {
 
 getDataCol <- function (ws) {
     dclist <- NULL
-    myurl <- paste(ws[4],'/tsv/', ws[5], "?auth=",ws[3], sep="");
-    dc <- read.csv(textConnection(getURL(myurl, ssl.verifypeer = FALSE)), head=TRUE, sep="\t");
+    query <- paste0('tsv/', ws[5]);
+    dc <- read.csv(textConnection(httr_get(ws,query)), head=TRUE, sep="\t");
     if (length(dc$Subset)==1 && dc$Subset=="collection") {
-        myurl <- paste(ws[4],'/tsv/', ws[5], '/collection',"?auth=",ws[3],sep="");
-        collection <- read.csv(textConnection(getURL(myurl, ssl.verifypeer = FALSE)), head=TRUE, sep="\t");
+        collection <- read.csv(textConnection(httr_get(ws,paste0(query, '/collection'))), head=TRUE, sep="\t");
         collection$url[is.na(collection$url)] <- externalURL
         dclist <- list(collection=dc, list=collection)
     }
@@ -123,18 +137,24 @@ getAbout <- function () {
 }
 
 getInfos <- function (ws) {
-    gsub('@@PDF@@', paste(ws[4],'/pdf/', ws[2], sep=""),  
-        gsub('@@IMAGE@@', paste(ws[4],'/image/', ws[2], sep=""),  
-            getURL(paste(ws[4],'/infos/', ws[2], "?auth=",ws[3],sep=""),
-                ssl.verifypeer = FALSE
-            )
-        )
-    )
+    str_auth <- ifelse( nchar(ws[3])>0, paste0("?auth=", ws[3]), paste0("?xff=", base64_enc(IPClient)) )
+    T <- httr_get(ws, paste0('infos/', ws[2]))
+    # Images
+    P <- na.omit(str_extract(T, pattern="@@IMAGE@@/[^\\.]+\\.(png|jpg)"))
+    if (length(P)>0)
+       for (i in 1:length(P))
+            T <- gsub(P[i], paste0(gsub("@@IMAGE@@", paste0(ws[4],'/image/', ws[2]), P[i] ), str_auth ), T )
+    # PDF
+    P <- na.omit(str_extract(T, pattern="@@PDF@@/[^\\.]+\\.pdf"))
+    if (length(P)>0)
+       for (i in 1:length(P))
+            T <- gsub(P[i], paste0(gsub("@@PDF@@", paste0(ws[4],'/pdf/', ws[2]), P[i] ), str_auth ), T )
+    T
 }
 
 getData <- function (ws, query) {
-    myurl <- paste(ws[4],'/tsv/', ws[2], '/', query,"?auth=",ws[3],sep="");
-    out <- read.csv(textConnection(getURL(myurl, ssl.verifypeer = FALSE)), head=TRUE, sep="\t");
+    out <- read.csv(textConnection(httr_get(ws, paste0('tsv/',ws[2],'/',query))), head=TRUE, sep="\t")
+
     msgError <<- ''
     if (dim(out)[1]==0) {
         msgError <<- gsub("\\.", " ", colnames(out))[1]
@@ -142,13 +162,7 @@ getData <- function (ws, query) {
     out
 }
 
-getXML <- function (ws, query) {
-    myurl <- paste(ws[4],'/xml/', ws[2], '/', query,"?auth=",ws[3],sep="");
-    getURL(myurl, ssl.verifypeer = FALSE)
-}
-
 getInit <- function() {
-
     # Get subsets information
     subsets <<- getData(ws, 'subset')
     if (nchar(msgError)==0) {

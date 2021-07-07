@@ -73,6 +73,7 @@
     #----------------------------------------------------
     output$datainfos <- renderText({
        input$inDselect
+       if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({
           markdownToHTML(text=getInfos(ws), fragment.only = TRUE, title = "", 
                options = c("use_xhtml", "smartypants", "base64_images", "mathjax", "highlight_code" ),
@@ -98,6 +99,7 @@
     })
 
     output$subsets <- renderDataTable({
+       if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({ if (nchar(msgError)==0) {
            if ( !is.DS(cdata) || values$init==0 ||  is.null(input$inDSselect)) return(NULL)
            if ( is.null(subsets) ) return(NULL)
@@ -150,6 +152,7 @@
     # renderUI - Subsets Graph
     #----------------------------------------------------
     output$Net <- renderDiagonalNetwork({
+       if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({ 
            if (values$init==0) values$init <- 1
            if (length(subsetNames)>0) {

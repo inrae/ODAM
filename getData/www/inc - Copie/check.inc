@@ -18,6 +18,8 @@
     along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+$auth  = isset($_GET['auth'])  ?  $_GET['auth']  : '' ;
+
 # Check format
 if (! in_array( $format, array('xml','json') ))
 {
@@ -34,6 +36,9 @@ ob_end_clean();
 #-----------------------------------------------------
 do {
 
+    $stderr = "$TMPDIR/$SESSID.err";
+    $xmlout = "$TMPDIR/$SESSID.xml";
+
     $urloptions=array();
     $dataset='';
     $cntopt=0;
@@ -48,12 +53,12 @@ do {
 
 # Case of dataset not specify
     if (!strlen($dataset)) {
-        $def = new check_lib($ENV,'');
+        $def = new check_lib('');
         break;
     }
 
 # New instance of the def_lib object
-    $def = new check_lib($ENV, $dataset);
+    $def = new check_lib("$DATADIR/$dataset");
 
 # check if authkey is valid for this dataset
     $okauth = TRUE;
@@ -94,6 +99,16 @@ do {
 # Check if identifiers are consistent
     if ($def->check_identifiers()) break;
 
+# Populate the '$def' instance (check_lib object) with configuration variables coming from the '$set' instance (Set_Config object)
+#  => Environment and tool variables involved in the SQL querying of the TSV data subset files (cf do_SQL_query)
+    $def->OS = $OS ;
+    $def->TMPDIR = $TMPDIR ;
+    $def->SESSID = $SESSID ;
+    $def->EXTFILES = $EXTFILES;
+    $def->QSQL   = $QSQL ;
+    $def->SQLITE = $SQLITE;
+    $def->GETDATA_URL_PROXY = $GETDATA_URL_PROXY ;
+
 # Check if the database is correctly built
     $def->check_SQL_db();
 
@@ -112,7 +127,7 @@ do {
 if ($okauth) {
   if ($format == 'xml') { # within a XML structure 
      header('Content-Type: text/xml; charset=ISO-8859-1');
-     echo $def->check_xml_output();
+     echo $def->check_xml_output("$GETDATA_URL_PROXY"."xsl/check_report.xsl");
   }
   elseif ($format == 'json') { # within a JSON structure
      header('Content-Type: application/json; charset=ISO-8859-1');

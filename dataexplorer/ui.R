@@ -17,9 +17,9 @@ meta <- tags$head(
    <meta http-equiv="pragma" content="no-cache" />
    '),
    tags$script(type="text/javascript", src = "js/google-analytics.js"),
-   tags$link(rel = "stylesheet", type = "text/css", href = "custom.css"),
-   # Load D3.js
-   tags$script(src = "js/d3.min.js")
+   tags$script(type="text/javascript",src = "js/d3.min.js"),
+   tags$script(type="text/javascript",src = "js/getip.js"),
+   tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
 )
 
 busyLogo <- function(busysrc, height = 30, width = 30, alt = NULL) {
@@ -32,7 +32,7 @@ busyLogo <- function(busysrc, height = 30, width = 30, alt = NULL) {
 }
 
 ui <- dashboardPage(skin = "blue",
-
+ 
   dashboardHeader(title = "ODAM - Data Explorer", disable = FALSE, # titleWidth = 350, 
          # Collection / Dataset name
             tags$li(h2(textOutput("datasetname"), align = "center"), class = "dropdown"),
@@ -68,13 +68,13 @@ ui <- dashboardPage(skin = "blue",
     shinyjs::useShinyjs(debug = TRUE, html = FALSE),
     shinyjs::inlineCSS(list(.hideElem = "display: none")),
     shinyjs::inlineCSS(list(.dataTables_info="display: inline")),
-    #shinyjs::inlineCSS(list(.cplotbig = "height:800px")),
-    #shinyjs::inlineCSS(list(.cplotmed = "height:500px")),
 
     shinyjs::extendShinyjs(script="js/app.js", 
               functions = c("hideMainHeader", "hideSidebar", "showSidebar", "hideSidebarToggle", 
-                            "hideinDselect", "showinDselect", "hideinDSselect", "showinDSselect", "openTab")),
+                            "hideinDselect", "showinDselect", "hideinDSselect", "showinDSselect", 
+                            "openTab")),
     fluidRow(
+      textInput("ipclient", "", ""),
       bsAlert("ErrAlertMain"),
       tabItems(
       #----------------------------------------------------

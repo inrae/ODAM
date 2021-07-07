@@ -24,7 +24,7 @@ RUN apt-get update && apt-get install -y \
     r-cran-igraph r-cran-magrittr r-cran-ellipse r-cran-whisker r-cran-reshape2 \
     r-cran-markdown  r-cran-plotly r-cran-ggplot2 r-cran-moments r-cran-ggpubr r-cran-ggdendro \
     r-bioc-limma r-bioc-impute r-bioc-pcamethods r-cran-rcppeigen r-cran-rcppparallel \
-    r-cran-shiny r-cran-shinybs r-cran-shinydashboard r-cran-shinyjs r-cran-dt && \
+    r-cran-shiny r-cran-shinybs r-cran-shinydashboard r-cran-shinyjs r-cran-dt r-cran-iptools && \
   # locale setting
     apt-get update && apt-get install -y locales && \
     echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && \

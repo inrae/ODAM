@@ -18,12 +18,6 @@
     along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-ob_start();
-include ('inc/def_lib.inc');
-ob_end_clean();
-
-$xff = isset($_GET['xff']) ?  base64_decode($_GET['xff'],TRUE) : '' ;
-
 if ($_SERVER['PATH_INFO'])
 do {
 
@@ -42,22 +36,9 @@ do {
         break;
     }
 
-    if (! is_dir($ENV['DATADIR']."/$dataset")) {
+    if (! is_dir("$DATADIR/$dataset")) {
         echo "<pre>Error: No dataset $dataset</pre>";
         break;
-    }
-
-    # New instance of the def_lib object
-    $def = new def_lib($ENV, $dataset);
-
-    # If xff is specified, then use it as 'X_Forwarded'
-    if (strlen($xff)>0) $def->ENV['X_Forwarded']=$xff;
-
-    # check if authkey is valid for this dataset
-    if ( $def->check_authorization($auth) )
-    {
-       echo $def->retmsg;
-       break;
     }
 
     $cntopt--;
@@ -67,7 +48,7 @@ do {
         break;
     }
 
-    $filename = $ENV['DATADIR']."/$dataset/pdf/$pdf_name";
+    $filename = "$DATADIR/$dataset/pdf/$pdf_name";
     if (! is_file($filename)) {
         echo "<pre>Error : PDF file $pdf_name.pdf does not exist</pre>";
         break;

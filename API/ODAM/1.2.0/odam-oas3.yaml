@@ -1,6 +1,8 @@
 openapi: 3.0.0
+
 servers:
   - url: 'https://pmb-bordeaux.fr'
+
 info:
   description: >-
     ODAM (Open Data for Access and Mining) is an Experiment Data Table
@@ -16,9 +18,11 @@ info:
     email: djacob65@gmail.com
   license:
     name: 'GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007'
+
 tags:
   - name: developers
     description: Operations available to regular developers
+
 components:
   parameters:
     datasetParam:
@@ -55,6 +59,7 @@ components:
         enum: [0, 1]
       example: 0
       description: debug status
+
 paths:
   '/getdata/infos/{dataset}':
     get:

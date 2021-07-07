@@ -79,7 +79,7 @@ Or you may prefer getting directly the docker images from the official [docker r
 
 Then, start the docker containers
 ```
-    $ sh ./odam start
+    $ sh ./odam.sh start
 ```
 
 Normally if everything is ok, you can access your data via web-services. You can test for example with the command curl (depending on the GETDATA_URL_PROXY and GETDATA_PORT settings in the ./odam.sh file ):

@@ -124,9 +124,10 @@ In this way, you can use the URL http://myhost.org/getdata/... for API and the U
 
 
 ### Future improvements
-    * A web page allowing users to annotate the attributes with ontologies (based on AgroPortal/BioPortal API) 
-    * Linked Data format / RDF export
-    * See https://inrae.github.io/ODAM/todo/
+
+* A web page allowing users to annotate the attributes with ontologies (based on AgroPortal/BioPortal API) 
+* Linked Data format / RDF export
+* See https://inrae.github.io/ODAM/todo/
 
 
 ### Publication:

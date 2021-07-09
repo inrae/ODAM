@@ -285,6 +285,7 @@ do
                echo '<pre>'.trim(`$qsql -v 2>&1`).'</pre><hr>';
         }
         echo "<pre>X_REAL_IP=".$ENV['X_REAL_IP']." - X_Forwarded=".$ENV['X_Forwarded'].", Host=".$ENV['HOST']." - $auth_msg</pre>\n";
+
       # Display the full command
         $CMD = $doQuery ?  $def->do_SQL_query($query, '', 1) : 0;
         echo "URL QUERY : $restmsg<br><br>\n\nCMD = $CMD<br>\n\n"; echo "<br>STDOUT = $stdout<br>\n\n";

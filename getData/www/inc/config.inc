@@ -42,21 +42,13 @@ $GETDATA_URL_PROXY = getenv("GETDATA_URL_PROXY", true) ? getenv("GETDATA_URL_PRO
 if ($OS=='LINUX') {
     $TMPDIR  = "$ROOTDIR/tmp";
     $QSQL    = $set->QBIN.' '.$set->QOPTIONS;
-    $SQLITE   = $set->SQLITE;
-    $BB       = '';
+    $SQLITE  = $set->SQLITE;
+    $BB      = '';
 } else {
     $TMPDIR  = str_replace( '\\', '/', getenv('TEMP'));
-    $QSQL     = $ROOTDIR.'/../bin/q '.$set->QOPTIONS;
-    $SQLITE   = $ROOTDIR.'/../bin/sqlite3.exe';
-    $BB       = $ROOTDIR.'/../bin/busybox.exe';
-}
-
-# Get dataset name
-$dataset='';
-if ($_SERVER['PATH_INFO']) {
-    $urloptions = explode("/",$_SERVER['PATH_INFO']);
-    array_shift($urloptions);
-    $dataset = array_shift($urloptions);
+    $QSQL    = $ROOTDIR.'/../bin/q '.$set->QOPTIONS;
+    $SQLITE  = $ROOTDIR.'/../bin/sqlite3.exe';
+    $BB      = $ROOTDIR.'/../bin/busybox.exe';
 }
 
 # Get authorization key code

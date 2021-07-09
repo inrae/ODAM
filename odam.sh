@@ -22,14 +22,7 @@ DATAEXPLORER_CONTAINER=dataexplorer
 
 CMD=$1
 
-# If you use a named volume, (assumes that your docker version >= 1.9)
-# - First you have to create the /opt/data volume 
-# sudo docker create -v /opt/data --name odam_data_volume ubuntu
-# - Second, uncomment the line below, and 
-#   comment the line with 'VOLS' specified further with a local directory .
-#VOLS="--volumes-from odam_data_volume"
-
-# If you use a local directory, first you have to create the /opt/data directory
+# the local data repository mounted as a volume
 VOLS="-v $GETDATA_DATAREPOS:/opt/data"
 
 usage() { echo "usage: sh $0 start|stop|restart|ps|build|push|pull";  exit 1; }

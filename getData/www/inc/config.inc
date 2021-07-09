@@ -60,26 +60,14 @@ if ($_SERVER['PATH_INFO']) {
 }
 
 # Get authorization key code
-$auth0='';
-if (isset($_COOKIE['odam'])) {
-    foreach ($_COOKIE['odam'] as $name => $value) {
-        $name = htmlspecialchars($name);
-        $value = htmlspecialchars($value);
-        if ($name !== $dataset) continue;
-        $auth0=$value;
-    }
-}
-$auth1 = isset($_SERVER['HTTP_X_API_KEY']) ? $_SERVER['HTTP_X_API_KEY'] : $auth0;
-$auth = isset($_GET['auth'])  ?  $_GET['auth']  : $auth1 ;
-setcookie('odam['.$dataset.']', $auth, time()+3600, "/", "", 1);
+$auth0 = isset($_SERVER['HTTP_X_API_KEY']) ? $_SERVER['HTTP_X_API_KEY'] : '';
+$auth = isset($_GET['auth'])  ?  $_GET['auth']  : $auth0 ;
 
 # Set authorization message
 if (isset($_GET['auth']))
    $auth_msg='authorization by url query';
 elseif (isset($_SERVER['HTTP_X_API_KEY']))
    $auth_msg='authorization fixzed by url header';
-elseif (strlen($auth0))
-   $auth_msg='authorization fixed by cookie';
 else
    $auth_msg='authorization fixed by rules';
 

@@ -18,29 +18,46 @@
        }
     })
 
+    output$apierror <- reactive({
+       values$error
+       ret=0
+       if (values$error>0 && (values$initds>0 || values$initcol>0)) {
+          #js$hideSidebar()
+          js$hideinDSselect()
+          ret=1
+       }
+       ret
+    })
+    outputOptions(output, 'apierror', suspendWhenHidden=FALSE)
+    outputOptions(output, 'apierror', priority=1)
+
     #----------------------------------------------------
     # Observer - Init
     #----------------------------------------------------
 
     observe({ tryCatch({
         input$ipclient
-        if (nchar(input$ipclient)>0) { if (is.DS(cdata)) {
-           IPClient <<- input$ipclient
-           ws <<-getWS(cdata)
-           if ( nchar(ws[5])>0 ) {
-              dclist <<- getDataCol(ws)
-              values$initcol <<- 1
+        if (nchar(input$ipclient)>0) {
+           if (is.DS(cdata)) {
+              IPClient <<- input$ipclient
+              ws <<-getWS(cdata)
+              if ( nchar(ws[5])>0 ) {
+                 dclist <<- getDataCol(ws)
+                 if (nchar(msgError)>0) values$error <- 1
+                 values$initcol <<- 1
+              } else {
+                 inDselect <<- ws[2]
+                 js$hideinDselect()
+                 values$initds <<- 1
+              }
            } else {
-              inDselect <<- ws[2]
+              isolate({updateTabItems(session, "IdMenu", "about")})
+              js$hideSidebar()
+              js$hideSidebarToggle()
               js$hideinDselect()
-              values$initds <<- 1
+              js$hideinDSselect()
            }
-        } else {
-           isolate({updateTabItems(session, "IdMenu", "about")})
-           js$hideSidebar()
-           js$hideSidebarToggle()
-           js$hideinDSselect()
-        }}
+        }
     }, error=function(e) { ERROR$MsgErrorMain <-  paste("Init Obs:\n", e, ", ws: ", paste( ws , collapse=" - ") ); }) })
 
     #----------------------------------------------------
@@ -50,8 +67,6 @@
         input$ipclient
         values$initcol
         if (nchar(input$ipclient)>0 && values$initcol==1 && ! is.null(dclist)) {
-            IPClient <<- input$ipclient
-            #listlabels <- dclist$list$description
             listlabels <- dclist$list$label
             indx <- order(listlabels)
             choices <- .C(dclist$list$datasetID[indx])
@@ -81,8 +96,8 @@
                ws[4] <<- getURLfromList()
                values$init <<- 0
            }
-           IPClient <<- input$ipclient
            tryCatch({ getInit() }, error=function(e) { ERROR$MsgErrorMain <- paste("getInit: ", e, ", ws: ", paste( ws , collapse=" - ") ); })
+           if (nchar(msgError)>0) values$error <- 1
            inDSselect <<- 0
            # Default data subset
            if (! is.null(ws[6]) ) {

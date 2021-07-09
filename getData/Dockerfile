@@ -53,6 +53,8 @@ ENV LC_ALL=en_US.UTF-8 \
     APACHE_SERVERALIAS=docker.localhost \
     APACHE_DOCUMENTROOT=/var/www/html
 
+# WORKDIR /home
+
 # Copy configuration and source files 
 COPY ./php.ini /usr/local/etc/php/php.ini
 COPY ./launch-server.sh /usr/bin/launch-server.sh

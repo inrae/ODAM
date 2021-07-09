@@ -5,19 +5,21 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
    box(title="Data Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
      htmlOutput("datainfos", class="mddiv")
    ),
-   box(
-      title="Data Subset Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
-      HTML("<div id='wait' class='shiny-html-output'><table><tr><td><img src='loading.gif' height=25 width=40 /></td><td>&nbsp;</td><td>Loading ...</td></tr></table></div>"),
-      #verbatimTextOutput('out1'),
-      dataTableOutput("subsets"),
-      conditionalPanel(condition="input.inDSselect>0", 
-            downloadButton('downloadTSV', label = "Export TSV", class = NULL), p(),
-            conditionalPanel(condition="output.nbvarsEvent==0", dataTableOutput("infos"))
+   conditionalPanel(condition="output.apierror==0",
+      box(
+         title="Data Subset Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+         HTML("<div id='wait' class='shiny-html-output'><table><tr><td><img src='loading.gif' height=25 width=40 /></td><td>&nbsp;</td><td>Loading ...</td></tr></table></div>"),
+         #verbatimTextOutput('out1'),
+         dataTableOutput("subsets"),
+         conditionalPanel(condition="input.inDSselect>0", 
+               downloadButton('downloadTSV', label = "Export TSV", class = NULL), p(),
+               conditionalPanel(condition="output.nbvarsEvent==0", dataTableOutput("infos"))
+         )
+      ),
+      box(
+         title="Data Graph", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+         diagonalNetworkOutput("Net", width="75%", height="600px")
       )
-   ),
-   box(
-      title="Data Graph", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
-      diagonalNetworkOutput("Net", width="75%", height="600px")
    )
 )
 
@@ -29,7 +31,7 @@ ui_warning <- h3(tags$img(height = 50, width = 50, src = "https://www.freeiconsp
 #----------------------------------------------------
 # Data table
 #----------------------------------------------------
-ui_dataTab <-  tabItem(tabName = "datatable", bsAlert("ErrAlertDT"),
+ui_dataTab <-  tabItem(tabName = "datatable", bsAlert("ErrAlertDT"), conditionalPanel(condition="output.apierror==0", 
    column(12,
       conditionalPanel(condition="input.inDSselect>0 && output.nbvarsEvent==0",
         tags$style(type='text/css', ".col-sm-11 { width: 90%; } .col-sm-1 { width: 10%; }"),
@@ -44,7 +46,7 @@ ui_dataTab <-  tabItem(tabName = "datatable", bsAlert("ErrAlertDT"),
         h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
       )
    )
-)
+))
 
 #----------------------------------------------------
 # About
@@ -55,16 +57,18 @@ ui_aboutTab <-  tabItem("about", bsAlert("ErrAlertAbout"),
       title="About", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
       htmlOutput("aboutinfos", class="mddiv")
    ),
-   box(
-      title="Session Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
-      tags$pre(tags$code(id="sessioninfo", class="language-r shiny-text-output "))
+   conditionalPanel(condition="output.apierror==0",
+      box(
+         title="Session Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+         tags$pre(tags$code(id="sessioninfo", class="language-r shiny-text-output "))
+      )
    )
 )
 
 #----------------------------------------------------
 # Univariate : BoxPlot 
 #----------------------------------------------------
-ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), box(
+ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), conditionalPanel(condition="output.apierror==0", box(
    title="Univariate exploration", status = "primary", solidHeader = TRUE, width = 12,
    conditionalPanel(condition="input.inDSselect>0 && output.nbvarsEvent==0",
    column(12,
@@ -102,12 +106,12 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), box(
    conditionalPanel(condition="input.inDSselect==0",
       h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
    )
-))
+)))
 
 #----------------------------------------------------
 # Bivariate : ScatterPlot 
 #----------------------------------------------------
-ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),box(
+ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),conditionalPanel(condition="output.apierror==0", box(
    title="Bivariate exploration", status = "primary", solidHeader = TRUE, width = 12,
    conditionalPanel(condition="input.inDSselect>0 && output.nbvarsEvent==0",
    column(12,
@@ -146,12 +150,12 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),box(
    conditionalPanel(condition="input.inDSselect==0",
       h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
    )
-))
+)))
 
 #----------------------------------------------------
 # Multivariate : PCA / ICA
 #----------------------------------------------------
-ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), box(
+ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), conditionalPanel(condition="output.apierror==0", box(
    title="Multivariate exploration", status = "primary", solidHeader = TRUE, width = 12,
    conditionalPanel(condition="input.inDSselect>0 && output.nbvarsEvent==0",
    htmlOutput("Msg"),
@@ -238,5 +242,5 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), box(
    conditionalPanel(condition="input.inDSselect==0",
       h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
    )
-))
+)))
 

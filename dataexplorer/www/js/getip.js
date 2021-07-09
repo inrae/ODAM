@@ -1,28 +1,41 @@
 // Get IP Client
 // https://stackoverflow.com/questions/391979/how-to-get-clients-ip-address-using-javascript
 
-$( document ).on("shiny:sessioninitialized", function(event) {
-//   var apiKey = "b43709c79a3f404682eb58d00ed95f17";
-//   $.ajaxSetup({ async: false });
-//     resp=$.getJSON("https://api.bigdatacloud.net/data/ip-geolocation?key=" + apiKey);
-//   $.ajaxSetup({ async: true  });
-//   if(resp.responseJSON.hasOwnProperty('ip'))
-//      theip = resp.responseJSON["ip"];
-//   else
-//      theip = "127.0.0.1";
-//   Shiny.onInputChange("ipclient", theip);
-//   console.log(theip);
+var sendIP = function(theip) {
+   Shiny.onInputChange("ipclient", theip);
+   console.log(theip);
+}
 
-   $.get('https://www.cloudflare.com/cdn-cgi/trace', function(data) {
-      data = data.trim().split('\n').reduce(function(obj, pair) {
+var toJSON = function( data ) {
+    json = data.trim().split('\n').reduce(function(obj, pair) {
          pair = pair.split('=');
          return obj[pair[0]] = pair[1], obj;
-      }, {});
+    },{});
+    return json;
+}
+
+$( document ).on("shiny:sessioninitialized", function(event) {
+
+   $.ajax({
+// cloudflare.com
+     url: 'https://www.cloudflare.com/cdn-cgi/trace',
+// ipify.org
+//     url: 'https://api.ipify.org/?format=json',
+// bigdatacloud.net
+//     url: 'https://api.bigdatacloud.net/data/ip-geolocation?key=b43709c79a3f404682eb58d00ed95f17',
+     timeout: 5000
+   }).done(function(data) {
+// cloudflare.com
+     data = toJSON( data )
+// bigdatacloud.net
+//      if(data.responseJSON.hasOwnProperty('ip'))
+//         sendIP( data.responseJSON["ip"] );
       if(data.hasOwnProperty('ip'))
-         theip = data["ip"];
+         sendIP( data["ip"] );
       else 
-         theip = "127.0.0.1";
-      Shiny.onInputChange("ipclient", theip);
-      console.log(theip);
+         sendIP( "127.0.0.1" );
+   }).fail(function( jqXHR, textStatus ) {
+         sendIP( "127.0.0.1" );
    });
+
 })

@@ -76,7 +76,7 @@ ui <- dashboardPage(skin = "blue",
     fluidRow(
       textInput("ipclient", "", ""),
       bsAlert("ErrAlertMain"),
-      tabItems(
+      tabItems( 
       #----------------------------------------------------
       # Information
       #----------------------------------------------------

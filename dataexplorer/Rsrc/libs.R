@@ -4,7 +4,6 @@ library(shinydashboard)
 library(jsonlite)
 library(RCurl)
 library(httr)
-library(iptools)
 library(reshape2)
 library(pcaMethods)
 library(grid)
@@ -30,8 +29,6 @@ auth <- ''
 dsname <- ''
 dcname <- ''
 ws <- c(internalURL, dsname, auth, externalURL, dcname, NULL, NULL, NULL)
-hostname <- gsub("^(http[s]?|ftp)://", "", stringr::str_extract(externalURL, "^(http[s]?|ftp)://([^/:])+"))
-hostip <- as.character(iptools::hostname_to_ip(hostname))
 
 dclist <- NULL
 inDselect <- NULL
@@ -60,11 +57,9 @@ trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 .C <- function(x) { as.vector(x) }
 
 httr_get <- function(ws, query, fsplit=TRUE) {
-    ipforward <- ifelse( nchar(IPClient)>0, IPClient, hostip )
-    str_auth <- ifelse( nchar(ws[3])>0, paste0("?auth=", ws[3]), '' )
-    resp <- httr::GET(paste0(ws[4], query, str_auth), 
-                      config = httr::config(ssl_verifypeer = FALSE),
-                      add_headers('X-Forwarded-For' = ipforward))
+    headers <- c( 'X-Forwarded-For' = IPClient )
+    if (nchar(ws[3])>0) headers <- c( headers, 'X-Api-Key' = ws[3] )
+    resp <- httr::GET(paste0(ws[4], query), config = httr::config(ssl_verifypeer = FALSE), add_headers(.headers = headers))
     T <- httr::content(resp, as='text')
     if (fsplit) T <- simplify2array(strsplit(T,"\n"))
     T
@@ -117,18 +112,6 @@ getWS <- function(cdata) {
     c(  internalURL, dsname, auth, externalURL, dcname, subsetname, tabname, headerflag )
 }
 
-getDataCol <- function (ws) {
-    dclist <- NULL
-    query <- paste0('tsv/', ws[5]);
-    dc <- read.csv(textConnection(httr_get(ws,query)), head=TRUE, sep="\t");
-    if (length(dc$Subset)==1 && dc$Subset=="collection") {
-        collection <- read.csv(textConnection(httr_get(ws,paste0(query, '/collection'))), head=TRUE, sep="\t");
-        collection$url[is.na(collection$url)] <- externalURL
-        dclist <- list(collection=dc, list=collection)
-    }
-    dclist
-}
-
 getAbout <- function () {
     aboutfile <- '/srv/shiny-server/www/about.md'
     if(file.exists(aboutfile)){
@@ -152,14 +135,27 @@ getInfos <- function (ws) {
     T
 }
 
-getData <- function (ws, query) {
-    out <- read.csv(textConnection(httr_get(ws, paste0('tsv/',ws[2],'/',query))), head=TRUE, sep="\t")
-
+getData <- function (ws, query='', dcol=0) {
+    ds <- ifelse(dcol>0, ws[5], ws[2])
+    out <- read.csv(textConnection(httr_get(ws, paste0('tsv/',ds,'/',query))), head=TRUE, sep="\t")
     msgError <<- ''
     if (dim(out)[1]==0) {
         msgError <<- gsub("\\.", " ", colnames(out))[1]
     }
     out
+}
+
+getDataCol <- function (ws) {
+    dclist <- NULL
+    dc <- getData(ws,dcol=1);
+    if (nchar(msgError)==0) {
+        if (length(dc$Subset)==1 && dc$Subset=="collection") {
+           collection <- getData(ws,'/collection',dcol=1);
+           collection$url[is.na(collection$url)] <- externalURL
+           dclist <- list(collection=dc, list=collection)
+        }
+    }
+    dclist
 }
 
 getInit <- function() {

@@ -105,7 +105,10 @@ server {
     ...
 
    location /getdata/ {
-        proxy_pass http://$host:8081;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-Ip $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://localhost:8081;
     }
 
     location /dataexplorer/ {
@@ -121,9 +124,21 @@ In this way, you can use the URL http://myhost.org/getdata/... for API and the U
 
 
 ### Future improvements
-    * A web page allowing users to annotate the attributes with ontologies (based on BioPortal API) 
+    * A web page allowing users to annotate the attributes with ontologies (based on AgroPortal/BioPortal API) 
     * Linked Data format / RDF export
     * See https://inrae.github.io/ODAM/todo/
 
+
+### Publication:
+
+Daniel Jacob, Romain David, Sophie Aubin, Yves Gibon (2020) Making experimental data tables in the life sciences more FAIR: a pragmatic approach, GigaScience, Volume 9, Issue 12, December 2020, [doi:10.1093/gigascience/giaa144](http://dx.doi.org/10.1093/gigascience/giaa144)
+
+
+### Funded by:
+
+* INRAE UMR 1332 BFP, Bordeaux Metabolomics Facility
+
+
 ### License
+
 GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007 - See the included LICENSE file.

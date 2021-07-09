@@ -18,8 +18,6 @@
     along with ODAM.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-$auth  = isset($_GET['auth'])  ?  $_GET['auth']  : '' ;
-
 ob_start();
 include ('inc/def_lib.inc');
 ob_end_clean();

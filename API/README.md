@@ -2,9 +2,9 @@
 
 # Swagger UI
 
-You can test your getData API through the web swagger UI. For that, launch the run script with parameters corresponding to your local implementation, namely the API_URL (default is http://pmb-bordeaux.fr/api/ODAM/1.0.0/odam-oas3.yaml) and the PORT (default is 8084).
+You can test your getData API through the web swagger UI. For that, launch the run script with parameters corresponding to your local implementation, namely the API_URL (default is http://pmb-bordeaux.fr/api/ODAM/1.2.0/odam-oas3.yaml) and the PORT (default is 8084).
 ```
-    $ sh ./run -p 8081 -a http://pmb-bordeaux.fr/api/ODAM/1.0.0/odam-oas3.yaml
+    $ sh ./run -p 8081 -a http://pmb-bordeaux.fr/api/ODAM/1.2.0/odam-oas3.yaml
 ```
 Then, in your Web browser, you can launch the swagger UI with the URL http://localhost:8081/ (depending on the PORT setting).
 

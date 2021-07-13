@@ -55,7 +55,7 @@ RUN R -e "install.packages(c('JADE'), repos='http://cran.rstudio.com/')" && \
 ADD ./ /srv/shiny-server
 
 RUN rm -rf /var/lib/apt/lists/* && \ 
-    cp /srv/shiny-server/launch-server.sh /usr/local/bin && \
+    cp /srv/shiny-server/conf/launch-server.sh /usr/local/bin && \
     chmod 755 /usr/local/bin/launch-server.sh
 
 

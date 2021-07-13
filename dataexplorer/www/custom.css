@@ -23,6 +23,8 @@ p {
   display: none;
 }
 
+.jlink {cursor: pointer;}
+
 .dropdown , .dropdown h2 {
   line-height: 0;
   color: #fff;

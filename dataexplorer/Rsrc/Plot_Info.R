@@ -18,6 +18,7 @@
     # Observer - Data Table
     #----------------------------------------------------
     observe({ tryCatch({
+      values$initds
        if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
           if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
           fa_options <- colnames(data)
@@ -32,9 +33,7 @@
     #----------------------------------------------------
     output$sessioninfo <- renderPrint({
        tryCatch({ 
-          if (nchar(ws[2])==0) {
-            print(sessionInfo())
-          } else {
+          if (nchar(ws[2])>0) {
            # Run JS code  
             authstr <- ifelse( nchar(ws[3])>0, paste0(", '", ws[3],"'"), '' );
             odamws_params <- paste0("'",ws[4],"', '",ws[2],"'", authstr);
@@ -72,15 +71,14 @@
     # renderUI - Information
     #----------------------------------------------------
     output$datainfos <- renderText({
+       values$initds
        input$inDselect
        if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({
-          markdownToHTML(text=getInfos(ws), fragment.only = TRUE, title = "", 
-               options = c("use_xhtml", "smartypants", "base64_images", "mathjax", "highlight_code" ),
-               extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", 
-                               "strikethrough", "lax_spacing", "space_headers", "superscript", "latex_math"),
-               encoding = c("latin1")
-          )
+          markdownToHTML(text=getInfos(ws), fragment.only = TRUE,  title = "", 
+               options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
+               extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
+                              'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - Data info \n", e ); })
     })
 
@@ -98,7 +96,11 @@
        }, error=function(e) { ERROR$MsgErrorAbout <- paste("RenderText - About:\n", e ); })
     })
 
+    #----------------------------------------------------
+    # renderUI - Metadata of data subsets
+    #----------------------------------------------------
     output$subsets <- renderDataTable({
+       values$initds
        if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({ if (nchar(msgError)==0) {
            if ( !is.DS(cdata) || values$init==0 ||  is.null(input$inDSselect)) return(NULL)
@@ -112,7 +114,7 @@
            authstr <- ifelse( nchar(ws[3])>0, paste0('auth=', ws[3],'&'), '' );
            for( i in 1:dim(tsets)[1]) {
                urlSubset <- paste0(ws[4],'query/', ws[2], '/(',.C(tsets[i,1]) ,')?', authstr, 'format=xml');
-               linkSubset <- paste0("<a href='",urlSubset,"' target='_blank'>",.C(tsets[i,1]),"</a>")
+               linkSubset <- ifelse( ws[1]<2, paste0("<a href='",urlSubset,"' target='_blank'>",.C(tsets[i,1]),"</a>"), .C(tsets[i,1]) )
                linkOnto <- paste0("<a href='",.C(tsets[i,5]),"' target='_blank'>[", basename(.C(tsets[i,5])),'] ', .C(tsets[i,6]),"</a>")
                setinfo <- rbind( setinfo , c( linkSubset, .C(tsets[i,c(2:4)]), linkOnto ) )
            }
@@ -122,7 +124,11 @@
        }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Subsets \n", e ); })
     }, options = list(searching=FALSE, paging=FALSE), escape=c(2:4))
 
+    #----------------------------------------------------
+    # renderUI - Metadata of the selected data subset
+    #----------------------------------------------------
     output$infos <- renderDataTable({
+       values$initds
        tryCatch({ 
            if (is.null(input$inDSselect) || input$inDSselect==0) return(NULL)
            if (is.null(LABELS) || dim(LABELS)[1]==0) return(NULL)
@@ -130,6 +136,10 @@
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Infos:\n", e ); })
     }, options = list(searching=FALSE, paging=FALSE), escape=c(1,2,3))
 
+
+    #----------------------------------------------------
+    # renderUI - Wait for initialisation evenement 
+    #----------------------------------------------------
     output$wait <- renderUI({
         values$init
         if (values$init==1) { "" }
@@ -149,9 +159,10 @@
     )
 
     #----------------------------------------------------
-    # renderUI - Subsets Graph
+    # renderUI - Subsets Graph with d3js
     #----------------------------------------------------
     output$Net <- renderDiagonalNetwork({
+       values$initds
        if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({ 
            if (values$init==0) values$init <- 1

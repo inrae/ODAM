@@ -22,8 +22,6 @@ ob_start();
 include ('inc/def_lib.inc');
 ob_end_clean();
 
-$xff = isset($_GET['xff']) ?  base64_decode($_GET['xff'],TRUE) : '' ;
-
 if ($_SERVER['PATH_INFO'])
 do {
 
@@ -48,9 +46,6 @@ do {
 
     # New instance of the def_lib object
     $def = new def_lib($ENV, $dataset);
-
-    # If xff is specified, then use it as 'X_Forwarded'
-    if (strlen($xff)>0) $def->ENV['X_Forwarded']=$xff;
 
     # check if authkey is valid for this dataset
     if ( $def->check_authorization($auth) )

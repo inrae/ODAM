@@ -3,6 +3,9 @@
 #----------------------------------------------------
 ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
    box(title="Data Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+     conditionalPanel(condition="uiloaded==0",
+        h3(em("Wait until loading is complete ..."), style = "color:#bf6f85")
+     ),
      htmlOutput("datainfos", class="mddiv")
    ),
    conditionalPanel(condition="output.apierror==0",
@@ -57,7 +60,7 @@ ui_aboutTab <-  tabItem("about", bsAlert("ErrAlertAbout"),
       title="About", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
       htmlOutput("aboutinfos", class="mddiv")
    ),
-   conditionalPanel(condition="output.apierror==0",
+   conditionalPanel(condition="output.apierror==0 && output.nods==0",
       box(
          title="Session Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
          tags$pre(tags$code(id="sessioninfo", class="language-r shiny-text-output "))

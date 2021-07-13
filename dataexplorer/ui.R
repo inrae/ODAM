@@ -1,11 +1,3 @@
-library(shiny)
-library(shinydashboard)
-library(shinyjs)
-library(shinyBS)
-library(networkD3)
-library(plotly)
-library(markdown)
-
 source("Rsrc/ui_tabs.R", local=TRUE)
 
 meta <- tags$head(
@@ -75,6 +67,7 @@ ui <- dashboardPage(skin = "blue",
                             "openTab")),
     fluidRow(
       textInput("ipclient", "", ""),
+      tags$script("var uiloaded=0; var ipclient=''; var apikey='';"),
       bsAlert("ErrAlertMain"),
       tabItems( 
       #----------------------------------------------------

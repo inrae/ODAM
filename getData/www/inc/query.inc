@@ -29,7 +29,7 @@ $datapackage=0;
 # Check format
 if (! in_array( $format, array('xml','json','tsv','txt','csv','ssv') ))
 {
-   echo "Error: format $format does not recognize.";
+   echo "ERROR: format $format does not recognize.";
    exit(1);
 }
 
@@ -110,17 +110,17 @@ do
     # check if metadata files
     if ( $def->check_deffile('s_subsets') )
     {
-       echo 's_subsets: '.$def->retmsg;
+       echo 'ERROR s_subsets: '.$def->retmsg;
        break;
     }
     if ( $def->check_deffile('a_attributes') )
     {
-       echo 'a_attributes: '.$def->retmsg;
+       echo 'ERROR a_attributes: '.$def->retmsg;
        break;
     }
     if ($def->build_hashDS () != 0)
     {
-       echo $def->retmsg;
+       echo 'ERROR: '.$def->retmsg;
        break;
     }
 #echo "<pre>"; print_r($def->hDataset); echo "</pre>"; break;
@@ -182,7 +182,7 @@ do
         }
         else
         {
-            $MSG = "Error: $func is not a valid data subset";
+            $MSG = "ERROR: $func is not a valid data subset";
             break;
         }
     
@@ -230,7 +230,7 @@ do
             }
             else
             {
-                $MSG = "Error: either $key is not a valid keyword or requires a value";
+                $MSG = "ERROR: either $key is not a valid keyword or requires a value";
             }
             break;
         }
@@ -253,7 +253,7 @@ do
             }
             else
             {
-                $MSG = "Error: the entry $key is not a valid entry";
+                $MSG = "ERROR: the entry $key is not a valid entry";
             }
             break;
         }

@@ -1,6 +1,3 @@
-library(shiny)
-library(shinyjs)
-library(shinydashboard)
 library(jsonlite)
 library(RCurl)
 library(httr)
@@ -12,36 +9,38 @@ library(JADE)
 library(moments)
 library(scales)
 library(igraph)
-library(networkD3)
 library(magrittr)
 library(htmlwidgets)
 library(htmltools)
 library(ggpubr)
 library(ggdendro)
-library(plotly)
 library(stringr)
 library(FastGGM)
 library(RcppParallel)
 
 setThreadOptions(numThreads = 4) # set 4 threads for parallel computing
 
-auth <- ''
+# data set / data collection
 dsname <- ''
 dcname <- ''
-ws <- c(internalURL, dsname, auth, externalURL, dcname, NULL, NULL, NULL)
 
+# ws : Web service connection variables
+# 1: API key mode
+# 2: dataset shortname
+# 3: API Key
+# 4: API URL
+# 5: data collection shortname
+# 6: the client's originating IP
+# 7,8,9 : selection of the subset, menu item, header type
+ws <- c(0, dsname, '', externalURL, dcname, '', NULL, NULL, NULL)
+
+# global variables related to the dataset 
 dclist <- NULL
 inDselect <- NULL
-subsets <- NULL
 inDSselect <- 0
-subsetNames <- NULL
-connectList <- NULL
-msgError <- ''
-dn <- NULL
-fs <- 10
-
 data <- NULL
-
+subsets <- NULL
+subsetNames <- NULL
 samplename <- NULL
 samples <- NULL
 S <- NULL
@@ -51,20 +50,25 @@ facnames <- NULL
 features <- NULL
 LABELS <- NULL
 DSL <- NULL
+connectList <- NULL
+dn <- NULL
+
+# Error message return by the API
+msgError <- ''
+
+# Font size for the Subsets Graph
+fs <- 10
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 .N <- function(x) { as.numeric(as.vector(x)) }
 .C <- function(x) { as.vector(x) }
 
-httr_get <- function(ws, query, fsplit=TRUE) {
-    headers <- c( 'X-Forwarded-For' = IPClient )
-    if (nchar(ws[3])>0) headers <- c( headers, 'X-Api-Key' = ws[3] )
-    resp <- httr::GET(paste0(ws[4], query), config = httr::config(ssl_verifypeer = FALSE), add_headers(.headers = headers))
-    T <- httr::content(resp, as='text')
-    if (fsplit) T <- simplify2array(strsplit(T,"\n"))
-    T
-}
+# Was there an error in the web services?
+is.wsError <- function() return( ifelse(nchar(msgError)>0, TRUE, FALSE ) )
 
+is.wsNoAuth <- function() return( ifelse(length(grep("invalid authorization key", msgError)), TRUE, FALSE ) )
+
+# Is a dataset / data collection specified in the query string ?
 is.DS <- function(cdata) {
     lparams <- unlist(strsplit(gsub("\\?", "", cdata[['url_search']]),  '&'))
     ret <- FALSE
@@ -72,14 +76,7 @@ is.DS <- function(cdata) {
     return(ret)
 }
 
-getME <- function(cdata) {
-    protocol <- cdata[['url_protocol']]
-    hostname <- cdata[['url_hostname']]
-    port <- cdata[['url_port']]
-    pathname <- cdata[['url_pathname']]
-    paste(protocol,'//',hostname,':',port,pathname, sep='')
-}
-
+# Get query string parameters
 getWS <- function(cdata) {
     params <- parseQueryString(cdata$url_search)
     if (!is.null(params[['ws']])) {
@@ -93,9 +90,10 @@ getWS <- function(cdata) {
     if (!is.null(params[['ds']])) {
         dsname <- params[['ds']]
     }
-    auth <- ''
+    auth <- ''; ApiKeyMode <- 0
     if (!is.null(params[['auth']])) {
         auth <- params[['auth']]
+        ApiKeyMode <- 1
     }
     subsetname <- NULL
     if (!is.null(params[['subset']])) {
@@ -109,9 +107,27 @@ getWS <- function(cdata) {
     if (!is.null(params[['frame']])) {
         headerflag <- params[['frame']]
     }
-    c(  internalURL, dsname, auth, externalURL, dcname, subsetname, tabname, headerflag )
+    c(  ApiKeyMode, dsname, auth, externalURL, dcname, '', subsetname, tabname, headerflag )
 }
 
+# Low level routine allowing to retrieve data or metadata from  a query formatted according the ODAM framework specifications
+httr_get <- function(ws, query, mode='text', fsplit=TRUE) {
+    headers <- c( 'X-Forwarded-For' = ws[6] )
+    if (nchar(ws[3])>0) headers <- c( headers, 'X-Api-Key' = ws[3] )
+    T <- ''
+    tryCatch({
+       resp <- httr::GET(paste0(ws[4], query), timeout(5),
+                         config = httr::config(ssl_verifypeer = SSL_VerifyPeer),
+                         add_headers(.headers = headers))
+       T <- httr::content(resp, as=mode)
+       if (mode=='text' && fsplit) T <- simplify2array(strsplit(T,"\n"))
+    }, error=function(e) {
+       T <- "## ERROR : the API host is not responding; it is either not found or does not exist"
+    })
+    T
+}
+
+# Get 'about.md' content
 getAbout <- function () {
     aboutfile <- '/srv/shiny-server/www/about.md'
     if(file.exists(aboutfile)){
@@ -119,36 +135,61 @@ getAbout <- function () {
     }
 }
 
+# Get 'infos.md' content
 getInfos <- function (ws) {
-    str_auth <- ifelse( nchar(ws[3])>0, paste0("?auth=", ws[3]), paste0("?xff=", base64_enc(IPClient)) )
     T <- httr_get(ws, paste0('infos/', ws[2]))
-    # Images
-    P <- na.omit(str_extract(T, pattern="@@IMAGE@@/[^\\.]+\\.(png|jpg)"))
-    if (length(P)>0)
-       for (i in 1:length(P))
-            T <- gsub(P[i], paste0(gsub("@@IMAGE@@", paste0(ws[4],'/image/', ws[2]), P[i] ), str_auth ), T )
-    # PDF
-    P <- na.omit(str_extract(T, pattern="@@PDF@@/[^\\.]+\\.pdf"))
-    if (length(P)>0)
-       for (i in 1:length(P))
-            T <- gsub(P[i], paste0(gsub("@@PDF@@", paste0(ws[4],'/pdf/', ws[2]), P[i] ), str_auth ), T )
+    if (!is.wsError() && !is.wsNoAuth()) {
+       # Images
+       P <- na.omit(str_extract(T, pattern="@@IMAGE@@/[^\\.]+\\.(png|jpg)"))
+       if (length(P)>0) for (i in 1:length(P)) {
+             I <- base64_enc(httr_get(ws, paste0('image/', ws[2], '/', gsub('@@IMAGE@@/','',P[i])), mode='raw'))
+             T <- gsub( P[i], paste0('data:image/png;base64,',I), T )
+       }
+       # PDF - markdown link style
+       P <- na.omit(str_extract(T, pattern="\\[[^\\]]+\\]\\(@@PDF@@/[^\\.]+\\.pdf\\)"))
+       if (length(P)>0) for (i in 1:length(P)) {
+          V <- as.vector(simplify2array(strsplit(gsub('@@PDF@@','',gsub('(\\[|\\]|\\(|\\))','',P[i])),'/')))
+          urlapi <- paste0(ws[4],'pdf/',ws[2],'/',V[2])
+          href <- paste0("<a class=\"jlink\" onclick=\"javascript:openPDF('",urlapi,"');\">",V[1],"</a>")
+          T <- gsub(P[i], href, T, fixed=TRUE)
+       }
+       # PDF - normal link style
+       P <- na.omit(str_extract(T, pattern="@@PDF@@/[^\\.]+\\.pdf"))
+       if (length(P)>0) for (i in 1:length(P)) {
+          V <- gsub('@@PDF@@/','',P[1])
+          urlapi <- paste0(ws[4],'pdf/',ws[2],'/', V)
+          href <- paste0("<a class=\"jlink\" onclick=\"javascript:openPDF('",urlapi,"');\">",V,"</a>")
+          T <- gsub(P[i], href, T, fixed=TRUE)
+       }
+    }
     T
 }
 
+# Get tabulated data 
 getData <- function (ws, query='', dcol=0) {
-    ds <- ifelse(dcol>0, ws[5], ws[2])
-    out <- read.csv(textConnection(httr_get(ws, paste0('tsv/',ds,'/',query))), head=TRUE, sep="\t")
-    msgError <<- ''
-    if (dim(out)[1]==0) {
-        msgError <<- gsub("\\.", " ", colnames(out))[1]
+    out <- data.frame()
+    repeat {
+       msgError <<- ''
+       ds <- ifelse(dcol>0, ws[5], ws[2])
+       T <- httr_get(ws, paste0('tsv/',ds,'/',query))
+       if (length(grep("ERROR", T[1]))) {
+          msgError <<- T[1]
+          break
+       }
+       out <- read.csv(textConnection(T), head=TRUE, sep="\t")
+       if (dim(out)[1]==0) {
+          msgError <<- gsub("\\.", " ", colnames(out))[1]
+       }
+       break
     }
     out
 }
 
+# Get tabulated data about data collection
 getDataCol <- function (ws) {
     dclist <- NULL
     dc <- getData(ws,dcol=1);
-    if (nchar(msgError)==0) {
+    if (!is.wsError()) {
         if (length(dc$Subset)==1 && dc$Subset=="collection") {
            collection <- getData(ws,'/collection',dcol=1);
            collection$url[is.na(collection$url)] <- externalURL
@@ -158,10 +199,11 @@ getDataCol <- function (ws) {
     dclist
 }
 
+# Get tabulated data about data subsets
 getInit <- function() {
     # Get subsets information
     subsets <<- getData(ws, 'subset')
-    if (nchar(msgError)==0) {
+    if (!is.wsError()) {
        subsets <<- subsets[order(subsets$SetID),]
        subsetNames <<- .C(subsets$Subset)
        connectList <<- cbind( subsets[subsets$LinkID>0, ]$LinkID , subsets[subsets$LinkID>0, ]$SetID )
@@ -183,6 +225,7 @@ getInit <- function() {
     }
 }
 
+# Get tabulated data and metadata regarding a data subset
 getVars <- function(setID, rmvars=FALSE) {
 
     inDSselect <<- setID
@@ -242,6 +285,7 @@ getVars <- function(setID, rmvars=FALSE) {
     }
 }
 
+# Convert/Format LABELS (metadata) as a data.frame along their url links
 getLabels <- function() {
     labelinfo <- NULL
     for( i in 1:dim(LABELS)[1]) {
@@ -253,6 +297,7 @@ getLabels <- function() {
     df
 }
 
+# Build a tree of relations between data subsets
 fillDN <- function( dn, indx) {
     dn$name <- subsetNames[ indx ]
     L <- as.vector(connectList[ connectList[,1]==indx, 2])
@@ -266,6 +311,7 @@ fillDN <- function( dn, indx) {
     dn
 }
 
+# Compute the tree deepth
 cntLevelDN <- function(Lev, dn, levelid) {
     if (length(dn$children)>0) {
         if (is.null(Lev[levelid]) || is.na(Lev[levelid])) Lev[levelid] <- 0

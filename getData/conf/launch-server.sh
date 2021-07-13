@@ -5,6 +5,9 @@ set -e
 # Apache gets grumpy about PID files pre-existing
 rm -f /var/run/apache2/apache2.pid
 
+# Set the 'ServerName' directive globally 
+sed -i -e "s/^\#ServerRoot.*$/ServerName getdata/" /etc/apache2/apache2.conf
+ 
 echo "Starting apache2 server ..."
 /usr/sbin/apache2
 

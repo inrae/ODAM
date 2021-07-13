@@ -8,7 +8,7 @@ RUN apt-get install -y \
 # Install some packages
     python-minimal vim \
     libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev \
-    software-properties-common \
+    software-properties-common locales \
 # Install & configure mcrypt & gd for PHP
  && pecl install mcrypt \
  && docker-php-ext-enable mcrypt  \
@@ -56,12 +56,13 @@ ENV LC_ALL=en_US.UTF-8 \
 # WORKDIR /home
 
 # Copy configuration and source files 
-COPY ./php.ini /usr/local/etc/php/php.ini
-COPY ./launch-server.sh /usr/bin/launch-server.sh
+COPY ./conf/php.ini /usr/local/etc/php/php.ini
+COPY ./conf/launch-server.sh /usr/bin/launch-server.sh
 ADD ./www /var/www/html
 
 # Final touch
-RUN chmod -R 777 /var/www/html \
+RUN echo 'en_US.UTF-8 UTF-8' > /etc/locale.gen && locale-gen \
+ && chmod -R 777 /var/www/html \
  && chmod 755 /usr/bin/q \
  && chmod 755 /usr/bin/launch-server.sh \
  && mkdir -p /opt/data \

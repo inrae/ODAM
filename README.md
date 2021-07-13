@@ -1,6 +1,7 @@
 ![Logo](odam-logo.png)
 
 [![GitHub release](https://img.shields.io/github/release/inrae/ODAM.svg)](https://GitHub.com/inrae/ODAM/releases/)
+[![SWH](https://archive.softwareheritage.org/badge/swh:1:dir:b4a7dce6a841b64b7f7b9836b5af37009c91b1ba/)](https://archive.softwareheritage.org/swh:1:dir:b4a7dce6a841b64b7f7b9836b5af37009c91b1ba;origin=https://github.com/inrae/ODAM;visit=swh:1:snp:4ae2da9d9579ac67b552f02e42b28a6e1bf9f277;anchor=swh:1:rev:a7ad74f6946f2135831e917c46faeda53b54d98e)
 
 # ODAM
 ### Open Data, Access and Mining

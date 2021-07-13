@@ -110,7 +110,7 @@ getWS <- function(cdata) {
     c(  ApiKeyMode, dsname, auth, externalURL, dcname, '', subsetname, tabname, headerflag )
 }
 
-# Low level routine allowing to retrieve data or metadata from  a query formatted according the ODAM framework specifications
+# Low level routine allowing to retrieve data or metadata from  a query formatted according the API specifications
 httr_get <- function(ws, query, mode='text', fsplit=TRUE) {
     headers <- c( 'X-Forwarded-For' = ws[6] )
     if (nchar(ws[3])>0) headers <- c( headers, 'X-Api-Key' = ws[3] )

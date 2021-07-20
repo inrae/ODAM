@@ -251,13 +251,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#based-on-an-example" class="md-nav__link">
-    Based on an example
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#1-data-gathering" class="md-nav__link">
     1- Data Gathering
   </a>
@@ -293,13 +286,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#final-checking" class="md-nav__link">
-    Final checking
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -308,6 +294,13 @@
         <li class="md-nav__item">
   <a href="#4-additional-information" class="md-nav__link">
     4 - Additional information
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-final-checking" class="md-nav__link">
+    5 - Final checking
   </a>
   
 </li>
@@ -429,13 +422,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#based-on-an-example" class="md-nav__link">
-    Based on an example
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#1-data-gathering" class="md-nav__link">
     1- Data Gathering
   </a>
@@ -471,13 +457,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#final-checking" class="md-nav__link">
-    Final checking
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -486,6 +465,13 @@
         <li class="md-nav__item">
   <a href="#4-additional-information" class="md-nav__link">
     4 - Additional information
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-final-checking" class="md-nav__link">
+    5 - Final checking
   </a>
   
 </li>
@@ -509,7 +495,7 @@
                 <h1 id="data-preparation-protocol-for-odam-compliance">Data Preparation Protocol for ODAM Compliance<a class="headerlink" href="#data-preparation-protocol-for-odam-compliance" title="Permanent link">&para;</a></h1>
 <p>The purpose of this protocol is to describe all the steps involved in collecting, preparing and annotating the data from an experiment associated with an experimental design (<a href="https://en.wikipedia.org/wiki/Design_of_experiments" target="_blank">DoE</a>) that will then allow the user to benefit from the services offered by ODAM. The overall approach is based on good data management practices concerning data structuring and the description of structural metadata.</p>
 <p>Indeed, the strong point of the approach is to define metadata in depth, i.e. at the level of the data itself (i.e. metadata at column-level such as factors, variables...) and not only as a "hat" on the data set. Thus, having structural metadata allows datasets to achieve a higher level of interoperability and greatly facilitates functional interconnection and analysis in a broader context.</p>
-<h3 id="based-on-an-example">Based on an example<a class="headerlink" href="#based-on-an-example" title="Permanent link">&para;</a></h3>
+<p><strong>Based on an example</strong></p>
 <ul>
 <li>
 <p>In order to illustrate the different stages of this protocol, we have chosen an example from an experiment on tomato fruits grown in a greenhouse. The aim of this study was to build a model of fruit growth. For this, a certain amount of data was required, and we will limit ourselves to some of them in order to simplify the size of the data set.</p>
@@ -770,9 +756,17 @@ corresponding to a study)</p>
     <a href="http://edamontology.org/data_0842.">http://edamontology.org/data_0842.</a>(H)</p>
 </li>
 </ul>
-<hr>
+<h3 id="4-additional-information">4 - Additional information<a class="headerlink" href="#4-additional-information" title="Permanent link">&para;</a></h3>
+<p>Although descriptive metadata have to be associated with a suitable data repository in order to support data publishing (see <a href="../publish">Publish your data</a>), it is nevertheless possible to add descriptive information about the dataset. This information must be provided in <a href="https://www.markdownguide.org/basic-syntax/" target="_blank">markdown format</a>, a text format with a simple formatting syntax. The name of the file must be '<strong>infos.md</strong>' and add it in the same directory as the dataset.</p>
+<p>It is also possible to add images. To do this, you must create a directory named '<strong>images</strong>'. To reference these images within the infos.md file, use the @@IMAGE@@ macro as a path. This macro will be automatically replaced by the correct URL when the page is loaded. An example is given below :</p>
+<div class="highlight"><pre><span></span><code>![frim1](@@IMAGE@@/tomato_icon.png) &lt;font size=&quot;+3&quot;&gt; [Tomato][1] &lt;/font&gt;
+</code></pre></div>
 
-<h4 id="final-checking">Final checking<a class="headerlink" href="#final-checking" title="Permanent link">&para;</a></h4>
+<p>In the same way, it is also possible to add links to PDF files. To do this, you must create a directory named '<strong>pdf</strong>'. To add links to PDF files within the infos.md file, use the @@PDF@@ macro as a path. This macro will be automatically replaced by the correct URL when the page is loaded. An example is given below :</p>
+<div class="highlight"><pre><span></span><code>* [Protocol](@@PDF@@/protocol.pdf)
+</code></pre></div>
+
+<h3 id="5-final-checking">5 - Final checking<a class="headerlink" href="#5-final-checking" title="Permanent link">&para;</a></h3>
 <p>To complete this phase of data preparation, here is a list of some points to
 check and summarized below:</p>
 <table>
@@ -827,17 +821,7 @@ check and summarized below:</p>
 </li>
 </ul>
 <p>The full version of the two metadata files for the FRIM1 dataset can be viewed online: <a href="https://pmb-bordeaux.fr/getdata/query/frim1?format=xml" target="_blank">subset metadata</a>, <a href="https://pmb-bordeaux.fr/getdata/query/frim1/metadata?format=xml" target="_blank">attribute metadata</a></p>
-<h3 id="4-additional-information">4 - Additional information<a class="headerlink" href="#4-additional-information" title="Permanent link">&para;</a></h3>
-<p>Although descriptive metadata have to be associated with a suitable data repository in order to support data publishing (see <a href="../publish">Publish your data</a>), it is nevertheless possible to add descriptive information about the dataset. This information must be provided in <a href="https://www.markdownguide.org/basic-syntax/" target="_blank">markdown format</a>, a text format with a simple formatting syntax. The name of the file must be '<strong>infos.md</strong>' and add it in the same directory as the dataset.</p>
-<p>It is also possible to add images. To do this, you must create a directory named '<strong>images</strong>'. To reference these images within the infos.md file, use the @@IMAGE@@ macro as a path. This macro will be automatically replaced by the correct URL when the page is loaded. An example is given below :</p>
-<div class="highlight"><pre><span></span><code>![frim1](@@IMAGE@@/tomato_icon.png) &lt;font size=&quot;+3&quot;&gt; [Tomato][1] &lt;/font&gt;
-</code></pre></div>
-
-<p>In the same way, it is also possible to add links to PDF files. To do this, you must create a directory named '<strong>pdf</strong>'. To add links to PDF files within the infos.md file, use the @@PDF@@ macro as a path. This macro will be automatically replaced by the correct URL when the page is loaded. An example is given below :</p>
-<div class="highlight"><pre><span></span><code>* [Protocol](@@PDF@@/protocol.pdf)
-</code></pre></div>
-
-<p><br><br><br></p>
+<p><br><br></p>
 <div class="footnote">
 <hr />
 <ol>

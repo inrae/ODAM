@@ -4,7 +4,7 @@
 ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
    box(title="Data Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
      conditionalPanel(condition="uiloaded==0",
-        h3(em("Wait until loading is complete ..."), style = "color:#bf6f85")
+        h3( tags$img(src = "loading_wait.gif"), style = "color:#bf6f85")
      ),
      htmlOutput("datainfos", class="mddiv")
    ),

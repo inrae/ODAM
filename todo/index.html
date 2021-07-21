@@ -343,13 +343,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#gantt-diagrams-of-the-developments" class="md-nav__link">
-    Gantt diagrams of the developments
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -415,13 +408,6 @@
   
 </li>
       
-        <li class="md-nav__item">
-  <a href="#gantt-diagrams-of-the-developments" class="md-nav__link">
-    Gantt diagrams of the developments
-  </a>
-  
-</li>
-      
     </ul>
   
 </nav>
@@ -441,7 +427,6 @@
                 <h1 id="odam-development-roadmap">ODAM: Development roadmap<a class="headerlink" href="#odam-development-roadmap" title="Permanent link">&para;</a></h1>
 <hr />
 <h4 id="data-extraction">Data extraction<a class="headerlink" href="#data-extraction" title="Permanent link">&para;</a></h4>
-<p><i>development planned for 2021</i></p>
 <ol>
 <li>
 <p>Extension of the Rodam package </p>
@@ -465,7 +450,7 @@
 <hr>
 
 <h4 id="data-annotation">Data annotation<a class="headerlink" href="#data-annotation" title="Permanent link">&para;</a></h4>
-<p>Development carried out in interaction with the <a href="https://foosin.fr/en/foosin-project/" target="_blank">FooSIN</a> project - <i>planned for 2021</i></p>
+<p>Development carried out in interaction with the <a href="https://foosin.fr/en/foosin-project/" target="_blank">FooSIN</a> project</p>
 <ol>
 <li>
 <p>Build a lightweight interface (<a href="https://getbootstrap.com/docs/4.2/examples/" target="_blank">jQuery/Bootstrap</a>) for</p>
@@ -484,10 +469,10 @@
 </li>
 </ol>
 <h4 id="linked-data">Linked Data<a class="headerlink" href="#linked-data" title="Permanent link">&para;</a></h4>
-<p>Development carried out in interaction with the <a href="https://foosin.fr/en/foosin-project/" target="_blank">FooSIN</a> project - <i>planned for 2022</i></p>
+<p>Development carried out in interaction with the <a href="https://foosin.fr/en/foosin-project/" target="_blank">FooSIN</a> project</p>
 <ol>
 <li>
-<p>Build an ontology-based model to describe the structure of tabular and relational data, primarily focused on concepts of entity, subset, attributes, and categories of variables (identifier<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, factor<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>, quantitative<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>, qualitative<sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>), as shown below :</p>
+<p>Build an ontology-based model to describe the structure of tabular and relational data, primarily focused on concepts of data entity<sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>, data attributes<sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>, and categories of variables (identifier<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>, factor<sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>, quantitative<sup id="fnref:5"><a class="footnote-ref" href="#fn:5">5</a></sup>, qualitative<sup id="fnref:6"><a class="footnote-ref" href="#fn:6">6</a></sup>), as shown below :</p>
 <ul>
 <li>See <a href="https://fr.slideshare.net/danieljacob771282/make-your-data-great-again-ver-2" target="_blank">Make your data great again</a> : How to ensure that open data works for research - Towards Linked Data</li>
 </ul>
@@ -497,17 +482,19 @@
 </center><br></p>
 </li>
 <li>
-<p>Make a proposal to convert a <a href="../json-schema">ODAM datapackage</a> to <a href="https://json-ld.org/" target="_blank">JSON-LD</a> and then to <a href="http://cgi.di.uoa.gr/~pms509/past_lectures/introduction-to-rdf.pdf" target="_blank">RDF</a>.</p>
+<p>Make a proposal to convert a <a href="../json-schema">ODAM datapackage</a> to <a href="https://json-ld.org/" target="_blank">JSON-LD</a> and then to <a href="https://data.europa.eu/sites/default/files/d2.1.2_training_module_1.3_introduction_to_rdf_sparql_en_edp.pdf" target="_blank">RDF</a>.</p>
 <ul>
 <li>Mainly based on the ontology defined at point 1.</li>
 <li>the <a href="https://en.wikipedia.org/wiki/Tbox" target="_blank">Tbox</a> will be based on the <a href="http://agroportal.lirmm.fr/" target="_blank">AgroPortal</a> ontologies as a Proof of Concept.</li>
 </ul>
 </li>
 </ol>
+<!--
 <hr>
 
-<h4 id="gantt-diagrams-of-the-developments">Gantt diagrams of the developments<a class="headerlink" href="#gantt-diagrams-of-the-developments" title="Permanent link">&para;</a></h4>
-<p><div class="mermaid">gantt
+#### Gantt diagrams of the developments
+
+<div class="mermaid">gantt
     dateFormat YYYY-MM-DD
     axisFormat  %Y-%m
     title Extraction &amp; Annotation
@@ -524,22 +511,30 @@
     title Linked Data
     section LinkedData
        Ontology: des5, 2022-02-01,180d
-       Converter: des6, 2022-06-01, 90d</div></p>
-<p><br><br><br></p>
+       Converter: des6, 2022-06-01, 90d</div>
+<br><br><br>
+-->
+
 <div class="footnote">
 <hr />
 <ol>
 <li id="fn:1">
-<p>Identifiers precisely reference within the experiment each of the elements belonging to the same observation entity forming a coherent observation unit. For example, each plant, each sample has its own identifier,&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+<p>A data entity is an object in a data model. Data is typically designed by breaking things down into their smallest parts that are useful for representing data relationships. For example, a plant can generate a list of samples. Each sample can be associated with several types of analytical variables. All three objects: plant, sample and type of analytical variables are considered data entities.&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
 </li>
 <li id="fn:2">
-<p>A factor of an experiment is a controlled independent variable; a variable whose levels are set by the experimenter. Treatments (control vs. stress), genotype (WT vs. mutant), the course of time (development stages) or even tissues, are typical factors of experiments.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+<p>Data attributes are characteristics of a data object. From data science view, they are the features of a data entity. They exist most often as a column in a data table.&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
 </li>
 <li id="fn:3">
-<p>Quantitative data are values that describe a measurable quantity, in the form of numbers that can be calculated.&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+<p>Identifiers precisely reference within the experiment each of the elements belonging to the same observation entity forming a coherent observation unit. For example, each plant, each sample has its own identifier,&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
 </li>
 <li id="fn:4">
-<p>Qualitative data describe qualities or characteristics. They answer questions such as "what type" or "what category". These values&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+<p>A factor of an experiment is a controlled independent variable; a variable whose levels are set by the experimenter. Treatments (control vs. stress), genotype (WT vs. mutant), the course of time (development stages) or even tissues, are typical factors of experiments.&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+<li id="fn:5">
+<p>Quantitative data are values that describe a measurable quantity, in the form of numbers that can be calculated.&#160;<a class="footnote-backref" href="#fnref:5" title="Jump back to footnote 5 in the text">&#8617;</a></p>
+</li>
+<li id="fn:6">
+<p>Qualitative data describe qualities or characteristics. They answer questions such as "what type" or "what category". These values&#160;<a class="footnote-backref" href="#fnref:6" title="Jump back to footnote 6 in the text">&#8617;</a></p>
 </li>
 </ol>
 </div>

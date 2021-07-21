@@ -600,17 +600,21 @@
 <p><strong>Qualitative</strong>: Qualitative data describe qualities or characteristics. They answer questions such as "what type" or "what category". These values are no longer numbers, but a set of modalities. These values cannot be calculated.</p>
 </li>
 </ul>
-<p></font><hr></p>
+<p></font><hr>
+<br></p>
 <p>In order to allow data to be ODAM-compliant, we need two specific files (subsets &amp; attributes) to describe the structural metadata of the whole dataset, i.e. some minimal but relevant metadata. For that, <strong>two metadata files are required</strong>, namely <strong>s_subsets.tsv</strong> and <strong>a_attributes.tsv</strong>.</p>
 <p><b>(1)</b>The subset metadata file (s_subsets.tsv) makes it possible to associate each data subset with a key concept corresponding to the main entity of the subset, each subset being stored as a file (the grey rectangle). It also defines for each subset the link to the subset it originates. <b>(2)</b> The attribute metadata file (a_attributes.tsv) allows to annotate each attribute (concept/variable) with some minimal but relevant metadata, such as: its description with its unit, the data type, but also its category. The category defined by controlled vocabulary (CV) is used to specify the type of each variable. In each of these two files (subsets and attributes), it is possible to annotate each of the terms with unambiguous definitions through links to accessible definitions (standardized CV terms).</p>
 
 <p>Thus constructed, this metadata constitutes a dictionary describing each file (subsets) as well as all the columns of the tables (attributes) offering a better guarantee in the correct (re)use of the data for users who have not produced these data. These metadata lets therefore non-expert users explore and visualize your data. By making data interoperable and reusable by both humans and machines, it also encourages data dissemination according to FAIR principles.</p>
 
-<hr>
-
+<p><br><hr><br></p>
 <h4 id="s_subsetstsv">s_subsets.tsv<a class="headerlink" href="#s_subsetstsv" title="Permanent link">&para;</a></h4>
 <ul>
-<li>a file allowing to associate with each subset of data a key concept corresponding to the main entity of the subset and the relations of the type "<em>obtainedFrom</em>" between these concepts.</li>
+<li>A metadata file allowing to associate with each subset of data a key concept corresponding to the main entity of the subset and the relations of the type "<em>obtainedFrom</em>" between these concepts.</li>
+<li>The full version of this metadata file for the FRIM1 dataset can be accessed online using API:<ul>
+<li><a href="https://pmb-bordeaux.fr/getdata/query/frim1?format=xml" target="_blank">subset metadata</a></li>
+</ul>
+</li>
 </ul>
 <p><center>
 <a href="../images/media/Image9.png" data-lightbox="Img9"><img src="../images/media/Image9.png" width="600px"></a>
@@ -665,11 +669,14 @@
 </li>
 </ul>
 <p></font></p>
-<hr>
-
+<p><br><hr><br></p>
 <h4 id="a_attributestsv">a_attributes.tsv<a class="headerlink" href="#a_attributestsv" title="Permanent link">&para;</a></h4>
 <ul>
-<li>a metadata file allowing each attribute (concept/variable) to be annotated with some minimal but relevant metadata</li>
+<li>A metadata file allowing each attribute (concept/variable) to be annotated with some minimal but relevant metadata</li>
+<li>The full version of this metadata file for the FRIM1 dataset can be accessed online using API:<ul>
+<li><a href="https://pmb-bordeaux.fr/getdata/query/frim1/metadata?format=xml" target="_blank">attribute metadata</a></li>
+</ul>
+</li>
 </ul>
 <p><center>
 <a href="../images/media/Image10.png" data-lightbox="Img10"><img src="../images/media/Image10.png" width="600px"></a>
@@ -765,6 +772,7 @@
 </li>
 </ul>
 <p></font></p>
+<p><br><hr><br></p>
 <h3 id="4-additional-information">4 - Additional information<a class="headerlink" href="#4-additional-information" title="Permanent link">&para;</a></h3>
 <p>Although descriptive metadata have to be associated with a suitable data repository in order to support data publishing (see <a href="../publish">Publish your data</a>), it is nevertheless possible to add descriptive information about the dataset.</p>
 <ul>
@@ -784,6 +792,7 @@
 
 </li>
 </ul>
+<p><br><br></p>
 <h3 id="5-final-checking">5 - Final checking<a class="headerlink" href="#5-final-checking" title="Permanent link">&para;</a></h3>
 <p>So now our ODAM dataset directory should look like this:</p>
 <p><center>
@@ -835,15 +844,10 @@ check and summarized below:</p>
 </table>
 <p>Fortunately, all of these checks can be done for you.</p>
 <ul>
-<li>
-<p>See how it looks for our complete online example:</p>
-<ul>
-<li><a href="https://pmb-bordeaux.fr/getdata/check/frim1" target="_blank">https://pmb-bordeaux.fr/getdata/check/frim1</a></li>
+<li>See how it looks for our complete online example:  <a href="https://pmb-bordeaux.fr/getdata/check/frim1" target="_blank">https://pmb-bordeaux.fr/getdata/check/frim1</a></li>
 </ul>
-</li>
-</ul>
-<p>The full version of the two metadata files for the FRIM1 dataset can be viewed online: <a href="https://pmb-bordeaux.fr/getdata/query/frim1?format=xml" target="_blank">subset metadata</a>, <a href="https://pmb-bordeaux.fr/getdata/query/frim1/metadata?format=xml" target="_blank">attribute metadata</a></p>
-<p><br><br></p>
+<p>This assumes that you have installed ODAM software (see <a href="../install">Installation</a>) and that you know how to use the API (see <a href="../api">Web API</a>).
+<br><br></p>
 <div class="footnote">
 <hr />
 <ol>

@@ -520,7 +520,7 @@
 <p><br></p>
 <h4 id="based-on-an-odam-repository">Based on an ODAM repository<a class="headerlink" href="#based-on-an-odam-repository" title="Permanent link">&para;</a></h4>
 <p>Because ODAM is primarily an Experimental Data Table Management System (EDTMS) for data sharing, it must be associated with a suitable data repository in order to support data publishing.</p>
-<p>Whereas institutional data repositories focus on the experiment description with the corresponding descriptive metadata, the ODAM approach, by adjoining some minimal but relevant structural metadata, gives access to the data themselves with the possibility to explore and mine them. While ODAM ensuring data sharing function allows direct access to subsets of data by <a href="../api">Web API</a> request, an institutional data repository ensuring data publishing function has to support an important part of the FAIR criteria. Thus, the combination of the two systems makes it possible to cover all the essential FAIR criteria.</p>
+<p>Whereas institutional data repositories focus on the experiment description with the corresponding descriptive metadata, the ODAM approach, by adjoining some minimal but relevant structural metadata, gives access to the data themselves with the possibility to explore and mine them. While ODAM ensuring data sharing function allows direct access to subsets of data by <a href="../api">Web API</a> request, an institutional data repository ensuring data publishing function has to support an important part of the FAIR criteria. Thus, <ins>the combination of the two systems makes it possible to cover all the essential FAIR criteria</ins>.</p>
 <p>One of the benefits of having an ODAM repository for data users is that it avoids the need to download data prior to any data analysis. This ensures that one starts from the data of the repository with help of the web API and not with the duplicate data that could have been changed between analyses without keeping track of it. In the same way, you can distribute your <a href="https://jupyter.org/" target="_blank">Jupiter notebooks</a>, for example, without having to duplicate the data.</p>
 <p>In order to make the data fair, and even if there is already a web API for data access, it makes sense to attach an ODAM datapackage.json file (see <a href="../json-schema">JSON schema</a>) to the institutional data repository. This allows machines to use the data, since this datapackage file uses an explicit schema for the data and its organization. In this case, it is imperative to specify absolute URLs in the datapackage.json for the data files.</p>
 <dl>
@@ -528,6 +528,14 @@
 <dd><code>https://&lt;your ODAM data reposity&gt;/getdata/query/&lt;your dataset&gt;/datapackage?links=1</code></dd>
 </dl>
 <p><br></p>
+<p><strong>Example: Data INRAE repository as a hub</strong></p>
+<p>Data INRAE repository as a hub (based on <a href="https://dataverse.org/" target="_blank">Dataverse</a>) allows to interconnect the different elements of the dataset. A file named '<strong>datapackage.json</strong>', structured according to an explicit schema, was generated based on the structural metadata previously defined with the help of spreadsheets. By relying on explicit schemas (<a href="https://json-ld.org/" target="_blank">JSON-LD</a>, <a href="https://json-schema.org/" target="_blank">JSON Schema</a>) for both metadata and data, this makes it possible for both humans and machines to reuse data without friction..
+<br><br>
+<center>
+<a href="../images/fair0.png" data-lightbox="fair0"><img src="../images/fair0.png" width="500px"></a><br>
+<a href="../images/fair3.png" data-lightbox="fair0"><img src="../images/fair3.png" width="500px"></a>
+<br><p class="plegend center">Data INRAE repository as a hub (based on Dataverse)</p>
+</center><br></p>
 <h4 id="without-odam-repository">Without ODAM repository<a class="headerlink" href="#without-odam-repository" title="Permanent link">&para;</a></h4>
 <p>If you do not wish to set up your own ODAM repository on internet, you can at least simply upload your data files with associated structural metadata to an institutional repository. Add a ODAM datapackage.json file within your collection of data files with relative path for files. (see <a href="../json-schema">JSON schema</a>).</p>
 <dl>

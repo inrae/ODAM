@@ -50,7 +50,7 @@ Or you may prefer getting directly the docker images from the official [docker r
 ```
 
   * Create / add a dataset into your data repository (see [presentation](https://inrae.github.io/ODAM/pdf/FAIR_and_DataLife_DJ_Oct2019.pdf))
-  * To prepare your own data subsets, see the [ODAM: Data collection and preparation](https://inrae.github.io/ODAM/data-type/)
+  * To prepare your own data subsets, see the [ODAM: Data collection and preparation](https://inrae.github.io/ODAM/data-preparation/)
 
 ### Get the complete FRIM dataset as an example
 

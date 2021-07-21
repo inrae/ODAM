@@ -494,7 +494,7 @@
                 
                 <h1 id="data-preparation-protocol-for-odam-compliance">Data Preparation Protocol for ODAM Compliance<a class="headerlink" href="#data-preparation-protocol-for-odam-compliance" title="Permanent link">&para;</a></h1>
 <p>The purpose of this protocol is to describe all the steps involved in collecting, preparing and annotating the data from an experiment associated with an experimental design (<a href="https://en.wikipedia.org/wiki/Design_of_experiments" target="_blank">DoE</a>) that will then allow the user to benefit from the services offered by ODAM. The overall approach is based on good data management practices concerning data structuring and the description of structural metadata.</p>
-<p>Indeed, the strong point of the approach is to define metadata in depth, i.e. at the level of the data itself (i.e. metadata at column-level such as factors, variables...) and not only as a "hat" on the data set. Thus, having structural metadata allows datasets to achieve a higher level of interoperability and greatly facilitates functional interconnection and analysis in a broader context.</p>
+<p>Indeed, the strong point of the approach is to define metadata in depth, i.e. at the level of the data itself (i.e. metadata at column-level such as factors, variables...) and not just descriptive metadata on the top of the data set. Thus, having structural metadata allows datasets to achieve a higher level of interoperability and greatly facilitates functional interconnection and analysis in a broader context.</p>
 <p><strong>Based on an example</strong></p>
 <ul>
 <li>
@@ -509,46 +509,46 @@
 </li>
 </ul>
 <h3 id="1-data-gathering">1- Data Gathering<a class="headerlink" href="#1-data-gathering" title="Permanent link">&para;</a></h3>
-<p>In our data subset example, we have 5 data files, one by type of object (plants, harvests, samples, compounds and enzymes).</p>
+<p>In our data subset example, we have 5 data files, one by type of object (<em>plants, harvests, samples, compounds and enzymes</em>).</p>
 <ul>
 <li>
 <p>5 different entities within the study, each corresponding to a file of data
     tables:</p>
 <ul>
-<li>plants, harvests, samples, compounds and enzymes</li>
+<li><em>plants, harvests, samples, compounds and enzymes</em></li>
 </ul>
 </li>
 <li>
 <p>2 factors:</p>
 <ul>
-<li>Treatment, Development stages</li>
+<li><em>Treatment, Development stages</em></li>
 </ul>
 </li>
 <li>
 <p>53 quantitative variables:</p>
 <ul>
-<li>compounds (12) + enzymes (38) + weight, height, diameter (3)</li>
+<li><em>compounds (12) + enzymes (38) + weight, height, diameter (3)</em></li>
 </ul>
 </li>
 </ul>
-<p><strong>1</strong> - First, we put them under the same directory by giving it a name
-corresponding to the study or project (e.g. acronym of the project with a suffix
-corresponding to a study)</p>
+<p><strong>1</strong> - First, we put them under the same directory by giving it a name corresponding to the study or project (e.g. acronym of the project with a suffix corresponding to a study)</p>
 <p><center>
-<a href="../images/media/Image3.png" data-lightbox="Img3"><img src="../images/media/Image3.png" width="600px"></a>
+<a href="../images/media/Image3.png" data-lightbox="Img3"><img src="../images/media/Image3.png" width="500px"></a>
 </center><br><br></p>
 <p><strong>2</strong> - Data subsets files must be compliant with the TSV standard (<a href="https://en.wikipedia.org/wiki/Tab-separated_values" target="_blank">Tab-Separator-Values</a>).</p>
 <p>So an ODAM dataset is a bundle that contains a set of TSV files. The TSV files are simple tables containing the data of the dataset. In choosing this format, we follow the <a href="https://5stardata.info/en" target="_blank">5 gold stars</a> principle, considered as a good practice and a necessary and indispensable step towards "Linked Open Data".</p>
 <p><center>
-<a href="../images/media/Image12.png" data-lightbox="Img12"><img src="../images/media/Image12.png" width="600px"></a>
+<a href="../images/media/Image12.png" data-lightbox="Img12"><img src="../images/media/Image12.png" width="500px"></a>
 </center><br><br></p>
-<p><strong>Advice:</strong> To be sure to have the right format, do a 'copy' of data from the spreadsheet then 'paste' them into a new file, then 'save as TSV format (separator: a tab character)'</p>
+<p><strong>Note</strong> : Data files must have the extension '<strong>txt</strong>' in order to distinguish them from metadata files, see below.</p>
+<p><strong>Advice:</strong> To be sure to have the right format, do a <em>copy</em> of data from the spreadsheet then <em>paste</em> them into a new file, then <em>save as TSV format</em> (separator: a tab character)'</p>
 <h3 id="2-data-structure-and-organization">2 - Data structure and organization<a class="headerlink" href="#2-data-structure-and-organization" title="Permanent link">&para;</a></h3>
 <p>Since all the experimental data tables were generated as part of an experiment associated with a Design of Experiment (<a href="https://en.wikipedia.org/wiki/Design_of_experiments" target="_blank">DoE</a>), each file thus contains data acquired sequentially as the experiment progressed.</p>
 <p><center>
-<a href="../images/media/Image1.png" data-lightbox="Img1"><img src="../images/media/Image1.png" width="600px"></a>
+<a href="../images/media/Image1.png" data-lightbox="Img1"><img src="../images/media/Image1.png" width="500px"></a>
 </center><br><br></p>
 <p>There must therefore be a link between each file, i.e. information that connects them together. In most cases (if not all), this information corresponds to <strong>identifiers</strong><sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup> that make it possible to precisely reference within the experiment each of the elements belonging to the same observation <strong>entity</strong><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> forming a coherent observation unit. For example, each plant, each sample has its own identifier, and each of these entities corresponds to a separate data file.</p>
+<p><hr><font style="font-family: system-ui; font-size: 0.9em;"></p>
 <p>Well organized data means that each data table must be correctly structured, i.e.:</p>
 <ul>
 <li>Each variable forms a column,</li>
@@ -560,12 +560,13 @@ corresponding to a study)</p>
 <li>The header names must short without special characters. Only use the alphanumerical characters, and the underline character as word separator,</li>
 <li>The file should only contain data in matrix form and nothing else, i.e. no annotation on top, bottom, or sides.</li>
 </ul>
-<p>Example of the ‘samples.tsv’ file:</p>
+<p></font><hr></p>
+<p>Example of the ‘samples.txt’ file:</p>
 <p><center>
 <a href="../images/media/Image2.png" data-lightbox="Img2"><img src="../images/media/Image2.png" width="600px"></a>
 </center><br><br></p>
 <p>The files generated during data collection have to be organized according to the <a href="https://en.wikipedia.org/wiki/Entity%E2%80%93relationship_model" target="_blank">entity-relationship model</a> similar to relational database management systems (RDBMS). Indeed, each <strong>entity</strong><sup id="fnref2:1"><a class="footnote-ref" href="#fn:1">1</a></sup> corresponds to a type of collected data (samples, compounds, ...) for which is associated a set of <strong>attributes</strong><sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup>, i.e. a set of variables that may include observed or measured variables (quantitative or qualitative), controlled independent variables (factors) and an identifier.</p>
-<p>Then, a link is established for each subset with the subset from which it was obtained, so that the links can be interpreted as "obtained from” as shown in the figure below:</p>
+<p>Then, a link is established for each subset with the subset from which it was obtained, so that the links can be interpreted as "<em>obtained from</em>” as shown in the figure below:</p>
 <p><center>
 <a href="../images/media/Image5.png" data-lightbox="Img5"><img src="../images/media/Image5.png" width="600px"></a>
 </center><br><br></p>
@@ -577,13 +578,14 @@ corresponding to a study)</p>
 <p>ODAM provides a model for structuring both data and metadata that facilitates data handling and analysis. </p>
 <p>Whatever the kind of experiment, this assumes a design of experiment (<a href="https://en.wikipedia.org/wiki/Design_of_experiments" target="_blank">DoE</a>) involving individuals, samples or whatever things, as the main objects of study and producing several <a href="https://www.google.com/search?safe=strict&amp;q=experimental+data+table&amp;tbm=isch&amp;source=univ&amp;sa=X&amp;biw=1549&amp;bih=768" target="_blank">experimental data tables</a>. This also assumes the observation of dependent variables resulting from effects of some controlled independent variables (<strong>factors</strong><sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>).</p>
 <p>Moreover, the objects of study usually have an <strong>identifier</strong><sup id="fnref2:4"><a class="footnote-ref" href="#fn:4">4</a></sup> for each of them, and the variables can be <strong>quantitative</strong><sup id="fnref:5"><a class="footnote-ref" href="#fn:5">5</a></sup> or <strong>qualitative</strong><sup id="fnref:6"><a class="footnote-ref" href="#fn:6">6</a></sup>.</p>
-<p>We can have either one entity within the study or several kinds, but in this latter case, it must exist a relationship between entities that we assume of “obtained from" type as describe above.</p>
+<p>We can have either one entity within the study or several kinds, but in this latter case, it must exist a relationship between entities that we assume of “<em>obtained from</em>" type as describe above.</p>
 <p>Thus, the data table of samples can be viewed according to the repartition by category we have just introduced as shown below:</p>
 <p><center>
 <a href="../images/media/Image7.png" data-lightbox="Img7"><img src="../images/media/Image7.png" width="600px"></a>
 <br><p class="plegend center">a data entity (data subset 'samples') consisting of its attributes (columns) divided by category (identifier, factor, quantitative, qualitative)</p>
-</center><br><br></p>
-<p>The four categories</p>
+</center></p>
+<p><hr><font style="font-family: system-ui; font-size: 0.9em;">
+<strong>The four categories</strong></p>
 <ul>
 <li>
 <p><strong>Identifier</strong>: precisely reference within the experiment each of the elements belonging to the same observation entity forming a coherent observation unit. For example, each plant, each sample has its own identifier,</p>
@@ -598,6 +600,7 @@ corresponding to a study)</p>
 <p><strong>Qualitative</strong>: Qualitative data describe qualities or characteristics. They answer questions such as "what type" or "what category". These values are no longer numbers, but a set of modalities. These values cannot be calculated.</p>
 </li>
 </ul>
+<p></font><hr></p>
 <p>In order to allow data to be ODAM-compliant, we need two specific files (subsets &amp; attributes) to describe the structural metadata of the whole dataset, i.e. some minimal but relevant metadata. For that, <strong>two metadata files are required</strong>, namely <strong>s_subsets.tsv</strong> and <strong>a_attributes.tsv</strong>.</p>
 <p><b>(1)</b>The subset metadata file (s_subsets.tsv) makes it possible to associate each data subset with a key concept corresponding to the main entity of the subset, each subset being stored as a file (the grey rectangle). It also defines for each subset the link to the subset it originates. <b>(2)</b> The attribute metadata file (a_attributes.tsv) allows to annotate each attribute (concept/variable) with some minimal but relevant metadata, such as: its description with its unit, the data type, but also its category. The category defined by controlled vocabulary (CV) is used to specify the type of each variable. In each of these two files (subsets and attributes), it is possible to annotate each of the terms with unambiguous definitions through links to accessible definitions (standardized CV terms).</p>
 
@@ -607,11 +610,12 @@ corresponding to a study)</p>
 
 <h4 id="s_subsetstsv">s_subsets.tsv<a class="headerlink" href="#s_subsetstsv" title="Permanent link">&para;</a></h4>
 <ul>
-<li>a file allowing to associate with each subset of data a key concept corresponding to the main entity of the subset and the relations of the type "obtainedFrom" between these concepts.</li>
+<li>a file allowing to associate with each subset of data a key concept corresponding to the main entity of the subset and the relations of the type "<em>obtainedFrom</em>" between these concepts.</li>
 </ul>
 <p><center>
 <a href="../images/media/Image9.png" data-lightbox="Img9"><img src="../images/media/Image9.png" width="600px"></a>
-</center><br><br></p>
+</center></p>
+<p><font style="font-family: system-ui; font-size: 0.9em;"></p>
 <p><strong>A column</strong> : Unique rank number of the data subset</p>
 <p><strong>B column</strong> : father rank</p>
 <ul>
@@ -629,7 +633,7 @@ corresponding to a study)</p>
 <p><strong>D column</strong> : The identifier attributes</p>
 <ul>
 <li>
-<p>should be the only attribute declared as '<strong>identifier</strong>' in the '<strong>category</strong>' column in the <strong>a_attributes.tsv**file (**D column</strong>)</p>
+<p>should be the only attribute declared as '<strong>identifier</strong>' in the '<strong>category</strong>' column in the <strong>a_attributes.tsv</strong> file (<strong>D column</strong>)</p>
 </li>
 <li>
 <p>should be available as a column item in the corresponding data subset file</p>
@@ -660,6 +664,7 @@ corresponding to a study)</p>
 <p>These annotations are optional but it is mandatory to specify at least one so that the data table has exactly 8 columns. So a minimum good practice is to put for the first an NULL annotation e.g. 'NULL' (G), '/voc/null' (H).</p>
 </li>
 </ul>
+<p></font></p>
 <hr>
 
 <h4 id="a_attributestsv">a_attributes.tsv<a class="headerlink" href="#a_attributestsv" title="Permanent link">&para;</a></h4>
@@ -668,7 +673,8 @@ corresponding to a study)</p>
 </ul>
 <p><center>
 <a href="../images/media/Image10.png" data-lightbox="Img10"><img src="../images/media/Image10.png" width="600px"></a>
-</center><br><br></p>
+</center></p>
+<p><font style="font-family: system-ui; font-size: 0.9em;"></p>
 <p><strong>A column :</strong> Short names of the data subsets</p>
 <ul>
 <li>
@@ -696,9 +702,11 @@ corresponding to a study)</p>
 <p>This column can be easily filled by copy-paste from the data table files, as shown below:</p>
 </li>
 </ul>
-<p><center>
+<p></font>
+<center>
 <a href="../images/media/Image11.png" data-lightbox="Img11"><img src="../images/media/Image11.png" width="600px"></a>
-</center><br></p>
+</center></p>
+<p><font style="font-family: system-ui; font-size: 0.9em;"></p>
 <p><strong>C column :</strong> Entry</p>
 <ul>
 <li>
@@ -711,7 +719,7 @@ corresponding to a study)</p>
 <p>Example: we put ‘<em>treatment</em>’ as an entry for the ‘<em>Treatment</em>’ factor. By this, we could retrieve all samples data for Treatment equal to ‘<em>Control</em>’ by applying the API query, e.g. <a href="https://pmb-bordeaux.fr/getdata/query/frim1/(samples)/treatment/Control?format=xml" target="_blank">https://pmb-bordeaux.fr/getdata/query/frim1/(samples)/treatment/Control?format=xml</a></p>
 </li>
 <li>
-<p>See <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/" target="_blank">https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/</a> for API testing</p>
+<p>See <a href="../api/#very-detailed-example-of-api-querying" target="_blank">Very detailed example of API querying</a></p>
 </li>
 </ul>
 <p><strong>D column :</strong> Category</p>
@@ -753,20 +761,34 @@ corresponding to a study)</p>
     so that the data table has exactly 8 columns. So a minimum good practice is
     to put for all attributes of type 'identifier' the corresponding annotation
     within the EDAM ontology , i.e. 'identifier' (G),
-    <a href="http://edamontology.org/data_0842.">http://edamontology.org/data_0842.</a>(H)</p>
+    <a href="http://edamontology.org/data_0842" target="_blank">http://edamontology.org/data_0842</a>(H)</p>
 </li>
 </ul>
+<p></font></p>
 <h3 id="4-additional-information">4 - Additional information<a class="headerlink" href="#4-additional-information" title="Permanent link">&para;</a></h3>
-<p>Although descriptive metadata have to be associated with a suitable data repository in order to support data publishing (see <a href="../publish">Publish your data</a>), it is nevertheless possible to add descriptive information about the dataset. This information must be provided in <a href="https://www.markdownguide.org/basic-syntax/" target="_blank">markdown format</a>, a text format with a simple formatting syntax. The name of the file must be '<strong>infos.md</strong>' and add it in the same directory as the dataset.</p>
+<p>Although descriptive metadata have to be associated with a suitable data repository in order to support data publishing (see <a href="../publish">Publish your data</a>), it is nevertheless possible to add descriptive information about the dataset.</p>
+<ul>
+<li>
+<p>This information must be provided in <a href="https://www.markdownguide.org/basic-syntax/" target="_blank">markdown format</a>, a text format with a simple formatting syntax. The name of the file must be '<strong>infos.md</strong>' and add it in the same directory as the dataset.</p>
+</li>
+<li>
 <p>It is also possible to add images. To do this, you must create a directory named '<strong>images</strong>'. To reference these images within the infos.md file, use the @@IMAGE@@ macro as a path. This macro will be automatically replaced by the correct URL when the page is loaded. An example is given below :</p>
 <div class="highlight"><pre><span></span><code>![frim1](@@IMAGE@@/tomato_icon.png) &lt;font size=&quot;+3&quot;&gt; [Tomato][1] &lt;/font&gt;
 </code></pre></div>
 
+</li>
+<li>
 <p>In the same way, it is also possible to add links to PDF files. To do this, you must create a directory named '<strong>pdf</strong>'. To add links to PDF files within the infos.md file, use the @@PDF@@ macro as a path. This macro will be automatically replaced by the correct URL when the page is loaded. An example is given below :</p>
 <div class="highlight"><pre><span></span><code>* [Protocol](@@PDF@@/protocol.pdf)
 </code></pre></div>
 
+</li>
+</ul>
 <h3 id="5-final-checking">5 - Final checking<a class="headerlink" href="#5-final-checking" title="Permanent link">&para;</a></h3>
+<p>So now our ODAM dataset directory should look like this:</p>
+<p><center>
+<a href="../images/media/Image4.png" data-lightbox="Img4"><img src="../images/media/Image4.png" width="500px"></a>
+</center><br><br></p>
 <p>To complete this phase of data preparation, here is a list of some points to
 check and summarized below:</p>
 <table>

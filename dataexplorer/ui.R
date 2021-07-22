@@ -10,7 +10,7 @@ meta <- tags$head(
    '),
    tags$script(type="text/javascript", src = "js/google-analytics.js"),
    tags$script(type="text/javascript",src = "js/d3.min.js"),
-   tags$script(type="text/javascript",src = "js/getip.js"),
+   tags$script(type="text/javascript",src = "js/utils.js"),
    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
 )
 

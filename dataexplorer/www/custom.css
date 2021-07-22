@@ -23,6 +23,11 @@ p {
   display: none;
 }
 
+#eyeapikey { 
+  vertical-align: bottom;
+  cursor: pointer;
+}
+
 .jlink {cursor: pointer;}
 
 .dropdown , .dropdown h2 {

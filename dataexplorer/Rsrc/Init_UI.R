@@ -13,11 +13,14 @@
     #----------------------------------------------------
     apiKeyModal <- function(failed = FALSE) {
       modalDialog(
-        passwordInput("authkey", "Enter the API Key", width = '400px', placeholder = '' ),
+        tags$table(tags$tr( 
+           tags$td(passwordInput("authkey", "Enter the API Key", width = '400px', placeholder = '' )), 
+           tags$td(tags$img(id='eyeapikey', src = "eye-close.png", width=30, onclick="javascript:eyetoggle();"))
+        )),
         if (failed)
            div(tags$b("Invalid API Key", style = "color: red;")),
         footer = tagList(
-           modalButton("Cancel"), actionButton("okApiKey", "OK")
+           modalButton("Cancel"), actionButton("okApiKey", "Submit")
         )
       )
     }

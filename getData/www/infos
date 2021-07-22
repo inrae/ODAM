@@ -13,4 +13,5 @@ ini_set("include_path", ".:/usr/share/php");
 include ('inc/config.inc');
 include ('inc/infos.inc');
 
+
 ?>

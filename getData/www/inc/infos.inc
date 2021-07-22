@@ -66,6 +66,8 @@ do {
     }
 
     $INFOS_TEXT = file_get_contents($ENV['DATADIR']."/$dataset/infos.md");
+    $INFOS_TEXT = preg_replace('/@@IMAGE@@/', $GETDATA_URL_PROXY."image/$dataset", $INFOS_TEXT);
+    $INFOS_TEXT = preg_replace('/@@PDF@@/', $GETDATA_URL_PROXY."pdf/$dataset", $INFOS_TEXT);
 
 } while (0);
 

@@ -287,6 +287,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#services" class="md-nav__link">
+    Services
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#authorization-mechanism" class="md-nav__link">
     Authorization mechanism
   </a>
@@ -381,6 +388,13 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
+  <a href="#services" class="md-nav__link">
+    Services
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#authorization-mechanism" class="md-nav__link">
     Authorization mechanism
   </a>
@@ -412,17 +426,49 @@
                 
                 <h1 id="odam-web-api">ODAM: Web API<a class="headerlink" href="#odam-web-api" title="Permanent link">&para;</a></h1>
 <hr />
-<p>Based on <a href="https://en.wikipedia.org/wiki/Representational_state_transfer" target="_blank">REST</a> services using a Resource Naming convention: an understandable naming of resources leading to a <a href="https://en.wikipedia.org/wiki/Web_API" target="_blank">Web API</a> (resource identification/query) that is easily exploitable and easy to implement in a script language (<a href="https://www.r-project.org/about.html" target="_blank">R</a> or <a href="https://www.python.org/" target="_blank">Python</a>).
-<br><br>
-<strong>Output formats</strong>: <a href="https://en.wikipedia.org/wiki/Comma-separated_values" target="_blank">CSV</a>, <a href="https://en.wikipedia.org/wiki/Tab-separated_values" target="_blank">TSV</a>, <a href="https://www.w3schools.com/js/js_json_intro.asp" target="_blank">JSON</a> and <a href="https://www.w3schools.com/xml/" target="_blank">XML</a>.
-<br><br>
-Even if Web API outputs are not dedicated to human readers (script languages as R are the typical clients), XML outputs can be human readable in a web browser, made possible by using a <a href="https://www.w3schools.com/xml/xsl_intro.asp" target="_blank">XSL transformation</a> mechanism which converts the XML outputs to HTML format.</p>
+<h2 id="services">Services<a class="headerlink" href="#services" title="Permanent link">&para;</a></h2>
+<p>The ODAM API services are based on <a href="https://en.wikipedia.org/wiki/Representational_state_transfer" target="_blank">REST</a> services using a Resource Naming convention i.e an understandable naming of resources leading to a <a href="https://en.wikipedia.org/wiki/Web_API" target="_blank">Web API</a> (resource identification/query) that is easily exploitable and easy to implement in a script language (<a href="https://www.r-project.org/about.html" target="_blank">R</a> or <a href="https://www.python.org/" target="_blank">Python</a>). Moreover, they follow the <a href="https://swagger.io/specification/" target="_blank">OpenAPI specifications</a>.
+<br><br></p>
+<p><strong>API Documentation on SwaggerHub</strong> : <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.2.0/" target="_blank">INRA-PMB/ODAM/1.2.0</a></p>
+<p><center>
+<a href="../images/web2.png" data-lightbox="web2"><img src="../images/web2.png" width="600px"></a>
+</center><br></p>
+<p><strong>Four main services</strong> (i.e query-paths) are provided, as described below: </p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>check</td>
+<td>Check the structure and consistency of the metadata files with the data files</td>
+</tr>
+<tr>
+<td>build</td>
+<td>Build the sqlite3 database allowing an acceleration of the queries</td>
+</tr>
+<tr>
+<td>query</td>
+<td>Query data based on metadata</td>
+</tr>
+<tr>
+<td>infos</td>
+<td>Get the content of the infos.md file (markdown format)</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>
+<p><strong>query</strong></p>
+<p>Using the two metadata files namely <strong>a_attributes.tsv</strong> and <strong>s_subsets.tsv</strong>, it is possible to build a tree structure from which the data files can be queried to extract a subset. The tree structure is built on the Entity-Attribute-Value scheme.</p>
+</li>
+</ul>
 <p><center>
 <a href="../images/web1.png" data-lightbox="web1"><img src="../images/web1.png" width="600px"></a>
 </center><br><br></p>
-<ul>
-<li>Using the two metadata files namely <strong>a_attributes.tsv</strong> and <strong>s_subsets.tsv</strong>, it is possible to build a tree structure from which the data files can be queried to extract a subset. The tree structure is built on the Entity-Attribute-Value scheme.</li>
-</ul>
 <table>
 <thead>
 <tr>
@@ -464,43 +510,27 @@ Even if Web API outputs are not dedicated to human readers (script languages as 
 </tr>
 <tr>
 <td><strong>&lt;data format&gt;</strong></td>
-<td>Format of the retrieved data; possible values are: 'xml', ‘json’, 'csv' or ‘tsv'</td>
+<td>Format of the retrieved data; possible values are: <a href="https://en.wikipedia.org/wiki/Comma-separated_values" target="_blank">CSV</a>, <a href="https://en.wikipedia.org/wiki/Tab-separated_values" target="_blank">TSV</a>, <a href="https://www.w3schools.com/js/js_json_intro.asp" target="_blank">JSON</a> or <a href="https://www.w3schools.com/xml/" target="_blank">XML</a></td>
 <td>tsv</td>
 </tr>
 </tbody>
 </table>
 <ul>
-<li>Four types of services (i.e query-paths) are provided, as described below: </li>
+<li>
+<p><strong>infos</strong></p>
+<p>This service allows you to retrieve additional information. See <a href="../data-preparation#4-additional-information">Additional information</a> in <a href="../data-preparation">Data collection an preparation</a>.</p>
+</li>
+<li>
+<p><strong>check</strong></p>
+<p>This service allows to perform a set of tests to check if the dataset is well formatted and structured according to the expected specifications. See <a href="../data-preparation#5-final-checking">Final checking</a> in <a href="../data-preparation">Data collection an preparation</a>.</p>
+</li>
+<li>
+<p><strong>build</strong></p>
+<p>This service builds the corresponding <a href="https://www.sqlite.org/cli.html" target="_blank">sqlite3</a> database to speed up response times on large files. See below in the section  <a href="#very-detailed-example-of-api-querying">Very detailed example of API querying</a>.</p>
+</li>
 </ul>
-<table>
-<thead>
-<tr>
-<th>Service</th>
-<th>Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>check</td>
-<td>Check the structure and consistency of the metadata files with the data files</td>
-</tr>
-<tr>
-<td>build</td>
-<td>Build the sqlite3 database allowing an acceleration of the queries</td>
-</tr>
-<tr>
-<td>query</td>
-<td>Query data based on metadata</td>
-</tr>
-<tr>
-<td>infos</td>
-<td>Get the content of the infos.md file (markdown format)</td>
-</tr>
-</tbody>
-</table>
-<ul>
-<li>Two additional types of services (i.e query-paths) are provided (see <a href="../data-preparation/#4-additional-information">Additional information</a> section in <em>Data collection and preparation</em>),  as described below:</li>
-</ul>
+<p><br><br></p>
+<p><strong>Two additional services</strong> (i.e query-paths) are provided (see <a href="../data-preparation/#4-additional-information">Additional information</a> section in <em>Data collection and preparation</em>),  as described below:</p>
 <table>
 <thead>
 <tr>
@@ -519,9 +549,7 @@ Even if Web API outputs are not dedicated to human readers (script languages as 
 </tr>
 </tbody>
 </table>
-<ul>
-<li>Some services (i.e query-paths) are available as shortcuts </li>
-</ul>
+<p><strong>Some services</strong> (i.e query-paths) are available as shortcuts </p>
 <table>
 <thead>
 <tr>
@@ -544,12 +572,8 @@ Even if Web API outputs are not dedicated to human readers (script languages as 
 </tr>
 </tbody>
 </table>
-<ul>
-<li>Parameters that can be specified in the <em>query-string</em> as described below.<ul>
-<li>These parameters can be combined : e.g <em>?format=tsv&amp;limit=100&amp;debug=1</em></li>
-</ul>
-</li>
-</ul>
+<p><strong>Parameters</strong> that can be specified in the <em>query-string</em> as described below.
+    These parameters can be combined : e.g <em>?format=tsv&amp;limit=100&amp;debug=1</em></p>
 <table>
 <thead>
 <tr>
@@ -581,12 +605,6 @@ Even if Web API outputs are not dedicated to human readers (script languages as 
 </tr>
 </tbody>
 </table>
-<ul>
-<li>API Documentation on SwaggerHub : <a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.2.0/" target="_blank">INRA-PMB/ODAM/1.2.0</a></li>
-</ul>
-<p><center>
-<a href="../images/web2.png" data-lightbox="web2"><img src="../images/web2.png" width="600px"></a>
-</center><br></p>
 <h2 id="authorization-mechanism">Authorization mechanism<a class="headerlink" href="#authorization-mechanism" title="Permanent link">&para;</a></h2>
 <p>Currently, the ODAM API implements a key-based authorization mechanism, which is different from the authentication mechanism. (see this <a href="https://blog.restcase.com/4-most-used-rest-api-authentication-methods/" target="_blank">blog</a>). The API key approach seems to us to be an adequate solution insofar as only the "read" functionality is concerned. Thus, without the need to edit, modify or delete, security is less of a concern. Furthermore, we have associated to these API keys the possibility to limit their usage according to the internet address (IP) of the machines from which the users make their requests.</p>
 <p>There is no centralized management of these keys. The management is done for each dataset independently. The principle is simple: if you want to put a key protection on a dataset, just create a file named <strong>authkeys.tsv</strong> (<a href="https://en.wikipedia.org/wiki/Tab-separated_values" target="_blank">TSV</a> format) and add it in the same directory as the dataset. Without this file, the dataset is completely open. </p>

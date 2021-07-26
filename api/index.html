@@ -773,7 +773,7 @@ Since each data subset being a data file, and linked to one or more other data s
 <p>either with the <a href="http://harelba.github.io/q/" target="_blank">q - Text as Data</a> tool which allows to apply SQL queries directly on CSV and TSV files. It is the default tool.</p>
 </li>
 <li>
-<p>or with the <a href="https://www.sqlite.org/cli.html" target="_blank">sqlite3</a> tool which, by building a database and indexing it, allows to accelerate considerably the response times on large files. To proceed with the creation and indexing of the database, a call to the API is necessary (/getdata/build/{dataset}).</p>
+<p>or with the <a href="https://www.sqlite.org/cli.html" target="_blank">sqlite3</a> tool which, by building a database and indexing it, allows to accelerate considerably the response times on large files. To proceed with the creation and indexing of the database, a call to the API is necessary (/getdata/build/{dataset}). To see what types of operations are made, try i.e this <a href="https://pmb-bordeaux.fr/getdata/build/frim1/debug?format=json" target="_blank">API query</a></p>
 </li>
 </ul>
 <p>In addition, if you want to display information about the API query, just add '/debug' at the end of the query, as shown below:

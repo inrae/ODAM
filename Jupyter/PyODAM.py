@@ -3,25 +3,27 @@ import pandas as pd
 import warnings
 
 class Odam:
-   def __init__(self, repos, dataset, ssl_verify=None):
-       self.repos = repos
-       self.dataset = dataset
+   def __init__(self, repos, dataset, auth='', ssl_verify=True):
+       self.headers = {'X-Api-Key': auth, 'accept': "text/csv"}
+       self.urlapi = repos+'/getdata/tsv/'+dataset
        if ssl_verify is None:
            self.ssl_verify = False
        else:
            self.ssl_verify = ssl_verify
        warnings.filterwarnings('ignore')
 
+   def __str__(self):
+        return str(self.__class__) + ": " + str(self.__dict__)
+
    def getDataFromODAM(self, subset='', query=''):
-       headers = {'authorization': "Basic API Key Ommitted", 'accept': "text/csv"}
-       urlapi = self.repos+'/getdata/tsv/'+self.dataset
-       if subset:
-           urlapi = urlapi+'/('+subset+')'
-       if query:
-           urlapi = urlapi+'/'+query
+       urlapi = self.urlapi
+       if subset :
+           urlapi = self.urlapi+'/('+subset+')'
+       if query :
+           urlapi = self.urlapi+'/'+query
 
        ## API Call to retrieve report
-       response = requests.get(urlapi, headers=headers, verify=self.ssl_verify)
+       response = requests.get(urlapi, headers=self.headers, verify=self.ssl_verify)
 
        ## API Results
        data = response.text

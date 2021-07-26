@@ -51,9 +51,24 @@ if ($OS=='LINUX') {
     $BB      = $ROOTDIR.'/../bin/busybox.exe';
 }
 
+#---------------------------
 # Get authorization key code
-$auth0 = isset($_SERVER['HTTP_X_API_KEY']) ? $_SERVER['HTTP_X_API_KEY'] : '';
-$auth = isset($_GET['auth'])  ?  $_GET['auth']  : $auth0 ;
+#---------------------------
+if (! preg_match('/(curl|python-requests)/', $_SERVER['HTTP_USER_AGENT']))
+  # If it is not through a CURL library, get the saved API-Key if exists
+   $auth0 = isset($_SESSION['api-key'])       ? $_SESSION['api-key']       : '' ;
+else
+  # otherwise, no default API-Key
+   $auth0 = '';
+# Get the API-Key if provided in Header
+$auth1 = isset($_SERVER['HTTP_X_API_KEY']) ? $_SERVER['HTTP_X_API_KEY'] : $auth0;
+# Get the API-Key if provided as parameter (query string)
+$auth = isset($_GET['auth'])               ? $_GET['auth']              : $auth1 ;
+
+# If it is not through a CURL library, it means it is probably a web browser
+# So save API-Key in the session
+if (! preg_match('/(curl|python-requests)/', $_SERVER['HTTP_USER_AGENT']))
+    $_SESSION['api-key'] = $auth;
 
 # Set authorization message
 if (isset($_GET['auth']))
@@ -62,6 +77,7 @@ elseif (isset($_SERVER['HTTP_X_API_KEY']))
    $auth_msg='authorization fixzed by url header';
 else
    $auth_msg='authorization fixed by rules';
+
 
 # X_Forwarded - get first IP
 if (strpos($_SERVER['HTTP_X_FORWARDED_FOR'], ',')) {

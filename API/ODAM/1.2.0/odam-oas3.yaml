@@ -24,6 +24,11 @@ tags:
     description: Operations available to regular developers
 
 components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
   parameters:
     datasetParam:
       in: path
@@ -59,10 +64,14 @@ components:
         enum: [0, 1]
       example: 0
       description: debug status
+security:
+  - ApiKeyAuth: []
 
 paths:
   '/getdata/infos/{dataset}':
     get:
+      security:
+        - ApiKeyAuth: []
       tags:
         - developers
       summary: get information
@@ -78,6 +87,8 @@ paths:
           description: bad input parameter
   '/getdata/build/{dataset}':
     get:
+      security:
+        - ApiKeyAuth: []
       tags:
         - developers
       summary: build the sqlite3 database 
@@ -96,6 +107,8 @@ paths:
           description: bad input parameter
   '/getdata/check/{dataset}':
     get:
+      security:
+        - ApiKeyAuth: []
       tags:
         - developers
       summary: test checks
@@ -113,6 +126,8 @@ paths:
           description: bad input parameter
   '/getdata/query/{dataset}':
     get:
+      security:
+        - ApiKeyAuth: []
       tags:
         - developers
       summary: Get the subset list of a dataset
@@ -129,6 +144,8 @@ paths:
           description: bad input parameter
   '/getdata/query/{dataset}/metadata':
     get:
+      security:
+        - ApiKeyAuth: []
       tags:
         - developers
       summary: Get all attribute metadata
@@ -145,6 +162,8 @@ paths:
           description: bad input parameter
   '/getdata/query/{dataset}/{subset}':
     get:
+      security:
+        - ApiKeyAuth: []
       tags:
         - developers
       summary: Get all values of a data subset
@@ -170,6 +189,8 @@ paths:
           description: bad input parameter
   '/getdata/query/{dataset}/({subset})':
     get:
+      security:
+        - ApiKeyAuth: []
       tags:
         - developers
       summary: Get all values of a merged data subsets
@@ -195,6 +216,8 @@ paths:
           description: bad input parameter
   '/getdata/query/{dataset}/({subset})/entry':
     get:
+      security:
+        - ApiKeyAuth: []
       tags:
         - developers
       summary: Get the entry list  of a merged data subsets
@@ -218,6 +241,8 @@ paths:
           description: bad input parameter
   '/getdata/query/{dataset}/({subset})/{entry}/{value}':
     get:
+      security:
+        - ApiKeyAuth: []
       tags:
         - developers
       summary: Get all values of a merged data subsets for a specific value of an (WS)entry
@@ -257,6 +282,8 @@ paths:
           description: bad input parameter
   '/getdata/query/{dataset}/({subset})/{category}':
     get:
+      security:
+        - ApiKeyAuth: []
       tags:
         - developers
       summary: Get the variable list within the specified category of a merged data subsets

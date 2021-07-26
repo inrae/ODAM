@@ -1,0 +1,223 @@
+{
+  "name": "ODAM",
+  "description": "ODAM (Open Data for Access and Mining) is an Experiment Data Table Management System (EDTMS) that makes research data accessible and available for reuse with minimal effort on the part of the data provider. Designed to manage experimental data tables in an easy way for users, ODAM provides a model for structuring both data and metadata that facilitates data handling and analysis. It also encourages data dissemination according to FAIR principles by making the data interoperable and reusable by both humans and machines, allowing the dataset to be explored and then extracted in whole or in part as needed.",
+  "homepage": "https://inrae.github.io/ODAM/",
+  "biotoolsID": "ODAM",
+  "biotoolsCURIE": "biotools:ODAM",
+  "version": [
+    "1.2"
+  ],
+  "function": [
+    {
+      "operation": [
+        {
+          "uri": "http://edamontology.org/operation_2409",
+          "term": "Data handling"
+        },
+        {
+          "uri": "http://edamontology.org/operation_0337",
+          "term": "Visualisation"
+        }
+      ],
+      "input": [
+        {
+          "data": {
+            "uri": "http://edamontology.org/data_3108",
+            "term": "Experimental measurement"
+          },
+          "format": [
+            {
+              "uri": "http://edamontology.org/format_3475",
+              "term": "TSV"
+            }
+          ]
+        }
+      ],
+      "output": [
+        {
+          "data": {
+            "uri": "http://edamontology.org/data_3108",
+            "term": "Experimental measurement"
+          },
+          "format": [
+            {
+              "uri": "http://edamontology.org/format_3475",
+              "term": "TSV"
+            }
+          ]
+        },
+        {
+          "data": {
+            "uri": "http://edamontology.org/data_2884",
+            "term": "Plot"
+          },
+          "format": [
+            {
+              "uri": "http://edamontology.org/format_3604",
+              "term": "SVG"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "toolType": [
+    "Web API",
+    "Web application",
+    "Desktop application"
+  ],
+  "topic": [
+    {
+      "uri": "http://edamontology.org/topic_3678",
+      "term": "Experimental design and studies"
+    },
+    {
+      "uri": "http://edamontology.org/topic_3071",
+      "term": "Data management"
+    },
+    {
+      "uri": "http://edamontology.org/topic_3473",
+      "term": "Data mining"
+    },
+    {
+      "uri": "http://edamontology.org/topic_0092",
+      "term": "Data visualisation"
+    }
+  ],
+  "operatingSystem": [
+    "Linux",
+    "Windows",
+    "Mac"
+  ],
+  "language": [
+    "R",
+    "Python"
+  ],
+  "license": "GPL-3.0",
+  "maturity": "Mature",
+  "cost": "Free of charge",
+  "link": [
+    {
+      "url": "https://fairsharing.org/bsg-s001505/",
+      "type": [
+        "Software catalogue"
+      ],
+      "note": "FAIRSharing Standard : \"ODAM Structural metadata \""
+    }
+  ],
+  "download": [
+    {
+      "url": "https://data.inrae.fr/dataset.xhtml?persistentId=doi:10.15454/C9LAEF",
+      "type": "VM image",
+      "note": "Virtual Machine embedding the ODAM framework software on Oracle VM VirtualBox",
+      "version": "4.0"
+    },
+    {
+      "url": "https://hub.docker.com/r/odam/getdata/",
+      "type": "Container file",
+      "note": "docker images",
+      "version": "1.2"
+    },
+    {
+      "url": "https://github.com/inrae/ODAM",
+      "type": "Source code",
+      "note": "Source code on Github",
+      "version": "1.2"
+    },
+    {
+      "url": "https://cran.r-project.org/package=Rodam",
+      "type": "Software package",
+      "note": "R package on CRAN :\nRodam: Wrapper Functions for 'ODAM' (Open Data for Access and Mining) Web Services",
+      "version": "0.1.8"
+    }
+  ],
+  "documentation": [
+    {
+      "url": "http://pmb-bordeaux.fr/odam/ODAM_install_VirtualBox.pdf",
+      "type": [
+        "Installation instructions"
+      ],
+      "note": "How to install a virtual machine embedding the ODAM framework software on Oracle VM VirtualBox"
+    },
+    {
+      "url": "http://doi.org/10.17504/protocols.io.betcjeiw",
+      "type": [
+        "Training material"
+      ],
+      "note": "Data Preparation Protocol for ODAM Compliance"
+    },
+    {
+      "url": "https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.2.0/",
+      "type": [
+        "API documentation"
+      ],
+      "note": "Based on Swagger"
+    },
+    {
+      "url": "https://inrae.github.io/ODAM/",
+      "type": [
+        "General"
+      ],
+      "note": "Presentation of the ODAM software suite, its aims and what can we do with it for what purposes"
+    }
+  ],
+  "publication": [
+    {
+      "doi": "10.1093/gigascience/giaa144",
+      "pmid": "33319910",
+      "type": [
+        "Primary"
+      ],
+      "metadata": {
+        "title": "Making experimental data tables in the life sciences more FAIR: A pragmatic approach",
+        "abstract": "© 2020 The Author(s).Making data compliant with the FAIR Data principles (Findable, Accessible, Interoperable, Reusable) is still a challenge for many researchers, who are not sure which criteria should be met first and how. Illustrated with experimental data tables associated with a Design of Experiments, we propose an approach that can serve as a model for research data management that allows researchers to disseminate their data by satisfying the main FAIR criteria without insurmountable efforts. More importantly, this approach aims to facilitate the FAIR compliance process by providing researchers with tools to improve their data management practices.",
+        "date": "2021-12-01T00:00:00Z",
+        "citationCount": 1,
+        "authors": [
+          {
+            "name": "Jacob D."
+          },
+          {
+            "name": "David R."
+          },
+          {
+            "name": "Aubin S."
+          },
+          {
+            "name": "Gibon Y."
+          }
+        ],
+        "journal": "GigaScience"
+      }
+    }
+  ],
+  "credit": [
+    {
+      "name": "Daniel Jacob",
+      "email": "daniel.jacob@inrae.fr",
+      "orcidid": "https://orcid.org/0000-0002-6687-7169",
+      "typeEntity": "Person",
+      "typeRole": [
+        "Primary contact",
+        "Developer"
+      ]
+    },
+    {
+      "name": "INRAE UMR 1332",
+      "url": "https://www6.bordeaux-aquitaine.inrae.fr/bfp_eng/Research/Metabolism-Team",
+      "typeEntity": "Institute",
+      "typeRole": [
+        "Support"
+      ]
+    }
+  ],
+  "owner": "djacob",
+  "additionDate": "2019-11-04T10:44:22Z",
+  "lastUpdate": "2021-07-22T06:03:57Z",
+  "editPermission": {
+    "type": "private"
+  },
+  "validated": 1,
+  "homepage_status": 0,
+  "elixir_badge": 0
+}

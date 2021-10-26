@@ -284,12 +284,17 @@ class def_lib
           }
        }
        $fields = '';
-       $i=0;
-       foreach ($entities as $key => $arr) {
-           if ($i>0) $fields .= ', ';
-           $fields .= "$falias.$key";
-           if ($this->ENV['FIELD_LIMIT']>0 && $i>$this->ENV['FIELD_LIMIT']) break;
-           $i++;
+       if (strlen($func)>0 && strlen("$value")===0) {
+          $key = $this->hDataset[$ds]['entries'][$func];
+          if (strlen($key)>0) $fields = $falias.'.'.$key;
+       } else {
+          $i=0;
+          foreach ($entities as $key => $arr) {
+             if ($i>0) $fields .= ', ';
+             $fields .= "$falias.$key";
+             if ($this->ENV['FIELD_LIMIT']>0 && $i>$this->ENV['FIELD_LIMIT']) break;
+             $i++;
+          }
        }
        return array($falias, $file, $fields, $where);
     }
@@ -300,7 +305,8 @@ class def_lib
     function getSelect1($ds,$func,$value,$op='')
     {
        list ($falias, $file, $fields, $where) = $this->getSQLparts ($ds,$func,$value,$op);
-       $query = "select $fields from $file";
+       $distinct = strlen($func)>0 && strlen("$value")===0 ? 'distinct' : '';
+       $query = "select $distinct $fields from $file";
        if (strlen("$where")>0) $query .= " where $where";
        return $query;
     }
@@ -347,7 +353,7 @@ class def_lib
           for ($i = 0; $i <= $nbds-1; $i++ ) {
                $ds=$dstree[$i];
                list ($falias, $file, $fields, $where) = $this->getSQLparts ($ds,$func,$value,$op);
-               if (strlen($gfields)>0) $gfields .= ', ';
+               if (strlen($gfields)>0 && strlen($fields)>0) $gfields .= ', ';
                $gfields .= $fields;
                array_push($tAlias,$falias);
                if (strlen($gfrom)>0) {
@@ -371,7 +377,8 @@ class def_lib
                     $gwhere = $where;
                }
           }
-          $query = "select $gfields from $gfrom";
+          $distinct = strlen($func)>0 && strlen("$value")===0 ? 'distinct' : '';
+          $query = "select $distinct $gfields from $gfrom";
           if (strlen($gwhere)>0) { $query .= " where $gwhere"; }
 
        } while(0);
@@ -417,13 +424,19 @@ class def_lib
               }
               if (count($dstree)==0) break;
 
+              # Get alias list
+              $arralias = $this->getEntryList($tarr_DS, $multi);
+
               $cnt=0;
               foreach ($dstree as $ds) {
                  if (! isset($this->hDataset[$ds]['categories'][$category]) ) continue;
                  $arr_cat = $this->hDataset[$ds]['categories'][$category];
                  if (count($arr_cat)==0) continue;
                  foreach ($this->hDataset[$ds]['categories'][$category] as $field) {
-                       $list[$cnt++] = array_merge( array($ds,$field), $this->hDataset[$ds]['entities'][$field] );
+                       $alias = '';
+                       for ($j=0; $j<count($arralias); $j++)
+                           if ($arralias[$j][1]===$field) { $alias =  $arralias[$j][2]; break; }
+                       $list[$cnt++] = array_merge( array($ds,$field), array($alias), $this->hDataset[$ds]['entities'][$field] );
                  }
               }
           }

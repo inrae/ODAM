@@ -51,6 +51,9 @@ if ($OS=='LINUX') {
     $BB      = $ROOTDIR.'/../bin/busybox.exe';
 }
 
+# Indicate if metadata can be obtained even if there is no authorization on the data
+# By default, metadata has to be available to satisfy the FAIR principes
+$METADATA_ACCESS = isset($set->METADATA_ACCESS) ? $set->METADATA_ACCESS : 1;
 
 #---------------------------
 # Get authorization key code
@@ -107,6 +110,7 @@ $ENV = array( 'OS' => $OS,
               'TRANSAC' => 0,
               'FIELD_LIMIT' => -1,
               'EXTFILES' => $set->EXTFILES,
+              'METADATA_ACCESS' => $METADATA_ACCESS,
               'X_API_KEY' => $_SERVER['HTTP_X_API_KEY'],
               'X_REAL_IP' => $_SERVER['HTTP_X_REAL_IP'],
               'X_Forwarded' => $X_Forwarded,

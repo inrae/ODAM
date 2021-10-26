@@ -91,8 +91,12 @@ do
     # New instance of the def_lib object
     $def = new def_lib($ENV, $dataset);
 
-    # check if authkey is valid for this dataset
-    if ( $def->check_authorization($auth) )
+    # check whether the metadata can be obtained even if there is no authorization on the data
+    $metadata_access=0;
+    if ($ENV['METADATA_ACCESS'] && $datapackage==1 && $cntopt==1) $metadata_access=1;
+
+    # check if authkey is valid for this dataset when required
+    if ( $metadata_access==0 &&  $def->check_authorization($auth) )
     {
        echo $def->retmsg;
        break;
@@ -203,7 +207,7 @@ do
             if (in_array($key, $def->categories) ) {
                 $list = $queryMulti ? $def->getCategoryList($tarr_DS, $key, 1) :
                                       $def->getCategoryList($tarr_DS, $key, 0);
-                $line = implode($sep, array('Subset','Attribute','Description','Type','CV_Term_ID','CV_Term_Name'))."\n";
+                $line = implode($sep, array('Subset','Attribute','WSEntry','Description','Type','CV_Term_ID','CV_Term_Name'))."\n";
                 foreach($list as $lkey => $arr) $line .= implode($sep,$arr)."\n";
                 $fw=fopen($stdout,"w");
                 $fp=fwrite($fw,$line);
@@ -227,6 +231,13 @@ do
                 $fw=fopen($stdout,"w");
                 $fp=fwrite($fw,$line);
                 fclose($fw);
+            }
+            # Get the list of distinct values of a specific attribute (i.e an entry)
+            elseif (in_array($key, $arr_entry))
+            {
+                $query = $queryMulti ? $def->getSelectMulti($tarr_DS, $key, '', '') : 
+                                       $def->getSelect1($func, $key, '', '');
+                $doQuery = 1;
             }
             else
             {

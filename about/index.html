@@ -1,0 +1,890 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="ODAM, Open data and access to data mining, Deployment and User's Guide">
+      
+      
+      
+        <meta name="author" content="Daniel Jacob">
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.2">
+    
+    
+      
+        <title>ressources - ODAM</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.1118c9be.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ba0d045b.min.css">
+        
+      
+    
+    
+    
+    <script src="../js/jquery-2.1.1.min.js"></script>
+
+    
+      
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>:root{--md-text-font-family:"Roboto";--md-code-font-family:"Roboto Mono"}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="../css/extra.css">
+    
+      <link rel="stylesheet" href="../css/pdfextra.css">
+    
+      <link rel="stylesheet" href="../css/lightbox.css">
+    
+    
+      
+  
+
+
+
+  
+  
+
+
+
+  <script>window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)},ga.l=+new Date,ga("create","UA-168923330-1","auto"),ga("set","anonymizeIp",!0),ga("send","pageview"),document.addEventListener("DOMContentLoaded",function(){document.forms.search&&document.forms.search.query.addEventListener("blur",function(){var e;this.value&&(e=document.location.pathname,ga("send","pageview",e+"?q="+this.value))}),"undefined"!=typeof location$&&location$.subscribe(function(e){ga("send","pageview",e.pathname)})})</script>
+  <script async src="https://www.google-analytics.com/analytics.js"></script>
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    <script>function __prefix(e){return new URL("..",location).pathname+"."+e}function __get(e,t=localStorage){return JSON.parse(t.getItem(__prefix(e)))}</script>
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#odam-open-data-for-access-and-mining" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="ODAM" class="md-header__button md-logo" aria-label="ODAM" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ODAM
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              ressources
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" aria-label="Clear" tabindex="-1">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="ODAM" class="md-nav__button md-logo" aria-label="ODAM" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    ODAM
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        Home
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../presentation/" class="md-nav__link">
+        Presentation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-preparation/" class="md-nav__link">
+        Data collection and preparation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../publish/" class="md-nav__link">
+        Publish your data
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../dataset-example/" class="md-nav__link">
+        A dataset example
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../install/" class="md-nav__link">
+        Installation
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../services/" class="md-nav__link">
+        Using ODAM
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../data-explorer/" class="md-nav__link">
+        Data Explorer
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/" class="md-nav__link">
+        Web API
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+      
+        <input class="md-nav__toggle md-toggle" data-md-toggle="__nav_10" type="checkbox" id="__nav_10" >
+      
+      <label class="md-nav__link" for="__nav_10">
+        <span class="md-nav__icon md-icon"></span>
+        
+          <a href="../json-schema/" class="md-nav__link"
+            style="margin: initial; padding: initial; pointer-events: initial">
+        
+          JSON Schema
+        </a>
+      </label>
+      <nav class="md-nav" aria-label="JSON Schema" data-md-level="1">
+        <label class="md-nav__title" for="__nav_10">
+          <span class="md-nav__icon md-icon"></span>
+          
+            <a href="../json-schema/" class="md-nav__link"
+              style="margin: initial; padding: initial; pointer-events: initial">
+          
+            JSON Schema
+          </a>
+        </label>
+        <ul class="md-nav__list" data-md-scrollfix>
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json-schema/session-examples/" class="md-nav__link">
+        R and Python session examples
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json-schema/dataverse/" class="md-nav__link">
+        Datapackage from Dataverse
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json-schema/google-search/" class="md-nav__link">
+        Google search
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json-schema/odam-data-resource/" class="md-nav__link">
+        ODAM-data-ressource
+      </a>
+    </li>
+  
+
+          
+            
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../json-schema/odam-data-package/" class="md-nav__link">
+        ODAM-data-package
+      </a>
+    </li>
+  
+
+          
+        </ul>
+      </nav>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ressources/" class="md-nav__link">
+        Online ressources
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../todo/" class="md-nav__link">
+        ToDo
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#online-resources-related-to-odam" class="md-nav__link">
+    Online resources related to ODAM
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#external-resources-used" class="md-nav__link">
+    External resources used
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tools-used-for-this-online-documentation" class="md-nav__link">
+    Tools used for this online documentation
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="odam-open-data-for-access-and-mining">ODAM: Open Data for Access and Mining<a class="headerlink" href="#odam-open-data-for-access-and-mining" title="Permanent link">&para;</a></h1>
+<p><img alt="" src="../images/odam-logo.png" />
+<br><br>
+<em>(C) INRAE UMR 1332 BFP, PMB - 2020 - Version 1.1</em></p>
+<p>We have grouped together here all the links to documents and software produced about ODAM, as well as those concerning the tools, specifications and repositories (data and software) used directly (production) or indirectly (use, referencing) by ODAM.</p>
+<hr />
+<h3 id="online-resources-related-to-odam">Online resources related to ODAM<a class="headerlink" href="#online-resources-related-to-odam" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Description</th>
+<th>Type</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Data Preparation Protocol for ODAM Compliance</td>
+<td>Documentation</td>
+<td><a href="../data-preparation">Data collection and preparation</a></td>
+</tr>
+<tr>
+<td>API Documentation based on Swagger</td>
+<td>Web API Tool</td>
+<td><a href="https://app.swaggerhub.com/apis-docs/INRA-PMB/ODAM/1.2.0/" target="_blank">INRA-PMB/ODAM/1.2.0/</a></td>
+</tr>
+<tr>
+<td>R ODAM package and How to use it</td>
+<td>Package</td>
+<td><a href="https://cran.r-project.org/package=Rodam" target="_blank">https://cran.r-project.org/package=Rodam</a></td>
+</tr>
+<tr>
+<td>R ODAM package Vignette</td>
+<td>Package</td>
+<td><a href="https://cran.r-project.org/web/packages/Rodam/vignettes/Rodam.html" target="_blank">Rodam/vignettes/Rodam.html</a></td>
+</tr>
+<tr>
+<td>Virtual Machine embedding the ODAM software on Oracle VM VirtualBox along with its installation guide</td>
+<td>Virtual Machine + Documentation</td>
+<td><a href="https://doi.org/10.15454/C9LAEF" target="_blank">https://doi.org/10.15454/C9LAEF</a></td>
+</tr>
+<tr>
+<td>Docker containers on DockerHub for installing on a Linux machine</td>
+<td>Container</td>
+<td><a href="https://hub.docker.com/r/odam/getdata/" target="_blank">https://hub.docker.com/r/odam/getdata/</a><br><a href="https://hub.docker.com/r/odam/dataexplorer/" target="_blank">https://hub.docker.com/r/odam/dataexplorer/</a></td>
+</tr>
+<tr>
+<td>A very lightweight local web server for Windows to deploy the ODAM API</td>
+<td>Web API Tool</td>
+<td><a href="../install/#local-installation-odam-api-on-windows">ODAMwebserver</a></td>
+</tr>
+<tr>
+<td>Examples of Jupyter notebooks (R &amp; Python) based on the ODAM Web API</td>
+<td>Notebook</td>
+<td><a href="https://github.com/djacob65/binder_odam" target="_blank">https://github.com/djacob65/binder_odam</a><br><a href="https://doi.org/10.24433/CO.8981049.v1" target="_blank">https://doi.org/10.24433/CO.8981049.v1</a><br><a href="https://doi.org/10.24433/CO.0011270.v1" target="_blank">https://doi.org/10.24433/CO.0011270.v1</a></td>
+</tr>
+<tr>
+<td>Modeling the growth of tomato fruits based on enzyme activity profiles (Example of data analysis interfaced by ODAM)</td>
+<td>Notebook</td>
+<td><a href="https://hal.inrae.fr/hal-02611223/file/FRIM1_Growth_model.html" target="_blank">https://hal.inrae.fr/hal-02611223</a></td>
+</tr>
+<tr>
+<td>ODAM Source code on GitHub</td>
+<td>Source Code</td>
+<td><a href="https://github.com/inrae/ODAM" target="_blank">https://github.com/inrae/ODAM</a></td>
+</tr>
+<tr>
+<td>ODAM Source code on  Software Heritage</td>
+<td>Source Code</td>
+<td><a href="https://archive.softwareheritage.org/browse/origin/directory/?origin_url=https://github.com/inrae/ODAM" target="_blank">https://www.softwareheritage.org/</a></td>
+</tr>
+<tr>
+<td>JSON Schema for ODAM data package</td>
+<td>Source Code</td>
+<td><a href="https://github.com/djacob65/odam-datapackage/" target="_blank">https://github.com/djacob65/odam-datapackage/</a></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Note</strong> : In order either to improve the use of ODAM or to complement its toolbox, a number of <a href="../todo">additional developments</a> are planned.</p>
+<h3 id="external-resources-used">External resources used<a class="headerlink" href="#external-resources-used" title="Permanent link">&para;</a></h3>
+<p><strong>Tools</strong>
+<br></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>docker</td>
+<td>Container management tool</td>
+<td><a href="https://www.docker.com/" target="_blank">https://www.docker.com/</a></td>
+</tr>
+<tr>
+<td>Oracle VM VirtualBox</td>
+<td>Virtual Machine (VM) management tool</td>
+<td><a href="https://www.virtualbox.org/" target="_blank">https://www.virtualbox.org/</a></td>
+</tr>
+<tr>
+<td>Rstudio</td>
+<td>Integrated Development Environment (IDE) for R</td>
+<td><a href="https://rstudio.com/" target="_blank">https://rstudio.com/</a></td>
+</tr>
+<tr>
+<td>R shiny</td>
+<td>interactive web apps  for R</td>
+<td><a href="https://shiny.rstudio.com/" target="_blank">https://shiny.rstudio.com/</a></td>
+</tr>
+<tr>
+<td>jupyter notebook</td>
+<td>Web application for e-notebooks</td>
+<td><a href="https://jupyter.org/" target="_blank">https://jupyter.org/</a></td>
+</tr>
+<tr>
+<td>q-text-as-data</td>
+<td>A command line tool for running SQL directly on CSV or TSV files</td>
+<td><a href="http://harelba.github.io/q/" target="_blank">http://harelba.github.io/q/</a></td>
+</tr>
+<tr>
+<td>sqlite3</td>
+<td>A command line tool for executing SQL statements against an SQLite database</td>
+<td><a href="https://www.sqlite.org/cli.html" target="_blank">https://www.sqlite.org/cli.html</a></td>
+</tr>
+<tr>
+<td>goodtables.io</td>
+<td>data publishing with confidence - data validation on every change</td>
+<td><a href="http://goodtables.io/" target="_blank">http://goodtables.io/</a></td>
+</tr>
+<tr>
+<td>codemeta-generator</td>
+<td>Create your codemeta file</td>
+<td><a href="https://codemeta.github.io/codemeta-generator/" target="_blank">https://codemeta.github.io/codemeta-generator/</a></td>
+</tr>
+<tr>
+<td>----</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Repositories</strong>
+<br></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GitHub</td>
+<td>Source code</td>
+<td><a href="https://github.com/" target="_blank">https://github.com/</a></td>
+</tr>
+<tr>
+<td>Software Heritage</td>
+<td>Source Code</td>
+<td><a href="https://www.softwareheritage.org/" target="_blank">https://www.softwareheritage.org/</a></td>
+</tr>
+<tr>
+<td>Docker Hub</td>
+<td>Containers</td>
+<td><a href="https://hub.docker.com/" target="_blank">https://hub.docker.com/</a></td>
+</tr>
+<tr>
+<td>Data INRAE</td>
+<td>Data</td>
+<td><a href="https://data.inrae.fr/" target="_blank">https://data.inrae.fr/</a></td>
+</tr>
+<tr>
+<td>HAL INRAE</td>
+<td>Documents</td>
+<td><a href="https://hal.inrae.fr/" target="_blank">https://hal.inrae.fr/</a></td>
+</tr>
+<tr>
+<td>protocols.io</td>
+<td>Documents</td>
+<td><a href="https://www.protocols.io/" target="_blank">https://www.protocols.io/</a></td>
+</tr>
+<tr>
+<td>Code Ocean</td>
+<td>Notebooks</td>
+<td><a href="https://codeocean.com/" target="_blank">https://codeocean.com/</a></td>
+</tr>
+<tr>
+<td>R cran</td>
+<td>Source code</td>
+<td><a href="https://cran.r-project.org/" target="_blank">https://cran.r-project.org/</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Specifications</strong>
+<br></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Swagger</td>
+<td>API schema</td>
+<td><a href="https://swagger.io/specification/" target="_blank">https://swagger.io/specification/</a></td>
+</tr>
+<tr>
+<td>Data Packages</td>
+<td>Data schema</td>
+<td><a href="https://specs.frictionlessdata.io/data-package/" target="_blank">https://specs.frictionlessdata.io/data-package/</a></td>
+</tr>
+<tr>
+<td>The CodeMeta Project</td>
+<td>Code metadata schema</td>
+<td><a href="https://codemeta.github.io/" target="_blank">https://codemeta.github.io/</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>Registries</strong>
+<br></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Type</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bio.tools</td>
+<td>Tool and data services registry.</td>
+<td><a href="https://bio.tools/" target="_blank">https://bio.tools/</a></td>
+</tr>
+<tr>
+<td>RRID</td>
+<td>Research Resource Identification registry</td>
+<td><a href="https://scicrunch.org/browse/resourcedashboard" target="_blank">https://scicrunch.org/browse/resourcedashboard</a></td>
+</tr>
+<tr>
+<td>Identifiers</td>
+<td>Central registry which provides compact identifiers</td>
+<td><a href="https://registry.identifiers.org/" target="_blank">https://registry.identifiers.org/</a></td>
+</tr>
+<tr>
+<td>FAIRsharing</td>
+<td>Standards, databases and policies registry</td>
+<td><a href="https://fairsharing.org/" target="_blank">https://fairsharing.org/</a></td>
+</tr>
+<tr>
+<td>RDA Metadata Directory</td>
+<td>Standards, extensions, tools, use cases</td>
+<td><a href="https://rd-alliance.github.io/metadata-directory/" target="_blank">https://rd-alliance.github.io/metadata-directory/</a></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><strong>FAIR evaluation/assessment grids</strong>
+<br></p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5 ★ Data Rating Tool</td>
+<td><a href="https://confluence.csiro.au/display/OZNOME/Oznome+5-star+Processes" target="_blank">https://confluence.csiro.au/display/OZNOME/Oznome+5-star+Processes</a></td>
+</tr>
+<tr>
+<td>RDA FAIR Data Maturity Model WG</td>
+<td><a href="https://www.rd-alliance.org/groups/fair-data-maturity-model-wg" target="_blank">https://www.rd-alliance.org/groups/fair-data-maturity-model-wg</a></td>
+</tr>
+<tr>
+<td>RDA Sharing Rewards and Credit IG</td>
+<td><a href="https://www.rd-alliance.org/groups/sharing-rewards-and-credit-sharc-ig" target="_blank">https://www.rd-alliance.org/groups/sharing-rewards-and-credit-sharc-ig</a></td>
+</tr>
+</tbody>
+</table>
+<p><br><br></p>
+<h3 id="tools-used-for-this-online-documentation">Tools used for this online documentation<a class="headerlink" href="#tools-used-for-this-online-documentation" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Make the Docs</td>
+<td><a href="https://www.mkdocs.org/" target="_blank">https://www.mkdocs.org/</a></td>
+</tr>
+<tr>
+<td>Material for MkDocs</td>
+<td><a href="https://squidfunk.github.io/mkdocs-material/" target="_blank">https://squidfunk.github.io/mkdocs-material/</a></td>
+</tr>
+<tr>
+<td>Lightbox</td>
+<td><a href="https://lokeshdhakar.com/projects/lightbox2/" target="_blank">https://lokeshdhakar.com/projects/lightbox2/</a></td>
+</tr>
+<tr>
+<td>Mermaid</td>
+<td><a href="http://mermaid-js.github.io/mermaid/" target="_blank">http://mermaid-js.github.io/mermaid/</a></td>
+</tr>
+</tbody>
+</table>
+<p><br><br><br></p>
+<hr />
+<p><a href="https://www6.bordeaux-aquitaine.inrae.fr/bfp_eng/"> <img alt="Inra" src="../images/inrae_logo.png" /></a></p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        
+<footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+          <div class="md-footer-copyright__highlight">
+            INRAE, 2020
+          </div>
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+        
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": "..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.806c4996.min.js"></script>
+      
+        <script src="../js/lightbox.min.js"></script>
+      
+        <script src="../js/mermaid.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -19,12 +19,12 @@
     #----------------------------------------------------
     observe({ tryCatch({
       values$initds
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
-          if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
-          fa_options <- colnames(data)
-          names(fa_options) <- colnames(data)
+      values$launch
+       if ( values$launch>0) {
+          fa_options <- colnames(g$data)
+          names(fa_options) <- colnames(g$data)
           updateCheckboxGroupInput(session, 'show_vars', label = 'Columns to show:', choices = fa_options,  
-                selected = c( samples, .C(facnames$Attribute) ))
+                selected = c( g$samples, .C(g$facnames$Attribute) ))
         }
     }, error=function(e) { ERROR$MsgErrorInfo <- paste("Observer 1:\n", e ); }) })
 
@@ -32,7 +32,7 @@
     # Session Info within the About tab
     #----------------------------------------------------
     output$sessioninfo <- renderPrint({
-       tryCatch({ 
+       tryCatch({
           if (nchar(ws[2])>0) {
            # Run JS code  
             authstr <- ifelse( nchar(ws[3])>0, paste0(", '", ws[3],"'"), '' );
@@ -44,11 +44,14 @@
                 "# Get the data subsets list\n","dh$subsetNames\n","\n",
                 sep=""
             )
-            if ( input$inDSselect>0) {
-               if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
-               setName <- subsetNames[inDSselect]
+            if ( values$launch>0) {
+               if (length(input$inDSselect)>1) {
+                  setName <- paste0("c(",paste(simplify2array(lapply(input$inDSselect, function(x) { paste0("'",x,"'") })),collapse=','),")")
+               } else {
+                  setName <- paste0("'",g$inDSselect,"'")
+               }
                cat(
-                  "# Get '",setName,"' data subset\n", "ds <- dh$getSubsetByName('",setName,"')\n", "\n",
+                  "# Get '",g$inDSselect,"' data subset\n", "ds <- dh$getSubsetByName(",setName,")\n", "\n",
                   "# Show all descriptions of variables\n", "ds$LABELS\n","\n",
                   "# Show all factors defined in the data subset\n","ds$facnames\n","\n",
                   "# Show all quantitative variables defined in the data subset\n","ds$varnames\n","\n",
@@ -102,17 +105,17 @@
     output$subsets <- renderDataTable({
        values$initds
        if (nchar(input$ipclient)==0) return(NULL)
-       tryCatch({ if (nchar(msgError)==0) {
-           if ( !is.DS(cdata) || values$init==0 ||  is.null(input$inDSselect)) return(NULL)
-           if ( is.null(subsets) ) return(NULL)
-           if (input$inDSselect>0) {
-               tsets <- subsets[subsets$Subset==subsetNames[.N(input$inDSselect)], ]
+       tryCatch({ if (nchar(g$msgError)==0) {
+           if ( !is.DS(cdata) || values$init==0) return(NULL)
+           if ( is.null(g$subsets2) ) return(NULL)
+           if (length(input$inDSselect)>0) {
+               tsets <- g$subsets2[g$subsets2$Subset %in% input$inDSselect, ]
            } else {
-               tsets <- subsets
+               tsets <- g$subsets2
            }
            setinfo <- NULL
            authstr <- ifelse( nchar(ws[3])>0, paste0('auth=', ws[3],'&'), '' );
-           for( i in 1:dim(tsets)[1]) {
+           for( i in 1:nrow(tsets)) {
                urlSubset <- paste0(ws[4],'query/', ws[2], '/(',.C(tsets[i,1]) ,')?', authstr, 'format=xml');
                linkSubset <- ifelse( ws[1]<2, paste0("<a href='",urlSubset,"' target='_blank'>",.C(tsets[i,1]),"</a>"), .C(tsets[i,1]) )
                linkOnto <- paste0("<a href='",.C(tsets[i,5]),"' target='_blank'>[", basename(.C(tsets[i,5])),'] ', .C(tsets[i,6]),"</a>")
@@ -130,8 +133,8 @@
     output$infos <- renderDataTable({
        values$initds
        tryCatch({ 
-           if (is.null(input$inDSselect) || input$inDSselect==0) return(NULL)
-           if (is.null(LABELS) || dim(LABELS)[1]==0) return(NULL)
+           if (values$launch==0) return(NULL)
+           if (is.null(g$LABELS) || nrow(g$LABELS)==0) return(NULL)
            getLabels()
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Infos:\n", e ); })
     }, options = list(searching=FALSE, paging=FALSE), escape=c(1,2,3))
@@ -150,11 +153,11 @@
     #----------------------------------------------------
     output$downloadTSV <- downloadHandler(
         filename = function() {
-            paste('data_', .C(subsetNames[.N(input$inDSselect)]),'_', Sys.Date(), '.tsv', sep='')
+            paste('data_', .C(g$subsetNames[g$subsetNames %in% input$inDSselect]),'_', Sys.Date(), '.tsv', sep='')
         },
         content = function(con) {
-            setName <- .C(subsets[ subsets$Subset==subsetNames[.N(input$inDSselect)], ][1,1])
-            write.table(data, con, sep="\t", row.names=FALSE, col.names=TRUE)
+            setName <- .C(g$subsets[ g$subsets$Subset %in% input$inDSselect, ][1,1])
+            write.table(g$data, con, sep="\t", row.names=FALSE, col.names=TRUE)
         }
     )
 
@@ -166,8 +169,8 @@
        if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({ 
            if (values$init==0) values$init <- 1
-           if (length(subsetNames)>0) {
-                diagonalNetwork(List = dn, fontSize = fs, fontFamily = "serif", 
+           if (length(g$subsetNames)>0) {
+                diagonalNetwork(List = g$dn, fontSize = g$fs, fontFamily = "serif", 
                     linkColour = '#B2B3D0', nodeColour = "#fff", nodeStroke = "red", textColour = "darkblue",
                     opacity = 0.99)
            }
@@ -179,9 +182,9 @@
     #----------------------------------------------------
     output$datavalues <- tryCatch({
        DT::renderDataTable(
-           unique( data[, input$show_vars, drop = FALSE] ),  selection='none', filter = 'top', rownames = FALSE, 
+           unique( g$data[, input$show_vars, drop = FALSE] ),  selection='none', filter = 'top', rownames = FALSE, 
            extensions = c('Buttons','Scroller'), options= list(
-                 dom='Bfrtip', buttons = list('copy','excel'), pageLength = dim(data)[1], autoWidth=TRUE,  deferRender = FALSE,  scrollY = 750,  scroller = TRUE
+                 dom='Bfrtip', buttons = list('copy','excel'), pageLength = nrow(g$data), autoWidth=TRUE,  deferRender = FALSE,  scrollY = 750,  scroller = TRUE
            ), server=FALSE
        )
     }, error=function(e) { ERROR$MsgErrorInfo <- paste("DT::renderDataTable:\n", e ); })

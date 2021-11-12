@@ -4,7 +4,7 @@
 ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
    box(title="Data Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
      conditionalPanel(condition="uiloaded==0",
-        h3( tags$img(src = "loading_wait.gif"), style = "color:#bf6f85")
+        h3( tags$p('Please wait while loading ...'), tags$img(src = "loading.gif"), style = "color:#bf6f85")
      ),
      htmlOutput("datainfos", class="mddiv")
    ),
@@ -14,8 +14,8 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
          HTML("<div id='wait' class='shiny-html-output'><table><tr><td><img src='loading.gif' height=25 width=40 /></td><td>&nbsp;</td><td>Loading ...</td></tr></table></div>"),
          #verbatimTextOutput('out1'),
          dataTableOutput("subsets"),
-         conditionalPanel(condition="input.inDSselect>0", 
-               downloadButton('downloadTSV', label = "Export TSV", class = NULL), p(),
+         conditionalPanel(condition="output.DSsize>0", 
+               downloadButton('downloadTSV', label = "Export TSV", class = NULL) , p(),
                conditionalPanel(condition="output.nbvarsEvent==0", dataTableOutput("infos"))
          )
       ),
@@ -36,7 +36,7 @@ ui_warning <- h3(tags$img(height = 50, width = 50, src = "https://www.freeiconsp
 #----------------------------------------------------
 ui_dataTab <-  tabItem(tabName = "datatable", bsAlert("ErrAlertDT"), conditionalPanel(condition="output.apierror==0", 
    column(12,
-      conditionalPanel(condition="input.inDSselect>0 && output.nbvarsEvent==0",
+      conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==0",
         tags$style(type='text/css', ".col-sm-11 { width: 90%; } .col-sm-1 { width: 10%; }"),
         column(1, 
            tags$style(type='text/css', "#show_vars .shiny-options-group label span { font-size: 11px; font-weight: 600; }"),
@@ -44,8 +44,8 @@ ui_dataTab <-  tabItem(tabName = "datatable", bsAlert("ErrAlertDT"), conditional
         ),
         column(11, DT::dataTableOutput('datavalues') )
       ),
-      conditionalPanel(condition="input.inDSselect>0 && output.nbvarsEvent==1", ui_warning),
-      conditionalPanel(condition="input.inDSselect==0",
+      conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==1", ui_warning),
+      conditionalPanel(condition="output.DSsize==0",
         h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
       )
    )
@@ -73,7 +73,7 @@ ui_aboutTab <-  tabItem("about", bsAlert("ErrAlertAbout"),
 #----------------------------------------------------
 ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), conditionalPanel(condition="output.apierror==0", box(
    title="Univariate exploration", status = "primary", solidHeader = TRUE, width = 12,
-   conditionalPanel(condition="input.inDSselect>0 && output.nbvarsEvent==0",
+   conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==0",
    column(12,
       column(4,
            selectInput("uniFacX", "Factor for X Axis", c() ),
@@ -105,8 +105,8 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), conditional
    column(12, conditionalPanel(condition="input.uniVarSelect>0", 
             plotlyOutput("BoxPlot", height="500px") )
    )),
-   conditionalPanel(condition="input.inDSselect>0 && output.nbvarsEvent==1", ui_warning),
-   conditionalPanel(condition="input.inDSselect==0",
+   conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==1", ui_warning),
+   conditionalPanel(condition="output.DSsize==0",
       h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
    )
 )))
@@ -116,7 +116,7 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), conditional
 #----------------------------------------------------
 ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),conditionalPanel(condition="output.apierror==0", box(
    title="Bivariate exploration", status = "primary", solidHeader = TRUE, width = 12,
-   conditionalPanel(condition="input.inDSselect>0 && output.nbvarsEvent==0",
+   conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==0",
    column(12,
       column(4,
            selectInput("biFacX", "Factor for Grouping", c() )
@@ -149,8 +149,8 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),conditiona
    column(12, conditionalPanel(condition="input.biVarSelect1>0 && input.biVarSelect2>0", 
           plotlyOutput("ScatterPlot", height="500px")
    ))),
-   conditionalPanel(condition="input.inDSselect>0 && output.nbvarsEvent==1", ui_warning),
-   conditionalPanel(condition="input.inDSselect==0",
+   conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==1", ui_warning),
+   conditionalPanel(condition="output.DSsize==0",
       h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
    )
 )))
@@ -160,7 +160,7 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),conditiona
 #----------------------------------------------------
 ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), conditionalPanel(condition="output.apierror==0", box(
    title="Multivariate exploration", status = "primary", solidHeader = TRUE, width = 12,
-   conditionalPanel(condition="input.inDSselect>0 && output.nbvarsEvent==0",
+   conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==0",
    htmlOutput("Msg"),
    column(12,
       column(4,
@@ -199,7 +199,6 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
                 column(6,
                     column(3,  HTML('<b>FDR qvalue</b>')),
                     column(9, numericInput("qval", NULL, 0.05, min = 0.001, max = 0.1, step=0.01) )
-                    #selectInput("qval", NULL, c("0.05"="0.05", "0.01"="0.01", "0.005"="0.005", "0.001"="0.001"), selected="0.05" )
                 ),
                 column(6,
                     column(3,  HTML('<br><b>Gravity</b>')),
@@ -211,12 +210,14 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
            selectInput("outType", "Output Type", 
                 c("----"="None", "Identifiers" = "IDS", "Variables" = "VARS"), selected = "None"),
            conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'",
-               column(4, checkboxInput('f3D', '3D', FALSE)),
-               column(4, checkboxInput('multiLabels', 'Labels', TRUE)), 
-               column(4, checkboxInput('GBG', 'Grey Background', FALSE))
+               column(3, checkboxInput('f3D', '3D', FALSE)),
+               column(3, checkboxInput('multiLabels', 'Labels', TRUE)), 
+               column(3, checkboxInput('shortLabels', 'Short Labels', FALSE)), 
+               column(3, checkboxInput('GBG', 'Grey Background', FALSE))
            ),
            conditionalPanel(condition="input.multiType=='COR'",
-               checkboxInput('fullmatcor', 'Full Matrix', FALSE)
+               checkboxInput('fullmatcor', 'Full Matrix', FALSE),
+               checkboxInput('reordermatcor', 'Reorder Matrix', TRUE)
            ),
            conditionalPanel(condition="input.multiType=='GGM'",
               column(4, checkboxInput('shrinkauto', 'Shrinkage Auto', TRUE)),
@@ -235,14 +236,15 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
       )
    ),
    column(12, conditionalPanel(condition="input.multiType != 'None' && input.outType != 'None' && input.listVars[2]", 
-       conditionalPanel(condition="input.multiType!='GGM'", plotlyOutput("MultiPlot", height="600px") ),
+       conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'", plotlyOutput("MultiPlot", height="600px") ),
+       conditionalPanel(condition="input.multiType=='COR'", imageOutput("CorrPlot", height="600px") ),
        conditionalPanel(condition="input.multiType=='GGM'", forceNetworkOutput("ggmnet", width="85%", height="800px") )
    )),
    column(12,
        selectInput("listVars", "Select Variables", c(), multiple = TRUE, , selectize=TRUE )
    )),
-   conditionalPanel(condition="input.inDSselect>0 && output.nbvarsEvent==1", ui_warning),
-   conditionalPanel(condition="input.inDSselect==0",
+   conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==1", ui_warning),
+   conditionalPanel(condition="output.DSsize==0",
       h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
    )
 )))

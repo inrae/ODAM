@@ -25,3 +25,5 @@ SSL_VerifyPeer <- conf$SSL_VERIFYPEER
 # Maximum number of variables in a data subset so that it  can be explored interactively
 maxVariables <- conf$MAXVARIABLES
 
+# Nb max item when multiselect
+nbopt_multiselect <- 20

@@ -1,10 +1,11 @@
     ## Metadata preparation / Data extraction
     getDataMulti <- function(F1, selectLevels, FCOL, selectFCOL, selectVars, scale=FALSE ) {
         # Metadata preparation
-        F1name <- as.character(LABELS[LABELS[,1]==F1,2])
-        variables <-.C(varnames[.N(selectVars),]$Attribute)
+        F1name <- as.character(g$LABELS[g$LABELS[,2]==F1,4])
+        variables <-.C(g$varnames[.N(selectVars),]$Attribute)
 
         # Remove quantitative variables with all values at zero
+        data <- g$data
         V <- simplify2array( lapply(variables, function(v) { sum( which(data[, v]!=0) ) }) )
         if (length(which(V==0))>0) {
            data <- data[, ! colnames(data) %in% variables[c(which(V==0))] ]
@@ -30,15 +31,15 @@
         levelcFac <- .C( levels(as.factor(cfacvals)) )
     
         # Data extraction
-        subdata <- cbind( data[ , c(samples,variables)] , facvals, cfacvals )
-        #subdata <- na.omit(cbind( data[ , c(samples,variables)] , facvals, cfacvals ))
+        subdata <- cbind( data[ , c(g$samples,variables)] , facvals, cfacvals )
+        #subdata <- na.omit(cbind( data[ , c(g$samples,variables)] , facvals, cfacvals ))
         
         # Data imputation
         dataIn <- subdata[, variables ]
         if (scale) dataIn <- scale( dataIn, center=TRUE, scale=TRUE )
         resNIPALS <- pca(as.matrix(dataIn), method = "nipals", center = FALSE)
         subdata[, variables ] <- resNIPALS@completeObs
-        colnames(subdata) <- c ( samples, variables, F1, FCOL)
+        colnames(subdata) <- c ( g$samples, variables, F1, FCOL)
         
         # Data selection
         subdata <- subdata[subdata[ , F1 ] %in% levelFac[.N(selectLevels)], ]
@@ -63,7 +64,7 @@
     #----------------------------------------------------
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
+       if ( values$launch>0 ) {
           if ((as.numeric(input$nbComp)==2 && input$multiType=='ICA') || .C(input$multiType) %in% c('COR','GGM') || input$outType != 'IDS' ) {
               updateCheckboxInput(session, "f3D", label = '3D', value = FALSE)
               shinyjs::disable("f3D")
@@ -75,7 +76,7 @@
 
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
+       if ( values$launch>0 ) {
             if (input$f3D==TRUE) {
                   shinyjs::disable("multiLabels")
                   shinyjs::disable("GBG")
@@ -88,7 +89,7 @@
 
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0 ) {
+       if ( values$launch>0 ) {
           if ( .C(input$multiType) %in% c('COR','GGM') ) {
              v_options <- c('VARS')
              names(v_options) <- c('Variables')
@@ -103,26 +104,25 @@
 
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
-          if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
-          if (dim(varnames)[1]>maxVariables) return(NULL)
+       if ( values$launch>0 ) {
+          if (nrow(g$varnames)>maxVariables) return(NULL)
           # First Factor
-          f1_options <- .C(facnames[,2])
-          names(f1_options) <- .C(facnames$Description)
-          if (dim(varnames)[1]>2) {
+          f1_options <- .C(g$facnames[,2])
+          names(f1_options) <- .C(g$facnames$Description)
+          if (nrow(g$varnames)>2) {
               updateSelectInput(session, "multiFacX", choices = f1_options)
           }
           # Select the variables to be included in the analysis
-          v_options <- c( 1:dim(varnames)[1] )
-          names(v_options) <- c(.C(gsub(" \\(.+\\)","",varnames$Description)))
+          v_options <- c( 1:nrow(g$varnames) )
+          names(v_options) <- c(.C(gsub(" \\(.+\\)","",g$varnames$Description)))
           updateSelectInput(session, "listVars", choices = v_options, selected=v_options)
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 4:\n", e ); }) })
 
     observe({ tryCatch({
        input$inDselect
-       if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$multiFacX) && nchar(input$multiFacX)>0) {
-          facvals <- data[ , input$multiFacX]
+       if (values$launch>0 && ! is.null(input$multiFacX) && nchar(input$multiFacX)>0) {
+          facvals <- g$data[ , input$multiFacX]
           if (is.numeric(facvals)) {
               fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
               facvals <- as.character(sprintf(fmt, facvals))
@@ -136,10 +136,10 @@
 
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
+       if ( values$launch>0 ) {
           # Annotation
-          fa_options <- c("None", .C(features[,2]))
-          names(fa_options) <- c('---', .C(features$Description))
+          fa_options <- c("None", .C(g$features[,2]))
+          names(fa_options) <- c('---', .C(g$features$Description))
           updateSelectInput(session, "multiAnnot", choices = fa_options)
           #updateSelectInput(session, "outType", selected="None")
           #updateSelectInput(session, "multiType", selected="None")
@@ -148,11 +148,11 @@
 
     observe({ tryCatch({
        input$inDselect
-       if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$multiAnnot) && nchar(input$multiAnnot)>0) {
+       if (values$launch>0 && ! is.null(input$multiAnnot) && nchar(input$multiAnnot)>0) {
           f_options <- c(.C(input$multiAnnot))
           names(f_options) <- c('---')
           if (.C(input$multiAnnot) != "None") {
-              fvals <- data[ , input$multiAnnot]
+              fvals <- g$data[ , input$multiAnnot]
               if (is.numeric(fvals) && sum(is.na(fvals))==0 ) {
                  fmt <- paste('%0',round(log10(max(abs(fvals)))+0.5)+3,'.2f',sep='')
                  fvals <- as.character(sprintf(fmt, fvals))
@@ -166,6 +166,10 @@
           updateSelectInput(session, "listFeatures", choices = f_options, selected=f_options)
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 6:\n", e ); }) })
+
+
+#===================================================================================
+
 
     #----------------------------------------------------
     # GGM
@@ -181,7 +185,7 @@
         input$listLevels,
         input$listVars
     ),{
-        if (input$inDSselect==0) return(NULL)
+        if (values$launch==0) return(NULL)
         if (.C(input$multiType)!='GGM') return(NULL)
         FA <- isolate(input$multiAnnot)
         F1 <- .C(isolate(input$multiFacX))
@@ -247,48 +251,64 @@
 
     output$ggmnet <- renderForceNetwork({
     tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
-        if (input$inDSselect==0) return(NULL)
-        values$launch
+        if (values$launch==0) return(NULL)
         values$netData
         input$gravite
         netData <- values$netData
         Vertices <- unique(sort(c( unique(sort(as.vector(netData[,1]))),  unique(sort(as.vector(netData[,2]))) )))
         V_size <- length(Vertices)
-        E_size <- dim(netData)[1]
+        E_size <- nrow(netData)
         Nodesize <- simplify2array(lapply( 1:V_size, function(x) { sum(Vertices[x] == c(as.vector(netData[,1]), as.vector(netData[,2])))^2 }))
-    
+
+        # Groups for Nodes based on data subsets
+        dsSel <- names(g$varsBySubset)
+        dsnames <- rep(dsSel[1], length(Vertices))
+        if (length(dsSel)>1) {
+             for(i in 2:length(dsSel))
+                 dsnames[ Vertices %in% g$varsBySubset[[i]] ] <- dsSel[i]
+        }
+
+        # Change default colors
+        jsCols <- paste(sapply(c('#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'),
+                        function(x) { paste0("d3.rgb(", paste(c(col2rgb(x), 0.5), collapse = "," ), ")") }), collapse = ", ")
+        colorJS <- paste0('d3.scale.ordinal().range([', jsCols, '])')
+
         L1<-simplify2array(lapply( 1:E_size, function(x) { which( as.vector(netData[,1])[x]==Vertices) }))
         L2<-simplify2array(lapply( 1:E_size, function(x) { which( as.vector(netData[,2])[x]==Vertices) }))
         Links <- data.frame( source=(L1-1), target=(L2-1), value=10*( abs(netData$Corr)-0.3 ) )
-        Nodes <- data.frame( name=Vertices, group=rep(1,V_size), size=Nodesize )
+        Nodes <- data.frame( name=Vertices, group=dsnames, size=Nodesize )
         LS <- 1
         link_colors <- rep('Red', E_size); link_colors[which(netData$Corr<0)] <- 'Green'
         fontSize <- 10+5*(LS-1)
         logcharge <- 10*input$gravite-7
         charge <- sign(logcharge)*10^(abs(logcharge))
 
-        forceNetwork(Links = Links, Nodes = Nodes, Source = "source", Target = "target", Value = "value", NodeID = "name", Group = "group", 
-                    Nodesize="size", fontSize=fontSize, linkColour=link_colors, charge=charge, 
-                    opacity = 0.99, opacityNoHover = 0.99, zoom = TRUE, bounded=TRUE)
-
-    }, error=function(e) { ERROR$MsgErrorMulti <- paste("RenderPlotly:\n", e ); })
+        fn <- forceNetwork(Links = Links, Nodes = Nodes, Source = "source", Target = "target", Value = "value", NodeID = "name", Group = "group", 
+                    Nodesize="size", fontSize=fontSize, linkColour=link_colors, charge=charge, colourScale=JS(colorJS),
+                    opacity = 0.99, opacityNoHover = 0.99, zoom = TRUE, bounded=TRUE, legend=TRUE)
+        fn
+    }, error=function(e) { ERROR$MsgErrorMulti <- paste("RenderForceNetwork:\n", e ); })
     })
 
+
+#===================================================================================
+
+
     #----------------------------------------------------
-    # renderUI - Multivariate : HCA / MDS
+    # renderUI - Multivariate : PCA / ICA
     #----------------------------------------------------
 
     output$Msg <- renderUI({
-        if (input$inDSselect==0) return(NULL)
-        if (input$inDSselect>0 && dim(varnames)[1]<3) {
+        if (values$launch==0) return(NULL)
+        if (values$launch>0 && nrow(g$varnames)<3) {
             tags$p(class="shiny-output-error","Not enough variables")
         }
     })
 
+    # Render PCA & ICA Plotly
     output$MultiPlot <- renderPlotly ({
     tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
-        if (input$inDSselect==0) return(NULL)
-        values$launch
+        if (values$launch==0) return(NULL)
         input$listVars
         input$listLevels
         input$listFeatures
@@ -304,21 +324,18 @@
         }
         multiType <- input$multiType
         withProgress(message = 'Calculation in progress', detail = '... ', value = 0, { tryCatch({
-            if (.C(multiType)=='COR') {
-                getCorPLot(F1, selectLevels=input$listLevels, FCOL=FCOL, selectFCOL=selectFCOL, selectVars=input$listVars, full=input$fullmatcor)
-            } else if (.C(multiType) %in% c('PCA', 'ICA')) {
-                getMultiPLot(multiType, F1, selectLevels=input$listLevels, FCOL=FCOL, selectFCOL=selectFCOL, selectVars=input$listVars, outputVariables, fellipse=input$ellipse, scale=input$scale, blabels=input$multiLabels, f3D=input$f3D, GBG=input$GBG,conflevel=as.numeric(input$conflevel))
-            }
+            getMultiPLot(multiType, F1, input$listLevels, FCOL, selectFCOL, input$listVars, outputVariables=outputVariables, 
+                         fellipse=input$ellipse, scale=input$scale, blabels=input$multiLabels, slabels=input$shortLabels, 
+                         f3D=input$f3D, GBG=input$GBG,conflevel=as.numeric(input$conflevel))
        }, error=function(e) {}) })
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("RenderPlotly:\n", e ); })
     })
 
-
     #----------------------------------------------------
     # Multivariate : PCA
     #----------------------------------------------------
-    PCA_fun <- function(x) {
-    
+    PCA_fun <- function(x)
+    {
         pc<-prcomp(x,retx=TRUE,scale=F)
         sd <- pc$sdev
         eigenvalues <- sd^2
@@ -335,8 +352,8 @@
     #----------------------------------------------------
     # Multivariate : ICA
     #----------------------------------------------------
-    ICA_fun <- function(x) {
-    
+    ICA_fun <- function(x)
+    {
         nbc <- as.numeric(input$nbComp)
         out.ica <- JADE(x, nbc, maxiter = 200)
         Score <- out.ica$S
@@ -367,7 +384,7 @@
     # Multivariate Plot
     #----------------------------------------------------
     getMultiPLot <- function(Analysis, F1, selectLevels, FCOL, selectFCOL, selectVars, 
-                             outputVariables=FALSE, fellipse=TRUE, scale=FALSE, blabels=TRUE, f3D=FALSE, GBG=FALSE, conflevel=0.95)
+                             outputVariables=FALSE, fellipse=TRUE, scale=FALSE, blabels=TRUE, slabels=FALSE, f3D=FALSE, GBG=FALSE, conflevel=0.95)
     {
         FUN <- ''
         if (nchar(Analysis)>0) FUN <- paste0(Analysis,'_fun')
@@ -394,25 +411,19 @@
         # Scores plot
            MA <- as.data.frame(cbind( Score[, c(pc1,pc2,pc3)], facvals))
            names(MA) <- c( 'C1','C2', 'C3', 'fac' )
-           
-           if (! f3D && fellipse ) { # Compute ellipse for each factor level
-              centroids <- aggregate(cbind(C1,C2) ~ fac , MA, mean)
-              conf.rgn  <- do.call(rbind,lapply(unique(MA$fac),function(t)
-                 data.frame(fac=as.character(t),
-                           ellipse(cov(MA[MA$fac==t,1:2]),
-                                   centre=as.matrix(centroids[centroids$fac==t,2:3]),
-                                   level=conflevel, npoints=50),
-                           stringsAsFactors=FALSE)))
-              for( i in 1:length(levels(facvals)) ) conf.rgn$fac[ conf.rgn$fac==i ] <- levels(facvals)[i]
-           }
+           #MA <- unique(MA)
+
            if (fannot) {
-               MA$IDS <- sapply( subdata[ , samples], function (x) { paste(unique(as.vector(subdata[subdata[ , samples]==x, FCOL])),sep="", collapse=',')} )
+               MA$IDS <- sapply( subdata[ , g$samples], function (x) { paste(unique(as.vector(subdata[subdata[ , g$samples]==x, FCOL])),sep="", collapse=',')} )
            } else {
-               MA$IDS <- subdata[, samples ]
+               MA$IDS <- subdata[, g$samples ]
            }
            names(MA) <- c( 'C1','C2', 'C3', 'fac', 'IDS')
            for( i in 1:length(levels(facvals)) ) MA$fac[ MA$fac==i ] <- levels(facvals)[i]
            MA$fac <- as.factor(MA$fac)
+           MA <- unique(MA)
+
+#write.table(MA, file = file.path(tempdir(),'MA.txt'), append = FALSE, quote = TRUE, sep = "\t", na = "NA", dec = ".", row.names = FALSE)
 
            if (f3D) { # Use 3D plotly
               symbolset = c('dot', 'cross', 'diamond', 'square', 'triangle-down', 'triangle-left', 'triangle-right', 'triangle-up')
@@ -434,53 +445,127 @@
                   G1 <- G1 + ylab(sprintf("%s%d",prefix, pc2))
               }
               G1 <- G1 + labs(colour=F1name)
-              if (fellipse) G1 <- G1 + geom_path(data=conf.rgn)
+              if (fellipse) G1 <- G1 + stat_ellipse(type='norm', level=conflevel, na.rm=TRUE)
               G1 <- G1 + guides(colour = guide_legend(override.aes = list(size=3)))
               if (!GBG) G1 <- G1 + theme_bw()
-              gg <- ggplotly(G1)
+              gg <- G1 # ggplotly(G1)
            }
 
         } else {
 
         # Loadings plot - 2D plotly
-           
+
+           ## Label colors 
+           dsSel <- names(g$varsBySubset)
+           dsnames <- rep(dsSel[1], length(rownames(M)))
+           if (length(dsSel)>1) {
+               for(i in 1:length(dsSel))
+                  dsnames[ rownames(M) %in% g$varsBySubset[[i]] ] <- dsSel[i]
+           }
+
+           idlabels <- ifelse (slabels, 2, 4)
            MA <- as.data.frame(M[, c(pc1,pc2)])
-           names(MA) <- c( 'C1','C2' )
-           MA$VARS <- rownames(M)
-           MA$LABELS <- gsub(" \\(.+\\)","",as.character(LABELS[LABELS[,1] %in% MA$VARS,2]))
-           strmode <- ifelse( blabels==TRUE, "text", "markers" )
+           MA <- cbind( MA, rownames(M) )
+           names(MA) <- c( 'C1','C2', 'VARS' )
+           MA <- cbind( MA, gsub(" \\(.+\\)","",as.character(g$LABELS[g$LABELS[,2] %in% MA$VARS,idlabels])) )
            names(MA) <- c( 'C1','C2', 'VARS', 'LABELS' )
-           gg <- plot_ly(MA, x = ~C1, y = ~C2, color = "blue", type="scatter", mode=strmode, text= ~LABELS ) %>%
-                 layout(scene = list(xaxis = list(title = sprintf("%s%d",prefix, pc1)),yaxis = list(title = sprintf("%s%d",prefix, pc2))))
+           if (length(dsSel)>1) {
+              MA <- cbind( MA, dsnames ); fshow <- TRUE
+           } else {
+              MA <- cbind( MA, MA$LABELS ); fshow <- FALSE
+           }
+           names(MA) <- c( 'C1','C2', 'VARS', 'LABELS', 'COLORS' )
+           strmode <- ifelse( blabels==TRUE, "text", "markers" )
+           gg <- plot_ly(MA, x = ~C1, y = ~C2, color = ~COLORS, type="scatter", mode=strmode, text= ~LABELS ) %>%
+                 layout(showlegend = fshow, scene = list(xaxis = list(title = sprintf("%s%d",prefix, pc1)),yaxis = list(title = sprintf("%s%d",prefix, pc2))))
         }
         #htmlwidgets::saveWidget(as.widget(gg), file = "getMultiPLot.html")
         gg
     }
 
 
+#===================================================================================
+
+
+    #----------------------------------------------------
+    # renderUI - Multivariate : PCA / ICA
+    #----------------------------------------------------
+
+    # Render HCA Plot
+    output$CorrPlot <- renderImage ({
+    tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
+        if (values$launch==0) return(NULL)
+        input$listVars
+        input$listLevels
+        input$listFeatures
+        FA <- isolate(input$multiAnnot)
+        F1 <- .C(isolate(input$multiFacX))
+        outputVariables <- ifelse( input$outType == 'IDS', FALSE, TRUE )
+        FCOL <- ifelse( FA=="None", '', FA )
+        selectFCOL <- input$listFeatures
+        if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
+            selectFCOL <- c()
+        }
+        withProgress(message = 'Calculation in progress', detail = '... ', value = 0, { tryCatch({
+            getCorPLot(F1, selectLevels=input$listLevels, FCOL=FCOL, selectFCOL=selectFCOL, selectVars=input$listVars, 
+                       full=input$fullmatcor, reorder=input$reordermatcor)
+       }, error=function(e) {}) })
+    }, error=function(e) { ERROR$MsgErrorMulti <- paste("RenderPlotly:\n", e ); })
+    })
+
     #----------------------------------------------------
     # Heatmap of correlation matrix
     #----------------------------------------------------
-    getCorPLot <- function(F1, selectLevels, FCOL, selectFCOL, selectVars, full=FALSE) {
-    
+    getCorPLot <- function(F1, selectLevels, FCOL, selectFCOL, selectVars, full=FALSE, reorder=TRUE)
+   {
         ## Metadata preparation / Data extraction
         o <- getDataMulti(F1, selectLevels, FCOL, selectFCOL, selectVars, scale=FALSE)
         x <- o$subdata[, o$variables ]
 
+        ## Correlation + Clustering 
         cormat <- round(cor(x),2)
-        dd <- as.dist((1-cormat)/2)
-        hc <- hclust(dd)
-        cormat <-cormat[hc$order, hc$order]
+        if (reorder) {
+           dd <- as.dist((1-cormat)/2)
+           hc <- hclust(dd)
+           cormat <-cormat[hc$order, hc$order]
+        }
         if (!full) cormat[lower.tri(cormat)]<- NA
         melted_cormat <- melt(cormat, na.rm = TRUE)
+
+        ## Label colors - Seems not working with current version of R plotly package
+        ## https://stackoverflow.com/questions/57486547/coloring-the-axis-tick-text-by-multiple-colors/58643916#58643916
+        labcolors <- rep('black', length(o$variables))
+        dsSel <- names(g$varsBySubset)
+        if (length(dsSel)>1) {
+            cols <- c('red','blue','orange','magenta','brown')
+            for(i in 1:length(dsSel))
+               labcolors[ rownames(cormat) %in% g$varsBySubset[[i]] ] <- cols[i]
+        }
+
+        ## Graphic
         G1 <- ggplot(data = melted_cormat, aes(Var2, Var1, fill = value))
-        G1 <- G1 + geom_tile(color = "white")
+        G1 <- G1 + geom_tile(color = "white") + xlab("") + ylab("")
         G1 <- G1 + scale_fill_gradient2(low = "blue", high = "red", mid = "white", 
                           midpoint = 0, limit = c(-1,1), space = "Lab", name="Pearson\nCorrelation")
         G1 <- G1 + theme_minimal()
-        G1 <- G1 + theme(axis.text.x = element_text(angle = 45, vjust = 1, size = 8, hjust = 1))
+        G1 <- G1 + theme(aspect.ratio = 0.5, plot.margin = margin(0, 0, 0, 0, "cm"),
+                         axis.text.x = element_text(angle = 45, vjust = 1, size = 6, hjust = 1, colour=labcolors),
+                         axis.text.y = element_text(size = 6, colour=labcolors))
         G1 <- G1 + coord_fixed()
-        gg <- ggplotly(G1)
-        #htmlwidgets::saveWidget(as.widget(gg), file = "getMultiPLot.html")
-        gg
+
+        # Save graphic as SVG
+        width  <- session$clientData$output_CorrPlot_width
+        height <- session$clientData$output_CorrPlot_height
+        mysvgwidth <- width/90
+        mysvgheight <- height/90
+
+        outfile <- file.path(tempdir(),'hca.svg')
+        ggsave(file=outfile, plot=G1, width=mysvgwidth, height=mysvgheight)
+
+        list(src = normalizePath(outfile),
+           contentType = 'image/svg+xml',
+           width = width,
+           height = height
+        )
+
     }

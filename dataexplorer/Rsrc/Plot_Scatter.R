@@ -13,33 +13,32 @@
     #----------------------------------------------------
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
+       if ( values$launch>0 ) {
           # Annotation
-          fa_options <- c("None", .C(features[,2]))
-          names(fa_options) <- c('---', .C(features$Description))
+          fa_options <- c("None", .C(g$features[,2]))
+          names(fa_options) <- c('---', .C(g$features$Description))
           updateSelectInput(session, "biAnnot", choices = fa_options)
        }
     }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 1:\n", e ); }) })
 
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
-          if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
+       if ( values$launch>0 ) {
           # First Factor
-          f1_options <- .C(facnames[,2])
-          names(f1_options) <- .C(facnames$Description)
+          f1_options <- .C(g$facnames[,2])
+          names(f1_options) <- .C(g$facnames$Description)
           updateSelectInput(session, "biFacX", choices = f1_options)
        }
     }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 2:\n", e ); }) })
 
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
+       if ( values$launch>0 ) {
           # Select the variable to be analysed
           v_options <- c()
-          if ("data.frame" %in% class(varnames)) {
-             v_options <- c(0, 1:dim(varnames)[1] )
-             names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",varnames$Description)))
+          if ("data.frame" %in% class(g$varnames)) {
+             v_options <- c(0, 1:nrow(g$varnames) )
+             names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",g$varnames$Description)))
           }
           updateSelectInput(session, "biVarSelect1", choices = v_options)
           updateSelectInput(session, "biVarSelect2", choices = v_options)
@@ -48,8 +47,8 @@
 
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$biFacX) && nchar(input$biFacX)>0) {
-           facvals <- data[ , input$biFacX]
+       if ( values$launch>0 && ! is.null(input$biFacX) && nchar(input$biFacX)>0) {
+           facvals <- g$data[ , input$biFacX]
            if (is.numeric(facvals)) {
                fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
                facvals <- as.character(sprintf(fmt, facvals))
@@ -63,11 +62,11 @@
 
     observe({ tryCatch({
        input$inDselect
-       if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$biAnnot) && nchar(input$biAnnot)>0) {
+       if (values$launch>0 && ! is.null(input$biAnnot) && nchar(input$biAnnot)>0) {
           f_options <- c(.C(input$biAnnot))
           names(f_options) <- c('---')
           if (.C(input$biAnnot) != "None") {
-              fvals <- data[ , input$biAnnot]
+              fvals <- g$data[ , input$biAnnot]
               if (is.numeric(fvals)) {
                  fmt <- paste('%0',round(log10(max(abs(fvals)))+0.5)+3,'.2f',sep='')
                  fvals <- as.character(sprintf(fmt, fvals))
@@ -87,9 +86,8 @@
     #----------------------------------------------------
     output$ScatterPlot <- renderPlotly ({
     tryCatch({ 
-        if (! is.null(input$inDSselect) && ! is.null(isolate(input$biFacX)) && ! is.null(input$SelFacX2) && 
-            ! is.null(input$biVarSelect1) && ! is.null(input$biVarSelect2) && input$inDSselect>0) {
-            values$launch
+        if ( values$launch>0 && ! is.null(isolate(input$biFacX)) && ! is.null(input$SelFacX2) && 
+            ! is.null(input$biVarSelect1) && ! is.null(input$biVarSelect2)) {
             F1 <- isolate(input$biFacX)
             FA <- isolate(input$biAnnot)
             FCOL <- ifelse( FA=="None", '', FA )
@@ -98,8 +96,8 @@
                 selectFCOL <- c()
             }
             if (nchar(F1)>0 && nchar(input$biVarSelect1)>0 && nchar(input$biVarSelect2)>0) {
-                varX <- .C(varnames$Attribute)[.N(input$biVarSelect1)]
-                varY <- .C(varnames$Attribute)[.N(input$biVarSelect2)]
+                varX <- .C(g$varnames$Attribute)[.N(input$biVarSelect1)]
+                varY <- .C(g$varnames$Attribute)[.N(input$biVarSelect2)]
                 fMean <- FALSE
                 withProgress(message = 'Calculation in progress', detail = '... ', value = 0, {
                     tryCatch({
@@ -118,7 +116,7 @@
     getScatterPLot <- function(F1, selectF1, FCOL, selectFCOL, varX, varY, fMean, blabels=FALSE, gAddon="none",blog=c(FALSE,FALSE), reglin=FALSE) {
 
         # Factor levels
-        facvals <- data[ , F1]
+        facvals <- g$data[ , F1]
         if (is.numeric(facvals)) {
             fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
             facvals <- as.character(sprintf(fmt, facvals))
@@ -128,8 +126,8 @@
         # Features as annotation
         fannot=TRUE
         if (is.null(FCOL) || nchar(FCOL)==0) { FCOL <- F1; fannot=FALSE; }
-        FCOL <- tryCatch( { if(length(data[, FCOL ])) FCOL  }, error=function(e) { F1 })
-        cfacvals <- as.vector(data[ , FCOL])
+        FCOL <- tryCatch( { if(length(g$data[, FCOL ])) FCOL  }, error=function(e) { F1 })
+        cfacvals <- as.vector(g$data[ , FCOL])
         cfacvals[is.na(cfacvals)] <- "NA"
         if (is.numeric(cfacvals)) {
             fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')
@@ -138,8 +136,8 @@
         levelcFac <- .C( levels(as.factor(cfacvals)) )
 
         # Data extraction
-        subdata <- cbind( data[ , c( varX, varY, samples) ], facvals, cfacvals )
-        colnames(subdata) <- c ( varX, varY, samples, F1, FCOL )
+        subdata <- cbind( g$data[ , c( varX, varY, g$samples) ], facvals, cfacvals )
+        colnames(subdata) <- c ( varX, varY, g$samples, F1, FCOL )
         if (! is.null(selectF1)) {
             subdata <- subdata[subdata[ , F1 ] %in% levelFac[.N(selectF1)], ]
             if (fannot && length(selectFCOL)>0)
@@ -149,9 +147,9 @@
         # Deal with NA
         if (dim(subdata)[1]<2000) {
            dat <- NULL
-           subS <- S[ S %in% sort(subdata[ ,samples ]) ]
+           subS <- g$S[ g$S %in% sort(subdata[ , g$samples ]) ]
            for (si in 1:length(subS)) {
-              D <- subdata[subdata[, samples] == subS[si],]
+              D <- subdata[subdata[, g$samples] == subS[si],]
               if ( (length(D[, varX]) - sum(is.na(D[ ,varX])))/length(D[, varX]) <0.5 ) next
               if ( (length(D[, varY]) - sum(is.na(D[ ,varY])))/length(D[, varY]) <0.5 ) next
               if (fMean) {
@@ -178,15 +176,15 @@
         if (fannot==TRUE) {
            dfg <- data.frame(factor1=as.factor(dat[,F1]), xvar=xvar, yvar=yvar, IDS=dat[, FCOL])
         } else {
-           dfg <- data.frame(factor1=as.factor(dat[,F1]), xvar=xvar, yvar=yvar, IDS=dat[, samples])
+           dfg <- data.frame(factor1=as.factor(dat[,F1]), xvar=xvar, yvar=yvar, IDS=dat[, g$samples])
         }
         dfg <- unique(dfg)
 
-        xname  <- as.character(LABELS[LABELS[,1]==varX,2])
+        xname  <- as.character(g$LABELS[g$LABELS[,2]==varX,4])
         if (blog[1]) xname  <- paste("Log10[",xname,"]")
-        yname  <- as.character(LABELS[LABELS[,1]==varY,2])
+        yname  <- as.character(g$LABELS[g$LABELS[,2]==varY,4])
         if (blog[2]) yname  <- paste("Log10[",yname,"]")
-        F1name <- as.character(LABELS[LABELS[,1]==F1,2])
+        F1name <- as.character(g$LABELS[g$LABELS[,2]==F1,4])
 
         # Calculate Ellipse
         centroids <- aggregate(cbind(xvar,yvar) ~ factor1 , dfg, mean)
@@ -223,6 +221,6 @@
         G1 <- G1 + labs(x=xname, y=yname, colour=F1name)
         G1 <- G1 + theme(plot.title = element_text(size=4, lineheight=.4, face="bold"))
         G1 <- G1 + theme_bw()
-        ggplotly(G1)
-        #G1
+        #ggplotly(G1)
+        G1
     }

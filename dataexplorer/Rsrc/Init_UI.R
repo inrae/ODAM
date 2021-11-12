@@ -1,6 +1,6 @@
 
     getURLfromList <- function() {
-       collection <- as.data.frame(dclist$list)
+       collection <- as.data.frame(g$dclist$list)
        setID <- which( ws[2] == .C(collection$datasetID) )
        urls <- .C(collection$url)
        theurl <- externalURL
@@ -77,7 +77,7 @@
           js$showSidebar()
           js$showinDSselect()
        }
-       ret
+       return(ret)
     })
     outputOptions(output, 'apierror', suspendWhenHidden=FALSE)
     outputOptions(output, 'apierror', priority=1)
@@ -91,7 +91,7 @@
        if (values$nods>0 && values$initds==0 && values$initcol==0) {
           ret=1
        }
-       ret
+       return(ret)
     })
     outputOptions(output, 'nods', suspendWhenHidden=FALSE)
     outputOptions(output, 'nods', priority=1)
@@ -107,7 +107,7 @@
               ws <<-getWS(cdata)
               ws[6] <<- input$ipclient
               if ( nchar(ws[5])>0 ) {
-                 dclist <<- getDataCol(ws)
+                 g$dclist <<- getDataCol(ws)
                  if (is.wsError()) {
                      if (is.wsNoAuth()) showModal(apiKeyModal())
                      values$error <- 1
@@ -115,7 +115,7 @@
                      values$initcol <- 1
                  }
               } else {
-                 inDselect <<- ws[2]
+                 g$inDselect <<- ws[2]
                  js$hideinDselect()
                  values$initds <- 1
               }
@@ -136,22 +136,33 @@
     observe({ tryCatch({
         input$ipclient
         values$initcol
-        if (nchar(input$ipclient)>0 && values$initcol==1 && ! is.null(dclist)) {
-            listlabels <- dclist$list$label
+        if (nchar(input$ipclient)>0 && values$initcol==1 && ! is.null(g$dclist)) {
+            listlabels <- g$dclist$list$label
             indx <- order(listlabels)
-            choices <- .C(dclist$list$datasetID[indx])
+            choices <- .C(g$dclist$list$datasetID[indx])
             names(choices) <- .C(listlabels[indx])
-            inDselect <<- choices[1]
+            g$inDselect <<- choices[1]
             values$init <- 0
             values$initcol <- 0
             if (! is.null(ws[2]) && nchar(ws[2])>0 )
-               inDselect <<- ws[2]
+               g$inDselect <<- ws[2]
             else
-               ws[2] <<- inDselect
+               ws[2] <<- g$inDselect
             ws[4] <<- getURLfromList()
-            updateSelectInput(session, "inDselect", choices = choices, selected = inDselect)
+            updateSelectInput(session, "inDselect", choices = choices, selected = g$inDselect)
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Collection Obs:\n", e ); }) })
+
+    # Display the Collection/Dataset Name 
+    output$datasetname <- renderText({
+        values$initds
+        values$initcol
+        if( nchar(ws[5])==0 ) {
+           ws[2]
+        } else {
+           as.character(g$dclist$collection$Description)
+        }
+    })
 
     #----------------------------------------------------
     # Observer - Dataset subset init
@@ -171,14 +182,14 @@
                if (is.wsNoAuth()) showModal(apiKeyModal())
                values$error <- 1
            }
-           inDSselect <<- 0
+           g$inDSselect <<- ''
+           DSselect <- NULL
            # Default data subset
-           if (! is.null(ws[7]) ) {
-               N <- which(subsetNames==ws[7])
-               if (length(N)>0 && N>0) {
-                   inDSselect <<- N
-                   getVars(N)
-               }
+           if (! is.null(ws[7]) && ! is.na(ws[7]) ) {
+               g$inDSselect <<- as.character(ws[7])
+               DSselect <- .S(g$inDSselect)
+               tryCatch({ getVars(g$inDSselect) }, error=function(e) { ERROR$MsgErrorMain <- paste("Init, getVars: ", e); })
+               values$launch <- 1
            }
            if (! is.null(ws[8]) && ws[8] %in% c('datatable','univariate','bivariate','multivariate') ) {
               js$openTab(ws[8])
@@ -191,45 +202,41 @@
            # dynamically building of the UI of each analysis tab depending on the selected data subset
            # ( based on the onChange event, linked to the 'inDSselect' input - See the 'R/Plot_XXX.R' files )
            #----------------------------------------------------
-           if (! is.null(DSL)) {
-              updateSelectInput(session, "inDSselect", choices = DSL, selected = inDSselect)
+           if (! is.null(g$DSL)) {
+              updateSelectInput(session, "inDSselect", label=NULL, choices = c("Select one or more data subset"="", g$DSL), selected = DSselect )
            }
         }
-    }, error=function(e) { ERROR$MsgErrorMain <- paste("Data subset Obs:\n", e); }) })
+    }, error=function(e) { ERROR$MsgErrorMain <- paste("Data subset Obs:\n", e, ':', paste(g$DSL, collapse=", ")); }) })
 
     #----------------------------------------------------
     # Observer - if dataset change
     #----------------------------------------------------
     observe({ tryCatch({
-        if (! is.null(input$inDselect) && nchar(input$inDselect)>0 ) {
-           if (input$inDselect != inDselect) {
-              inDselect <<- input$inDselect
-              values$launch <- values$launch + 1
-           }
-        }
+        input$inDSselect
+        if (! is.null(g$subsets) && ! is.null(input$inDSselect) && length(input$inDSselect)>0 && g$inDSselect != .J(input$inDSselect))
+            getVars(.J(input$inDSselect))
+        values$launch <- length(input$inDSselect)
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Data subset Change Obs:\n", e); }) })
 
-    # Display the Collection/Dataset Name 
-    output$datasetname <- renderText({
-        values$initds
-        values$initcol
-        if( nchar(ws[5])==0 ) {
-           ws[2]
-        } else {
-           as.character(dclist$collection$Description)
-        }
+    #----------------------------------------------------
+    # Reactive - length of the input Data Subsets inDSselect
+    #----------------------------------------------------
+    output$DSsize <- reactive({
+       values$launch
+       ret <- length(input$inDSselect)
+       return(ret)
     })
+    outputOptions(output, 'DSsize', suspendWhenHidden=FALSE)
+    outputOptions(output, 'DSsize', priority=1)
 
     #----------------------------------------------------
     # Reactive - Dataset subset varnames 
     #----------------------------------------------------
     output$nbvarsEvent <- reactive({
         input$inDselect
+        values$launch
         ret <- 0
-        if (! is.null(input$inDSselect) && input$inDSselect>0) {
-           if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
-           if (dim(varnames)[1]>maxVariables) ret <- 1
-        }
+        if (values$launch>0 && nrow(g$varnames)>maxVariables) ret <- 1
         return(ret)
     })
     outputOptions(output, 'nbvarsEvent', suspendWhenHidden=FALSE)

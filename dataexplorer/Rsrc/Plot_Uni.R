@@ -4,7 +4,7 @@
     # One factor
     getBoxPLot1 <- function(F1, selectF1, FCOL, selectFCOL, varX, fMean, bsmooth=FALSE, blog=FALSE, bviolin=FALSE) {
         # Factor levels F1
-        facval1 <- data[ , F1]
+        facval1 <- g$data[ , F1]
         if (is.numeric(facval1)) {
             fmt <- paste('%0',round(log10(max(abs(facval1)))+0.5)+3,'.2f',sep='')
             facval1 <- as.character(sprintf(fmt, facval1))
@@ -14,8 +14,8 @@
         # Features as annotation
         fannot=TRUE
         if (is.null(FCOL) || nchar(FCOL)==0) { FCOL <- F1; fannot=FALSE; }
-        FCOL <- tryCatch( { if(length(data[, FCOL ])) FCOL  }, error=function(e) { F1 })
-        cfacvals <- as.vector(data[ , FCOL])
+        FCOL <- tryCatch( { if(length(g$data[, FCOL ])) FCOL  }, error=function(e) { F1 })
+        cfacvals <- as.vector(g$data[ , FCOL])
         cfacvals[is.na(cfacvals)] <- "NA"
         if (is.numeric(cfacvals)) {
             fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')
@@ -24,31 +24,14 @@
         levelcFac <- .C( levels(as.factor(cfacvals)) )
 
         # Data extraction
-        subdata <- cbind( data[ , c( varX, samples) ], facval1, cfacvals)
-        colnames(subdata) <- c ( varX, samples, F1, FCOL )
+        subdata <- cbind( g$data[ , c( varX, g$samples) ], facval1, cfacvals)
+        colnames(subdata) <- c ( varX, g$samples, F1, FCOL )
         if (! is.null(selectF1)) {
             subdata <- subdata[subdata[ , F1 ] %in% levelFac1[.N(selectF1)], ]
             if (fannot && length(selectFCOL)>0)
                 subdata <- subdata[subdata[ , FCOL ] %in% levelcFac[.N(selectFCOL)], ]
         }
-
-#        # Deal with NA
-#        subS <- S[ S %in% sort(subdata[ ,samples ]) ]
-#        dat <- NULL
-#        for (si in 1:length(subS)) {
-#           D <- subdata[subdata[, samples] == subS[si],]
-#           V <- D[ ,varX]
-#           na.V <- is.na(V)
-#           na.sum <- sum(na.V)
-#           if (na.sum>0) {
-#             lenD <- length(V)
-#             if ( (lenD - na.sum)/lenD <0.5 ) next
-#             D[na.V, varX] <- mean(V, na.rm=T)
-#           }
-#           dat <- rbind(dat,D)
-#        }
-#        dat <- unique(dat)
-dat <- subdata
+        dat <- subdata
 
         colorid <- F1
         xid <- F1
@@ -59,10 +42,10 @@ dat <- subdata
             df <- data.frame( colour=as.factor(dat[,colorid]), x=as.factor(dat[,xid]), y=dat[, yid] )
         }
 
-        xname     <- as.character(LABELS[LABELS[,1]==xid,2])
-        yname     <- as.character(LABELS[LABELS[,1]==yid,2])
+        xname     <- as.character(g$LABELS[g$LABELS[,2]==xid,4])
+        yname     <- as.character(g$LABELS[g$LABELS[,2]==yid,4])
         if (blog) yname  <- paste("Log10[",yname,"]")
-        colorname <- as.character(LABELS[LABELS[,1]==colorid,2])
+        colorname <- as.character(g$LABELS[g$LABELS[,2]==colorid,4])
 
         # plot
         G2 <- ggplot(aes(y=y, x=x, colour=colour), data = df, family="Times", lineheight=.8, fontface="bold")
@@ -73,6 +56,7 @@ dat <- subdata
         G2 <- G2 + labs(x=xname, y=yname, colour=colorname)
         G2 <- G2 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"), 
                          axis.text.x = element_text(angle = 45, vjust = 1, size = 8, hjust = 1))
+        G2 <- G2 + theme_bw()
         #ggplotly(G2)
         G2
     }
@@ -81,7 +65,7 @@ dat <- subdata
     getBoxPLot2 <- function(F1, F2, selectF1, selectF2, FCOL, selectFCOL, varX, fMean, bsmooth=FALSE, blog=FALSE, bviolin=FALSE) {
 
         # Factor levels F1
-        facval1 <- data[ , F1]
+        facval1 <- g$data[ , F1]
         if (is.numeric(facval1)) {
             fmt <- paste('%0',round(log10(max(abs(facval1)))+0.5)+3,'.2f',sep='')
             facval1 <- as.character(sprintf(fmt, facval1))
@@ -91,8 +75,8 @@ dat <- subdata
         # Features as annotation
         fannot=TRUE
         if (is.null(FCOL) || nchar(FCOL)==0) { FCOL <- F1; fannot=FALSE; }
-        FCOL <- tryCatch( { if(length(data[, FCOL ])) FCOL  }, error=function(e) { F1 })
-        cfacvals <- as.vector(data[ , FCOL])
+        FCOL <- tryCatch( { if(length(g$data[, FCOL ])) FCOL  }, error=function(e) { F1 })
+        cfacvals <- as.vector(g$data[ , FCOL])
         cfacvals[is.na(cfacvals)] <- "NA"
         if (is.numeric(cfacvals)) {
             fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')
@@ -101,7 +85,7 @@ dat <- subdata
         levelcFac <- .C( levels(as.factor(cfacvals)) )
 
         # Factor levels F2
-        facval2 <- data[ , F2]
+        facval2 <- g$data[ , F2]
         if (is.numeric(facval2)) {
             fmt <- paste('%0',round(log10(max(abs(facval2)))+0.5)+3,'.2f',sep='')
             facval2 <- as.character(sprintf(fmt, facval2))
@@ -109,8 +93,8 @@ dat <- subdata
         levelFac2 <- .C( levels(as.factor(facval2)) )
 
         # Data extraction
-        subdata <- cbind( data[ , c( varX, samples) ], facval1, facval2, cfacvals )
-        colnames(subdata) <- c ( varX, samples, F1, F2, FCOL )
+        subdata <- cbind( g$data[ , c( varX, g$samples) ], facval1, facval2, cfacvals )
+        colnames(subdata) <- c ( varX, g$samples, F1, F2, FCOL )
         if (! is.null(selectF1))
             subdata <- subdata[subdata[ , F1 ] %in% levelFac1[.N(selectF1)], ]
         if (! is.null(selectF2))
@@ -118,25 +102,7 @@ dat <- subdata
         if ((! is.null(selectF1) || ! is.null(selectF2)) && fannot && length(selectFCOL)>0)
             subdata <- subdata[subdata[ , FCOL ] %in% levelcFac[.N(selectFCOL)], ]
 
-#        # Deal with NA
-#        dat <- NULL
-#        subS <- S[ S %in% sort(subdata[ ,samples ]) ]
-#        for (si in 1:length(subS)) {
-#           D <- subdata[subdata[, samples] == subS[si],]
-#           if ( (length(D[, varX]) - sum(is.na(D[ ,varX])))/length(D[, varX]) <0.5 ) next
-#           if (fMean) {
-#               Mx <- mean(D[, varX], na.rm=T)
-#               D[1, varX] <- Mx
-#               dat <- rbind(dat,D[1,])
-#           } else {
-#               if (length(D[is.na(D[, varX]), varX])>0) {
-#                   D[is.na(D[, varX]), varX] <- mean(D[, varX], na.rm=T)
-#               }
-#               dat <- rbind(dat,D)
-#           }
-#        }
-#        dat <- unique(dat)
-dat <- subdata
+        dat <- subdata
 
         # define the summary function
         f <- function(x) {
@@ -158,10 +124,10 @@ dat <- subdata
             df <- data.frame( colour=as.factor(dat[,colorid]), x=as.factor(dat[,xid]), y=dat[, yid] )
         }
 
-        xname     <- as.character(LABELS[LABELS[,1]==xid,2])
-        yname     <- as.character(LABELS[LABELS[,1]==yid,2])
+        xname     <- as.character(g$LABELS[g$LABELS[,2]==xid,4])
+        yname     <- as.character(g$LABELS[g$LABELS[,2]==yid,4])
         if (blog) yname  <- paste("Log10[",yname,"]")
-        colorname <- as.character(LABELS[LABELS[,1]==colorid,2])
+        colorname <- as.character(g$LABELS[g$LABELS[,2]==colorid,4])
 
         # plot
         G2 <- ggplot(aes(y=y, x=x, colour=colour), data = df, family="Times", lineheight=.8, fontface="bold")
@@ -169,6 +135,7 @@ dat <- subdata
         if (!bviolin) G2 <- G2 + geom_boxplot()
         G2 <- G2 + labs(x=xname, y=yname, colour=colorname)
         G2 <- G2 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"))
+        G2 <- G2 + theme_bw()
         if (bsmooth) G2 <- G2 + stat_smooth(aes(group=colour), size=2, se = FALSE )
         #ggplotly(G2)
         G2
@@ -189,54 +156,51 @@ dat <- subdata
     #----------------------------------------------------
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
-          if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
+       if ( values$launch>0 ) {
           # First Factor
-          f1_options <- .C(facnames[,2])
-          names(f1_options) <- .C(facnames$Description)
+          f1_options <- .C(g$facnames[,2])
+          names(f1_options) <- .C(g$facnames$Description)
           updateSelectInput(session, "uniFacX", choices = f1_options)
        }
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1a:\n", e ); }) })
 
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
-          if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
+       if ( values$launch>0 ) {
           # Second Factor
-          f2_options <- .C(facnames[,2])
-          names(f2_options) <- .C(facnames$Description)
+          f2_options <- .C(g$facnames[,2])
+          names(f2_options) <- .C(g$facnames$Description)
           updateSelectInput(session, "uniFacY", choices = f2_options)
        }
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1b:\n", e ); }) })
 
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
-          if (inDSselect != input$inDSselect) getVars(.N(input$inDSselect))
-          if (dim(varnames)[1]>maxVariables) return(NULL)
-          v_options <- c(0, 1:dim(varnames)[1] )
-          names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",varnames$Description)))
+       if ( values$launch>0 ) {
+          if (nrow(g$varnames)>maxVariables) return(NULL)
+          v_options <- c(0, 1:nrow(g$varnames) )
+          names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",g$varnames$Description)))
           updateSelectInput(session, "uniVarSelect", choices = v_options)
        }
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1c:\n", e ); }) })
 
     observe({ tryCatch({
        input$inDselect
-       if ( ! is.null(input$inDSselect) && input$inDSselect>0) {
+       if ( values$launch>0 ) {
           # Annotation
-          fa_options <- c("None", .C(features[,2]))
-          names(fa_options) <- c('---', .C(features$Description))
+          fa_options <- c("None", .C(g$features[,2]))
+          names(fa_options) <- c('---', .C(g$features$Description))
           updateSelectInput(session, "uniAnnot", choices = fa_options)
        }
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1d:\n", e ); }) })
 
     observe({ tryCatch({
        input$inDselect
-       if (! is.null(input$inDSselect) && input$inDSselect>0 && ! is.null(input$uniAnnot) && nchar(input$uniAnnot)>0) {
+       if (values$launch>0 && ! is.null(input$uniAnnot) && nchar(input$uniAnnot)>0) {
           f_options <- c(.C(input$uniAnnot))
           names(f_options) <- c('---')
           if (.C(input$uniAnnot) != "None") {
-              fvals <- data[ , input$uniAnnot]
+              fvals <- g$data[ , input$uniAnnot]
               if (is.numeric(fvals)) {
                  fmt <- paste('%0',round(log10(max(abs(fvals)))+0.5)+3,'.2f',sep='')
                  fvals <- as.character(sprintf(fmt, fvals))
@@ -253,9 +217,9 @@ dat <- subdata
 
     observe({ tryCatch({
        input$inDselect
-       if (! is.null(input$inDSselect) && input$inDSselect>0 && 
-           ! is.null(input$uniFacX) && nchar(input$uniFacX)>0 && input$uniFacX %in% colnames(data) ) {
-           facvals <- data[ , input$uniFacX]
+       if (values$launch>0 && 
+           ! is.null(input$uniFacX) && nchar(input$uniFacX)>0 && input$uniFacX %in% colnames(g$data) ) {
+           facvals <- g$data[ , input$uniFacX]
            if (is.numeric(facvals)) {
                fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
                facvals <- as.character(sprintf(fmt, facvals))
@@ -265,17 +229,17 @@ dat <- subdata
            names(l_options) <- c(as.character(c(levelFac)))
            updateSelectInput(session, "SelFacX", choices = l_options, selected=l_options)
            # Second Factor
-           f2_options <- .C(facnames[,2])
-           names(f2_options) <- .C(facnames$Description)
+           f2_options <- .C(g$facnames[,2])
+           names(f2_options) <- .C(g$facnames$Description)
            updateSelectInput(session, "uniFacY", choices = f2_options, selected=input$uniFacX)
        }
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 2:\n", e ); }) })
 
     observe({ tryCatch({
        input$inDselect
-       if (! is.null(input$inDSselect) && input$inDSselect>0 && 
-           ! is.null(input$uniFacY) && nchar(input$uniFacY)>0 && input$uniFacY %in% colnames(data) ) {
-           facvals <- data[ , input$uniFacY]
+       if (values$launch>0 && 
+           ! is.null(input$uniFacY) && nchar(input$uniFacY)>0 && input$uniFacY %in% colnames(g$data) ) {
+           facvals <- g$data[ , input$uniFacY]
            if (is.numeric(facvals)) {
                fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
                facvals <- as.character(sprintf(fmt, facvals))
@@ -291,9 +255,9 @@ dat <- subdata
     # renderUI - Univariate : BoxPlot
     #----------------------------------------------------
     output$BoxPlot <- renderPlotly ({
-    tryCatch({ 
-        if (input$inDSselect==0) return( NULL )
-        values$launch
+      values$launch
+      tryCatch({
+        if (values$launch==0) return( NULL )
         input$SelFacY
         SelFacX <- isolate(input$SelFacX)
         FA <- isolate(input$uniAnnot)
@@ -305,7 +269,7 @@ dat <- subdata
         F1 <- isolate(input$uniFacX)
         F2 <- isolate(input$uniFacY)
         if (nchar(F1)>0 &&  nchar(F2)>0 && nchar(input$uniVarSelect)>0 ) {
-            varX <- .C(varnames$Attribute)[.N(input$uniVarSelect)]
+            varX <- .C(g$varnames$Attribute)[.N(input$uniVarSelect)]
             fMean <- FALSE
             withProgress(message = 'Calculation in progress', detail = '... ', value = 0, {
                tryCatch({
@@ -317,5 +281,5 @@ dat <- subdata
                }, error=function(e) {})
             })
         }
-    }, error=function(e) { ERROR$MsgErrorUni <- paste("RenderPlotly:\n", e ); })
+      }, error=function(e) { ERROR$MsgErrorUni <- paste("RenderPlotly:\n", e ); })
     })

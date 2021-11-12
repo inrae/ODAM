@@ -9,8 +9,7 @@ meta <- tags$head(
    <meta http-equiv="pragma" content="no-cache" />
    '),
    tags$script(type="text/javascript", src = "js/google-analytics.js"),
-   tags$script(type="text/javascript",src = "js/d3.min.js"),
-   tags$script(type="text/javascript",src = "js/utils.js"),
+   tags$script(type="text/javascript", src = "js/utils.js"),
    tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
 )
 
@@ -33,7 +32,7 @@ ui <- dashboardPage(skin = "blue",
             tags$li(selectInput("inDselect", "", c() ), class = "dropdown inDselect"),
             tags$li(img(src="img_00.gif",height = 10, width = 5), class = "dropdown"),
          # Data subset selection
-            tags$li(selectInput("inDSselect", "", c() ), class = "dropdown inDSselect"),
+            tags$li(selectInput("inDSselect", "", c(), multiple = TRUE, width="600px" ), class = "dropdown inDSselect"),
             tags$li(img(src="img_00.gif",height = 10, width = 20), class = "dropdown"),
          # Busy logo
             tags$li(busyLogo('busy.gif'), class = "dropdown")

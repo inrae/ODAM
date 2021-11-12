@@ -32,8 +32,7 @@ p {
 
 .dropdown , .dropdown h2 {
   line-height: 0;
-  color: brown;
-  font-weight: bold;
+  color: #fff;
 }
 
 .form-group {
@@ -41,23 +40,16 @@ p {
 }
 
 .content-wrapper, .right-side {
-  background-color: white;
-}
-
-.skin-blue .main-header .navbar {
-    background-color: white;
+  background-color: #f5f5f5;
 }
 
 .skin-blue .main-header .logo {
-  background-color: #eaeef1;
+  background-color: #357ca5;
   font-size: 18px;
-  color: brown;
 }
 
-.skin-blue .main-header .navbar .sidebar-toggle {
-  background-color: white;
-  font-size: 18px;
-  color: brown;
+.skin-blue .main-header .navbar {
+  background: #5493b7;
 }
 
 .main-header .navbar-custom-menu, .main-header .navbar-right {
@@ -65,7 +57,7 @@ p {
 }
 
 .skin-blue .main-sidebar, .skin-blue .wrapper {
-  background: white; /*#ecf0f5 #365f6d*/
+  background: #e3ebf5; /*#ecf0f5 #365f6d*/
 }
 
 .skin-blue .sidebar-menu {
@@ -74,21 +66,16 @@ p {
 }
 
 .skin-blue .sidebar-menu>li>a {
-  color: black; /*#b8c7ce*/
+  color: #365f6d; /*#b8c7ce*/
 }
 
 .skin-blue .sidebar-menu>li.active>a, .skin-blue .sidebar-menu>li:hover>a {
-  background: white;
-  border-left-color: white;
-  color: brown;
+  background: #1e282c;
+  border-left-color: #e3ebf5;
 }
 
 .shiny-input-container:not(.shiny-input-container-inline) {
   width: 250px;
-}
-
-.selectize-input, .selectize-control.single .selectize-input.input-active {
-    cursor: pointer;
 }
 
 #Net {
@@ -96,8 +83,7 @@ p {
 }
 
 .box.box-solid.box-primary>.box-header {
-  background: #eaeef1;
-  color: brown;
+  background: #5493b7;
 }
 
 .box.box-solid.box-primary {
@@ -109,9 +95,7 @@ p {
 }
 
 .btn-default {
-  color: brown; 
-  background-color: #eaeef1; 
-  border-color: brown;
+  color: #fff; background-color: #337ab7; border-color: #2e6da4;
 }
 
 .dataTables_info {

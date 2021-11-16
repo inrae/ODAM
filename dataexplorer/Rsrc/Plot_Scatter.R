@@ -67,11 +67,12 @@
           names(f_options) <- c('---')
           if (.C(input$biAnnot) != "None") {
               fvals <- g$data[ , input$biAnnot]
-              if (is.numeric(fvals)) {
+              fident <- ifelse( input$biAnnot %in% g$identifiers$Attribute, TRUE, FALSE)
+              if (! fident && is.numeric(fvals)) {
                  fmt <- paste('%0',round(log10(max(abs(fvals)))+0.5)+3,'.2f',sep='')
                  fvals <- as.character(sprintf(fmt, fvals))
               }
-              flevels <- .C( levels(as.factor(fvals)) )
+              flevels <- levels(as.factor(fvals))
               if (length(flevels)<nbopt_multiselect) {
                   f_options <- c( 1:length(flevels) )
                   names(f_options) <- c(as.character(c(flevels)))
@@ -113,8 +114,8 @@
     #----------------------------------------------------
     # Bivariate : ScatterPlot 
     #----------------------------------------------------
-    getScatterPLot <- function(F1, selectF1, FCOL, selectFCOL, varX, varY, fMean, blabels=FALSE, gAddon="none",blog=c(FALSE,FALSE), reglin=FALSE) {
-
+    getScatterPLot <- function(F1, selectF1, FCOL, selectFCOL, varX, varY, fMean, blabels=FALSE, gAddon="none",blog=c(FALSE,FALSE), reglin=FALSE)
+    {
         # Factor levels
         facvals <- g$data[ , F1]
         if (is.numeric(facvals)) {
@@ -128,24 +129,28 @@
         if (is.null(FCOL) || nchar(FCOL)==0) { FCOL <- F1; fannot=FALSE; }
         FCOL <- tryCatch( { if(length(g$data[, FCOL ])) FCOL  }, error=function(e) { F1 })
         cfacvals <- as.vector(g$data[ , FCOL])
+        ofacvals <- order(cfacvals)
         cfacvals[is.na(cfacvals)] <- "NA"
-        if (is.numeric(cfacvals)) {
+        fident <- ifelse( FCOL %in% g$identifiers$Attribute, TRUE, FALSE )
+        if (! fident && is.numeric(cfacvals)) {
             fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')
             cfacvals <- as.character(sprintf(fmt, cfacvals))
         }
-        levelcFac <- .C( levels(as.factor(cfacvals)) )
 
         # Data extraction
         subdata <- cbind( g$data[ , c( varX, varY, g$samples) ], facvals, cfacvals )
+        if (fannot && length(selectFCOL)>0)
+            subFCOL <- unique(subdata$cfacvals[ofacvals])[.N(selectFCOL)]
+
         colnames(subdata) <- c ( varX, varY, g$samples, F1, FCOL )
         if (! is.null(selectF1)) {
             subdata <- subdata[subdata[ , F1 ] %in% levelFac[.N(selectF1)], ]
             if (fannot && length(selectFCOL)>0)
-                subdata <- subdata[subdata[ , FCOL ] %in% levelcFac[.N(selectFCOL)], ]
+                subdata <- subdata[subdata[ , FCOL ] %in% subFCOL, ]
         }
 
         # Deal with NA
-        if (dim(subdata)[1]<2000) {
+        if (nrow(subdata)<2000) {
            dat <- NULL
            subS <- g$S[ g$S %in% sort(subdata[ , g$samples ]) ]
            for (si in 1:length(subS)) {

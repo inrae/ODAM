@@ -104,7 +104,7 @@
         input$ipclient
         if (nchar(input$ipclient)>0) {
            if (is.DS(cdata)) {
-              ws <<-getWS(cdata)
+              ws <<- getWS(cdata)
               ws[6] <<- input$ipclient
               if ( nchar(ws[5])>0 ) {
                  g$dclist <<- getDataCol(ws)
@@ -185,16 +185,13 @@
            g$inDSselect <<- ''
            DSselect <- NULL
            # Default data subset
-           if (! is.null(ws[7]) && ! is.na(ws[7]) ) {
-               g$inDSselect <<- as.character(ws[7])
-               DSselect <- .S(g$inDSselect)
-               tryCatch({ getVars(g$inDSselect) }, error=function(e) { ERROR$MsgErrorMain <- paste("Init, getVars: ", e); })
-               values$launch <- 1
+           if (! is.null(ws[7]) && ! is.na(ws[7]) && nchar(ws[7])>0 ) {
+               DSselect <- .S(ws[7])
            }
-           if (! is.null(ws[8]) && ws[8] %in% c('datatable','univariate','bivariate','multivariate') ) {
+           if (! is.null(ws[8]) && ! is.na(ws[8]) && ws[8] %in% c('datatable','univariate','bivariate','multivariate') ) {
               js$openTab(ws[8])
               js$hideSidebar()
-              if (! is.null(ws[9]) && ws[8] %in% c('off') ) {
+              if (! is.null(ws[9]) && ! is.na(ws[8]) && ws[9] %in% c('off') ) {
                   js$hideMainHeader()
               }
            }

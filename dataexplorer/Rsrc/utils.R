@@ -17,7 +17,7 @@ Parse.INI <- function(INI.file, INI.list=list(), section="GLOBAL")
   d <- d[d$V3 == section,]
 
   #INI.list <- list()
-  for( i in 1:dim(d)[1] ) {
+  for( i in 1:nrow(d) ) {
        if (! is.na(suppressWarnings(as.numeric(d$V2[i])))) {
            eval(parse(text=paste0('INI.list$',d$V1[i], '<-', as.numeric(d$V2[i]))))
            next

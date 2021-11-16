@@ -102,6 +102,20 @@
     #----------------------------------------------------
     # renderUI - Metadata of data subsets
     #----------------------------------------------------
+    output$out1 <- renderText({ 
+       tryCatch({
+          paste(sep = "",
+            "protocol: ", cdata$url_protocol, "\n",
+            "hostname: ", cdata$url_hostname, "\n",
+            "pathname: ", cdata$url_pathname, "\n",
+            "port: ",     cdata$url_port,     "\n",
+            "search: ",   cdata$url_search,   "\n"
+          )       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - out1 \n", e ); })
+    })
+
+    #----------------------------------------------------
+    # renderUI - Metadata of data subsets
+    #----------------------------------------------------
     output$subsets <- renderDataTable({
        values$initds
        if (nchar(input$ipclient)==0) return(NULL)
@@ -166,7 +180,9 @@
     #----------------------------------------------------
     output$Net <- renderDiagonalNetwork({
        values$initds
+       input$IdMenu
        if (nchar(input$ipclient)==0) return(NULL)
+       if (input$IdMenu != 'information') return(NULL)
        tryCatch({ 
            if (values$init==0) values$init <- 1
            if (length(g$subsetNames)>0) {

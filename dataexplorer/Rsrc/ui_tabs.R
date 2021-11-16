@@ -94,17 +94,17 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), conditional
            )
       )
    ),
+   column(12, conditionalPanel(condition="input.uniVarSelect>0", 
+            plotlyOutput("BoxPlot", height="500px") )
+   ),
    column(12,
       column(4,
            selectInput("uniAnnot", "Select Data based on Features", c() )
       ),
-      column(4,
+      column(8,
            selectInput("uniFeatures", "(Un)Select Features", c(), multiple = TRUE, , selectize=TRUE )
       )
-   ),   
-   column(12, conditionalPanel(condition="input.uniVarSelect>0", 
-            plotlyOutput("BoxPlot", height="500px") )
-   )),
+   )),   
    conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==1", ui_warning),
    conditionalPanel(condition="output.DSsize==0",
       h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
@@ -126,14 +126,13 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),conditiona
       ),
       column(4,
            selectInput("biVarSelect2", "Second Variable", c() )
-      ),
+      )
+   ),
+   column(12,
       column(4,
            selectInput("SelFacX2", "Select First Factor Levels", c(), multiple = TRUE, , selectize=TRUE )
       ),
-      column(4,
-           selectInput("biAnnot", "Select Features as Labels", c() )
-           , selectInput("biFeatures", "(Un)Select Items", c(), multiple = TRUE, , selectize=TRUE )
-      ),
+      column(4, tags$p("&nbsp;&nbsp;") ),
       column(4,
            column(6,
               radioButtons("biAddon", "Add On:", c("None" = "none", "Reg. model (LM)" = "regmod", "Ellipse" = "ellipse", "Smooth"="smooth"), selected="ellipse")
@@ -148,7 +147,15 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),conditiona
    ),
    column(12, conditionalPanel(condition="input.biVarSelect1>0 && input.biVarSelect2>0", 
           plotlyOutput("ScatterPlot", height="500px")
-   ))),
+   )),
+   column(12,
+      column(4,
+           selectInput("biAnnot", "Select Features as Labels", c() )
+      ),
+      column(8,
+           selectInput("biFeatures", "(Un)Select Items", c(), multiple = TRUE, , selectize=TRUE )
+      )
+   )),
    conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==1", ui_warning),
    conditionalPanel(condition="output.DSsize==0",
       h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
@@ -156,7 +163,7 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),conditiona
 )))
 
 #----------------------------------------------------
-# Multivariate : PCA / ICA
+# Multivariate : PCA / ICA / COR / GGM
 #----------------------------------------------------
 ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), conditionalPanel(condition="output.apierror==0", box(
    title="Multivariate exploration", status = "primary", solidHeader = TRUE, width = 12,
@@ -168,7 +175,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
            conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'",
            column(12,
                 column(6, checkboxInput('ellipse', 'Ellipses', TRUE)),
-                column(6, selectInput("conflevel", NULL, c("0.9"="0.9", "0.95"="0.95", "0.99"="0.99"), selected="0.95" ))
+                column(6, selectInput("conflevel", NULL, c("0.8"="0.8", "0.9"="0.9", "0.95"="0.95", "0.99"="0.99"), selected="0.95" ))
            )),
            selectInput("listLevels", "Select Factor Levels", c(), multiple = TRUE, , selectize=TRUE )
       ),
@@ -176,25 +183,34 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
            selectInput("multiType", "Analysis Type", 
                   c("----"="None"  , "Principal Component Analysis (PCA)" = "PCA" 
                                    , "Independent Component Analysis (ICA)" = "ICA" 
-                                   , "Heatmap of correlation matrix" = "COR" 
+                                   , "Heatmap of correlation matrix (COR)" = "COR" 
                                    , "Gaussian graphical model (GGM)" = "GGM"
                                    ), selected = "None"),
 
-           conditionalPanel(condition="input.multiType!='GGM'",
-           column(6,
-                conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'",
-                    checkboxInput('scale', 'Scale', TRUE)
+           conditionalPanel(condition="input.multiType=='PCA'  || input.multiType=='ICA'",
+                column(6,
+                    conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'",
+                         checkboxInput('scale', 'Scale', TRUE)
+                    )
+                ),
+                column(6, 
+                    conditionalPanel(condition="input.multiType=='PCA'",
+                         selectInput("viewComp", NULL, c("PC1 vs PC2"="1", "PC1 vs PC3"="2", "PC2 vs PC3"="3"), selected="1" )
+                    ),
+                    conditionalPanel(condition="input.multiType=='ICA'",
+                         selectInput("nbComp", NULL, c("2 Components"="2", "3 Components"="3", "4 Components"="4", 
+                                                       "5 Components"="5", "6 Components"="6" ), selected="2" )
+                    )
                 )
            ),
-           column(6, 
-                conditionalPanel(condition="input.multiType=='PCA'",
-                    selectInput("viewComp", NULL, c("PC1 vs PC2"="1", "PC1 vs PC3"="2", "PC2 vs PC3"="3"), selected="1" )
-                ),
-                conditionalPanel(condition="input.multiType=='ICA'",
-                    selectInput("nbComp", NULL, c("2 Components"="2", "3 Components"="3", "4 Components"="4", 
-                                                  "5 Components"="5", "6 Components"="6" ), selected="2" )
+           conditionalPanel(condition="input.multiType=='COR'", 
+                column(12,
+                    column(2,  HTML('<b>Correlation type</b>')),
+                    column(4,
+                        selectInput("methcor", NULL, c("Pearson"="pearson", "Spearman"="spearman", "Kendall"="kendall", selected="pearson" ))
+                    )
                 )
-           )),
+           ),
            conditionalPanel(condition="input.multiType=='GGM'", 
                 column(6,
                     column(3,  HTML('<b>FDR qvalue</b>')),
@@ -210,36 +226,42 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
            selectInput("outType", "Output Type", 
                 c("----"="None", "Identifiers" = "IDS", "Variables" = "VARS"), selected = "None"),
            conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'",
-               column(3, checkboxInput('f3D', '3D', FALSE)),
-               column(3, checkboxInput('multiLabels', 'Labels', TRUE)), 
+               column(2, checkboxInput('f3D', '3D', FALSE)),
+               column(2, checkboxInput('multiLabels', 'Labels', TRUE)), 
                column(3, checkboxInput('shortLabels', 'Short Labels', FALSE)), 
                column(3, checkboxInput('GBG', 'Grey Background', FALSE))
            ),
            conditionalPanel(condition="input.multiType=='COR'",
-               checkboxInput('fullmatcor', 'Full Matrix', FALSE),
-               checkboxInput('reordermatcor', 'Reorder Matrix', TRUE)
+               column(4, checkboxInput('fullmatcor', 'Full Matrix', TRUE)),
+               column(4, checkboxInput('reordermatcor', 'Reorder Matrix', TRUE))
            ),
            conditionalPanel(condition="input.multiType=='GGM'",
               column(4, checkboxInput('shrinkauto', 'Shrinkage Auto', TRUE)),
               column(4, conditionalPanel(condition="input.shrinkauto==0", 
                     numericInput("lambda", NULL, 0.3, min = 0.0001, max = 1, step=0.1)
               ))
+           ),
+           conditionalPanel(condition="input.multiType=='GGM' || input.multiType=='COR'",
+              column(4, checkboxInput('multiLog', 'Log10', FALSE))
            )
       )
+   ),
+   column(12,
+      conditionalPanel(condition="input.multiType != 'None' && input.outType != 'None' && input.listVars[2]", 
+         conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'", plotlyOutput("MultiPlot", height="600px")),
+         conditionalPanel(condition="input.multiType=='COR'", imageOutput("CorrPlot", height="600px")),
+         conditionalPanel(condition="input.multiType=='GGM'", forceNetworkOutput("ggmnet", width="85%", height="800px")),
+         uiOutput('urlimage')
+     )
    ),
    column(12,
       column(4,
            selectInput("multiAnnot", "Select Data based on Features", c() )
       ), 
-      column(4,
+      column(8,
            selectInput("listFeatures", "(Un)Select Features", c(), multiple = TRUE, , selectize=TRUE )
       )
    ),
-   column(12, conditionalPanel(condition="input.multiType != 'None' && input.outType != 'None' && input.listVars[2]", 
-       conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'", plotlyOutput("MultiPlot", height="600px") ),
-       conditionalPanel(condition="input.multiType=='COR'", imageOutput("CorrPlot", height="600px") ),
-       conditionalPanel(condition="input.multiType=='GGM'", forceNetworkOutput("ggmnet", width="85%", height="800px") )
-   )),
    column(12,
        selectInput("listVars", "Select Variables", c(), multiple = TRUE, , selectize=TRUE )
    )),

@@ -30,6 +30,7 @@ setThreadOptions(numThreads = 4) # set 4 threads for parallel computing
 # 5: data collection shortname
 # 6: the client's originating IP
 # 7,8,9 : selection of the subset, menu item, header type
+# 10,11: analysis type, variable
 ws <- c(0, '', '', externalURL, '', '', NULL, NULL, NULL)
 
 # global variables
@@ -45,6 +46,7 @@ g <- list(
    samplename=NULL,
    samples=NULL,
    S=NULL,
+   identifiers=NULL,
    varnames=NULL,
    varsBySubset=NULL,
    setnames=NULL,
@@ -54,13 +56,15 @@ g <- list(
    DSL=NULL,
    connectList=NULL,
    dn=NULL,
-   
+
    # Error message return by the API
    msgError='',
-   
+
    # Font size for the Subsets Graph
    fs=10
 )
+
+outfiles <- list('PCA'='multi.html', 'ICA'='multi.html','COR'='corr.svg','GGM'='ggm.html')
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 .N <- function(x) { as.numeric(as.vector(x)) }
@@ -102,19 +106,27 @@ getWS <- function(cdata)
         auth <- params[['auth']]
         ApiKeyMode <- 1
     }
-    subsetname <- NULL
+    subsetname <- ''
     if (!is.null(params[['subset']])) {
         subsetname <- params[['subset']]
     }
-    tabname <- NULL
+    tabname <- ''
     if (!is.null(params[['tab']])) {
         tabname <- params[['tab']]
     }
-    headerflag <- NULL
+    headerflag <- ''
     if (!is.null(params[['frame']])) {
         headerflag <- params[['frame']]
     }
-    c(  ApiKeyMode, dsname, auth, externalURL, dcname, '', subsetname, tabname, headerflag )
+    analysis <- ''
+    if (!is.null(params[['type']])) {
+        analysis <- params[['type']]
+    }
+    variable <- ''
+    if (!is.null(params[['var']])) {
+        analysis <- params[['var']]
+    }
+    c(  ApiKeyMode, dsname, auth, externalURL, dcname, '', subsetname, tabname, headerflag, analysis, variable )
 }
 
 # Low level routine allowing to retrieve data or metadata from  a query formatted according the API specifications
@@ -187,7 +199,7 @@ getData <- function (ws, query='', dcol=0)
           break
        }
        out <- read.csv(textConnection(T), head=TRUE, sep="\t")
-       if (dim(out)[1]==0) {
+       if (nrow(out)==0) {
           g$msgError <<- gsub("\\.", " ", colnames(out))[1]
        }
        break
@@ -255,18 +267,19 @@ getVars <- function(strNameList, rmvars=FALSE)
           for( i in 1:length(setNameList) ) varnames <- rbind(varnames,  Q[Q$Subset == setNameList[i], ])
 
           # Get qualitative variable features
-          qualnames <- NULL
-          Q <- getData(ws,paste('(',strNameList,')/qualitative',sep=''))
-          for( i in 1:length(setNameList) ) qualnames <- rbind(qualnames,  Q[Q$Subset == setNameList[i], ])
+          qualnames <- getData(ws,paste('(',strNameList,')/qualitative',sep=''))
           g$qualnames <<- qualnames
 
           # Get factor features
           facnames <- getData(ws,paste('(',strNameList,')/factor',sep=''))
           g$facnames  <<- facnames
 
-          # Get all qualitative features
-          I <- getData(ws,paste('(',strNameList,')/identifier',sep=''))
-          features <- rbind(I, facnames, qualnames)
+          # Get all identifiers
+          identifiers <- getData(ws,paste('(',strNameList,')/identifier',sep=''))
+          g$identifiers <<- identifiers
+
+          # Gather all qualitative features
+          features <- rbind(identifiers, facnames, qualnames)
           g$features  <<- features
 
           # Get Samples: attribute features, list of identifiers
@@ -293,12 +306,13 @@ getVars <- function(strNameList, rmvars=FALSE)
 
           # Merge all labels
           LABELS <- rbind(
-             matrix( c( as.matrix(samplename)[,c(1:4)], 'Identifier', as.matrix(samplename)[,c(6:7)]), ncol=7, byrow=FALSE  ),
+             matrix( c( as.matrix(identifiers)[,c(1:4)], replicate(nrow(identifiers),'Identifier' ), as.matrix(identifiers)[,c(6:7)]), ncol=7, byrow=FALSE  ),
+             #matrix( c( as.matrix(samplename)[,c(1:4)], 'Identifier', as.matrix(samplename)[,c(6:7)]), ncol=7, byrow=FALSE  ),
              matrix( c( as.matrix(facnames)[,c(1:4)], replicate(nrow(facnames),'Factor'  ), as.matrix(facnames)[,c(6:7)] ), ncol=7, byrow=FALSE  ),
              matrix( c( as.matrix(varnames)[,c(1:4)], replicate(nrow(varnames),'Variable'), as.matrix(varnames)[,c(6:7)] ), ncol=7, byrow=FALSE  )
           )
-          if (dim(as.matrix(qualnames))[1]>0 ) { LABELS <- rbind ( LABELS,
-             matrix( c( as.matrix(qualnames)[,c(1:4)], replicate(dim(qualnames)[1],'Feature'), as.matrix(qualnames)[,c(6:7)] ), ncol=7, byrow=FALSE )
+          if (nrow(as.matrix(qualnames))>0 ) { LABELS <- rbind ( LABELS,
+             matrix( c( as.matrix(qualnames)[,c(1:4)], replicate(nrow(qualnames),'Feature'), as.matrix(qualnames)[,c(6:7)] ), ncol=7, byrow=FALSE )
           )}
           colnames(LABELS) <- c( 'Subset', 'Attribute', 'WSEntry', 'Description', 'Type', 'CV_Term_ID ', 'CV_Term_Name' )
           LABELS[,6] <- sapply(.C(LABELS[,6]), function(x) { ifelse( ! is.na(x), x, "NA" ); })

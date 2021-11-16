@@ -65,7 +65,6 @@ ui <- dashboardPage(skin = "blue",
                             "hideinDselect", "showinDselect", "hideinDSselect", "showinDSselect", 
                             "openTab")),
     fluidRow(
-      textInput("ipclient", "", ""),
       tags$script("var uiloaded=0; var ipclient=''; var apikey='';"),
       bsAlert("ErrAlertMain"),
       tabItems( 
@@ -93,7 +92,9 @@ ui <- dashboardPage(skin = "blue",
       # About
       #----------------------------------------------------
          ui_aboutTab
-      )
+      ),
+      textInput("ipclient", "", "")
+
     )
   )
 )

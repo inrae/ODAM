@@ -16,8 +16,20 @@ shinyServer(function(input, output, session) {
                             MsgErrorBi='', MsgErrorMulti='', MsgErrorAbout='' )
 
     cdata <- session$clientData
-    values <- reactiveValues(init=0, initcol=0, initds=0, launch=0, error=0, nods=0, netData=NULL)
+    values <- reactiveValues(
+        # Init events
+        init=0, initcol=0, initds=0, launch=0, nods=0,
+        # multiplot events
+        multitype='', outtype='', netData=NULL, multiload=0,
+        # Error events
+        error=0, 
+    )
 
-    nbopt_multiselect <- 20
+    # Session identifier
+    SESSID <- paste(sample(c(0:9, letters[1:6]),15, replace=TRUE),collapse="")
+
+    # Session temporary directory
+    SESSTMPDIR <- file.path(getwd(),'www/tmp',SESSID)
+    dir.create(SESSTMPDIR, showWarnings = FALSE)
 
 })

@@ -28,6 +28,12 @@ p {
   cursor: pointer;
 }
 
+.row {
+  margin-right: Opx;
+  margin-left: -15px;
+  margin-top: -15px;
+}
+
 .jlink {cursor: pointer;}
 
 .dropdown , .dropdown h2 {
@@ -36,7 +42,7 @@ p {
   font-weight: bold;
 }
 
-.form-group {
+.form-group .shiny-input-container {
   margin-bottom: 0px;
 }
 
@@ -49,7 +55,7 @@ p {
 }
 
 .skin-blue .main-header .logo {
-  background-color: #eaeef1;
+  background-color: #f5f7f9;
   font-size: 18px;
   color: brown;
 }
@@ -58,6 +64,16 @@ p {
   background-color: white;
   font-size: 18px;
   color: brown;
+}
+
+.skin-blue .main-header .logo:hover {
+  background-color:brown;
+  color: white;
+}
+
+.skin-blue .main-header .navbar .sidebar-toggle:hover {
+  background-color:brown;
+  color: white;
 }
 
 .main-header .navbar-custom-menu, .main-header .navbar-right {
@@ -96,7 +112,7 @@ p {
 }
 
 .box.box-solid.box-primary>.box-header {
-  background: #eaeef1;
+  background: #f5f7f9;
   color: brown;
 }
 
@@ -110,7 +126,7 @@ p {
 
 .btn-default {
   color: brown; 
-  background-color: #eaeef1; 
+  background-color: #f5f7f9; 
   border-color: brown;
 }
 

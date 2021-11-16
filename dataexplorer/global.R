@@ -9,6 +9,7 @@ library(markdown)
 options(width=128)
 options(shiny.deprecation.messages=FALSE)
 options(shiny.sanitize.errors = FALSE)
+#options(error=function() { traceback(2); quit("no", status = 1, runLast = FALSE) })
 
 source("Rsrc/utils.R")
 conffile <- "conf/global.ini"
@@ -26,4 +27,7 @@ SSL_VerifyPeer <- conf$SSL_VERIFYPEER
 maxVariables <- conf$MAXVARIABLES
 
 # Nb max item when multiselect
-nbopt_multiselect <- 20
+nbopt_multiselect <- 250
+
+# Value of the pseudo zero to apply a log10
+pseudo_zero <- 0.0001

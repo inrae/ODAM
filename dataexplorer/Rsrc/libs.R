@@ -30,8 +30,8 @@ setThreadOptions(numThreads = 4) # set 4 threads for parallel computing
 # 5: data collection shortname
 # 6: the client's originating IP
 # 7,8,9 : selection of the subset, menu item, header type
-# 10,11: analysis type, variable
-ws <- c(0, '', '', externalURL, '', '', NULL, NULL, NULL)
+# 10-15: ui, analysis type, factors, variables
+ws <- c(0, '', '', externalURL, '', '', NULL, NULL, NULL,'','','','','','')
 
 # global variables
 g <- list(
@@ -90,43 +90,58 @@ is.DS <- function(cdata)
 getWS <- function(cdata)
 {
     params <- parseQueryString(cdata$url_search)
-    if (!is.null(params[['ws']])) {
+    if (!is.null(params[['ws']]))
         externalURL <<- params[['ws']]
-    }
+
     dcname <- ''
-    if (!is.null(params[['dc']])) {
+    if (!is.null(params[['dc']]))
         dcname <- params[['dc']]
-    }
+
     dsname <- ''
-    if (!is.null(params[['ds']])) {
+    if (!is.null(params[['ds']]))
         dsname <- params[['ds']]
-    }
+
     auth <- ''; ApiKeyMode <- 0
     if (!is.null(params[['auth']])) {
         auth <- params[['auth']]
         ApiKeyMode <- 1
     }
+
     subsetname <- ''
-    if (!is.null(params[['subset']])) {
+    if (!is.null(params[['subset']]))
         subsetname <- params[['subset']]
-    }
+
     tabname <- ''
-    if (!is.null(params[['tab']])) {
+    if (!is.null(params[['tab']]))
         tabname <- params[['tab']]
-    }
+
     headerflag <- ''
-    if (!is.null(params[['frame']])) {
+    if (!is.null(params[['frame']]))
         headerflag <- params[['frame']]
-    }
+
+    uiflag <- ''
+    if (!is.null(params[['ui']]))
+        uiflag <- params[['ui']]
+
     analysis <- ''
-    if (!is.null(params[['type']])) {
-        analysis <- params[['type']]
-    }
-    variable <- ''
-    if (!is.null(params[['var']])) {
-        analysis <- params[['var']]
-    }
-    c(  ApiKeyMode, dsname, auth, externalURL, dcname, '', subsetname, tabname, headerflag, analysis, variable )
+    if (!is.null(params[['type']])) analysis <- params[['type']]
+
+    factor1 <- ''
+    if (!is.null(params[['fac']]))  factor1 <- params[['fac']]
+    if (!is.null(params[['fac1']])) factor1 <- params[['fac1']]
+
+    factor2 <- ''
+    if (!is.null(params[['fac2']])) factor2 <- params[['fac2']]
+
+    variable1 <- ''
+    if (!is.null(params[['var']]))  variable1 <- params[['var']]
+    if (!is.null(params[['var1']])) variable1 <- params[['var1']]
+
+    variable2 <- ''
+    if (!is.null(params[['var2']])) variable2 <- params[['var2']]
+
+    c(  ApiKeyMode, dsname, auth, externalURL, dcname, '', subsetname, tabname, headerflag, uiflag, 
+        analysis, factor1, factor2, variable1, variable2 )
 }
 
 # Low level routine allowing to retrieve data or metadata from  a query formatted according the API specifications

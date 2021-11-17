@@ -1,4 +1,15 @@
 #----------------------------------------------------
+# Collection
+#----------------------------------------------------
+ui_collection <- tabItem(tabName = "collection", bsAlert("ErrAlertInfo"),
+   box(title="Data Collection", status = "primary", solidHeader = TRUE, width = 12, collapsible = FALSE,
+     conditionalPanel(condition="uiloaded==0",
+        h3( tags$p('Please wait while loading ...'), tags$img(src = "loading.gif"), style = "color:#bf6f85")
+     )
+   )
+)
+
+#----------------------------------------------------
 # Information
 #----------------------------------------------------
 ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
@@ -11,7 +22,7 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
    conditionalPanel(condition="output.apierror==0",
       box(
          title="Data Subset Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
-         HTML("<div id='wait' class='shiny-html-output'><table><tr><td><img src='loading.gif' height=25 width=40 /></td><td>&nbsp;</td><td>Loading ...</td></tr></table></div>"),
+         #HTML("<div id='wait' class='shiny-html-output'><table><tr><td><img src='loading.gif' height=25 width=40 /></td><td>&nbsp;</td><td>Loading ...</td></tr></table></div>"),
          #verbatimTextOutput('out1'),
          dataTableOutput("subsets"),
          conditionalPanel(condition="output.DSsize>0", 
@@ -169,7 +180,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
    title="Multivariate exploration", status = "primary", solidHeader = TRUE, width = 12,
    conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==0",
    htmlOutput("Msg"),
-   column(12,
+   div(class='div-top', column(12,
       column(4,
            selectInput("multiFacX", "Factor for highlighting the classification", c() ),
            conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'",
@@ -245,7 +256,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
               column(4, checkboxInput('multiLog', 'Log10', FALSE))
            )
       )
-   ),
+   )),
    column(12,
       conditionalPanel(condition="input.multiType != 'None' && input.outType != 'None' && input.listVars[2]", 
          conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'", plotlyOutput("MultiPlot", height="600px")),
@@ -254,7 +265,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
          uiOutput('urlimage')
      )
    ),
-   column(12,
+   div(class='div-down', column(12,
       column(4,
            selectInput("multiAnnot", "Select Data based on Features", c() )
       ), 
@@ -264,7 +275,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
    ),
    column(12,
        selectInput("listVars", "Select Variables", c(), multiple = TRUE, , selectize=TRUE )
-   )),
+   ))),
    conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==1", ui_warning),
    conditionalPanel(condition="output.DSsize==0",
       h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")

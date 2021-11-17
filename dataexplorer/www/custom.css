@@ -56,7 +56,8 @@ p {
 
 .skin-blue .main-header .logo {
   background-color: #f5f7f9;
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: bold;
   color: brown;
 }
 
@@ -99,8 +100,14 @@ p {
   color: brown;
 }
 
+.skin-blue .sidebar-menu .inactiveItem { display: none; }
+
 .shiny-input-container:not(.shiny-input-container-inline) {
   width: 250px;
+}
+
+.box {
+  box-shadow: 0 0px 0px rgb(0 0 0);
 }
 
 .selectize-input, .selectize-control.single .selectize-input.input-active {

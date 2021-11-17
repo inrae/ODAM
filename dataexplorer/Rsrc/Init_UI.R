@@ -114,6 +114,13 @@
                  } else {
                      values$initcol <- 1
                  }
+                 #js$openTab("collection")
+                 #removeCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
+                 #addCssClass(selector = "a[data-value='information']", class = "inactiveItem")
+                 #addCssClass(selector = "a[data-value='datatable']", class = "inactiveItem")
+                 #addCssClass(selector = "a[data-value='univariate']", class = "inactiveItem")
+                 #addCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
+                 #addCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
               } else {
                  g$inDselect <<- ws[2]
                  js$hideinDselect()
@@ -150,6 +157,12 @@
                ws[2] <<- g$inDselect
             ws[4] <<- getURLfromList()
             updateSelectInput(session, "inDselect", choices = choices, selected = g$inDselect)
+            #js$openTab("information")
+            #removeCssClass(selector = "a[data-value='information']", class = "inactiveItem")
+            #removeCssClass(selector = "a[data-value='datatable']", class = "inactiveItem")
+            #removeCssClass(selector = "a[data-value='univariate']", class = "inactiveItem")
+            #removeCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
+            #removeCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Collection Obs:\n", e ); }) })
 
@@ -191,7 +204,7 @@
            if (! is.null(ws[8]) && ! is.na(ws[8]) && ws[8] %in% c('datatable','univariate','bivariate','multivariate') ) {
               js$openTab(ws[8])
               js$hideSidebar()
-              if (! is.null(ws[9]) && ! is.na(ws[8]) && ws[9] %in% c('off') ) {
+              if (! is.null(ws[9]) && ! is.na(ws[9]) && ws[9] %in% c('off') ) {
                   js$hideMainHeader()
               }
            }

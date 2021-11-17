@@ -23,7 +23,6 @@ busyLogo <- function(busysrc, height = 30, width = 30, alt = NULL) {
 }
 
 ui <- dashboardPage(skin = "blue",
- 
   dashboardHeader(title = "ODAM - Data Explorer", disable = FALSE, # titleWidth = 350, 
          # Collection / Dataset name
             tags$li(h2(textOutput("datasetname"), align = "center"), class = "dropdown"),
@@ -45,6 +44,7 @@ ui <- dashboardPage(skin = "blue",
         tags$br(),
         sidebarMenu(
             id="IdMenu",
+            menuItem("Collection",   tabName = "collection",   icon = icon("eye")),
             menuItem("Subset Information",   tabName = "information",   icon = icon("eye")),
             menuItem("Data Table",   tabName = "datatable",   icon = icon("bar-chart")),
             menuItem("Univariate",   tabName = "univariate",   icon = icon("bar-chart")),
@@ -68,6 +68,10 @@ ui <- dashboardPage(skin = "blue",
       tags$script("var uiloaded=0; var ipclient=''; var apikey='';"),
       bsAlert("ErrAlertMain"),
       tabItems( 
+      #----------------------------------------------------
+      # Collection
+      #----------------------------------------------------
+         ui_collection,
       #----------------------------------------------------
       # Information
       #----------------------------------------------------

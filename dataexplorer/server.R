@@ -32,4 +32,8 @@ shinyServer(function(input, output, session) {
     SESSTMPDIR <- file.path(getwd(),'www/tmp',SESSID)
     dir.create(SESSTMPDIR, showWarnings = FALSE)
 
+    js$openTab("information")
+    addCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
+    addCssClass(selector = "a[data-value='datatable']", class = "disableItem")
+
 })

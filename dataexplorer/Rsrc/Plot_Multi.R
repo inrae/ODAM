@@ -13,13 +13,20 @@
     # Observer - Multivariate
     #----------------------------------------------------
     observeEvent ( values$launch, { tryCatch({
-       if ( values$launch>0 && ws[10] %in% c('PCA','ICA','COR','GGM') ) {
+       if ( values$launch>0 && ws[9] %in% c('off') ) {
+           runjs('$(".box-header").css("display", "none");')
+       }
+       if ( values$launch>0 && ws[10] %in% c('off') ) {
+           runjs(paste('$(".div-top, .div-down").css("display", "none");',
+                       '$(".content-wrapper").css("min-height","0px");'))
+       }
+       if ( values$launch>0 && ws[11] %in% c('PCA','ICA','COR','GGM') ) {
            v_options <- c('PCA','ICA','COR','GGM')
            names(v_options) <- c("Principal Component Analysis (PCA)", "Independent Component Analysis (ICA)",
-                                 "Heatmap of correlation matrix", "Gaussian graphical model (GGM)")
-           updateSelectInput(session, "multiType", choices = v_options,  selected=ws[10])
-           values$multitype <- ws[10]
-           ws[10] <<- ''
+                                 "Heatmap of correlation matrix (COR)", "Gaussian graphical model (GGM)")
+           updateSelectInput(session, "multiType", choices = v_options,  selected=ws[11])
+           values$multitype <- ws[11]
+           ws[11] <<- ''
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 0:\n", e ); }) })
 
@@ -77,11 +84,11 @@
        input$inDselect
        if ( values$launch>0 ) {
             if (input$f3D==TRUE) {
-                  shinyjs::disable("multiLabels")
-                  shinyjs::disable("GBG")
+                shinyjs::disable("multiLabels")
+                shinyjs::disable("GBG")
             } else {
-                  shinyjs::enable("multiLabels")
-                  shinyjs::enable("GBG")
+                shinyjs::enable("multiLabels")
+                shinyjs::enable("GBG")
             }
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 3:\n", e ); }) })
@@ -93,8 +100,16 @@
           # First Factor
           f1_options <- .C(g$facnames[,2])
           names(f1_options) <- .C(g$facnames$Description)
+          selFacX <- NULL
+          if (! is.null(ws[12]) && ! is.na(ws[11]) && nchar(ws[12])>0 && ws[12] %in% f1_options) {
+              selFacX <- ws[12]
+              ws[12] <<- ''
+          }
           if (nrow(g$varnames)>2) {
-              updateSelectInput(session, "multiFacX", choices = f1_options)
+              if (is.null(selFacX))
+                 updateSelectInput(session, "multiFacX", choices = f1_options)
+              else 
+                 updateSelectInput(session, "multiFacX", choices = f1_options, selected=selFacX)
           }
           # Select the variables to be included in the analysis
           v_options <- c( 1:nrow(g$varnames) )

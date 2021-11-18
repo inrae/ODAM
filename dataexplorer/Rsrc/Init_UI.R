@@ -8,8 +8,8 @@
        theurl
     }
 
-    toggleTab <- function(flg) {
-       if (flg) {
+    toggleTab <- function(opt) {
+       if (opt==0) { # Collection only
           js$openTab("collection")
           removeCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
           addCssClass(selector = "a[data-value='information']", class = "inactiveItem")
@@ -18,7 +18,13 @@
           addCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
           addCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
           runjs('$(".div-session").css("display", "none");')
-       } else {
+       }
+       if (opt==1) { # without Collection
+          js$openTab("information")
+          js$hideinDselect()
+          addCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
+       }
+       if (opt==2) { # Collection + Dataset
           js$openTab("information")
           removeCssClass(selector = "a[data-value='information']", class = "inactiveItem")
           removeCssClass(selector = "a[data-value='datatable']", class = "inactiveItem")
@@ -26,6 +32,14 @@
           removeCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
           removeCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
           runjs('$(".div-session").css("display", "block");')
+       }
+       if (opt==3) { # About only
+          isolate({updateTabItems(session, "IdMenu", "about")})
+          runjs('$(".box-header").css("display", "none");')
+          js$hideSidebar()
+          js$hideSidebarToggle()
+          js$hideinDselect()
+          js$hideinDSselect()
        }
     }
 
@@ -125,10 +139,10 @@
     observe({ tryCatch({
         input$ipclient
         if (nchar(input$ipclient)>0) {
-           if (is.DS(cdata)) {
+           if (is.DS(cdata)) { # query string ...
               getURLparams(cdata)
               ws$ipclient <<- input$ipclient
-              if ( nchar(ws$dcname)>0 ) {
+              if ( nchar(ws$dcname)>0 ) { # ... with a collection
                  g$dclist <<- getDataCol(ws)
                  if (is.wsError()) {
                      if (is.wsNoAuth()) showModal(apiKeyModal())
@@ -136,18 +150,14 @@
                  } else {
                      values$initcol <- 1
                  }
-                 toggleTab(1)
-              } else {
+                 toggleTab(0)
+              } else { # ... with a dataset
                  g$inDselect <<- ws$dsname
-                 js$hideinDselect()
+                 toggleTab(1)
                  values$initds <- 1
               }
-           } else {
-              isolate({updateTabItems(session, "IdMenu", "about")})
-              js$hideSidebar()
-              js$hideSidebarToggle()
-              js$hideinDselect()
-              js$hideinDSselect()
+           } else { # no query string
+              toggleTab(3)
               values$nods <- 1
            }
         }
@@ -205,7 +215,8 @@
               ws$apiurl <<- getURLfromList()
               values$initds <- which( .C(g$dclist$list$datasetID[order(g$dclist$list$label)]) == g$inDselect )
            }
-           toggleTab(0)
+           toggleTab(2)
+           values$initdss <- values$initds
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Dataet Change Obs:\n", e); }) })
 
@@ -213,8 +224,8 @@
     # Observer - Dataset subset init
     #----------------------------------------------------
     observe({ tryCatch({
-        values$initds
-        if ( nchar(input$ipclient)>0 && values$initds>0 ) {
+        values$initdss
+        if ( nchar(input$ipclient)>0 && values$initdss>0 ) {
            tryCatch({ getInit() }, error=function(e) { ERROR$MsgErrorMain <- paste("getInit: ", e, ", ws: ", paste( ws , collapse=" - ") ); })
            if (is.wsError()) {
                if (is.wsNoAuth()) showModal(apiKeyModal())

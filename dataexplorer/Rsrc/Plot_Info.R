@@ -18,7 +18,7 @@
     # Observer - Data Table
     #----------------------------------------------------
     observe({ tryCatch({
-      values$initds
+      values$initdss
       values$launch
        if ( values$launch>0) {
           fa_options <- colnames(g$data)
@@ -154,7 +154,7 @@
     # renderUI - DataTable of data subsets
     #----------------------------------------------------
     output$subsets <- renderDataTable({
-       values$initds
+       values$initdss
        if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({ if (nchar(g$msgError)==0) {
            if ( !is.DS(cdata) || values$init==0) return(NULL)
@@ -182,7 +182,7 @@
     # renderUI - Metadata of the selected data subset
     #----------------------------------------------------
     output$infos <- renderDataTable({
-       values$initds
+       values$initdss
        tryCatch({ 
            if (values$launch==0) return(NULL)
            if (is.null(g$LABELS) || nrow(g$LABELS)==0) return(NULL)
@@ -216,7 +216,7 @@
     # renderUI - Subsets Graph with d3js
     #----------------------------------------------------
     output$Net <- renderDiagonalNetwork({
-       values$initds
+       values$initdss
        input$IdMenu
        if (nchar(input$ipclient)==0) return(NULL)
        if (input$IdMenu != 'information') return(NULL)

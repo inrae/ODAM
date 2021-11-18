@@ -12,18 +12,22 @@ shinyServer(function(input, output, session) {
     source("Rsrc/Plot_Scatter.R", local=TRUE)  # Bivariate
     source("Rsrc/Plot_Multi.R", local=TRUE)    # Multivariate
 
+    # Reactive values for error management
     ERROR <- reactiveValues(MsgErrorMain='', MsgErrorInfo='', MsgErrorDT='', MsgErrorUni='', 
                             MsgErrorBi='', MsgErrorMulti='', MsgErrorAbout='' )
 
-    cdata <- session$clientData
+    # Reactive values for UI
     values <- reactiveValues(
         # Init events
-        init=0, initcol=0, initds=0, launch=0, nods=0,
+        init=0, initcol=0, initds=0, initdss=0, launch=0, nods=0,
         # multiplot events
-        multitype='', outtype='', netData=NULL, multiload=0,
+        multitype='', outtype='', netData=NULL, 
         # Error events
         error=0, 
     )
+
+    # Shortcut for client session data
+    cdata <- session$clientData
 
     # Session identifier
     SESSID <- paste(sample(c(0:9, letters[1:6]),15, replace=TRUE),collapse="")
@@ -35,8 +39,4 @@ shinyServer(function(input, output, session) {
     } else {
        SESSTMPDIR <- tempdir()
     }
-
-    js$openTab("information")
-    addCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
-
 })

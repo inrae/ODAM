@@ -71,7 +71,8 @@ do {
 
 } while (0);
 
-header('Content-Type: text/markdown; charset=ISO-8859-1');
+#header('Content-Type: text/markdown; charset=ISO-8859-1');
+header('Content-Type: text/markdown; charset=UTF-8');
 echo $INFOS_TEXT;
 
 

@@ -399,10 +399,10 @@ class def_lib
           if ( in_array($category, $this->categories) ) {
               if ($nbds==1 && $multi==1) {
                  foreach ($this->hDataset['_dstree_'] as $keyid => $arr ) {
-                    if ($arr[count($arr)-1] == $tarr_DS[0]) {
-                       $dstree = $arr;
-                       break;
-                    }
+                     if ($arr[count($arr)-1] == $tarr_DS[0]) {
+                        $dstree = $arr;
+                        break;
+                     }
                  }
               }
               elseif ($nbds==1 && $multi==0) {
@@ -412,10 +412,10 @@ class def_lib
                  for ($i = 0; $i <= $nbds-1; $i++ ) {
                      $dsarr = array();
                      foreach ($this->hDataset['_dstree_'] as $keyid => $arr ) {
-                          if ($arr[count($arr)-1] == $tarr_DS[$i]) {
-                             $dsarr = $arr;
-                             break;
-                          }
+                        if ($arr[count($arr)-1] == $tarr_DS[$i]) {
+                            $dsarr = $arr;
+                            break;
+                        }
                      }
                      if (count($dsarr)==0) continue;
                      foreach ($dsarr as $ds)
@@ -424,19 +424,17 @@ class def_lib
               }
               if (count($dstree)==0) break;
 
-              # Get alias list
-              $arralias = $this->getEntryList($tarr_DS, $multi);
-
               $cnt=0;
               foreach ($dstree as $ds) {
                  if (! isset($this->hDataset[$ds]['categories'][$category]) ) continue;
                  $arr_cat = $this->hDataset[$ds]['categories'][$category];
                  if (count($arr_cat)==0) continue;
-                 foreach ($this->hDataset[$ds]['categories'][$category] as $field) {
-                       $alias = '';
-                       for ($j=0; $j<count($arralias); $j++)
-                           if ($arralias[$j][1]===$field) { $alias =  $arralias[$j][2]; break; }
-                       $list[$cnt++] = array_merge( array($ds,$field), array($alias), $this->hDataset[$ds]['entities'][$field] );
+                 $arralias = $this->getEntryList(array($ds), $multi);
+                 foreach ($arr_cat as $field) {
+                     $alias = '';
+                     for ($j=0; $j<count($arralias); $j++)
+                        if ($arralias[$j][1]===$field) { $alias =  $arralias[$j][2]; break; }
+                     $list[$cnt++] = array_merge( array($ds,$field,$alias), $this->hDataset[$ds]['entities'][$field] );
                  }
               }
           }

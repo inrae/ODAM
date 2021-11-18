@@ -29,11 +29,14 @@ shinyServer(function(input, output, session) {
     SESSID <- paste(sample(c(0:9, letters[1:6]),15, replace=TRUE),collapse="")
 
     # Session temporary directory
-    SESSTMPDIR <- file.path(getwd(),'www/tmp',SESSID)
-    dir.create(SESSTMPDIR, showWarnings = FALSE)
+    if (saveplots) {
+       SESSTMPDIR <- file.path(getwd(),'www/tmp',SESSID)
+       dir.create(SESSTMPDIR, showWarnings = FALSE)
+    } else {
+       SESSTMPDIR <- tempdir()
+    }
 
     js$openTab("information")
     addCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
-    addCssClass(selector = "a[data-value='datatable']", class = "disableItem")
 
 })

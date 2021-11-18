@@ -123,7 +123,7 @@ httr_get <- function(ws, query, mode='text', fsplit=TRUE)
                          config = httr::config(ssl_verifypeer = SSL_VerifyPeer),
                          add_headers(.headers = headers))
        T <- httr::content(resp, as=mode)
-       if (mode=='text' && fsplit) T <- simplify2array(strsplit(enc2utf8(T),"\n"))
+       if (mode=='text' && fsplit) T <- simplify2array(strsplit(T,"\n"))
     }, error=function(e) {
        T <- "## ERROR : the API host is not responding; it is either not found or does not exist"
     })
@@ -143,12 +143,12 @@ getAbout <- function ()
 getInfos <- function (ws, dcol=0)
 {
     ds <- ifelse(dcol>0, ws$dcname, ws$dsname)
-    T <- httr_get(ws, paste0('infos/', ds))
+    T <- httr_get(ws, paste0('infos/', ws$dsname))
     if (!is.wsError() && !is.wsNoAuth() && ws$keymode>0) {
        # Images
        P <- na.omit(str_extract(T, pattern="https?:[^:]+\\.(png|jpg)"))
        if (length(P)>0) for (i in 1:length(P)) {
-             I <- base64_enc(httr_get(ws, paste0('image/', ds, '/', basename(P[i])), mode='raw'))
+             I <- base64_enc(httr_get(ws, paste0('image/', ws$dsname, '/', basename(P[i])), mode='raw'))
              T <- gsub( P[i], paste0('data:image/png;base64,',I), T )
        }
        # PDF - markdown link style
@@ -156,14 +156,14 @@ getInfos <- function (ws, dcol=0)
        if (length(P)>0) for (i in 1:length(P)) {
           V <- as.vector(simplify2array(strsplit(gsub('(\\[|\\]|\\(|\\))',',',P[i]),',')))
           V <- V[ V != "" ]
-          href <- paste0("<a class=\"jlink\" target=\"_blank\" onclick=\"javascript:openPDF('",V[2],"');\">",V[1],"</a>")
+          href <- paste0("<a class=\"jlink\" onclick=\"javascript:openPDF('",V[2],"');\">",V[1],"</a>")
           T <- gsub(P[i], href, T, fixed=TRUE)
        }
        # PDF - normal link style
        P <- na.omit(str_extract(T, pattern="[^']https?:[^:]+\\.pdf"))
        if (length(P)>0) for (i in 1:length(P)) {
           urlapi <- substring(P[i],2)
-          href <- paste0(substring(P[i],1,1), "<a class=\"jlink\" target=\"_blank\" onclick=\"javascript:openPDF('",urlapi,"');\">",basename(urlapi),"</a>")
+          href <- paste0(substring(P[i],1,1), "<a class=\"jlink\" onclick=\"javascript:openPDF('",urlapi,"');\">",basename(urlapi),"</a>")
           T <- gsub(P[i], href, T, fixed=TRUE)
        }
     }

@@ -31,3 +31,6 @@ nbopt_multiselect <- 250
 
 # Value of the pseudo zero to apply a log10
 pseudo_zero <- 0.0001
+
+# Save plots (GGM & COR)
+saveplots <- FALSE

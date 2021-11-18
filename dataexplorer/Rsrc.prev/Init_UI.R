@@ -1,34 +1,12 @@
 
     getURLfromList <- function() {
        collection <- as.data.frame(g$dclist$list)
-       setID <- which( g$inDselect == .C(collection$datasetID) )
+       setID <- which( ws$dsname == .C(collection$datasetID) )
        urls <- .C(collection$url)
        theurl <- externalURL
        if (setID>0 && !is.na(urls[setID]) && nchar(urls[setID])>0) { theurl <- urls[setID] }
        theurl
     }
-
-    toggleTab <- function(flg) {
-       if (flg) {
-          js$openTab("collection")
-          removeCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
-          addCssClass(selector = "a[data-value='information']", class = "inactiveItem")
-          addCssClass(selector = "a[data-value='datatable']", class = "inactiveItem")
-          addCssClass(selector = "a[data-value='univariate']", class = "inactiveItem")
-          addCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
-          addCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
-          runjs('$(".div-session").css("display", "none");')
-       } else {
-          js$openTab("information")
-          removeCssClass(selector = "a[data-value='information']", class = "inactiveItem")
-          removeCssClass(selector = "a[data-value='datatable']", class = "inactiveItem")
-          removeCssClass(selector = "a[data-value='univariate']", class = "inactiveItem")
-          removeCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
-          removeCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
-          runjs('$(".div-session").css("display", "block");')
-       }
-    }
-
 
     #----------------------------------------------------
     # Modal dialog UI
@@ -136,7 +114,13 @@
                  } else {
                      values$initcol <- 1
                  }
-                 toggleTab(1)
+                 #js$openTab("collection")
+                 #removeCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
+                 #addCssClass(selector = "a[data-value='information']", class = "inactiveItem")
+                 #addCssClass(selector = "a[data-value='datatable']", class = "inactiveItem")
+                 #addCssClass(selector = "a[data-value='univariate']", class = "inactiveItem")
+                 #addCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
+                 #addCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
               } else {
                  g$inDselect <<- ws$dsname
                  js$hideinDselect()
@@ -164,9 +148,21 @@
             indx <- order(listlabels)
             choices <- .C(g$dclist$list$datasetID[indx])
             names(choices) <- .C(listlabels[indx])
-            g$inDselect <<- ''
-            values$init <- 1
-            updateSelectInput(session, "inDselect", choices = c("Select a dataset"="",choices), selected = g$inDselect)
+            g$inDselect <<- choices[1]
+            values$init <- 0
+            values$initcol <- 0
+            if (! is.null(ws$dsname) && nchar(ws$dsname)>0 )
+               g$inDselect <<- ws$dsname
+            else
+               ws$dsname <<- g$inDselect
+            ws$apiurl <<- getURLfromList()
+            updateSelectInput(session, "inDselect", choices = choices, selected = g$inDselect)
+            #js$openTab("information")
+            #removeCssClass(selector = "a[data-value='information']", class = "inactiveItem")
+            #removeCssClass(selector = "a[data-value='datatable']", class = "inactiveItem")
+            #removeCssClass(selector = "a[data-value='univariate']", class = "inactiveItem")
+            #removeCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
+            #removeCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Collection Obs:\n", e ); }) })
 
@@ -181,40 +177,19 @@
         }
     })
 
-
-    #----------------------------------------------------
-    # Observer - if dataset change
-    #----------------------------------------------------
-    observe({ tryCatch({
-        input$inDselect
-        values$initds
-        if (! is.null(input$inDselect) && nchar(input$inDselect)>0 && g$inDselect != input$inDselect) {
-           g$inDselect <<- input$inDselect
-        }
-        if ( ! is.null(g$inDselect) && nchar(g$inDselect)>0 ) {
-           if (ws$dsname != g$inDselect) {
-              ws$dsname <<- g$inDselect
-              listlabels <- g$dclist$list$label
-              indx <- order(listlabels)
-              choices <- .C(g$dclist$list$datasetID[indx])
-              names(choices) <- .C(listlabels[indx])
-              updateSelectInput(session, "inDselect", choices = c("Select a dataset"="",choices), selected = g$inDselect)
-              runjs('window.scrollTo(0,0);')
-           }
-           if (nchar(ws$dcname)>0) {
-              ws$apiurl <<- getURLfromList()
-              values$initds <- which( .C(g$dclist$list$datasetID[order(g$dclist$list$label)]) == g$inDselect )
-           }
-           toggleTab(0)
-        }
-    }, error=function(e) { ERROR$MsgErrorMain <- paste("Dataet Change Obs:\n", e); }) })
-
     #----------------------------------------------------
     # Observer - Dataset subset init
     #----------------------------------------------------
     observe({ tryCatch({
+        input$ipclient
         values$initds
-        if ( nchar(input$ipclient)>0 && values$initds>0 ) {
+        if ( nchar(input$ipclient)>0 && 
+            ((values$initds>0) || (! is.null(input$inDselect) && nchar(input$inDselect)>0)) ) {
+           if (! is.null(input$inDselect) && nchar(input$inDselect)>0 ) {
+               ws$dsname <<- input$inDselect
+               ws$apiurl <<- getURLfromList()
+               values$init <- 0
+           }
            tryCatch({ getInit() }, error=function(e) { ERROR$MsgErrorMain <- paste("getInit: ", e, ", ws: ", paste( ws , collapse=" - ") ); })
            if (is.wsError()) {
                if (is.wsNoAuth()) showModal(apiKeyModal())
@@ -244,7 +219,7 @@
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Data subset Obs:\n", e, ':', paste(g$DSL, collapse=", ")); }) })
 
     #----------------------------------------------------
-    # Observer - if data subset change
+    # Observer - if dataset change
     #----------------------------------------------------
     observe({ tryCatch({
         input$inDSselect

@@ -423,6 +423,7 @@ do
         echo $ERRORMSG;
         break;
     }
+    header('charset=UTF-8');
     $def->echo_results($format);
 
 } while (0);

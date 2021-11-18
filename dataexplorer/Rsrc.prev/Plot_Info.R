@@ -87,26 +87,6 @@
     })
 
     #----------------------------------------------------
-    # renderUI - DataTable of datasets
-    #----------------------------------------------------
-    output$datasets <- renderDataTable({
-       values$initcol
-       values$init
-       if (nchar(input$ipclient)==0) return(NULL)
-       if (nchar(ws$dcname)==0) return(NULL)
-       tryCatch({ if (nchar(g$msgError)==0) {
-           colect <- as.data.frame(g$dclist$list)
-           V <- colect$datasetID
-           colect$datasetID <- sapply(V, function(x) { 
-                   paste0("<a onclick=\"Shiny.onInputChange('inDselect','",x,"');\">",x,"</a>") })
-           V <- rep("dataset", length(colect$url))
-           colect$url <- V
-           names(colect) <- c("datasetID", "Label", "Type", "Description")
-           colect
-       }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - datasets \n", e ); })
-    }, options = list(searching=FALSE, paging=FALSE), escape=c(2:4))
-
-    #----------------------------------------------------
     # renderUI - Data Information
     #----------------------------------------------------
     output$datainfos <- renderText({
@@ -146,12 +126,11 @@
             "pathname: ", cdata$url_pathname, "\n",
             "port: ",     cdata$url_port,     "\n",
             "search: ",   cdata$url_search,   "\n"
-          )
-       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - out1 \n", e ); })
+          )       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - out1 \n", e ); })
     })
 
     #----------------------------------------------------
-    # renderUI - DataTable of data subsets
+    # renderUI - Metadata of data subsets
     #----------------------------------------------------
     output$subsets <- renderDataTable({
        values$initds

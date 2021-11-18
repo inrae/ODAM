@@ -5,11 +5,6 @@ ui_collection <- tabItem(tabName = "collection", bsAlert("ErrAlertInfo"),
    box(title="Data Collection", status = "primary", solidHeader = TRUE, width = 12, collapsible = FALSE,
      conditionalPanel(condition="uiloaded==0",
         h3( tags$p('Please wait while loading ...'), tags$img(src = "loading.gif"), style = "color:#bf6f85")
-     ),
-     conditionalPanel(condition="uiloaded==1",
-         htmlOutput("colinfos", class="mddiv"),
-         tags$hr(), dataTableOutput("datasets")
-         #, tags$hr(), verbatimTextOutput('out1')
      )
    )
 )
@@ -22,9 +17,7 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
      conditionalPanel(condition="uiloaded==0",
         h3( tags$p('Please wait while loading ...'), tags$img(src = "loading.gif"), style = "color:#bf6f85")
      ),
-     conditionalPanel(condition="uiloaded==1",
-        htmlOutput("datainfos", class="mddiv")
-     )
+     htmlOutput("datainfos", class="mddiv")
    ),
    conditionalPanel(condition="output.apierror==0",
       box(
@@ -32,8 +25,7 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
          #verbatimTextOutput('out1'),
          dataTableOutput("subsets"),
          conditionalPanel(condition="output.DSsize>0", 
-               downloadButton('downloadTSV', label = "Export TSV", class = NULL),
-               column(12, p("")),
+               downloadButton('downloadTSV', label = "Export TSV", class = NULL) , p(),
                conditionalPanel(condition="output.nbvarsEvent==0", dataTableOutput("infos"))
          )
       ),
@@ -79,10 +71,10 @@ ui_aboutTab <-  tabItem("about", bsAlert("ErrAlertAbout"),
       htmlOutput("aboutinfos", class="mddiv")
    ),
    conditionalPanel(condition="output.apierror==0 && output.nods==0",
-      div(class='div-session', box(
+      box(
          title="Session Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
          tags$pre(tags$code(id="sessioninfo", class="language-r shiny-text-output "))
-      ))
+      )
    )
 )
 
@@ -115,7 +107,6 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), conditional
       column(12, conditionalPanel(condition="input.uniVarSelect>0", 
                plotlyOutput("BoxPlot", height="500px") )
       ),
-      column(12, p("")),
       column(12,
          column(4,
               selectInput("uniAnnot", "Select Data based on Features", c() )
@@ -168,7 +159,6 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),conditiona
       column(12, conditionalPanel(condition="input.biVarSelect1>0 && input.biVarSelect2>0", 
              plotlyOutput("ScatterPlot", height="500px")
       )),
-      column(12, p("")),
       column(12,
          column(4,
               selectInput("biAnnot", "Select Features as Labels", c() )

@@ -19,6 +19,11 @@ p {
   line-height: 20px;
 }
 
+a {
+  color: #3c8dbc;
+  cursor: pointer;
+}
+
 #ipclient {
   display: none;
 }

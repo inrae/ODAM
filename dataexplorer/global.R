@@ -26,11 +26,15 @@ SSL_VerifyPeer <- conf$SSL_VERIFYPEER
 # Maximum number of variables in a data subset so that it  can be explored interactively
 maxVariables <- conf$MAXVARIABLES
 
+# Theme
+theme <- conf$THEME
+
+# Save plots (GGM & COR)
+saveplots <- ifelse(conf$SAVEPLOTS==1, TRUE, FALSE)
+
 # Nb max item when multiselect
 nbopt_multiselect <- 250
 
 # Value of the pseudo zero to apply a log10
 pseudo_zero <- 0.0001
 
-# Save plots (GGM & COR)
-saveplots <- FALSE

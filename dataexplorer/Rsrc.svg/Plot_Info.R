@@ -18,7 +18,7 @@
     # Observer - Data Table
     #----------------------------------------------------
     observe({ tryCatch({
-      values$initds
+      values$initdss
       values$launch
        if ( values$launch>0) {
           fa_options <- colnames(g$data)
@@ -79,22 +79,53 @@
        if (nchar(input$ipclient)==0) return(NULL)
        if (nchar(ws$dcname)==0) return(NULL)
        tryCatch({
-          markdownToHTML(text=getInfos(ws,1), fragment.only = TRUE,  title = "", 
-               options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
-               extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
+          if (!is.wsError()) {
+             T <- getInfos(ws,1)
+          } else {
+             T <- paste('##',g$msgError)
+          }
+          markdownToHTML(text=T, fragment.only = TRUE,  title = "", 
+                   options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
+                extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
                               'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - Collection info \n", e ); })
     })
+
+    #----------------------------------------------------
+    # renderUI - DataTable of datasets
+    #----------------------------------------------------
+    output$datasets <- renderDataTable({
+       values$initcol
+       values$init
+       if (nchar(input$ipclient)==0) return(NULL)
+       if (nchar(ws$dcname)==0) return(NULL)
+       tryCatch({ if (nchar(g$msgError)==0) {
+          colect <- as.data.frame(g$dclist$list)
+          V <- colect$datasetID
+          colect$datasetID <- sapply(V, function(x) { 
+                   paste0("<a onclick=\"Shiny.onInputChange('inDselect','",x,"');\">",x,"</a>") })
+          V <- rep("dataset", length(colect$url))
+          colect$url <- V
+          names(colect) <- c("datasetID", "Label", "Type", "Description")
+          colect
+       }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - datasets \n", e ); })
+    }, options = list(searching=TRUE, paging=TRUE), escape=c(2:4))
 
     #----------------------------------------------------
     # renderUI - Data Information
     #----------------------------------------------------
     output$datainfos <- renderText({
        values$initds
+       values$error
        input$inDselect
        if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({
-          markdownToHTML(text=getInfos(ws), fragment.only = TRUE,  title = "", 
+          if (!is.wsError()) {
+             T <- getInfos(ws)
+          } else {
+             T <- paste('##',g$msgError)
+          }
+          markdownToHTML(text=T, fragment.only = TRUE,  title = "", 
                options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
                extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
                               'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
@@ -126,14 +157,15 @@
             "pathname: ", cdata$url_pathname, "\n",
             "port: ",     cdata$url_port,     "\n",
             "search: ",   cdata$url_search,   "\n"
-          )       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - out1 \n", e ); })
+          )
+       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - out1 \n", e ); })
     })
 
     #----------------------------------------------------
-    # renderUI - Metadata of data subsets
+    # renderUI - DataTable of data subsets
     #----------------------------------------------------
     output$subsets <- renderDataTable({
-       values$initds
+       values$initdss
        if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({ if (nchar(g$msgError)==0) {
            if ( !is.DS(cdata) || values$init==0) return(NULL)
@@ -161,7 +193,7 @@
     # renderUI - Metadata of the selected data subset
     #----------------------------------------------------
     output$infos <- renderDataTable({
-       values$initds
+       values$initdss
        tryCatch({ 
            if (values$launch==0) return(NULL)
            if (is.null(g$LABELS) || nrow(g$LABELS)==0) return(NULL)
@@ -195,7 +227,7 @@
     # renderUI - Subsets Graph with d3js
     #----------------------------------------------------
     output$Net <- renderDiagonalNetwork({
-       values$initds
+       values$initdss
        input$IdMenu
        if (nchar(input$ipclient)==0) return(NULL)
        if (input$IdMenu != 'information') return(NULL)

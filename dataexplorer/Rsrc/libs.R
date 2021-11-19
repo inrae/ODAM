@@ -196,13 +196,14 @@ getDataCol <- function (ws)
 {
     dclist <- NULL
     dc <- getData(ws,dcol=1);
+    msgError <- paste("ERROR: ",ws$dcname,"is not a collection")
     if (!is.wsError()) {
         if (length(dc$Subset)==1 && dc$Subset=="collection") {
            collection <- getData(ws,'/collection',dcol=1);
            collection$url[is.na(collection$url)] <- externalURL
            dclist <- list(collection=dc, list=collection)
-        }
-    }
+        } else { g$msgError <<- msgError }
+    } else { g$msgError <<- msgError }
     dclist
 }
 
@@ -232,6 +233,19 @@ getInit <- function()
     }
 }
 
+# Test if each data subset is valid 
+is.varsExist <- function(setNameList)
+{
+    ret <- 1
+    for( i in 1:length(setNameList) )
+       if (! setNameList[i] %in% g$subsets$Subset) {
+          ret <- 0
+          g$msgError <<- paste0("ERROR: '",setNameList[i],"' is not a valid data subset")
+          break
+       }
+    ret
+}
+
 # Get tabulated data and metadata regarding a subset name list
 getVars <- function(strNameList, rmvars=FALSE)
 {
@@ -243,7 +257,7 @@ getVars <- function(strNameList, rmvars=FALSE)
 
        # Get DATA
        data <- getData(ws,paste('(',strNameList,')',sep=''))
-       if (ncol(data)<=maxVariables)
+       if (! is.wsError() && ncol(data)<=maxVariables)
        {
           # Get quantitative variable features
           varnames <- NULL

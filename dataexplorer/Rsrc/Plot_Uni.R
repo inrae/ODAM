@@ -23,26 +23,6 @@
 
     observe({ tryCatch({
        input$inDselect
-       if ( values$launch>0 ) {
-          # Second Factor
-          f2_options <- .C(g$facnames[,2])
-          names(f2_options) <- .C(g$facnames$Description)
-          updateSelectInput(session, "uniFacY", choices = f2_options)
-       }
-    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1b:\n", e ); }) })
-
-    observe({ tryCatch({
-       input$inDselect
-       if ( values$launch>0 ) {
-          if (nrow(g$varnames)>maxVariables) return(NULL)
-          v_options <- c(0, 1:nrow(g$varnames) )
-          names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",g$varnames$Description)))
-          updateSelectInput(session, "uniVarSelect", choices = v_options)
-       }
-    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 2:\n", e ); }) })
-
-    observe({ tryCatch({
-       input$inDselect
        if (values$launch>0 && 
            ! is.null(input$uniFacX) && nchar(input$uniFacX)>0 && input$uniFacX %in% colnames(g$data) ) {
            facvals <- g$data[ , input$uniFacX]
@@ -59,7 +39,17 @@
            names(f2_options) <- .C(g$facnames$Description)
            updateSelectInput(session, "uniFacY", choices = f2_options, selected=input$uniFacX)
        }
-    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 3a:\n", e ); }) })
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1b:\n", e ); }) })
+
+    observe({ tryCatch({
+       input$inDselect
+       if ( values$launch>0 ) {
+          # Second Factor
+          f2_options <- .C(g$facnames[,2])
+          names(f2_options) <- .C(g$facnames$Description)
+          updateSelectInput(session, "uniFacY", choices = f2_options)
+       }
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 2a:\n", e ); }) })
 
     observe({ tryCatch({
        input$inDselect
@@ -75,7 +65,24 @@
            names(l_options) <- c(as.character(c(levelFac)))
            updateSelectInput(session, "SelFacY", choices = l_options, selected=l_options)
        }
-    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 3b:\n", e ); }) })
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 2b:\n", e ); }) })
+
+
+    observe({ tryCatch({
+       input$inDselect
+       if ( values$launch>0 ) {
+          if (nrow(g$varnames)>maxVariables) return(NULL)
+          v_options <- c(0, 1:nrow(g$varnames) )
+          names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",g$varnames$Description)))
+          selVar <- NULL
+          if (nchar(ui$var1)>0 && ui$var1 %in% .C(g$varnames[,3])) {
+              selVar <- g$varnames[g$varnames[,3]==ui$var1,2]
+              ui$var1 <<- ''
+          }
+          updateSelectInput(session, "uniVarSelect", choices = v_options, selected=selVar)
+       }
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 3:\n", e ); }) })
+
 
     observe({ tryCatch({
        input$inDselect

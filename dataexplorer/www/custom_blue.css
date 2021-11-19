@@ -19,6 +19,11 @@ p {
   line-height: 20px;
 }
 
+a {
+  color: #3c8dbc;
+  cursor: pointer;
+}
+
 #ipclient {
   display: none;
 }
@@ -74,12 +79,18 @@ p {
   border-left-color: #e3ebf5;
 }
 
+.skin-blue .sidebar-menu .inactiveItem { display: none; }
+
 .shiny-input-container:not(.shiny-input-container-inline) {
   width: 250px;
 }
 
 #Net {
   margin: auto;
+}
+
+.box {
+  box-shadow: 0 0px 0px rgb(0 0 0);
 }
 
 .box.box-solid.box-primary>.box-header {

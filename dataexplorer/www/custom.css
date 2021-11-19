@@ -33,6 +33,10 @@ a {
   cursor: pointer;
 }
 
+#Net {
+  margin: auto;
+}
+
 .row {
   margin-right: Opx;
   margin-left: -15px;
@@ -115,14 +119,6 @@ a {
   box-shadow: 0 0px 0px rgb(0 0 0);
 }
 
-.selectize-input, .selectize-control.single .selectize-input.input-active {
-    cursor: pointer;
-}
-
-#Net {
-  margin: auto;
-}
-
 .box.box-solid.box-primary>.box-header {
   background: #f5f7f9;
   color: brown;
@@ -144,6 +140,10 @@ a {
 
 .dataTables_info {
   display: none;
+}
+
+.selectize-input, .selectize-control.single .selectize-input.input-active {
+    cursor: pointer;
 }
 
 .selectize-dropdown {

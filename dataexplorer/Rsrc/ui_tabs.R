@@ -92,7 +92,8 @@ ui_aboutTab <-  tabItem("about", bsAlert("ErrAlertAbout"),
 ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), conditionalPanel(condition="output.apierror==0", box(
    title="Univariate exploration", status = "primary", solidHeader = TRUE, width = 12,
    conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==0",
-      column(12,
+      # UP DIV
+      div(class='div-top', column(12,
          column(4,
               selectInput("uniFacX", "Factor for X Axis", c() ),
               selectInput("SelFacX", "Select First Factor Levels", c(), multiple = TRUE, selectize=TRUE )
@@ -111,19 +112,20 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), conditional
                  checkboxInput('violin', 'Violin', FALSE))
               )
          )
-      ),
+      )),
       column(12, conditionalPanel(condition="input.uniVarSelect>0", 
                plotlyOutput("BoxPlot", height="500px") )
       ),
       column(12, p("")),
-      column(12,
+      # DOWN DIV
+      div(class='div-down', column(12,
          column(4,
               selectInput("uniAnnot", "Select Data based on Features", c() )
          ),
          column(8,
               selectInput("uniFeatures", "(Un)Select Features", c(), multiple = TRUE, , selectize=TRUE )
          )
-      )
+      ))
    ),   
    conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==1", ui_warning),
    conditionalPanel(condition="output.DSsize==0",
@@ -137,7 +139,8 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), conditional
 ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),conditionalPanel(condition="output.apierror==0", box(
    title="Bivariate exploration", status = "primary", solidHeader = TRUE, width = 12,
    conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==0",
-      column(12,
+      # UP DIV
+      div(class='div-top', column(12,
          column(4,
               selectInput("biFacX", "Factor for Grouping", c() )
          ),
@@ -164,19 +167,20 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),conditiona
                   checkboxInput('gregmod', 'Fit Lin. Model', FALSE)
               )
          )
-      ),
+      )),
       column(12, conditionalPanel(condition="input.biVarSelect1>0 && input.biVarSelect2>0", 
              plotlyOutput("ScatterPlot", height="500px")
       )),
       column(12, p("")),
-      column(12,
+      # DOWN DIV
+      div(class='div-down', column(12,
          column(4,
               selectInput("biAnnot", "Select Features as Labels", c() )
          ),
          column(8,
               selectInput("biFeatures", "(Un)Select Items", c(), multiple = TRUE, , selectize=TRUE )
          )
-      )
+      ))
    ),
    conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==1", ui_warning),
    conditionalPanel(condition="output.DSsize==0",

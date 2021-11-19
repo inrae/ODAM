@@ -103,20 +103,26 @@
     # Reactive - API Error
     #----------------------------------------------------
     output$apierror <- reactive({
+       values$init
        values$error
        ret=0
-       if (values$error>0 && (values$initds>0 || values$initcol>0)) {
-          #js$hideSidebar()
-          js$hideinDSselect()
-          ret=1
-       } else {
-          js$showSidebar()
-          js$showinDSselect()
-       }
+       if (values$error>0 && values$init>0) ret=1
        return(ret)
     })
     outputOptions(output, 'apierror', suspendWhenHidden=FALSE)
     outputOptions(output, 'apierror', priority=1)
+
+    observe ({
+       values$error
+       if (values$error>0 && (values$initcol>0 || values$initds>0)) {
+          js$hideinDSselect()
+          js$showSidebar()
+          if( nchar(ws$dcname)>0 ) { js$openTab("collection")  } 
+          else                     { js$openTab("information") }
+       #} else {
+       #   js$showinDSselect()
+       }
+    })
 
     #----------------------------------------------------
     # Reactive - No data set / data collection
@@ -145,8 +151,8 @@
               if ( nchar(ws$dcname)>0 ) { # ... with a collection
                  g$dclist <<- getDataCol(ws)
                  if (is.wsError()) {
-                     if (is.wsNoAuth()) showModal(apiKeyModal())
-                     values$error <- 1
+                     if (is.wsNoAuth()) { showModal(apiKeyModal()) }
+                     else               { values$init <- values$error <- 1 }
                  } else {
                      values$initcol <- 1
                  }
@@ -228,27 +234,39 @@
         if ( nchar(input$ipclient)>0 && values$initdss>0 ) {
            tryCatch({ getInit() }, error=function(e) { ERROR$MsgErrorMain <- paste("getInit: ", e, ", ws: ", paste( ws , collapse=" - ") ); })
            if (is.wsError()) {
-               if (is.wsNoAuth()) showModal(apiKeyModal())
-               values$error <- 1
+               if (is.wsNoAuth()) { showModal(apiKeyModal()) }
+               else               { values$init <- values$error <- 1 }
            }
            g$inDSselect <<- ''
            DSselect <- NULL
            # Default data subset
            if (! is.null(ws$subset) && ! is.na(ws$subset) && nchar(ws$subset)>0 ) {
                DSselect <- .S(ws$subset)
+               if (! is.varsExist(DSselect)) { values$init <- values$error <- 1 }
            }
-           if (! is.null(ui$tab) && ! is.na(ui$tab) && ui$tab %in% c('datatable','univariate','bivariate','multivariate') ) {
+           if ( ui$tab %in% c('datatable','univariate','bivariate','multivariate') ) {
               js$openTab(ui$tab)
               js$hideSidebar()
-              if (! is.null(ui$header) && ! is.na(ui$header) && ui$header %in% c('off') ) {
+              if (ui$header %in% c('off') ) {
                   js$hideMainHeader()
+                  runjs('$(".box-header").css("display", "none");')
+                  if ( ui$updiv %in% c('off') )
+                       runjs('$(".div-top").css("display", "none");')
+                  if ( ui$downdiv %in% c('off') )
+                       runjs(paste('$(".div-down").css("display", "none");',
+                                '$(".content-wrapper").css("min-height","0px");'))
               }
            }
+           if ( nchar(ui$tab)>0 && ! ui$tab %in% c('datatable','univariate','bivariate','multivariate') ) {
+              g$msgError <<- paste0("ERROR: '",ui$tab,"' is not a valid tab name")
+              values$init <- values$error <- 1; values$initdss <- 0
+           }
+
            #----------------------------------------------------
            # dynamically building of the UI of each analysis tab depending on the selected data subset
            # ( based on the onChange event, linked to the 'inDSselect' input - See the 'R/Plot_XXX.R' files )
            #----------------------------------------------------
-           if (! is.null(g$DSL)) {
+           if (! is.null(g$DSL) && ! is.wsError()) {
               updateSelectInput(session, "inDSselect", label=NULL, choices = c("Select one or more data subset"="", g$DSL), selected = DSselect )
            }
         }
@@ -259,9 +277,11 @@
     #----------------------------------------------------
     observe({ tryCatch({
         input$inDSselect
-        if (! is.null(g$subsets) && ! is.null(input$inDSselect) && length(input$inDSselect)>0 && g$inDSselect != .J(input$inDSselect))
+        if (! is.null(g$subsets) && ! is.null(input$inDSselect) && length(input$inDSselect)>0 && g$inDSselect != .J(input$inDSselect)) {
             getVars(.J(input$inDSselect))
-        values$launch <- length(input$inDSselect)
+            if (is.wsError()) { values$init <- values$error <- 1; values$initdss <- 0; values$launch <- 0 }
+            else              { values$launch <- length(input$inDSselect) }
+        }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Data subset Change Obs:\n", e); }) })
 
     #----------------------------------------------------

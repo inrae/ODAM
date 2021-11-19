@@ -79,9 +79,14 @@
        if (nchar(input$ipclient)==0) return(NULL)
        if (nchar(ws$dcname)==0) return(NULL)
        tryCatch({
-          markdownToHTML(text=getInfos(ws,1), fragment.only = TRUE,  title = "", 
-               options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
-               extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
+          if (!is.wsError()) {
+             T <- getInfos(ws,1)
+          } else {
+             T <- paste('##',g$msgError)
+          }
+          markdownToHTML(text=T, fragment.only = TRUE,  title = "", 
+                   options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
+                extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
                               'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - Collection info \n", e ); })
     })
@@ -95,26 +100,32 @@
        if (nchar(input$ipclient)==0) return(NULL)
        if (nchar(ws$dcname)==0) return(NULL)
        tryCatch({ if (nchar(g$msgError)==0) {
-           colect <- as.data.frame(g$dclist$list)
-           V <- colect$datasetID
-           colect$datasetID <- sapply(V, function(x) { 
+          colect <- as.data.frame(g$dclist$list)
+          V <- colect$datasetID
+          colect$datasetID <- sapply(V, function(x) { 
                    paste0("<a onclick=\"Shiny.onInputChange('inDselect','",x,"');\">",x,"</a>") })
-           V <- rep("dataset", length(colect$url))
-           colect$url <- V
-           names(colect) <- c("datasetID", "Label", "Type", "Description")
-           colect
+          V <- rep("dataset", length(colect$url))
+          colect$url <- V
+          names(colect) <- c("datasetID", "Label", "Type", "Description")
+          colect
        }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - datasets \n", e ); })
-    }, options = list(searching=FALSE, paging=FALSE), escape=c(2:4))
+    }, options = list(searching=TRUE, paging=TRUE), escape=c(2:4))
 
     #----------------------------------------------------
     # renderUI - Data Information
     #----------------------------------------------------
     output$datainfos <- renderText({
        values$initds
+       values$error
        input$inDselect
        if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({
-          markdownToHTML(text=getInfos(ws), fragment.only = TRUE,  title = "", 
+          if (!is.wsError()) {
+             T <- getInfos(ws)
+          } else {
+             T <- paste('##',g$msgError)
+          }
+          markdownToHTML(text=T, fragment.only = TRUE,  title = "", 
                options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
                extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
                               'lax_spacing', 'space_headers', 'superscript', 'latex_math'))

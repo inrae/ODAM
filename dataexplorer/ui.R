@@ -10,7 +10,7 @@ meta <- tags$head(
    '),
    tags$script(type="text/javascript", src = "js/google-analytics.js"),
    tags$script(type="text/javascript", src = "js/utils.js"),
-   tags$link(rel = "stylesheet", type = "text/css", href = "custom.css")
+   tags$link(rel = "stylesheet", type = "text/css", href = paste0(theme,".css"))
 )
 
 busyLogo <- function(busysrc, height = 30, width = 30, alt = NULL) {

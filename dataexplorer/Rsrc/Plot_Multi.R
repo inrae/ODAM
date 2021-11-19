@@ -13,14 +13,6 @@
     # Observer - Multivariate
     #----------------------------------------------------
     observeEvent ( values$launch, { tryCatch({
-       if ( values$launch>0 && ui$header %in% c('off') ) {
-           runjs('$(".box-header").css("display", "none");')
-           if ( ui$updiv %in% c('off') )
-                runjs('$(".div-top").css("display", "none");')
-           if ( ui$downdiv %in% c('off') )
-                runjs(paste('$(".div-down").css("display", "none");',
-                            '$(".content-wrapper").css("min-height","0px");'))
-       }
        if ( values$launch>0 && ui$type %in% c('PCA','ICA','COR','GGM') ) {
            v_options <- c('PCA','ICA','COR','GGM')
            names(v_options) <- c("Principal Component Analysis (PCA)", "Independent Component Analysis (ICA)",
@@ -104,17 +96,13 @@
           # First Factor
           f1_options <- .C(g$facnames[,2])
           names(f1_options) <- .C(g$facnames$Description)
-          selFacX <- NULL
+          selFacX <- f1_options[1]
           if (! is.null(ui$fac1) && ! is.na(ui$fac1) && nchar(ui$fac1)>0 && ui$fac1 %in% .C(g$facnames[,3])) {
               selFacX <- g$facnames[g$facnames[,3]==ui$fac1,2]
               ui$fac1 <<- ''
           }
-          if (nrow(g$varnames)>2) {
-              if (is.null(selFacX))
-                 updateSelectInput(session, "multiFacX", choices = f1_options)
-              else 
-                 updateSelectInput(session, "multiFacX", choices = f1_options, selected=selFacX)
-          }
+          if (nrow(g$varnames)>2)
+              updateSelectInput(session, "multiFacX", choices = f1_options, selected=selFacX)
           # Select the variables to be included in the analysis
           v_options <- c( 1:nrow(g$varnames) )
           names(v_options) <- c(.C(gsub(" \\(.+\\)","",.C(g$varnames$Description))))

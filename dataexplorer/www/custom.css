@@ -126,6 +126,7 @@ a {
 
 .box.box-solid.box-primary {
   border: 0px solid #3c8dbc;
+  margin-bottom: 10px;
 }
 
 .box-header .box-title, .box-header>.fa, .box-header>.glyphicon, .box-header>.ion {

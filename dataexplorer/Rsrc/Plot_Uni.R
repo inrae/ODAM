@@ -17,7 +17,10 @@
           # First Factor
           f1_options <- .C(g$facnames[,2])
           names(f1_options) <- .C(g$facnames$Description)
-          updateSelectInput(session, "uniFacX", choices = f1_options)
+          selfac1 <- f1_options[1]
+          if (nchar(ui$fac1)>0 && ui$fac1 %in% .C(g$facnames[,3]))
+              selfac1 <- f1_options[which(g$facnames[,3] %in% ui$fac1)]
+          updateSelectInput(session, "uniFacX", choices = f1_options, selected=selfac1)
        }
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1a:\n", e ); }) })
 
@@ -26,18 +29,24 @@
        if (values$launch>0 && 
            ! is.null(input$uniFacX) && nchar(input$uniFacX)>0 && input$uniFacX %in% colnames(g$data) ) {
            facvals <- g$data[ , input$uniFacX]
-           if (is.numeric(facvals)) {
+           if (is.numeric(facvals) && sum(facvals-floor(facvals))>0) {
                fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
                facvals <- as.character(sprintf(fmt, facvals))
            }
            levelFac <- .C( levels(as.factor(facvals)) )
-           l_options <- c( 1:length(levelFac) )
-           names(l_options) <- c(as.character(c(levelFac)))
+           l_options <- c('')
+           names(l_options) <- c('---')
+           if (length(levelFac)<nbopt_multiselect) {
+              l_options <- c( 1:length(levelFac) )
+              names(l_options) <- c(as.character(c(levelFac)))
+           }
            updateSelectInput(session, "SelFacX", choices = l_options, selected=l_options)
            # Second Factor
-           f2_options <- .C(g$facnames[,2])
-           names(f2_options) <- .C(g$facnames$Description)
-           updateSelectInput(session, "uniFacY", choices = f2_options, selected=input$uniFacX)
+           if (nchar(ui$fac2)==0) {
+              f2_options <- .C(g$facnames[,2])
+              names(f2_options) <- .C(g$facnames$Description)
+              updateSelectInput(session, "uniFacY", choices = f2_options, selected=input$uniFacX)
+           }
        }
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1b:\n", e ); }) })
 
@@ -47,22 +56,33 @@
           # Second Factor
           f2_options <- .C(g$facnames[,2])
           names(f2_options) <- .C(g$facnames$Description)
-          updateSelectInput(session, "uniFacY", choices = f2_options)
+          selfac2 <- f2_options[1]
+          if (nchar(ui$fac2)>0 && ui$fac2 %in% .C(g$facnames[,3]))
+              selfac2 <- f2_options[which(g$facnames[,3] %in% ui$fac2)]
+          updateSelectInput(session, "uniFacY", choices = f2_options, selected=selfac2)
        }
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 2a:\n", e ); }) })
 
     observe({ tryCatch({
        input$inDselect
        if (values$launch>0 && 
-           ! is.null(input$uniFacY) && nchar(input$uniFacY)>0 && input$uniFacY %in% colnames(g$data) ) {
-           facvals <- g$data[ , input$uniFacY]
-           if (is.numeric(facvals)) {
-               fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
-               facvals <- as.character(sprintf(fmt, facvals))
+           ! is.null(input$uniFacY) && nchar(input$uniFacY)>0 && input$uniFacY %in% colnames(g$data)) {
+           if (input$uniFacY == input$uniFacX) {
+              l_options <- c('')
+           } else {
+              facvals <- g$data[ , input$uniFacY]
+              if (is.numeric(facvals) && sum(facvals-floor(facvals))>0) {
+                 fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
+                 facvals <- as.character(sprintf(fmt, facvals))
+              }
+              levelFac <- .C( levels(as.factor(facvals)) )
+              l_options <- c('')
+              names(l_options) <- c('---')
+              if (length(levelFac)<nbopt_multiselect) {
+                 l_options <- c( 1:length(levelFac) )
+                 names(l_options) <- c(as.character(c(levelFac)))
+              }
            }
-           levelFac <- .C( levels(as.factor(facvals)) )
-           l_options <- c( 1:length(levelFac) )
-           names(l_options) <- c(as.character(c(levelFac)))
            updateSelectInput(session, "SelFacY", choices = l_options, selected=l_options)
        }
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 2b:\n", e ); }) })
@@ -75,10 +95,8 @@
           v_options <- c(0, 1:nrow(g$varnames) )
           names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",g$varnames$Description)))
           selVar <- NULL
-          if (nchar(ui$var1)>0 && ui$var1 %in% .C(g$varnames[,3])) {
-              selVar <- g$varnames[g$varnames[,3]==ui$var1,2]
-              ui$var1 <<- ''
-          }
+          if (nchar(ui$var1)>0 && ui$var1 %in% .C(g$varnames[,3]))
+              selVar <- which(.C(g$varnames[,3]) %in% ui$var1)
           updateSelectInput(session, "uniVarSelect", choices = v_options, selected=selVar)
        }
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 3:\n", e ); }) })
@@ -102,7 +120,7 @@
           if (.C(input$uniAnnot) != "None") {
               fvals <- g$data[ , input$uniAnnot]
               fident <- ifelse( input$uniAnnot %in% g$identifiers$Attribute, TRUE, FALSE)
-              if (! fident && is.numeric(fvals)) {
+              if (! fident && is.numeric(fvals) && sum(fvals-floor(fvals))>0) {
                  fmt <- paste('%0',round(log10(max(abs(fvals)))+0.5)+3,'.2f',sep='')
                  fvals <- as.character(sprintf(fmt, fvals))
               }
@@ -124,8 +142,8 @@
       values$launch
       tryCatch({
         if (values$launch==0) return( NULL )
-        input$SelFacY
-        SelFacX <- isolate(input$SelFacX)
+        SelFacX <- input$SelFacX
+        SelFacY <- input$SelFacY
         FA <- isolate(input$uniAnnot)
         FCOL <- ifelse( FA=="None", '', FA )
         selectFCOL <- input$uniFeatures
@@ -137,12 +155,13 @@
         if (nchar(F1)>0 &&  nchar(F2)>0 && nchar(input$uniVarSelect)>0 ) {
             varX <- .C(g$varnames$Attribute)[.N(input$uniVarSelect)]
             fMean <- FALSE
+            if (ui$header %in% c('off')) runjs('$(".content-wrapper").css("min-height", "0px");')
             withProgress(message = 'Calculation in progress', detail = '... ', value = 0, {
                tryCatch({
                    if (F1==F2) {
                        getBoxPLot1(F1, SelFacX, FCOL, selectFCOL, varX, fMean, bsmooth=input$uniSmooth, blog=input$uniLog, bviolin=input$violin)
                    } else {
-                       getBoxPLot2(F1, F2, SelFacX, input$SelFacY, FCOL, selectFCOL, varX, fMean, bsmooth=input$uniSmooth, blog=input$uniLog, bviolin=FALSE)
+                       getBoxPLot2(F1, F2, SelFacX, SelFacY, FCOL, selectFCOL, varX, fMean, bsmooth=input$uniSmooth, blog=input$uniLog, bviolin=FALSE)
                    }
                }, error=function(e) {})
             })
@@ -157,7 +176,7 @@
     getBoxPLot1 <- function(F1, selectF1, FCOL, selectFCOL, varX, fMean, bsmooth=FALSE, blog=FALSE, bviolin=FALSE) {
         # Factor levels F1
         facval1 <- g$data[ , F1]
-        if (is.numeric(facval1)) {
+        if (is.numeric(facval1)  && sum(facval1-floor(facval1))>0) {
             fmt <- paste('%0',round(log10(max(abs(facval1)))+0.5)+3,'.2f',sep='')
             facval1 <- as.character(sprintf(fmt, facval1))
         }
@@ -171,7 +190,7 @@
         ofacvals <- order(cfacvals)
         cfacvals[is.na(cfacvals)] <- "NA"
         fident <- ifelse( FCOL %in% g$identifiers$Attribute, TRUE, FALSE )
-        if (! fident && is.numeric(cfacvals)) {
+        if (! fident && is.numeric(cfacvals) && sum(cfacvals-floor(cfacvals))>0) {
             fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')
             cfacvals <- as.character(sprintf(fmt, cfacvals))
         }
@@ -222,7 +241,7 @@
 
         # Factor levels F1
         facval1 <- g$data[ , F1]
-        if (is.numeric(facval1)) {
+        if (is.numeric(facval1) && sum(facval1-floor(facval1))>0) {
             fmt <- paste('%0',round(log10(max(abs(facval1)))+0.5)+3,'.2f',sep='')
             facval1 <- as.character(sprintf(fmt, facval1))
         }
@@ -236,14 +255,14 @@
         ofacvals <- order(cfacvals)
         cfacvals[is.na(cfacvals)] <- "NA"
         fident <- ifelse( FCOL %in% g$identifiers$Attribute, TRUE, FALSE )
-        if (! fident && is.numeric(cfacvals)) {
+        if (! fident && is.numeric(cfacvals) && sum(cfacvals-floor(cfacvals))>0) {
             fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')
             cfacvals <- as.character(sprintf(fmt, cfacvals))
         }
 
         # Factor levels F2
         facval2 <- g$data[ , F2]
-        if (is.numeric(facval2)) {
+        if (is.numeric(facval2) && sum(facval2-floor(facval2))>0) {
             fmt <- paste('%0',round(log10(max(abs(facval2)))+0.5)+3,'.2f',sep='')
             facval2 <- as.character(sprintf(fmt, facval2))
         }

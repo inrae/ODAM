@@ -227,8 +227,8 @@ getInit <- function()
        g$subsets[,5] <<- sapply(.C(g$subsets[,5]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
        g$subsets[,6] <<- sapply(.C(g$subsets[,6]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
        g$dn <<- fillDN(g$dn, min(g$connectList[,1]))
-       Lev <- NULL; Lev <- cntLevelDN(Lev, g$dn , 1); N <- min(max(Lev),25)
-       N <- (trunc(N/5)+1*(N %% 5 >0))*5
+       Lev <- NULL; Lev <- cntLevelDN(Lev, g$dn , 1);
+       N <- min(max(Lev),25); N <- (trunc(N/5)+1*(N %% 5 >0))*5
        g$fs <<- -N + 45
     }
 }

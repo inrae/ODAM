@@ -14,22 +14,35 @@
     observe({ tryCatch({
        input$inDselect
        if ( values$launch>0 ) {
-          # Annotation
-          fa_options <- c("None", .C(g$features[,2]))
-          names(fa_options) <- c('---', .C(g$features$Description))
-          updateSelectInput(session, "biAnnot", choices = fa_options)
-       }
-    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 1:\n", e ); }) })
-
-    observe({ tryCatch({
-       input$inDselect
-       if ( values$launch>0 ) {
           # First Factor
           f1_options <- .C(g$facnames[,2])
           names(f1_options) <- .C(g$facnames$Description)
-          updateSelectInput(session, "biFacX", choices = f1_options)
+          selfac <- f1_options[1]
+          if (nchar(ui$fac1)>0 && ui$fac1 %in% .C(g$facnames[,3]))
+              selfac <- f1_options[which(g$facnames[,3] %in% ui$fac1)]
+          updateSelectInput(session, "biFacX", choices = f1_options, selected=selfac)
        }
-    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 2:\n", e ); }) })
+    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 1a:\n", e ); }) })
+
+    observe({ tryCatch({
+       input$inDselect
+       if ( values$launch>0 && ! is.null(input$biFacX) && nchar(input$biFacX)>0) {
+           facvals <- g$data[ , input$biFacX]
+           if (is.numeric(facvals) && sum(facvals-floor(facvals))>0) {
+               fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
+               facvals <- as.character(sprintf(fmt, facvals))
+           }
+           levelFac <- .C( levels(as.factor(facvals)) )
+           l_options <- c('')
+           names(l_options) <- c('---')
+           if (length(levelFac)<nbopt_multiselect) {
+              l_options <- c( 1:length(levelFac) )
+              names(l_options) <- c(as.character(c(levelFac)))
+           }
+           updateSelectInput(session, "SelFacX2", choices = l_options, selected=l_options)
+       }
+    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 1b:\n", e ); }) })
+
 
     observe({ tryCatch({
        input$inDselect
@@ -40,25 +53,27 @@
              v_options <- c(0, 1:nrow(g$varnames) )
              names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",g$varnames$Description)))
           }
-          updateSelectInput(session, "biVarSelect1", choices = v_options)
-          updateSelectInput(session, "biVarSelect2", choices = v_options)
+          selVar1 <- NULL
+          if (nchar(ui$var1)>0 && ui$var1 %in% .C(g$varnames[,3]))
+              selVar1 <- which(.C(g$varnames[,3]) %in% ui$var1)
+          selVar2 <- NULL
+          if (nchar(ui$var2)>0 && ui$var2 %in% .C(g$varnames[,3]))
+              selVar2 <- which(.C(g$varnames[,3]) %in% ui$var2)
+          updateSelectInput(session, "biVarSelect1", choices = v_options, selected=selVar1)
+          updateSelectInput(session, "biVarSelect2", choices = v_options, selected=selVar2)
        }
-    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 3:\n", e ); }) })
+    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 2:\n", e ); }) })
+
 
     observe({ tryCatch({
        input$inDselect
-       if ( values$launch>0 && ! is.null(input$biFacX) && nchar(input$biFacX)>0) {
-           facvals <- g$data[ , input$biFacX]
-           if (is.numeric(facvals)) {
-               fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
-               facvals <- as.character(sprintf(fmt, facvals))
-           }
-           levelFac <- .C( levels(as.factor(facvals)) )
-           l_options <- c( 1:length(levelFac) )
-           names(l_options) <- c(as.character(c(levelFac)))
-           updateSelectInput(session, "SelFacX2", choices = l_options, selected=l_options)
+       if ( values$launch>0 ) {
+          # Annotation
+          fa_options <- c("None", .C(g$features[,2]))
+          names(fa_options) <- c('---', .C(g$features$Description))
+          updateSelectInput(session, "biAnnot", choices = fa_options)
        }
-    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 4:\n", e ); }) })
+    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 3a:\n", e ); }) })
 
     observe({ tryCatch({
        input$inDselect
@@ -68,7 +83,7 @@
           if (.C(input$biAnnot) != "None") {
               fvals <- g$data[ , input$biAnnot]
               fident <- ifelse( input$biAnnot %in% g$identifiers$Attribute, TRUE, FALSE)
-              if (! fident && is.numeric(fvals)) {
+              if (! fident && is.numeric(fvals) && sum(fvals-floor(fvals))>0) {
                  fmt <- paste('%0',round(log10(max(abs(fvals)))+0.5)+3,'.2f',sep='')
                  fvals <- as.character(sprintf(fmt, fvals))
               }
@@ -80,7 +95,7 @@
           }
           updateSelectInput(session, "biFeatures", choices = f_options, selected=f_options)
        }
-    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 5:\n", e ); }) })
+    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 3b:\n", e ); }) })
 
     #----------------------------------------------------
     # renderUI - Bivariate : ScatterPlot
@@ -118,7 +133,7 @@
     {
         # Factor levels
         facvals <- g$data[ , F1]
-        if (is.numeric(facvals)) {
+        if (is.numeric(facvals) && sum(facvals-floor(facvals))>0) {
             fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
             facvals <- as.character(sprintf(fmt, facvals))
         }
@@ -132,7 +147,7 @@
         ofacvals <- order(cfacvals)
         cfacvals[is.na(cfacvals)] <- "NA"
         fident <- ifelse( FCOL %in% g$identifiers$Attribute, TRUE, FALSE )
-        if (! fident && is.numeric(cfacvals)) {
+        if (! fident && is.numeric(cfacvals) && sum(cfacvals-floor(cfacvals))>0) {
             fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')
             cfacvals <- as.character(sprintf(fmt, cfacvals))
         }

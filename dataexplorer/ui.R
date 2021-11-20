@@ -56,7 +56,7 @@ ui <- dashboardPage(skin = "blue",
 
   dashboardBody(
     meta,
-    shinyjs::useShinyjs(debug = TRUE, html = FALSE),
+    shinyjs::useShinyjs(debug = debug_shinyjs, html = FALSE),
     shinyjs::inlineCSS(list(.hideElem = "display: none")),
     shinyjs::inlineCSS(list(.dataTables_info="display: inline")),
 

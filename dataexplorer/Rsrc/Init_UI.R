@@ -247,9 +247,10 @@
            if ( ui$tab %in% c('datatable','univariate','bivariate','multivariate') ) {
               js$openTab(ui$tab)
               js$hideSidebar()
-              if (ui$header %in% c('off') ) {
+              if (ui$header %in% c('off')) {
                   js$hideMainHeader()
                   runjs('$(".box-header").css("display", "none");')
+                  runjs('$(".skin-blue, .sidebar-collapse").css("min-height", "0px");')
                   if ( ui$updiv %in% c('off') )
                        runjs('$(".div-top").css("display", "none");')
                   if ( ui$downdiv %in% c('off') )
@@ -277,6 +278,9 @@
     #----------------------------------------------------
     observe({ tryCatch({
         input$inDSselect
+        if (! is.null(g$subsets) && (is.null(input$inDSselect) || length(input$inDSselect)==0)) {
+             g$inDSselect <<- ws$subset <<- ''; values$initds <- values$initdss <- values$launch <- 0
+        }
         if (! is.null(g$subsets) && ! is.null(input$inDSselect) && length(input$inDSselect)>0 && g$inDSselect != .J(input$inDSselect)) {
             getVars(.J(input$inDSselect))
             if (is.wsError()) { values$init <- values$error <- 1; values$initdss <- 0; values$launch <- 0 }

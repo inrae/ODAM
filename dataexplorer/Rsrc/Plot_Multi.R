@@ -97,10 +97,8 @@
           f1_options <- .C(g$facnames[,2])
           names(f1_options) <- .C(g$facnames$Description)
           selFacX <- f1_options[1]
-          if (! is.null(ui$fac1) && ! is.na(ui$fac1) && nchar(ui$fac1)>0 && ui$fac1 %in% .C(g$facnames[,3])) {
+          if (! is.null(ui$fac1) && ! is.na(ui$fac1) && nchar(ui$fac1)>0 && ui$fac1 %in% .C(g$facnames[,3]))
               selFacX <- g$facnames[g$facnames[,3]==ui$fac1,2]
-              ui$fac1 <<- ''
-          }
           if (nrow(g$varnames)>2)
               updateSelectInput(session, "multiFacX", choices = f1_options, selected=selFacX)
           # Select the variables to be included in the analysis
@@ -115,13 +113,17 @@
        input$inDselect
        if (values$launch>0 && ! is.null(input$multiFacX) && nchar(.C(input$multiFacX))>0) {
           facvals <- g$data[ , .C(input$multiFacX)]
-          if (is.numeric(facvals)) {
+          if (is.numeric(facvals) && sum(facvals-floor(facvals))>0) {
               fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
               facvals <- as.character(sprintf(fmt, facvals))
           }
           levelFac <- .C( levels(as.factor(facvals)) )
-          l_options <- c( 1:length(levelFac) )
-          names(l_options) <- c(levelFac)
+          l_options <- c('')
+          names(l_options) <- c('---')
+          if (length(levelFac)<nbopt_multiselect) {
+              l_options <- c( 1:length(levelFac) )
+              names(l_options) <- c(as.character(c(levelFac)))
+          }
           updateSelectInput(session, "listLevels", choices = l_options, selected=l_options)
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 5:\n", e ); }) })
@@ -146,7 +148,7 @@
           if (input$multiAnnot != "None") {
               fvals <- g$data[ , input$multiAnnot]
               fident <- ifelse( input$multiAnnot %in% g$identifiers$Attribute, TRUE, FALSE)
-              if (!fident && is.numeric(fvals) && sum(is.na(fvals))==0 ) {
+              if (!fident && is.numeric(fvals) && sum(is.na(fvals))==0 && sum(fvals-floor(fvals))>0) {
                  fmt <- paste('%0',round(log10(max(abs(fvals)))+0.5)+3,'.2f',sep='')
                  fvals <- as.character(sprintf(fmt, fvals))
               }
@@ -626,7 +628,7 @@
         }
 
         facvals <- data[ , F1]
-        if (is.numeric(facvals)) {
+        if (is.numeric(facvals) && sum(facvals-floor(facvals))>0) {
             fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
             facvals <- as.character(sprintf(fmt, facvals))
         }
@@ -639,7 +641,7 @@
         ofacvals <- order(cfacvals)
         cfacvals[is.na(cfacvals)] <- "NA"
         fident <- ifelse( FCOL %in% g$identifiers$Attribute, TRUE, FALSE )
-        if (! fident && is.numeric(cfacvals)) {
+        if (! fident && is.numeric(cfacvals) && sum(cfacvals-floor(cfacvals))>0) {
             fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')
             cfacvals <- as.character(sprintf(fmt, cfacvals))
         }

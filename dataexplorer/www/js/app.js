@@ -19,8 +19,19 @@ shinyjs.showinDSselect = function(params) { $("body").find('.inDSselect').css( "
 
 
 // Dashboard Tab selection
-shinyjs.openTab = function(params){
-     $('a', $('.sidebar')).each(function() {
-        if(this.getAttribute('data-value') == params) { this.click() };
-     });
+shinyjs.openTab = function(params)
+{
+   $('a', $('.sidebar')).each(function() {
+      if(this.getAttribute('data-value') == params) { this.click() };
+   });
+}
+
+shinyjs.hideInfoDT = function(params)
+{
+   $('#'+params).dataTable({
+      "bLengthChange": false,
+      "bInfo": false,
+      "lengthChange": false,
+      "info": false
+   });
 }

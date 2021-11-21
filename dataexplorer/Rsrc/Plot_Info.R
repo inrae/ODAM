@@ -79,15 +79,7 @@
        if (nchar(input$ipclient)==0) return(NULL)
        if (nchar(ws$dcname)==0) return(NULL)
        tryCatch({
-          if (!is.wsError()) {
-             T <- getInfos(ws,1)
-          } else {
-             T <- paste('##',g$msgError)
-          }
-          markdownToHTML(text=T, fragment.only = TRUE,  title = "", 
-                   options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
-                extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
-                              'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
+          GetInfosToHTML(ws,1)
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - Collection info \n", e ); })
     })
 
@@ -104,12 +96,12 @@
           V <- colect$datasetID
           colect$datasetID <- sapply(V, function(x) { 
                    paste0("<a onclick=\"Shiny.onInputChange('inDselect','",x,"');\">",x,"</a>") })
-          V <- rep("dataset", length(colect$url))
-          colect$url <- V
-          names(colect) <- c("datasetID", "Label", "Type", "Description")
+          #V <- rep("dataset", length(colect$url))
+          colect$url <- NULL
+          names(colect) <- c("datasetID", "Label", "Description")
           colect
        }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - datasets \n", e ); })
-    }, options = list(searching=TRUE, paging=TRUE), escape=c(2:4))
+    }, options = list(searching=TRUE, paging=TRUE), escape=c(2:3))
 
     #----------------------------------------------------
     # renderUI - Data Information
@@ -120,15 +112,7 @@
        input$inDselect
        if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({
-          if (!is.wsError()) {
-             T <- getInfos(ws)
-          } else {
-             T <- paste('##',g$msgError)
-          }
-          markdownToHTML(text=T, fragment.only = TRUE,  title = "", 
-               options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
-               extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
-                              'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
+          GetInfosToHTML(ws,0)
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - Data info \n", e ); })
     })
 
@@ -137,12 +121,7 @@
     #----------------------------------------------------
     output$aboutinfos <- renderText({
        tryCatch({
-          markdownToHTML(text=getAbout(), fragment.only = TRUE, title = "", 
-               options = c("use_xhtml", "smartypants", "base64_images", "mathjax", "highlight_code" ),
-               extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", 
-                               "strikethrough", "lax_spacing", "space_headers", "superscript", "latex_math"),
-               encoding = c("latin1")
-          )
+          GetAboutToHTML()
        }, error=function(e) { ERROR$MsgErrorAbout <- paste("RenderText - About:\n", e ); })
     })
 
@@ -187,7 +166,20 @@
            names(df) <- c("Subset","Description","Identifier", "WSEntry", "CV_Term")
            df
        }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Subsets \n", e ); })
-    }, options = list(searching=FALSE, paging=FALSE), escape=c(2:4))
+    }, options = list(searching=FALSE, paging=FALSE, lengthChange = FALSE, info = FALSE), escape=c(2:4))
+
+    #----------------------------------------------------
+    # renderUI - DataTable of data subsets
+    #----------------------------------------------------
+    output$metadata <- renderDataTable({
+       values$initdss
+       if (nchar(input$ipclient)==0) return(NULL)
+       tryCatch({ if (nchar(g$msgError)==0) {
+           if ( !is.DS(cdata) || values$init==0) return(NULL)
+           if ( is.null(g$subsets2) ) return(NULL)
+           getMetadataLinksAsTable(ws)
+       }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Metadata \n", e ); })
+    }, options = list(searching=FALSE, paging=FALSE, lengthChange = FALSE, info = FALSE), escape=c(2))
 
     #----------------------------------------------------
     # renderUI - Metadata of the selected data subset
@@ -199,7 +191,7 @@
            if (is.null(g$LABELS) || nrow(g$LABELS)==0) return(NULL)
            getLabels()
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Infos:\n", e ); })
-    }, options = list(searching=FALSE, paging=FALSE), escape=c(1,2,3))
+    }, options = list(searching=FALSE, paging=FALSE, lengthChange = FALSE, info = FALSE), escape=c(1,2,3))
 
 
     #----------------------------------------------------

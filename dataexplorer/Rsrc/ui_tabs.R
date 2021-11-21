@@ -27,6 +27,12 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
      )
    ),
    conditionalPanel(condition="output.apierror==0",
+      conditionalPanel(condition="output.DSsize==0", 
+         box(
+            title="Metadata Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+            dataTableOutput("metadata")
+         )
+      ),
       box(
          title="Data Subset Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
          #verbatimTextOutput('out1'),

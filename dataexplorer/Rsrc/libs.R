@@ -139,6 +139,17 @@ getAbout <- function ()
     }
 }
 
+# Get 'about.md' content and transforme it to HTML
+GetAboutToHTML <- function()
+{
+    markdownToHTML(text=getAbout(), fragment.only = TRUE, title = "", 
+         options = c("use_xhtml", "smartypants", "base64_images", "mathjax", "highlight_code" ),
+         extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", 
+                         "strikethrough", "lax_spacing", "space_headers", "superscript", "latex_math"),
+         encoding = c("latin1")
+    )
+}
+
 # Get 'infos.md' content
 getInfos <- function (ws, dcol=0)
 {
@@ -169,6 +180,22 @@ getInfos <- function (ws, dcol=0)
     }
     T
 }
+
+# Get 'infos.md' content and transforme it to HTML
+GetInfosToHTML <- function(ws, dcol=0)
+{
+   if (!is.wsError()) {
+      T <- getInfos(ws,dcol)
+   } else {
+      T <- paste('##',g$msgError)
+   }
+   out <- markdownToHTML(text=T, fragment.only = TRUE,  title = "", 
+            options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
+         extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
+                       'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
+   gsub('href=', 'target="_blank" href=', out)
+}
+
 
 # Get tabulated data
 getData <- function (ws, query='', dcol=0)
@@ -356,6 +383,25 @@ getLabels <- function() {
     df <- as.data.frame(labelinfo)
     names(df) <- c("Attribute","Description","WSEntry","Category","CV_Term")
     df
+}
+
+# Get metadata links as a data.frame
+getMetadataLinksAsTable <- function(ws)
+{
+  href1 <- paste0('<a href="',ws$apiurl,'/query/',ws$dsname,'?format=xml" target="_blank">Data subsets</a>')
+  href2 <- paste0('<a href="',ws$apiurl,'/query/',ws$dsname,'/metadata/?format=xml" target="_blank">Attributes</a>')
+  href3 <- paste0('<a href="',ws$apiurl,'/query/',ws$dsname,'/datapackage/?links=1" target="_blank">Datapackage</a>')
+  
+  hrefS <- '<a href="https://inrae.github.io/ODAM/data-preparation/#s_subsetstsv" target="_blank">Data Preparation Protocol - Subsets</a>'
+  hrefA <- '<a href="https://inrae.github.io/ODAM/data-preparation/#a_attributestsv" target="_blank">Data Preparation Protocol - Attributes</a>'
+  hrefJ <- '<a href="https://inrae.github.io/ODAM/json-schema/" target="_blank">ODAM datapackage based on JSON-Schema</a>'
+  
+  df <- data.frame(rbind( c(href1, 'All metadata related to data subsets', hrefS),
+                          c(href2, 'All metadata related to attributes within each data subset', hrefA),
+                          c(href3, 'All metadata as a JSON datapackage', hrefJ)
+                   ))
+  colnames(df) <- c('Metadata Type','Description','Information')
+  df
 }
 
 # Build a tree of relations between data subsets

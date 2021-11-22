@@ -428,7 +428,7 @@
                MA$IDS <- subdata[, g$samples ]
            }
            names(MA) <- c( 'C1','C2', 'C3', 'fac', 'IDS')
-           for( i in 1:length(levels(facvals)) ) MA$fac[ MA$fac==i ] <- levels(facvals)[i]
+           for( i in 1:length(levels(as.factor(facvals))) ) MA$fac[ MA$fac==i ] <- levels(as.factor(facvals))[i]
            MA$fac <- as.factor(MA$fac)
            MA <- unique(MA)
 

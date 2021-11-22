@@ -25,13 +25,3 @@ shinyjs.openTab = function(params)
       if(this.getAttribute('data-value') == params) { this.click() };
    });
 }
-
-shinyjs.hideInfoDT = function(params)
-{
-   $('#'+params).dataTable({
-      "bLengthChange": false,
-      "bInfo": false,
-      "lengthChange": false,
-      "info": false
-   });
-}

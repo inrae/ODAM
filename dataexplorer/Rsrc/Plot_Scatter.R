@@ -188,7 +188,6 @@
            T1 <- subdata[!is.na(subdata[,varX]), ]
            dat <- T1[!is.na(T1[,varY]), ]
         }
-        #dat <- subdata
 
         # Select type of IDS as labels
         xvar=.N(dat[, varX]); if (blog[1]) xvar <- log10( xvar + 1 );
@@ -206,16 +205,7 @@
         if (blog[2]) yname  <- paste("Log10[",yname,"]")
         F1name <- as.character(g$LABELS[g$LABELS[,2]==F1,4])
 
-        # Calculate Ellipse
-        centroids <- aggregate(cbind(xvar,yvar) ~ factor1 , dfg, mean)
-        conf.rgn  <- do.call(rbind,lapply(unique(dfg$factor1),function(t)
-          data.frame(factor1=as.character(t), 
-                     ellipse(cov(dfg[dfg$factor1==t,2:3]), centre=as.matrix(centroids[centroids$factor1==t,2:3]), level=0.95, npoints=50), 
-                     stringsAsFactors=FALSE)))
-        for( i in 1:length(levels(facvals)) ) {
-             conf.rgn$factor1[ conf.rgn$factor1==i ] <- levels(facvals)[i]
-        }
-
+        # Calculate Linear Model
         if (reglin) {
             fit <- lm(yvar~xvar, data=dfg)
             fit.title <- paste("Adj R2 = ",signif(summary(fit)$adj.r.squared, 5),
@@ -233,7 +223,7 @@
         } else {
             G1 <- ggplot(aes(x=xvar, y=yvar, colour=factor1), data = dfg)
             if (gAddon=="regmod")  G1 <- G1 + stat_smooth(method=lm, size=1, se = SE )
-            if (gAddon=="ellipse") G1 <- G1 + geom_path(data=conf.rgn)
+            if (gAddon=="ellipse") G1 <- G1 + stat_ellipse(type='norm', level=0.95, na.rm=TRUE)
         }
         if (!blabels) G1 <- G1 + geom_point(aes(colour=factor1), size=sizeP)
         if (blabels) G1 <- G1 + geom_text(aes(label=IDS, colour=factor1), hjust=0.5, vjust=0.5, size=4)

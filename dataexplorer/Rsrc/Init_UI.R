@@ -73,8 +73,12 @@
          showModal(apiKeyModal(failed = TRUE))
       } else {
          removeModal()
-         if ( nchar(ws$dcname)>0 ) { values$initcol <- values$initcol + 1 }
-         else                      { values$initds <- values$initds + 1 }
+         if ( nchar(ws$dsname)>0 ) { 
+             values$initds <- values$initds + 1;
+             values$init <- values$initdss <- values$launch <- values$error <- 0
+         } else if ( nchar(ws$dcname)>0 ) { 
+             values$initcol <- values$initcol + 1
+         }
          values$error <- 0
       }
     })

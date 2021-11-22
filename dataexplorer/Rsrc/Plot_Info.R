@@ -92,16 +92,18 @@
        if (nchar(input$ipclient)==0) return(NULL)
        if (nchar(ws$dcname)==0) return(NULL)
        tryCatch({ if (nchar(g$msgError)==0) {
-          colect <- as.data.frame(g$dclist$list)
-          V <- colect$datasetID
-          colect$datasetID <- sapply(V, function(x) { 
-                   paste0("<a onclick=\"Shiny.onInputChange('inDselect','",x,"');\">",x,"</a>") })
-          #V <- rep("dataset", length(colect$url))
-          colect$url <- NULL
-          names(colect) <- c("datasetID", "Label", "Description")
-          colect
+          collect <- as.data.frame(g$dclist$list)
+          V <- .C(collect$datasetID)
+          collect$datasetID <- sapply(V, function(ds) { 
+                   paste0("<a onclick=\"Shiny.onInputChange('inDselect','",ds,"');\">",ds,"</a>") })
+          #collect$url <- NULL
+          #names(collect) <- c("datasetID", "Label", "Description")
+          ws0 <- ws
+          collect$url <- sapply( V, function(ds) { ws0$dsname <- ds; nrow(getData(ws0)) })
+          names(collect) <- c("Dataset", "Label", "Data subsets", "Description")
+          collect
        }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - datasets \n", e ); })
-    }, options = list(searching=TRUE, paging=TRUE), escape=c(2:3))
+    }, options = list(searching=TRUE, paging=TRUE), escape=c(2:4))
 
     #----------------------------------------------------
     # renderUI - Data Information

@@ -43,9 +43,85 @@
        }
     }
 
+    #----------------------------------------------------
+    # Modal dialog UI for global parameters
+    #----------------------------------------------------
+    gparamsModal <- function() {
+      modalDialog(
+        tags$table(
+          tags$tr(tags$td(tags$strong("Global parameters"))), tags$tr(tags$td(tags$hr())),
+          tags$tr(tags$td(width="400px", tags$strong("Nb max variables for a datasubset so that it can be explored"))),
+          tags$tr(tags$td(
+              numericInput("maxVariables", NULL, maxVariables, min = 100, max = 1000, step=100))),
+          tags$tr(tags$td(
+              numericInput("msmaxnbopt", "Nb max items when multiselect", nbopt_multiselect, min = 10, max = 1000, step=50))),
+          tags$tr(tags$td(checkboxInput("saveplots", "Save plots (GGM & COR)", saveplots)))
+        ),
+        footer = tagList(
+           modalButton("Cancel"), actionButton("okgparams", "Submit")
+        )
+      )
+    }
+
+    # When OK button is pressed, affects the global variables
+    observeEvent(input$okgparams, {
+        maxVariables <<- input$maxVariables
+        nbopt_multiselect <<- input$msmaxnbopt
+        saveplots <<- input$saveplots
+        if (saveplots) {
+          SESSTMPDIR <<- file.path(getwd(),'www/tmp',SESSID)
+          dir.create(SESSTMPDIR, showWarnings = FALSE)
+        } else {
+          SESSTMPDIR <<- tempdir()
+        }
+        removeModal()
+    })
 
     #----------------------------------------------------
-    # Modal dialog UI
+    # Modal dialog UI for Packages information
+    #----------------------------------------------------
+    sessInfoModal <- function() {
+      modalDialog({
+          V <- sessionInfo();
+          p <- ls(V$loadedOnly)
+          packages <- NULL
+          for (i in 1:length(p))
+             packages <- c( packages, paste0(V$loadedOnly[[p[i]]]$Package,'_',V$loadedOnly[[p[i]]]$Version) )
+          p <- ls(V$otherPkgs)
+          others <- NULL
+          for (i in 1:length(p))
+             others <- c( others, paste0(V$otherPkgs[[p[i]]]$Package,'_',V$otherPkgs[[p[i]]]$Version) )
+          tags$table(
+             tags$tr(tags$td(colspan = 2, tags$strong(paste("Dataexplorer version",idVersion)))),
+             tags$tr(tags$td(colspan = 2, tags$hr())),
+             tags$tr(tags$td(colspan = 2, V$R.version$version.string)),
+             tags$tr(tags$td(colspan = 2, paste("platform:",V$platform))),
+             tags$tr(tags$td(colspan = 2, paste("Running under:",V$running))),
+             tags$tr(tags$td(colspan = 2, tags$br())),
+             tags$tr(tags$td(style="vertical-align: top;", "Blas:"), tags$td(V$BLAS)),
+             tags$tr(tags$td(style="vertical-align: top;", "Lapack:"), tags$td(V$LAPACK)),
+             tags$tr(tags$td(colspan = 2, tags$br())),
+             tags$tr(tags$td(style="vertical-align: top;", "locale:"), tags$td(gsub(';',', ', V$locale))),
+             tags$tr(tags$td(colspan = 2, tags$br())),
+             tags$tr(tags$td(style="vertical-align: top;", "Base Packages:"), tags$td(paste(V$basePkgs, collapse=', '))),
+             tags$tr(tags$td(colspan = 2, tags$br())),
+             tags$tr(tags$td(style="vertical-align: top;", "Loarded Packages:"), tags$td( paste(packages, collapse=', ') )),
+             tags$tr(tags$td(colspan = 2, tags$br())),
+             tags$tr(tags$td(style="vertical-align: top;", "Others Packages:"), tags$td( paste(others, collapse=', ') ))
+          )
+      },
+      footer = modalButton("Dismiss"), size="l", easyClose = TRUE )
+    }
+
+    # When Ctrl-M is pressed, open the modal
+    observeEvent(input$keyEvent, {
+        if (input$keyEvent==9) showModal(sessInfoModal())
+        if (input$keyEvent==10) showModal(gparamsModal())
+        runjs('Shiny.onInputChange("keyEvent", 0);')
+    })
+
+    #----------------------------------------------------
+    # Modal dialog UI for API Key
     #----------------------------------------------------
     apiKeyModal <- function(failed = FALSE) {
       modalDialog(

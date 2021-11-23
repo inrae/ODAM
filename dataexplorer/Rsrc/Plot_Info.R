@@ -14,6 +14,8 @@
        }
     })
 
+
+
     #----------------------------------------------------
     # Observer - Data Table
     #----------------------------------------------------
@@ -27,6 +29,29 @@
                 selected = c( g$samples, .C(g$facnames$Attribute) ))
         }
     }, error=function(e) { ERROR$MsgErrorInfo <- paste("Observer 1:\n", e ); }) })
+
+    #----------------------------------------------------
+    # renderUI - Data Table - See http://rstudio.github.io/DT/
+    #----------------------------------------------------
+    output$datavalues <- tryCatch({
+       DT::renderDataTable(
+           unique( g$data[, input$show_vars, drop = FALSE] ),  selection='none', filter = 'top', rownames = FALSE, 
+           extensions = c('Buttons','Scroller'), options= list(
+                 dom='Bfrtip', buttons = list('copy','excel'), pageLength = nrow(g$data), autoWidth=TRUE,  deferRender = FALSE,  scrollY = 750,  scroller = TRUE
+           ), server=FALSE
+       )
+    }, error=function(e) { ERROR$MsgErrorInfo <- paste("DT::renderDataTable:\n", e ); })
+
+
+
+    #----------------------------------------------------
+    # renderUI - About Box
+    #----------------------------------------------------
+    output$aboutinfos <- renderText({
+       tryCatch({
+          GetAboutToHTML()
+       }, error=function(e) { ERROR$MsgErrorAbout <- paste("RenderText - About:\n", e ); })
+    })
 
     #----------------------------------------------------
     # Session Info within the About tab
@@ -70,8 +95,29 @@
        }, error=function(e) { ERROR$MsgErrorAbout <- paste("RenderPrint:\n", e ); })
     })
 
+
+
     #----------------------------------------------------
-    # renderUI - Collection Information
+    # renderUI - Debug
+    #----------------------------------------------------
+    output$out1 <- renderText({ 
+       input$keyEvent
+       tryCatch({
+          paste(sep = "",
+            "protocol: ", cdata$url_protocol, "\n",
+            "hostname: ", cdata$url_hostname, "\n",
+            "pathname: ", cdata$url_pathname, "\n",
+            "port: ",     cdata$url_port,     "\n",
+            "search: ",   cdata$url_search,   "\n",
+            "key press: ",input$keyEvent,     "\n"
+          )
+       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - out1 \n", e ); })
+    })
+
+
+
+    #----------------------------------------------------
+    # renderUI - Data Collection information
     #----------------------------------------------------
     output$colinfos <- renderText({
        values$initcol
@@ -84,7 +130,7 @@
     })
 
     #----------------------------------------------------
-    # renderUI - DataTable of datasets
+    # renderUI - DataTable of Data Collection
     #----------------------------------------------------
     output$datasets <- renderDataTable({
        values$initcol
@@ -96,8 +142,6 @@
           V <- .C(collect$datasetID)
           collect$datasetID <- sapply(V, function(ds) { 
                    paste0("<a onclick=\"Shiny.onInputChange('inDselect','",ds,"');\">",ds,"</a>") })
-          #collect$url <- NULL
-          #names(collect) <- c("datasetID", "Label", "Description")
           ws0 <- ws
           collect$url <- sapply( V, function(ds) { ws0$dsname <- ds; nrow(getData(ws0)) })
           names(collect) <- c("Dataset", "Label", "Data subsets", "Description")
@@ -105,8 +149,10 @@
        }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - datasets \n", e ); })
     }, options = list(searching=TRUE, paging=TRUE), escape=c(2:4))
 
+
+
     #----------------------------------------------------
-    # renderUI - Data Information
+    # renderUI - Dataset Information
     #----------------------------------------------------
     output$datainfos <- renderText({
        values$initds
@@ -114,36 +160,25 @@
        input$inDselect
        if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({
-          GetInfosToHTML(ws,0)
+          GetInfosToHTML(ws,0) 
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - Data info \n", e ); })
     })
 
     #----------------------------------------------------
-    # renderUI - About Box
+    # renderUI - Metadata of Data subsets
     #----------------------------------------------------
-    output$aboutinfos <- renderText({
-       tryCatch({
-          GetAboutToHTML()
-       }, error=function(e) { ERROR$MsgErrorAbout <- paste("RenderText - About:\n", e ); })
-    })
+    output$metadata <- renderDataTable({
+       values$initdss
+       if (nchar(input$ipclient)==0) return(NULL)
+       tryCatch({ if (nchar(g$msgError)==0) {
+           if ( !is.DS(cdata) || values$init==0) return(NULL)
+           if ( is.null(g$subsets2) ) return(NULL)
+           getMetadataLinksAsTable(ws)
+       }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Metadata \n", e ); })
+    }, options = list(searching=FALSE, paging=FALSE, lengthChange = FALSE, info = FALSE), escape=c(2))
 
     #----------------------------------------------------
-    # renderUI - Metadata of data subsets
-    #----------------------------------------------------
-    output$out1 <- renderText({ 
-       tryCatch({
-          paste(sep = "",
-            "protocol: ", cdata$url_protocol, "\n",
-            "hostname: ", cdata$url_hostname, "\n",
-            "pathname: ", cdata$url_pathname, "\n",
-            "port: ",     cdata$url_port,     "\n",
-            "search: ",   cdata$url_search,   "\n"
-          )
-       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - out1 \n", e ); })
-    })
-
-    #----------------------------------------------------
-    # renderUI - DataTable of data subsets
+    # renderUI - DataTable of Data subsets
     #----------------------------------------------------
     output$subsets <- renderDataTable({
        values$initdss
@@ -171,41 +206,7 @@
     }, options = list(searching=FALSE, paging=FALSE, lengthChange = FALSE, info = FALSE), escape=c(2:4))
 
     #----------------------------------------------------
-    # renderUI - DataTable of data subsets
-    #----------------------------------------------------
-    output$metadata <- renderDataTable({
-       values$initdss
-       if (nchar(input$ipclient)==0) return(NULL)
-       tryCatch({ if (nchar(g$msgError)==0) {
-           if ( !is.DS(cdata) || values$init==0) return(NULL)
-           if ( is.null(g$subsets2) ) return(NULL)
-           getMetadataLinksAsTable(ws)
-       }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Metadata \n", e ); })
-    }, options = list(searching=FALSE, paging=FALSE, lengthChange = FALSE, info = FALSE), escape=c(2))
-
-    #----------------------------------------------------
-    # renderUI - Metadata of the selected data subset
-    #----------------------------------------------------
-    output$infos <- renderDataTable({
-       values$initdss
-       tryCatch({ 
-           if (values$launch==0) return(NULL)
-           if (is.null(g$LABELS) || nrow(g$LABELS)==0) return(NULL)
-           getLabels()
-       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Infos:\n", e ); })
-    }, options = list(searching=FALSE, paging=FALSE, lengthChange = FALSE, info = FALSE), escape=c(1,2,3))
-
-
-    #----------------------------------------------------
-    # renderUI - Wait for initialisation evenement 
-    #----------------------------------------------------
-    output$wait <- renderUI({
-        values$init
-        if (values$init==1) { "" }
-    })
-
-    #----------------------------------------------------
-    # Export the selected data subset 
+    # Export the selected Data subsets
     #----------------------------------------------------
     output$downloadTSV <- downloadHandler(
         filename = function() {
@@ -216,6 +217,19 @@
             write.table(g$data, con, sep="\t", row.names=FALSE, col.names=TRUE)
         }
     )
+
+
+    #----------------------------------------------------
+    # renderUI - Metadata of the selected Data subsets
+    #----------------------------------------------------
+    output$infos <- renderDataTable({
+       values$initdss
+       tryCatch({ 
+           if (values$launch==0) return(NULL)
+           if (is.null(g$LABELS) || nrow(g$LABELS)==0) return(NULL)
+           getLabels()
+       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Infos:\n", e ); })
+    }, options = list(searching=FALSE, paging=FALSE, lengthChange = FALSE, info = FALSE), escape=c(1,2,3))
 
     #----------------------------------------------------
     # renderUI - Subsets Graph with d3js
@@ -235,14 +249,11 @@
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderNetwork:\n", e ); })
     })
 
+
     #----------------------------------------------------
-    # renderUI - Data Table - See http://rstudio.github.io/DT/
+    # renderUI - Wait for initialisation evenement 
     #----------------------------------------------------
-    output$datavalues <- tryCatch({
-       DT::renderDataTable(
-           unique( g$data[, input$show_vars, drop = FALSE] ),  selection='none', filter = 'top', rownames = FALSE, 
-           extensions = c('Buttons','Scroller'), options= list(
-                 dom='Bfrtip', buttons = list('copy','excel'), pageLength = nrow(g$data), autoWidth=TRUE,  deferRender = FALSE,  scrollY = 750,  scroller = TRUE
-           ), server=FALSE
-       )
-    }, error=function(e) { ERROR$MsgErrorInfo <- paste("DT::renderDataTable:\n", e ); })
+    output$wait <- renderUI({
+        values$init
+        if (values$init==1) { "" }
+    })

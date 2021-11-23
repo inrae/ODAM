@@ -164,7 +164,7 @@
                 subdata <- subdata[subdata[ , FCOL ] %in% subFCOL, ]
         }
 
-        # Deal with NA
+        # Deal with NA only if less than 2000 for faster computation
         if (nrow(subdata)<2000) {
            dat <- NULL
            subS <- g$S[ g$S %in% sort(subdata[ , g$samples ]) ]

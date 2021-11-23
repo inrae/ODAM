@@ -7,9 +7,10 @@ ui_collection <- tabItem(tabName = "collection", bsAlert("ErrAlertInfo"),
         h3( tags$p('Please wait while loading ...'), tags$img(src = "loading.gif"), style = "color:#bf6f85")
      ),
      conditionalPanel(condition="uiloaded==1",
+         #tags$hr(), verbatimTextOutput('out1'),
          htmlOutput("colinfos", class="mddiv"),
-         tags$hr(), dataTableOutput("datasets")
-         #, tags$hr(), verbatimTextOutput('out1')
+         tags$hr(), dataTableOutput("datasets"),
+         tags$script('$(document).on("keypress", function (e) { Shiny.onInputChange("keyEvent", e.which); });')
      )
    )
 )
@@ -18,7 +19,7 @@ ui_collection <- tabItem(tabName = "collection", bsAlert("ErrAlertInfo"),
 # Information
 #----------------------------------------------------
 ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
-   box(title="Data Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+   box(title="Dataset", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
      conditionalPanel(condition="uiloaded==0",
         h3( tags$p('Please wait while loading ...'), tags$img(src = "loading.gif"), style = "color:#bf6f85")
      ),
@@ -29,12 +30,12 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
    conditionalPanel(condition="output.apierror==0",
       conditionalPanel(condition="output.DSsize==0", 
          box(
-            title="Metadata Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+            title="Metadata", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
             dataTableOutput("metadata")
          )
       ),
       box(
-         title="Data Subset Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+         title="Data Subsets", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
          #verbatimTextOutput('out1'),
          dataTableOutput("subsets"),
          conditionalPanel(condition="output.DSsize>0", 

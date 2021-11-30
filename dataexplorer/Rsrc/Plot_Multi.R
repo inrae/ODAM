@@ -429,10 +429,12 @@
            }
            names(MA) <- c( 'C1','C2', 'C3', 'fac', 'IDS')
            for( i in 1:length(levels(as.factor(facvals))) ) MA$fac[ MA$fac==i ] <- levels(as.factor(facvals))[i]
+
+           MA$C1 <- .N(MA$C1); MA$C2 <- .N(MA$C2); MA$C3 <- .N(MA$C3)
            MA$fac <- as.factor(MA$fac)
            MA <- unique(MA)
 
-#write.table(MA, file = file.path(tempdir(),'MA.txt'), append = FALSE, quote = TRUE, sep = "\t", na = "NA", dec = ".", row.names = FALSE)
+#if (saveplots) write.table(MA, file = file.path(SESSTMPDIR,'MA.txt'), append = FALSE, quote = TRUE, sep = "\t", na = "NA", dec = ".", row.names = FALSE)
 
            if (f3D) { # Use 3D plotly
               symbolset = c('dot', 'cross', 'diamond', 'square', 'triangle-down', 'triangle-left', 'triangle-right', 'triangle-up')
@@ -442,6 +444,9 @@
                        yaxis = list(title = sprintf("%s%d = %6.2f%%",prefix, pc2, evnorm[pc2])),
                        zaxis = list(title = sprintf("%s%d = %6.2f%%",prefix, pc3, evnorm[pc3]))))
            } else { # Use 2D ggplot / plotly
+
+#if (saveplots) MA <- read.table( file.path(SESSTMPDIR,'MA.txt'), header=TRUE, sep="\t", stringsAsFactors = FALSE) 
+
               sizeP <- ifelse( blabels, 0, 0 )
               G1 <- ggplot(data=MA,(aes(x=C1,y=C2,colour = fac)))
               if (!blabels) G1 <- G1 + geom_point(size=sizeP)

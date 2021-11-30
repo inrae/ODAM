@@ -16,6 +16,52 @@ var openPDF = function(url) {
    });
 }
 
+// Get XML through the API
+// apikey, ipclient : global variables
+var openXML = function(url) {
+   $.ajax({
+     url: url,
+     cache: false,
+     dataType: 'xml',
+     headers: { "x-api-key": apikey, 'x-forwarded-for': ipclient },
+     success: function(response) {
+        var xml = response;
+
+        //extract the stylesheet so we can load it manually
+        var stylesheet;
+        for (var i=0;i<xml.childNodes.length;i++)
+            if ( xml.childNodes[i].nodeName =='xml-stylesheet' )
+                stylesheet = xml.childNodes[i].data;
+        var items = stylesheet.split('=');
+        var xsltFile = items[items.length-1].replace(/"/g,'');
+
+        //fetch xslt manually
+        $.get( xsltFile, function(xslt){
+            var transformed;
+            if (! window['XSLTProcessor']) {
+                // Trasformation for IE
+                transformed = xml.transformNode(xslt);
+            } else {
+                // Transformation for non-IE
+                var processor = new XSLTProcessor();
+                processor.importStylesheet(xslt);
+                var xmldom = processor.transformToDocument(xml);
+                var serializer = new XMLSerializer();
+                transformed = serializer.serializeToString(xmldom.documentElement);
+            }
+
+            var newwindow = window.open();
+            newwindow.document.open();
+            newwindow.document.write(transformed);
+            newwindow.document.close();
+            newwindow.location.href=url;
+            newwindow.document.title = url;
+        });
+     }
+   });
+}
+
+
 // Toggle input of the API Key, from 'password' to 'text' and vice-versa
 var eyetoggle = function() {
    if ( $('#eyeapikey').attr('src') === 'eye-close.png' ) {

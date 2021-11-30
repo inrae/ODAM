@@ -53,48 +53,6 @@
        }, error=function(e) { ERROR$MsgErrorAbout <- paste("RenderText - About:\n", e ); })
     })
 
-    #----------------------------------------------------
-    # Session Info within the About tab
-    #----------------------------------------------------
-    output$sessioninfo <- renderPrint({
-       tryCatch({
-          if (nchar(ws$dsname)>0) {
-           # Run JS code  
-            authstr <- ifelse( nchar(ws$auth)>0, paste0(", '", ws$auth,"'"), '' );
-            odamws_params <- paste0("'",ws$apiurl,"', '",ws$dsname,"'", authstr);
-            cat("\noptions(width=256)\n", "options(warn=-1)\n","options(stringsAsFactors=FALSE)\n","\n",
-                "library(Rodam)\n","\n",
-                "# Initialize the 'ODAM' object \n", "dh <- new('odamws',",odamws_params,")\n","\n",
-                "# Get the Data Tree\n","show(dh)\n","\n",
-                "# Get the data subsets list\n","dh$subsetNames\n","\n",
-                sep=""
-            )
-            if ( values$launch>0) {
-               if (length(input$inDSselect)>1) {
-                  setName <- paste0("c(",paste(simplify2array(lapply(input$inDSselect, function(x) { paste0("'",x,"'") })),collapse=','),")")
-               } else {
-                  setName <- paste0("'",g$inDSselect,"'")
-               }
-               cat(
-                  "# Get '",g$inDSselect,"' data subset\n", "ds <- dh$getSubsetByName(",setName,")\n", "\n",
-                  "# Show all descriptions of variables\n", "ds$LABELS\n","\n",
-                  "# Show all factors defined in the data subset\n","ds$facnames\n","\n",
-                  "# Show all quantitative variables defined in the data subset\n","ds$varnames\n","\n",
-                  "# Show all qualitative variables defined in the data subset\n","ds$qualnames\n","\n",
-                  "# Display a summary for each quantitative variable\n","summary(ds$data[, ds$varnames ])\n","\n",
-                  "# Boxplot of all variables defined in ds$varnames\n",
-                  "Rank <- simplify2array(lapply(ds$varnames, function(x) { round(mean(log10(ds$data[ , x]), na.rm=T)) }))\n",
-                  "Rank[!is.finite(Rank)] <- 0\n",
-                  "colRank <- Rank - min(Rank) + 1\n",
-                  "cols <- c('red', 'orange', 'darkgreen', 'blue', 'purple', 'brown')\n",
-                  "boxplot(log10(ds$data[, ds$varnames]), outline=F, horizontal=T, border=cols[colRank], las=2, cex.axis=0.5)\n","\n",
-                  sep=""
-               )
-            }
-          }
-       }, error=function(e) { ERROR$MsgErrorAbout <- paste("RenderPrint:\n", e ); })
-    })
-
 
 
     #----------------------------------------------------
@@ -164,6 +122,8 @@
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - Data info \n", e ); })
     })
 
+
+
     #----------------------------------------------------
     # renderUI - Metadata of Data subsets
     #----------------------------------------------------
@@ -176,6 +136,8 @@
            getMetadataLinksAsTable(ws)
        }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Metadata \n", e ); })
     }, options = list(searching=FALSE, paging=FALSE, lengthChange = FALSE, info = FALSE), escape=c(2))
+
+
 
     #----------------------------------------------------
     # renderUI - DataTable of Data subsets
@@ -192,10 +154,12 @@
                tsets <- g$subsets2
            }
            setinfo <- NULL
-           authstr <- ifelse( nchar(ws$auth)>0, paste0('auth=', ws$auth,'&'), '' );
+           authstr <- ifelse( ws$keymode<2 && nchar(ws$auth)>0, paste0('auth=', ws$auth,'&'), '' );
            for( i in 1:nrow(tsets)) {
                urlSubset <- paste0(ws$apiurl,'query/', ws$dsname, '/(',.C(tsets[i,1]) ,')?', authstr, 'format=xml');
-               linkSubset <- ifelse( ws$keymode<2, paste0("<a href='",urlSubset,"' target='_blank'>",.C(tsets[i,1]),"</a>"), .C(tsets[i,1]) )
+               linkSubset <- ifelse( ws$keymode<2, 
+                   paste0("<a href='",urlSubset,"' target='_blank'>",.C(tsets[i,1]),"</a>"),
+                   paste0("<a class=\"jlink\" target=\"_blank\" onclick=\"javascript:openXML('",urlSubset,"');\">",.C(tsets[i,1]),"</a>") )
                linkOnto <- paste0("<a href='",.C(tsets[i,5]),"' target='_blank'>[", basename(.C(tsets[i,5])),'] ', .C(tsets[i,6]),"</a>")
                setinfo <- rbind( setinfo , c( linkSubset, .C(tsets[i,c(2:4)]), linkOnto ) )
            }
@@ -231,6 +195,8 @@
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Infos:\n", e ); })
     }, options = list(searching=FALSE, paging=FALSE, lengthChange = FALSE, info = FALSE), escape=c(1,2,3))
 
+
+
     #----------------------------------------------------
     # renderUI - Subsets Graph with d3js
     #----------------------------------------------------
@@ -250,6 +216,7 @@
     })
 
 
+
     #----------------------------------------------------
     # renderUI - Wait for initialisation evenement 
     #----------------------------------------------------
@@ -257,3 +224,51 @@
         values$init
         if (values$init==1) { "" }
     })
+
+
+
+    #----------------------------------------------------
+    # Rodam session within the About tab
+    #----------------------------------------------------
+    output$sessioninfo <- renderPrint({
+       values$init
+       tryCatch({
+          if (nchar(ws$dsname)>0) {
+            #authstr <- ifelse( nchar(ws$auth)>0, paste0(", '", ws$auth,"'"), '' );
+            authstr <- ifelse( nchar(ws$auth)>0, ", 'SECRET_API_TOKEN'", '' );
+            odamws_params <- paste0("'",ws$apiurl,"', '",ws$dsname,"'", authstr);
+            cat("\noptions(width=256)\n", "options(warn=-1)\n","options(stringsAsFactors=FALSE)\n","\n",
+                "library(Rodam)\n","\n",
+                "# Initialize the 'ODAM' object \n", "dh <- new('odamws',",odamws_params,")\n","\n",
+                "# Get the Data Tree\n","show(dh)\n","\n",
+                "# Get the data subsets list\n","dh$subsetNames\n","\n",
+                sep=""
+            )
+            if ( values$launch>0) {
+               if (length(input$inDSselect)>1) {
+                  setName <- paste0("c(",paste(simplify2array(lapply(input$inDSselect, function(x) { paste0("'",x,"'") })),collapse=','),")")
+               } else {
+                  setName <- paste0("'",g$inDSselect,"'")
+               }
+               cat(
+                  "# Get '",g$inDSselect,"' data subset\n", "ds <- dh$getSubsetByName(",setName,")\n", "\n",
+                  "# Show all descriptions of variables\n", "ds$LABELS\n","\n",
+                  "# Show all factors defined in the data subset\n","ds$facnames\n","\n",
+                  "# Show all quantitative variables defined in the data subset\n","ds$varnames\n","\n",
+                  "# Show all qualitative variables defined in the data subset\n","ds$qualnames\n","\n",
+                  "# Boxplot of all variables defined in ds$varnames\n",
+                  "Rank <- simplify2array(lapply(ds$varnames, function(x) { round(mean(log10(ds$data[ , x]), na.rm=T)) }))\n",
+                  "Rank[!is.finite(Rank)] <- 0\n",
+                  "colRank <- Rank - min(Rank) + 1\n",
+                  "cols <- c('red', 'orange', 'darkgreen', 'blue', 'purple', 'brown', 'darkblue', 'darkred', 'darkorange')\n",
+                  "boxplot(log10(ds$data[, ds$varnames]), outline=F, horizontal=T, border=cols[colRank], las=2, cex.axis=0.5)\n",
+                  "ColVars <- NULL\n",
+                  "for(x in 1:length(ds$varsBySubset)) ColVars <- c(ColVars, rep(cols[x], length(ds$varsBySubset[[x]])))\n",
+                  "for(x in 1:length(ColVars)) axis(side=2, at=x, col.axis=ColVars[x], labels= ds$varnames[x] , las=2, cex.axis=0.5)\n",
+                  "\n", sep=""
+               )
+            }
+          }
+       }, error=function(e) { ERROR$MsgErrorAbout <- paste("RenderPrint:\n", e ); })
+    })
+

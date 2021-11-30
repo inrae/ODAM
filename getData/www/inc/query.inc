@@ -91,17 +91,6 @@ do
     # New instance of the def_lib object
     $def = new def_lib($ENV, $dataset);
 
-    # check whether the metadata can be obtained even if there is no authorization on the data
-    $metadata_access=0;
-    if ($ENV['METADATA_ACCESS'] && $datapackage==1 && $cntopt==1) $metadata_access=1;
-
-    # check if authkey is valid for this dataset when required
-    if ( $metadata_access==0 &&  $def->check_authorization($auth) )
-    {
-       echo $def->retmsg;
-       break;
-    }
-
     # get function
     $func = array_shift($urloptions);
 
@@ -110,6 +99,18 @@ do
     $restmsg = "cntopt=$cntopt; func=$func";
 
     $doQuery = 0; $retval=0;
+
+    # check whether the metadata can be obtained even if there is no authorization on the data
+    $metadata_access=0;
+    $metadata_cond = $datapackage==1 || $metadata==1 || $func=='subset';
+    if ($ENV['METADATA_ACCESS'] &&  $metadata_cond && $cntopt==0) $metadata_access=1;
+
+    # check if authkey is valid for this dataset when required
+    if ( $metadata_access==0 &&  $def->check_authorization($auth) )
+    {
+       echo $def->retmsg;
+       break;
+    }
 
     # check if metadata files
     if ( $def->check_deffile('s_subsets') )
@@ -380,6 +381,8 @@ do
            if ($format !== 'json') {
               $stdtmp = $ENV['TMPDIR'].'/'.$ENV['SESSID'].'.tmp';
               $attrs_file = $def->attrs_file;
+              #$line = implode($sep, array('Subset','Attribute','WSEntry','Category','Type','Description','CV_Term_ID','CV_Term_Name'))."\n";
+              #`echo "$line" > $stdtmp`;
               `head -1 $attrs_file > $stdtmp`;
               $regexp = '('.implode('|',$dstree).')';
               `grep -E "^$regexp" $attrs_file >> $stdtmp`;
@@ -411,6 +414,13 @@ do
         $def->DPKG_INFOS = $DPKG_INFOS;
         echo $def->getJSONDataTable($urlroot);
         break;
+    }
+
+    # check if authkey is valid for this dataset
+    if ( $doQuery && $def->check_authorization($auth) )
+    {
+       echo $def->retmsg;
+       break;
     }
 
     #-----------------------------------------------------

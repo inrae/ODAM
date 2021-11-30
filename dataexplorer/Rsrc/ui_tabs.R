@@ -47,7 +47,11 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
       box(
          title="Data Graph", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
          diagonalNetworkOutput("Net", width="75%", height="600px")
-      )
+      ),
+      div(class='div-session', box(
+         title="Rodam session example", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+         tags$pre(tags$code(id="sessioninfo", class="language-r shiny-text-output "))
+      ))
    )
 )
 
@@ -84,12 +88,12 @@ ui_aboutTab <-  tabItem("about", bsAlert("ErrAlertAbout"),
    box(
       title="About", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
       htmlOutput("aboutinfos", class="mddiv")
-   ),
-   conditionalPanel(condition="output.apierror==0 && output.nods==0",
-      div(class='div-session', box(
-         title="Session Information", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
-         tags$pre(tags$code(id="sessioninfo", class="language-r shiny-text-output "))
-      ))
+#   ),
+#   conditionalPanel(condition="output.apierror==0 && output.nods==0",
+#      div(class='div-session', box(
+#         title="Rodam session example", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+#         tags$pre(tags$code(id="sessioninfo", class="language-r shiny-text-output "))
+#      ))
    )
 )
 

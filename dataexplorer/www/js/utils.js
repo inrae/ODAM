@@ -1,24 +1,30 @@
 // Get a PDF through the API
 // apikey, ipclient : global variables
 var openPDF = function(url) {
+   var myWindow = window.open(window.location.href, "_blank");
    $.ajax({
-     url: url,
-     cache: false,
-     xhrFields: { responseType: 'blob' },
-     headers: { "x-api-key": apikey, 'x-forwarded-for': ipclient },
-     success: function(blob) {
-       var link=document.createElement('a');
-       link.href=window.URL.createObjectURL(blob);
-       link.type = 'application/pdf';
-       link.target='_blank';
-       link.click();
-     }
+      url: url,
+      cache: false,
+      headers: { "x-api-key": apikey, 'x-forwarded-for': ipclient },
+      xhrFields: { responseType: 'blob' },
+      success: function(blob) {
+         console.log('PDF size ='+blob.size+', Mine type : '+blob.type);
+         var objectURL=window.URL.createObjectURL(blob);
+         var link=myWindow.document.createElement('a');
+         link.href=objectURL;
+         link.type = 'application/pdf';
+         link.click();
+         link.onclick = function() { window.URL.revokeObjectURL(this.href); }
+         myWindow.location.href=url;
+         myWindow.document.title = url;
+      }
    });
 }
 
 // Get XML through the API
 // apikey, ipclient : global variables
 var openXML = function(url) {
+   var myWindow = window.open(window.location.href, "_blank");
    $.ajax({
      url: url,
      cache: false,
@@ -50,12 +56,11 @@ var openXML = function(url) {
                 transformed = serializer.serializeToString(xmldom.documentElement);
             }
 
-            var newwindow = window.open();
-            newwindow.document.open();
-            newwindow.document.write(transformed);
-            newwindow.document.close();
-            newwindow.location.href=url;
-            newwindow.document.title = url;
+            myWindow.document.open();
+            myWindow.document.write(transformed);
+            myWindow.document.close();
+            myWindow.location.href=url;
+            myWindow.document.title = url;
         });
      }
    });
@@ -133,3 +138,5 @@ $( document ).on("shiny:sessioninitialized", function(event)
 
 })
 
+// Choose between `window.URL` and `window.webkitURL` based on browser
+window.URL = window.URL || window.webkitURL;

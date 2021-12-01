@@ -167,14 +167,14 @@ getInfos <- function (ws, dcol=0)
        if (length(P)>0) for (i in 1:length(P)) {
           V <- as.vector(simplify2array(strsplit(gsub('(\\[|\\]|\\(|\\))',',',P[i]),',')))
           V <- V[ V != "" ]
-          href <- paste0("<a class=\"jlink\" target=\"_blank\" onclick=\"javascript:openPDF('",V[2],"');\">",V[1],"</a>")
+          href <- paste0("<a class=\"jlink\" onclick=\"javascript:openPDF('",V[2],"');\">",V[1],"</a>")
           T <- gsub(P[i], href, T, fixed=TRUE)
        }
        # PDF - normal link style
        P <- na.omit(str_extract(T, pattern="[^']https?:[^:]+\\.pdf"))
        if (length(P)>0) for (i in 1:length(P)) {
           urlapi <- substring(P[i],2)
-          href <- paste0(substring(P[i],1,1), "<a class=\"jlink\" target=\"_blank\" onclick=\"javascript:openPDF('",urlapi,"');\">",basename(urlapi),"</a>")
+          href <- paste0(substring(P[i],1,1), "<a class=\"jlink\" onclick=\"javascript:openPDF('",urlapi,"');\">",basename(urlapi),"</a>")
           T <- gsub(P[i], href, T, fixed=TRUE)
        }
     }

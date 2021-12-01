@@ -4,7 +4,7 @@ title: "About"
 
 ![](odam-logo.png)
 
-_(C) Daniel Jacob - INRAE UMR 1332 BFP, PMB - 2021 - Version 1.4_
+_(C) Daniel Jacob - INRAE UMR 1332 BFP, Bordeaux Metabolome - 2021 - Version 1.4_
 
 ### Give an open access to your data and make them ready to be mined - A data explorer as bonus
 

@@ -20,14 +20,14 @@
     # Observer - Data Table
     #----------------------------------------------------
     observe({ tryCatch({
-      values$initdss
-      values$launch
+       values$initdss
+       values$launch
        if ( values$launch>0) {
           fa_options <- colnames(g$data)
           names(fa_options) <- colnames(g$data)
           updateCheckboxGroupInput(session, 'show_vars', label = 'Columns to show:', choices = fa_options,  
                 selected = c( g$samples, .C(g$facnames$Attribute) ))
-        }
+       }
     }, error=function(e) { ERROR$MsgErrorInfo <- paste("Observer 1:\n", e ); }) })
 
     #----------------------------------------------------
@@ -35,9 +35,13 @@
     #----------------------------------------------------
     output$datavalues <- tryCatch({
        DT::renderDataTable(
-           unique( g$data[, input$show_vars, drop = FALSE] ),  selection='none', filter = 'top', rownames = FALSE, 
-           extensions = c('Buttons','Scroller'), options= list(
-                 dom='Bfrtip', buttons = list('copy','excel'), pageLength = nrow(g$data), autoWidth=TRUE,  deferRender = FALSE,  scrollY = 750,  scroller = TRUE
+           unique( g$data[, input$show_vars, drop = FALSE] ), selection='none', filter = 'top', rownames = FALSE, 
+           extensions = c('Buttons','Scroller'), 
+           callback = JS( c("$('table.dataTable thead th').css('border-bottom', 'none');",
+                          "$('table.dataTable.no-footer').css('border-bottom', 'none');") ),
+           options = list(
+                 dom='Bfrtip', buttons = list('copy','excel'), pageLength = nrow(g$data), autoWidth=TRUE,  
+                 deferRender = FALSE,  scrollY = 750,  scroller = TRUE
            ), server=FALSE
        )
     }, error=function(e) { ERROR$MsgErrorInfo <- paste("DT::renderDataTable:\n", e ); })
@@ -159,7 +163,7 @@
                urlSubset <- paste0(ws$apiurl,'query/', ws$dsname, '/(',.C(tsets[i,1]) ,')?', authstr, 'format=xml');
                linkSubset <- ifelse( ws$keymode<2, 
                    paste0("<a href='",urlSubset,"' target='_blank'>",.C(tsets[i,1]),"</a>"),
-                   paste0("<a class=\"jlink\" target=\"_blank\" onclick=\"javascript:openXML('",urlSubset,"');\">",.C(tsets[i,1]),"</a>") )
+                   paste0("<a class=\"jlink\" onclick=\"javascript:openXML('",urlSubset,"');\">",.C(tsets[i,1]),"</a>") )
                linkOnto <- paste0("<a href='",.C(tsets[i,5]),"' target='_blank'>[", basename(.C(tsets[i,5])),'] ', .C(tsets[i,6]),"</a>")
                setinfo <- rbind( setinfo , c( linkSubset, .C(tsets[i,c(2:4)]), linkOnto ) )
            }
@@ -214,7 +218,6 @@
            }
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderNetwork:\n", e ); })
     })
-
 
 
     #----------------------------------------------------

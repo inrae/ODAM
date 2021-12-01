@@ -61,9 +61,21 @@ var openXML = function(url) {
    });
 }
 
+var copy2clipboard = function (elemId)
+{
+  /* Get the text field */
+   var copyText = document.getElementById(elemId);
+   var sampleTextarea = document.createElement("textarea");
+   document.body.appendChild(sampleTextarea);
+   sampleTextarea.value = copyText.textContent;
+   sampleTextarea.select();
+   document.execCommand("copy");
+   document.body.removeChild(sampleTextarea);
+}
 
 // Toggle input of the API Key, from 'password' to 'text' and vice-versa
-var eyetoggle = function() {
+var eyetoggle = function()
+{
    if ( $('#eyeapikey').attr('src') === 'eye-close.png' ) {
       $('#eyeapikey').attr('src','eye-open.png');
       $('#authkey').get(0).type = 'text';
@@ -74,13 +86,15 @@ var eyetoggle = function() {
 }
 
 // Send IP to Shiny Server 
-var sendIP = function(theip) {
+var sendIP = function(theip)
+{
    Shiny.onInputChange("ipclient", theip);
    console.log(theip);
 }
 
 // Convert data to JSON 
-var toJSON = function( data ) {
+var toJSON = function( data )
+{
    json = data.trim().split('\n').reduce(function(obj, pair) {
        pair = pair.split('=');
        return obj[pair[0]] = pair[1], obj;
@@ -93,8 +107,8 @@ var toJSON = function( data ) {
 
 // When the shiny session is initialized
 // => Get IP Client, then send it to Shiny Server 
-$( document ).on("shiny:sessioninitialized", function(event) {
-
+$( document ).on("shiny:sessioninitialized", function(event)
+{
    $.ajax({
 // cloudflare.com
 //     url: 'https://www.cloudflare.com/cdn-cgi/trace',

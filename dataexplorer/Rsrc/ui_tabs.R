@@ -50,7 +50,10 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
       ),
       div(class='div-session', box(
          title="Rodam session example", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
-         tags$pre(tags$code(id="sessioninfo", class="language-r shiny-text-output "))
+         tags$pre(tags$code(id="sessioninfo", class="language-r shiny-text-output ")),
+         conditionalPanel(condition="output.hidekey==0", 
+            bsButton("cp2clb", icon=icon("clipboard"), label = "Copy to clipboard", style="default", type="action")
+         )
       ))
    )
 )
@@ -88,12 +91,6 @@ ui_aboutTab <-  tabItem("about", bsAlert("ErrAlertAbout"),
    box(
       title="About", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
       htmlOutput("aboutinfos", class="mddiv")
-#   ),
-#   conditionalPanel(condition="output.apierror==0 && output.nods==0",
-#      div(class='div-session', box(
-#         title="Rodam session example", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
-#         tags$pre(tags$code(id="sessioninfo", class="language-r shiny-text-output "))
-#      ))
    )
 )
 

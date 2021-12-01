@@ -13,6 +13,8 @@ options(shiny.sanitize.errors = FALSE)
 
 debug_shinyjs <- FALSE
 
+odamdoc_url <- 'https://inrae.github.io/ODAM/'
+
 source("Rsrc/utils.R")
 conffile <- "conf/global.ini"
 conf <- Parse.INI(conffile, section="GLOBAL")

@@ -47,10 +47,10 @@ RUN wget --no-verbose http://download3.rstudio.org/ubuntu-12.04/x86_64/VERSION -
     rm -f version.txt ss-latest.deb
 
 # R packages installed in /usr/local/lib/R/site-library/
-RUN R -e "install.packages(c('svglite','JADE'), repos='http://cran.rstudio.com/')" \
+RUN R -e "install.packages(c('svglite', 'JADE'), repos='http://cran.rstudio.com/')" \
  && R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz', repos=NULL)" \
- && R -e "remotes::install_github('wt2015-github/FastGGM');"
-
+ && R -e "remotes::install_github('wt2015-github/FastGGM')"
+ 
 ADD ./ /srv/shiny-server
 
 RUN rm -rf /var/lib/apt/lists/* && \ 

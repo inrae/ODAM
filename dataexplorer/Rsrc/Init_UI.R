@@ -179,6 +179,7 @@
        }
     })
 
+
     #----------------------------------------------------
     # Reactive - API Error
     #----------------------------------------------------
@@ -204,6 +205,7 @@
        }
     })
 
+
     #----------------------------------------------------
     # Reactive - No data set / data collection
     #----------------------------------------------------
@@ -218,10 +220,24 @@
     outputOptions(output, 'nods', suspendWhenHidden=FALSE)
     outputOptions(output, 'nods', priority=1)
 
+
+    #----------------------------------------------------
+    # Reactive - API Key is needed and has to be hidden
+    #----------------------------------------------------
+    output$hidekey <- reactive({
+       values$init
+       ret=0
+       if (ws$keymode==2 && nchar(ws$auth)>0)
+          ret=1
+       return(ret)
+    })
+    outputOptions(output, 'hidekey', suspendWhenHidden=FALSE)
+    outputOptions(output, 'hidekey', priority=1)
+
+
     #----------------------------------------------------
     # Observer - Init
     #----------------------------------------------------
-
     observe({ tryCatch({
         input$ipclient
         if (nchar(input$ipclient)>0) {
@@ -248,6 +264,7 @@
            }
         }
     }, error=function(e) { ERROR$MsgErrorMain <-  paste("Init Obs:\n", e, ", ws: ", paste( ws , collapse=" - ") ); }) })
+
 
     #----------------------------------------------------
     # Observer - Dataset list
@@ -306,6 +323,7 @@
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Dataet Change Obs:\n", e); }) })
 
+
     #----------------------------------------------------
     # Observer - Dataset subset init
     #----------------------------------------------------
@@ -353,6 +371,7 @@
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Data subset Obs:\n", e, ':', paste(g$DSL, collapse=", ")); }) })
 
+
     #----------------------------------------------------
     # Observer - if data subset change
     #----------------------------------------------------
@@ -368,6 +387,7 @@
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Data subset Change Obs:\n", e); }) })
 
+
     #----------------------------------------------------
     # Reactive - length of the input Data Subsets inDSselect
     #----------------------------------------------------
@@ -378,6 +398,7 @@
     })
     outputOptions(output, 'DSsize', suspendWhenHidden=FALSE)
     outputOptions(output, 'DSsize', priority=1)
+
 
     #----------------------------------------------------
     # Reactive - Dataset subset varnames 

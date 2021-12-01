@@ -230,12 +230,14 @@
     #----------------------------------------------------
     # Rodam session within the About tab
     #----------------------------------------------------
+    # TODO : add a copy-to-clipboard functionality. See https://cran.r-project.org/web/packages/rclipboard/readme/README.html
     output$sessioninfo <- renderPrint({
        values$init
        tryCatch({
           if (nchar(ws$dsname)>0) {
-            #authstr <- ifelse( nchar(ws$auth)>0, paste0(", '", ws$auth,"'"), '' );
-            authstr <- ifelse( nchar(ws$auth)>0, ", 'SECRET_API_TOKEN'", '' );
+            authstr <- ''
+            if (nchar(ws$auth)>0)
+                authstr <- ifelse( ws$keymode==2, ", 'YOUR_SECRET_API_KEY'", paste0(", '", ws$auth,"'") );
             odamws_params <- paste0("'",ws$apiurl,"', '",ws$dsname,"'", authstr);
             cat("\noptions(width=256)\n", "options(warn=-1)\n","options(stringsAsFactors=FALSE)\n","\n",
                 "library(Rodam)\n","\n",
@@ -252,7 +254,7 @@
                }
                cat(
                   "# Get '",g$inDSselect,"' data subset\n", "ds <- dh$getSubsetByName(",setName,")\n", "\n",
-                  "# Show all descriptions of variables\n", "ds$LABELS\n","\n",
+                  "# Show the first 50 variable descriptions\n", "head(ds$LABELS, n=50)\n","\n",
                   "# Show all factors defined in the data subset\n","ds$facnames\n","\n",
                   "# Show all quantitative variables defined in the data subset\n","ds$varnames\n","\n",
                   "# Show all qualitative variables defined in the data subset\n","ds$qualnames\n","\n",
@@ -272,3 +274,8 @@
        }, error=function(e) { ERROR$MsgErrorAbout <- paste("RenderPrint:\n", e ); })
     })
 
+   observe ({
+       input$cp2clb
+       if (input$cp2clb==0) return(NULL)
+       runjs("copy2clipboard('sessioninfo');")
+   })

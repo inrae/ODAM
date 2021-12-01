@@ -64,6 +64,7 @@ ui <- dashboardPage(skin = "blue",
               functions = c("hideMainHeader", "hideSidebar", "showSidebar", "hideSidebarToggle", 
                             "hideinDselect", "showinDselect", "hideinDSselect", "showinDSselect", 
                             "openTab")),
+
     fluidRow(
       tags$script("var uiloaded=0; var ipclient=''; var apikey='';"),
       bsAlert("ErrAlertMain"),

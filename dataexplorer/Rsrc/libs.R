@@ -388,13 +388,14 @@ getLabels <- function() {
 # Get metadata links as a data.frame
 getMetadataLinksAsTable <- function(ws)
 {
-  href1 <- paste0('<a href="',ws$apiurl,'/query/',ws$dsname,'?format=xml" target="_blank">Data subsets</a>')
-  href2 <- paste0('<a href="',ws$apiurl,'/query/',ws$dsname,'/metadata/?format=xml" target="_blank">Attributes</a>')
-  href3 <- paste0('<a href="',ws$apiurl,'/query/',ws$dsname,'/datapackage/?links=1" target="_blank">Datapackage</a>')
-  
-  hrefS <- '<a href="https://inrae.github.io/ODAM/data-preparation/#s_subsetstsv" target="_blank">Data Preparation Protocol - Subsets</a>'
-  hrefA <- '<a href="https://inrae.github.io/ODAM/data-preparation/#a_attributestsv" target="_blank">Data Preparation Protocol - Attributes</a>'
-  hrefJ <- '<a href="https://inrae.github.io/ODAM/json-schema/" target="_blank">ODAM datapackage based on JSON-Schema</a>'
+  # metadata links
+  href1 <- paste0('<a href="',ws$apiurl,'query/',ws$dsname,'?format=xml" target="_blank">Data subsets</a>')
+  href2 <- paste0('<a href="',ws$apiurl,'query/',ws$dsname,'/metadata/?format=xml" target="_blank">Attributes</a>')
+  href3 <- paste0('<a href="',ws$apiurl,'query/',ws$dsname,'/datapackage/?links=1" target="_blank">Datapackage</a>')
+  # information links
+  hrefS <- paste0('<a href="',odamdoc_url,'data-preparation/#s_subsetstsv" target="_blank">Data Preparation Protocol - Subsets</a>')
+  hrefA <- paste0('<a href="',odamdoc_url,'data-preparation/#a_attributestsv" target="_blank">Data Preparation Protocol - Attributes</a>')
+  hrefJ <- paste0('<a href="',odamdoc_url,'json-schema/" target="_blank">ODAM datapackage based on JSON-Schema</a>')
   
   df <- data.frame(rbind( c(href1, 'All metadata related to data subsets', hrefS),
                           c(href2, 'All metadata related to attributes within each data subset', hrefA),

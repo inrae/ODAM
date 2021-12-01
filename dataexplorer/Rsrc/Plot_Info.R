@@ -53,7 +53,7 @@
     #----------------------------------------------------
     output$aboutinfos <- renderText({
        tryCatch({
-          GetAboutToHTML()
+          getAboutToHTML()
        }, error=function(e) { ERROR$MsgErrorAbout <- paste("RenderText - About:\n", e ); })
     })
 
@@ -87,7 +87,7 @@
        if (nchar(input$ipclient)==0) return(NULL)
        if (nchar(ws$dcname)==0) return(NULL)
        tryCatch({
-          GetInfosToHTML(ws,1)
+          getInfosToHTML(ws,1)
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - Collection info \n", e ); })
     })
 
@@ -122,7 +122,7 @@
        input$inDselect
        if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({
-          GetInfosToHTML(ws,0) 
+          getInfosToHTML(ws,0) 
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - Data info \n", e ); })
     })
 

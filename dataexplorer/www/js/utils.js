@@ -66,6 +66,8 @@ var openXML = function(url) {
    });
 }
 
+// Copy the content of an element to clipboard
+// elemId : Element By Id
 var copy2clipboard = function (elemId)
 {
   /* Get the text field */
@@ -124,10 +126,9 @@ $( document ).on("shiny:sessioninitialized", function(event)
      timeout: 5000
    }).done(function(data) {
 // cloudflare.com
-//     data = toJSON( data )
+//       data = toJSON( data )
 // bigdatacloud.net
-//       if(data.responseJSON.hasOwnProperty('ip'))
-//          sendIP( data.responseJSON["ip"] );
+//       data = data.responseJSON
        if(data.hasOwnProperty('ip'))
           sendIP( data["ip"] );
        else 
@@ -135,7 +136,6 @@ $( document ).on("shiny:sessioninitialized", function(event)
    }).fail(function( jqXHR, textStatus ) {
          sendIP( "127.0.0.1" );
    });
-
 })
 
 // Choose between `window.URL` and `window.webkitURL` based on browser

@@ -89,6 +89,24 @@ is.DS <- function(cdata)
     return(ret)
 }
 
+# Low level routine allowing to retrieve data or metadata from  a query formatted according the API specifications
+httr_get <- function(ws, query, mode='text', fsplit=TRUE)
+{
+    headers <- c( 'X-Forwarded-For' = ws$ipclient )
+    if (nchar(ws$auth)>0) headers <- c( headers, 'X-Api-Key' = ws$auth )
+    T <- ''
+    tryCatch({
+       resp <- httr::GET(paste0(ws$apiurl, query), timeout(5),
+                         config = httr::config(ssl_verifypeer = SSL_VerifyPeer),
+                         add_headers(.headers = headers))
+       T <- httr::content(resp, as=mode)
+       if (mode=='text' && fsplit) T <- simplify2array(strsplit(enc2utf8(T),"\n"))
+    }, error=function(e) {
+       T <- "## ERROR : the API host is not responding; it is either not found or does not exist"
+    })
+    T
+}
+
 # Get query string parameters
 getURLparams <- function(cdata)
 {
@@ -112,24 +130,6 @@ getURLparams <- function(cdata)
     if (!is.null(params[['var2']]))    ui$var2 <<- params[['var2']]
 }
 
-# Low level routine allowing to retrieve data or metadata from  a query formatted according the API specifications
-httr_get <- function(ws, query, mode='text', fsplit=TRUE)
-{
-    headers <- c( 'X-Forwarded-For' = ws$ipclient )
-    if (nchar(ws$auth)>0) headers <- c( headers, 'X-Api-Key' = ws$auth )
-    T <- ''
-    tryCatch({
-       resp <- httr::GET(paste0(ws$apiurl, query), timeout(5),
-                         config = httr::config(ssl_verifypeer = SSL_VerifyPeer),
-                         add_headers(.headers = headers))
-       T <- httr::content(resp, as=mode)
-       if (mode=='text' && fsplit) T <- simplify2array(strsplit(enc2utf8(T),"\n"))
-    }, error=function(e) {
-       T <- "## ERROR : the API host is not responding; it is either not found or does not exist"
-    })
-    T
-}
-
 # Get 'about.md' content
 getAbout <- function ()
 {
@@ -137,17 +137,6 @@ getAbout <- function ()
     if(file.exists(aboutfile)){
        gsub('@@IMAGE@@/', '', readLines(aboutfile, n = -1) )
     }
-}
-
-# Get 'about.md' content and transforme it to HTML
-GetAboutToHTML <- function()
-{
-    markdownToHTML(text=getAbout(), fragment.only = TRUE, title = "", 
-         options = c("use_xhtml", "smartypants", "base64_images", "mathjax", "highlight_code" ),
-         extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", 
-                         "strikethrough", "lax_spacing", "space_headers", "superscript", "latex_math"),
-         encoding = c("latin1")
-    )
 }
 
 # Get 'infos.md' content
@@ -180,22 +169,6 @@ getInfos <- function (ws, dcol=0)
     }
     T
 }
-
-# Get 'infos.md' content and transforme it to HTML
-GetInfosToHTML <- function(ws, dcol=0)
-{
-   if (!is.wsError()) {
-      T <- getInfos(ws,dcol)
-   } else {
-      T <- paste('##',g$msgError)
-   }
-   out <- markdownToHTML(text=T, fragment.only = TRUE,  title = "", 
-            options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
-         extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
-                       'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
-   gsub('href=', 'target="_blank" href=', out)
-}
-
 
 # Get tabulated data
 getData <- function (ws, query='', dcol=0)
@@ -232,6 +205,33 @@ getDataCol <- function (ws)
         } else { g$msgError <<- msgError }
     } else { g$msgError <<- msgError }
     dclist
+}
+
+# Build a tree of relations between data subsets
+fillDN <- function( dn, indx) {
+    dn$name <- g$subsetNames[ indx ]
+    L <- as.vector(g$connectList[ g$connectList[,1]==indx, 2])
+    if (length(L)>0) {
+       dn$children <- list()
+       for (i in 1:length(L)) {
+           dn$children[[i]] <- list()
+           dn$children[[i]] <- fillDN( dn$children[[i]], L[i])
+       }
+    }
+    dn
+}
+
+# Compute the tree deepth
+cntLevelDN <- function(Lev, dn, levelid) {
+    if (length(dn$children)>0) {
+        if (is.null(Lev[levelid]) || is.na(Lev[levelid])) Lev[levelid] <- 0
+        Lev[levelid] <- Lev[levelid] + length(dn$children)
+        levelid <- levelid + 1
+        for (i in 1:length(dn$children)) {
+              Lev <- cntLevelDN(Lev, dn$children[[i]], levelid )
+        }
+    }
+    Lev
 }
 
 # Get tabulated data about data subsets
@@ -385,6 +385,32 @@ getLabels <- function() {
     df
 }
 
+# Get 'about.md' content and transforme it to HTML
+getAboutToHTML <- function()
+{
+    markdownToHTML(text=getAbout(), fragment.only = TRUE, title = "", 
+         options = c("use_xhtml", "smartypants", "base64_images", "mathjax", "highlight_code" ),
+         extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", 
+                         "strikethrough", "lax_spacing", "space_headers", "superscript", "latex_math"),
+         encoding = c("latin1")
+    )
+}
+
+# Get 'infos.md' content and transforme it to HTML
+getInfosToHTML <- function(ws, dcol=0)
+{
+   if (!is.wsError()) {
+      T <- getInfos(ws,dcol)
+   } else {
+      T <- paste('##',g$msgError)
+   }
+   out <- markdownToHTML(text=T, fragment.only = TRUE,  title = "", 
+            options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
+         extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
+                       'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
+   gsub('href=', 'target="_blank" href=', out)
+}
+
 # Get metadata links as a data.frame
 getMetadataLinksAsTable <- function(ws)
 {
@@ -404,31 +430,3 @@ getMetadataLinksAsTable <- function(ws)
   colnames(df) <- c('Metadata Type','Description','Information')
   df
 }
-
-# Build a tree of relations between data subsets
-fillDN <- function( dn, indx) {
-    dn$name <- g$subsetNames[ indx ]
-    L <- as.vector(g$connectList[ g$connectList[,1]==indx, 2])
-    if (length(L)>0) {
-       dn$children <- list()
-       for (i in 1:length(L)) {
-           dn$children[[i]] <- list()
-           dn$children[[i]] <- fillDN( dn$children[[i]], L[i])
-       }
-    }
-    dn
-}
-
-# Compute the tree deepth
-cntLevelDN <- function(Lev, dn, levelid) {
-    if (length(dn$children)>0) {
-        if (is.null(Lev[levelid]) || is.na(Lev[levelid])) Lev[levelid] <- 0
-        Lev[levelid] <- Lev[levelid] + length(dn$children)
-        levelid <- levelid + 1
-        for (i in 1:length(dn$children)) {
-              Lev <- cntLevelDN(Lev, dn$children[[i]], levelid )
-        }
-    }
-    Lev
-}
-

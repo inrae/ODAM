@@ -13,7 +13,7 @@ shinyServer(function(input, output, session) {
     source("Rsrc/Plot_Multi.R", local=TRUE)    # Multivariate
 
     # Reactive values for error management
-    ERROR <- reactiveValues(MsgErrorMain='', MsgErrorInfo='', MsgErrorDT='', MsgErrorUni='', 
+    ERROR <- reactiveValues(MsgErrorMain='', MsgErrorInfo='', MsgErrorUni='', 
                             MsgErrorBi='', MsgErrorMulti='', MsgErrorAbout='' )
 
     # Reactive values for UI

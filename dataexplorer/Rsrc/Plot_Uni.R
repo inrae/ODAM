@@ -132,8 +132,55 @@
           }
           updateSelectInput(session, "uniFeatures", choices = f_options, selected=f_options)
        }
-    }, error=function(e) { ERROR$MsgErrorBi <- paste("Observer 4b:\n", e ); }) })
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 4b:\n", e ); }) })
 
+
+    observe({ tryCatch({
+       if (!is.null(input$ttest) && .N(input$ttest)==1) {
+          updateCheckboxInput(session, "violin", value = FALSE)
+          values$ttest <- 1
+       } else {
+          values$ttest <- 0
+       }
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 5a:\n", e ); }) })
+
+    observe({ tryCatch({
+       if ((!is.null(input$violin) && .N(input$violin)==1) || (! .C(input$uniFacY) %in% .C(input$uniFacX)))
+          updateCheckboxInput(session, "ttest", value = FALSE)
+    }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 5b:\n", e ); }) })
+
+    #----------------------------------------------------
+    # renderUI - Univariate : BoxPlot + T.test
+    #----------------------------------------------------
+    # Render T.test Plot
+    output$TtestPlot <- renderImage ({
+      values$launch
+      tryCatch({
+        if (values$launch==0 || values$ttest==0) return( imgNull )
+        F1 <- isolate(input$uniFacX)
+        F2 <- isolate(input$uniFacY)
+        if (F1 != F2) return( imgNull )
+        SelFacX <- input$SelFacX
+        SelFacY <- input$SelFacY
+        FA <- isolate(input$uniAnnot)
+        FCOL <- ifelse( FA=="None", '', FA )
+        selectFCOL <- input$uniFeatures
+        if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
+            selectFCOL <- c()
+        }
+        if (nchar(F1)>0 &&  nchar(F2)>0 && nchar(input$uniVarSelect)>0 ) {
+            varX <- .C(g$varnames$Attribute)[.N(input$uniVarSelect)]
+            if (ui$header %in% c('off')) runjs('$(".content-wrapper").css("min-height", "0px");')
+            withProgress(message = 'Calculation in progress', detail = '... ', value = 0, {
+               tryCatch({
+                  imgObj <- getBoxPLot1(F1, SelFacX, FCOL, selectFCOL, varX, 
+                              bsmooth=input$uniSmooth, blog=input$uniLog, bviolin=input$violin, bTtest=TRUE)
+               }, error=function(e) {})
+            })
+            imgObj
+        }
+      }, error=function(e) { ERROR$MsgErrorUni <- paste("RenderImage:\n", e ); })
+    })
 
     #----------------------------------------------------
     # renderUI - Univariate : BoxPlot
@@ -141,7 +188,7 @@
     output$BoxPlot <- renderPlotly ({
       values$launch
       tryCatch({
-        if (values$launch==0) return( NULL )
+        if (values$launch==0 || values$ttest==1) return( NULL )
         SelFacX <- input$SelFacX
         SelFacY <- input$SelFacY
         FA <- isolate(input$uniAnnot)
@@ -154,14 +201,13 @@
         F2 <- isolate(input$uniFacY)
         if (nchar(F1)>0 &&  nchar(F2)>0 && nchar(input$uniVarSelect)>0 ) {
             varX <- .C(g$varnames$Attribute)[.N(input$uniVarSelect)]
-            fMean <- FALSE
             if (ui$header %in% c('off')) runjs('$(".content-wrapper").css("min-height", "0px");')
             withProgress(message = 'Calculation in progress', detail = '... ', value = 0, {
                tryCatch({
                    if (F1==F2) {
-                       getBoxPLot1(F1, SelFacX, FCOL, selectFCOL, varX, fMean, bsmooth=input$uniSmooth, blog=input$uniLog, bviolin=input$violin)
+                       getBoxPLot1(F1, SelFacX, FCOL, selectFCOL, varX, bsmooth=input$uniSmooth, blog=input$uniLog, bviolin=input$violin)
                    } else {
-                       getBoxPLot2(F1, F2, SelFacX, SelFacY, FCOL, selectFCOL, varX, fMean, bsmooth=input$uniSmooth, blog=input$uniLog, bviolin=FALSE)
+                       getBoxPLot2(F1, F2, SelFacX, SelFacY, FCOL, selectFCOL, varX, bsmooth=input$uniSmooth, blog=input$uniLog)
                    }
                }, error=function(e) {})
             })
@@ -169,11 +215,12 @@
       }, error=function(e) { ERROR$MsgErrorUni <- paste("RenderPlotly:\n", e ); })
     })
 
+
     #----------------------------------------------------
     # Univariate : BoxPlot
     #----------------------------------------------------
     # One factor
-    getBoxPLot1 <- function(F1, selectF1, FCOL, selectFCOL, varX, fMean, bsmooth=FALSE, blog=FALSE, bviolin=FALSE) {
+    getBoxPLot1 <- function(F1, selectF1, FCOL, selectFCOL, varX, bsmooth=FALSE, blog=FALSE, bviolin=FALSE, bTtest=FALSE) {
         # Factor levels F1
         facval1 <- g$data[ , F1]
         if (is.numeric(facval1)  && sum(facval1-floor(facval1))>0) {
@@ -212,7 +259,7 @@
         xid <- F1
         yid <- varX
         if (blog) {
-            df <- data.frame( colour=as.factor(dat[,colorid]), x=as.factor(dat[,xid]), y=log10(dat[, yid]+1) )
+            df <- data.frame( colour=as.factor(dat[,colorid]), x=as.factor(dat[,xid]), y=log10(dat[, yid]+0.01) )
         } else {
             df <- data.frame( colour=as.factor(dat[,colorid]), x=as.factor(dat[,xid]), y=dat[, yid] )
         }
@@ -222,21 +269,61 @@
         if (blog) yname  <- paste("Log10[",yname,"]")
         colorname <- as.character(g$LABELS[g$LABELS[,2]==colorid,4])
 
-        # plot
-        G2 <- ggplot(aes(y=y, x=x, colour=colour), data = df, family="Times", lineheight=.8, fontface="bold")
-        if (bviolin) G2 <- G2 + geom_violin()
-        if (!bviolin) G2 <- G2 + geom_boxplot()
-        if (bsmooth) G2 <- G2 + geom_smooth(aes(group = 1), span=0.75, method="loess", size=2, se = FALSE )
-        G2 <- G2 + labs(x=xname, y=yname, colour=colorname)
-        G2 <- G2 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"), 
-                         axis.text.x = element_text(angle = 45, vjust = 1, size = 8, hjust = 1))
-        G2 <- G2 + theme_bw()
-        #ggplotly(G2)
-        G2
+        if (bTtest) {
+           # Factor levels
+           V <- levels(df$colour)
+           
+           # Set of pairs of two levels
+           L <- list();  for (i in 1:(length(V)-1)) L[[length(L)+1]] <- c(V[i], V[i+1]); L[[length(L)+1]] <- c(V[1], V[length(V)]); 
+           
+           # Calculation of the ordinates for the annotation of the p-values
+           ylabs.v <- NULL
+           delta <- max(df$y, na.rm=TRUE) -  min(df$y, na.rm=TRUE)
+           for (i in 1:(length(L)-1))
+               ylabs.v <- c(ylabs.v, 1.1*quantile(df[ df$colour %in% L[[i]], ]$y,  probs = seq(0, 1, 0.15), na.rm = TRUE)[7])
+           ylabs.v <- c(ylabs.v, 0.1*delta + max(ylabs.v))
+
+           # Boxplot with p-values of comparisons
+           G1 <- ggboxplot(df, x = "x", y = "y", color = "colour") +
+                stat_compare_means(comparisons = L, label.y = ylabs.v)
+           # Smoothed curve (loess)
+           G1 <- G1 + geom_smooth(aes(group = 1), span=0.75, method="loess", size=2, se = FALSE )
+           # Theme and legend settings
+           G1 <- ggpar(G1, ggtheme=theme_bw(), legend="right", xlab = xname, ylab = yname, legend.title=colorname)
+
+           # Save graphic as SVG
+           width  <- session$clientData$output_TtestPlot_width
+           height <- session$clientData$output_TtestPlot_height
+           mysvgwidth <- width/90
+           mysvgheight <- height/90
+
+           outfile <- file.path(SESSTMPDIR,outfiles[['TTEST']])
+           ggsave(file=outfile, plot=G1, width=mysvgwidth, height=mysvgheight)
+
+           list(src = outfile,
+              contentType = 'image/svg+xml',
+              width = width,
+              height = height,
+              alt = ' SVG Image'
+           )
+
+        } else {
+           # plot
+           G1 <- ggplot(aes(y=y, x=x, colour=colour), data = df, family="Times", lineheight=.8, fontface="bold")
+           if (bviolin) G1 <- G1 + geom_violin()
+           if (!bviolin) G1 <- G1 + geom_boxplot()
+           if (bsmooth) G1 <- G1 + geom_smooth(aes(group = 1), span=0.75, method="loess", size=2, se = FALSE )
+           G1 <- G1 + labs(x=xname, y=yname, colour=colorname)
+           G1 <- G1 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"), 
+                            axis.text.x = element_text(angle = 45, vjust = 1, size = 8, hjust = 1))
+           G1 <- G1 + theme_bw()
+           #ggplotly(G1)
+           G1
+        }
     }
 
     # Two factors
-    getBoxPLot2 <- function(F1, F2, selectF1, selectF2, FCOL, selectFCOL, varX, fMean, bsmooth=FALSE, blog=FALSE, bviolin=FALSE) {
+    getBoxPLot2 <- function(F1, F2, selectF1, selectF2, FCOL, selectFCOL, varX, bsmooth=FALSE, blog=FALSE, bviolin=FALSE) {
 
         # Factor levels F1
         facval1 <- g$data[ , F1]

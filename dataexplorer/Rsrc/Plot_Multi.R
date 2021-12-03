@@ -508,9 +508,9 @@
     # Render COR Plot
     output$CorrPlot <- renderImage ({
        tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
-           if (values$launch==0) return(NULL)
-           if (! values$multitype %in% c('COR')) return(NULL)
-           if (! values$outtype %in% c('VARS')) return(NULL)
+           if (values$launch==0) return(imgNull)
+           if (! values$multitype %in% c('COR')) return(imgNull)
+           if (! values$outtype %in% c('VARS')) return(imgNull)
            input$listVars
            input$listLevels
            input$listFeatures

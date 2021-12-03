@@ -67,7 +67,11 @@ g <- list(
    fs=10
 )
 
-outfiles <- list('PCA'='multi.html', 'ICA'='multi.html','COR'='corr.svg','GGM'='ggm.html')
+# Null image
+imgNull <- list(src = file.path(getwd(),'www/loading.gif'), contentType = 'image/gif', width = 30, height = 10, alt = '')
+
+# Outfile names by category
+outfiles <- list('PCA'='multi.html', 'ICA'='multi.html','COR'='corr.svg','GGM'='ggm.html','TTEST'='ttestbox.svg')
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 .N <- function(x) { as.numeric(as.vector(x)) }

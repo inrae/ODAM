@@ -116,13 +116,19 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), conditional
                  checkboxInput('uniSmooth', 'Curve', TRUE),
                  checkboxInput('uniLog', 'Log10', FALSE)
               ),
-              column(6,conditionalPanel(condition="input.uniFacX == input.uniFacY", 
-                 checkboxInput('violin', 'Violin', FALSE))
+              column(6, conditionalPanel(condition="input.uniFacX == input.uniFacY", 
+                    checkboxInput('violin', 'Violin', FALSE),
+                    checkboxInput('ttest', 'Paired T-test', FALSE)
+                 )
               )
          )
       )),
-      column(12, conditionalPanel(condition="input.uniVarSelect>0", 
-               plotlyOutput("BoxPlot", height="500px") )
+      # PLOTS
+      column(12,
+         conditionalPanel(condition="input.uniVarSelect>0", 
+              conditionalPanel(condition="input.ttest==1", imageOutput("TtestPlot", height="500px")),
+              conditionalPanel(condition="input.ttest==0", plotlyOutput("BoxPlot", height="500px"))
+         )
       ),
       column(12, p("")),
       # DOWN DIV
@@ -288,7 +294,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
             conditionalPanel(condition="input.multiType=='COR'", imageOutput("CorrPlot", height="600px")),
             conditionalPanel(condition="input.multiType=='GGM'", forceNetworkOutput("ggmnet", width="85%", height="800px")),
             uiOutput('urlimage')
-        )
+         )
       ),
       column(12, p("")),
       # DOWN DIV

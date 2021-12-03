@@ -20,6 +20,8 @@ shinyServer(function(input, output, session) {
     values <- reactiveValues(
         # Init events
         init=0, initcol=0, initds=0, initdss=0, launch=0, nods=0,
+        # uniplot events
+        ttest=0,
         # multiplot events
         multitype='', outtype='', netData=NULL, 
         # Error events

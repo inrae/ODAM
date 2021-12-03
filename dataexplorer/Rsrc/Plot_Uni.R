@@ -285,7 +285,8 @@
 
            # Boxplot with p-values of comparisons
            G1 <- ggboxplot(df, x = "x", y = "y", color = "colour") +
-                stat_compare_means(comparisons = L, label.y = ylabs.v)
+                 stat_compare_means(method=input$ttestType, comparisons = L, label.y = ylabs.v) +
+                 stat_compare_means(method = "anova")
            # Smoothed curve (loess)
            G1 <- G1 + geom_smooth(aes(group = 1), span=0.75, method="loess", size=2, se = FALSE )
            # Theme and legend settings

@@ -112,13 +112,17 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), conditional
          ),
          column(4,
               selectInput("uniVarSelect", "Variable to explore", c() ),
-              column(6,
+              column(4,
                  checkboxInput('uniSmooth', 'Curve', TRUE),
                  checkboxInput('uniLog', 'Log10', FALSE)
               ),
-              column(6, conditionalPanel(condition="input.uniFacX == input.uniFacY", 
+              column(4, conditionalPanel(condition="input.uniFacX == input.uniFacY", 
                     checkboxInput('violin', 'Violin', FALSE),
-                    checkboxInput('ttest', 'Paired T-test', FALSE)
+                    checkboxInput('ttest', 'Paired Test', FALSE)
+                 )
+              ),
+              column(4, conditionalPanel(condition="input.uniFacX == input.uniFacY && input.ttest==1", 
+                     selectInput("ttestType", "", c("T-test" = "t.test", "Wilcoxon"="wilcox.test"), selected = "t.test")
                  )
               )
          )

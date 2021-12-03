@@ -274,21 +274,29 @@
            V <- levels(df$colour)
            
            # Set of pairs of two levels
-           L <- list();  for (i in 1:(length(V)-1)) L[[length(L)+1]] <- c(V[i], V[i+1]); L[[length(L)+1]] <- c(V[1], V[length(V)]); 
+           L <- list()
+           for (i in 1:(length(V)-1)) L[[length(L)+1]] <- c(V[i], V[i+1]) 
+           if (length(V)>2) L[[length(L)+1]] <- c(V[1], V[length(V)])
            
            # Calculation of the ordinates for the annotation of the p-values
            ylabs.v <- NULL
-           delta <- max(df$y, na.rm=TRUE) -  min(df$y, na.rm=TRUE)
-           for (i in 1:(length(L)-1))
-               ylabs.v <- c(ylabs.v, 1.1*quantile(df[ df$colour %in% L[[i]], ]$y,  probs = seq(0, 1, 0.15), na.rm = TRUE)[7])
-           ylabs.v <- c(ylabs.v, 0.1*delta + max(ylabs.v))
+           if (length(V)>2) {
+               for (i in 1:(length(L)-1))
+                   ylabs.v <- c(ylabs.v, 1.1*quantile(df[ df$colour %in% L[[i]], ]$y,  probs = seq(0, 1, 0.15), na.rm = TRUE)[7])
+               delta <- max(df$y, na.rm=TRUE) -  min(df$y, na.rm=TRUE)
+               ylabs.v <- c(ylabs.v, 0.1*delta + max(ylabs.v))
+               ylabs.g <- 0.1*delta + max(ylabs.v)
+           } else {
+               ylabs.v <- 1.1*quantile(df[ df$colour %in% L[[1]], ]$y,  probs = seq(0, 1, 0.15), na.rm = TRUE)[7]
+           }
 
            # Boxplot with p-values of comparisons
            G1 <- ggboxplot(df, x = "x", y = "y", color = "colour") +
-                 stat_compare_means(method=input$ttestType, comparisons = L, label.y = ylabs.v) +
-                 stat_compare_means(method = "anova")
+                 stat_compare_means(method=input$ttestType, comparisons = L, label.y = ylabs.v)
+           if (length(V)>2)
+               G1 <- G1 + stat_compare_means(label.y = ylabs.g, method = "anova")
            # Smoothed curve (loess)
-           G1 <- G1 + geom_smooth(aes(group = 1), span=0.75, method="loess", size=2, se = FALSE )
+           if (bsmooth) G1 <- G1 + geom_smooth(aes(group = 1), span=0.75, method="loess", size=2, se = FALSE )
            # Theme and legend settings
            G1 <- ggpar(G1, ggtheme=theme_bw(), legend="right", xlab = xname, ylab = yname, legend.title=colorname)
 

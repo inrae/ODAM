@@ -498,21 +498,91 @@
                 
                 <h1 id="odam-data-explorer">ODAM: Data Explorer<a class="headerlink" href="#odam-data-explorer" title="Permanent link">&para;</a></h1>
 <hr />
-<p>The Data Explorer makes data easy to explore, visualize, and subsequently to better understand the data as a whole. Explore your data in several ways according to your concerns by interacting with the graphs. For instance, univariate, bivariate and multivariate approaches have been implemented so that they are very easy to be interactively used. This is very useful in order to have a first glimpse of the data that can show trends and this allows the data to be well characterized, which is necessary to then choose how to analyze it later on.</p>
+<p><strong>Data view</strong>: The data explorer offers a complete view of all data and associated metadata. On a single page, all the information about the dataset is gathered. In addition a graph of the relationships between the datasets is provided.</p>
 <p><center>
-<a href="../images/figure7.png" data-lightbox="fig7"><img src="../images/figure7.png" width="600px"></a>
-<br><font size="-1"><i>The Data Explorer</i></font>
+<a href="../images/dataexplorer_1.png" data-lightbox="fig1"><img src="../images/dataexplorer_1.png" width="600px"></a>
+<br><font size="-1"><i>Dataset information</i></font>
+</center><br></p>
+<p><strong>Data analysis</strong>: The Data Explorer makes also data easy to explore, visualize, and subsequently to better understand the data as a whole. Explore your data in several ways according to your concerns by interacting with the graphs. For instance, univariate, bivariate and multivariate approaches have been implemented so that they are very easy to be interactively used. This is very useful in order to have a first glimpse of the data that can show trends and this allows the data to be well characterized, which is necessary to then choose how to analyze it later on.</p>
+<p>For each analysis, several possibilities can be explored by selecting many parameters and interacting with the graphs as illustrated below.</p>
+<p><center>
+<a href="../images/dataexplorer_2.png" data-lightbox="fig2"><img src="../images/dataexplorer_2.png" width="600px"></a>
+<br><font size="-1"><i>Example of univariate analysis </i></font>
 </center><br></p>
 <p><center>
-<a href="../images/figure8.png" data-lightbox="fig8"><img src="../images/figure8.png" width="600px"></a>
-<br><font size="-1"><i>Example of graphical output produced by the Data Explorer </i></font>
-</center><br><br></p>
-<p>For each analysis, several possibilities can be explored by selecting many parameters and interacting with the graphs. Graphics can be easily exported as PNG files.</p>
-<p>An interesting possibility is that you can make a selection of a subset of data and then export it directly into your spreadsheet.</p>
+<a href="../images/dataexplorer_3.png" data-lightbox="fig3"><img src="../images/dataexplorer_3.png" width="600px"></a>
+<br><font size="-1"><i>Example of multivariate analysis </i></font>
+</center><br></p>
+<p><strong>Data merging</strong>: One or more subsets of data can be selected to be combined in bivariate and multivariate analysis.</p>
+<p><strong>Save graphics</strong>: Graphics can be easily exported as PNG/SVG files.</p>
+<hr>
+
+<p><strong>Parameters in the query_string</strong> : It is possible to put parameters in the query_string within the URL in order to obtain sub-parts of graphical features easily integrated in web pages (<a href="https://en.wikipedia.org/wiki/Mashup_(web_application_hybrid)" target="_blank">mashup approach</a>.)</p>
+<p>Parameters that can be specified in the <em>query-string</em> as described below.</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>subset</td>
+<td>selection the data subsets.</td>
+<td>subset=activome,qNMR_metabo</td>
+</tr>
+<tr>
+<td>tab</td>
+<td>specifies which analysis tab will be selected; the possible values are: univariate, bivariate and multivariate</td>
+<td>tab=univariate</td>
+</tr>
+<tr>
+<td>type</td>
+<td>specifies which type of analysis tab will be selected; Only works for multivariate analysis; the possible values are: PCA,ICA,COR and GGM</td>
+<td>type=PCA</td>
+</tr>
+<tr>
+<td>fac, fac1, fac2</td>
+<td>specifies which fator will be selected; fac or fac1 for factor X, fac2 for factor Y depending on the analysis</td>
+<td>fac1=stage</td>
+</tr>
+<tr>
+<td>var, var1, var2</td>
+<td>specifies which variable will be selected; var for univariate only, var1 and var2 for bivariate only</td>
+<td>var1=glucose&amp;var2=fructose</td>
+</tr>
+<tr>
+<td>frame</td>
+<td>indicates if the main frame is displayed (default) or not</td>
+<td>frame=offers</td>
+</tr>
+<tr>
+<td>fup,fdwn</td>
+<td>indicates whether the top and bottom frames of the analysis will be displayed (by default) or not. Only works if the main frame is disabled.</td>
+<td>fup=off</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Examples</strong>:</p>
+<ul>
+<li><a href="https://pmb-bordeaux.fr/dataexplorer/?ds=frim1&amp;subset=qNMR_metabo&amp;tab=univariate&amp;fac=stage&amp;var=glucose&amp;frame=off&amp;fdwn=off" target="_blank">Example 1</a> : <em>Univariate analysis on the variable 'glucose' from the data subset 'qNMR_metabo' based on the factor 'stage'; No main frame and no bottom frame</em>.<ul>
+<li><font size=-1><i>Query string: ?ds=frim1&amp;subset=qNMR_metabo&amp;tab=univariate&amp;fac=stage&amp;var=glucose&amp;frame=off&amp;fdwn=off</i></font></li>
+</ul>
+</li>
+<li><a href="https://pmb-bordeaux.fr/dataexplorer/?ds=frim1&amp;subset=activome&amp;tab=multivariate&amp;type=PCA&amp;fac=stage&amp;frame=off&amp;fup=off&amp;fdwn=off" target="_blank">Example 2</a> : <em>PCA analysis on the data subset 'activome' based on the factor 'stage'; No main frame and no top and bottom frames</em>.<ul>
+<li><font size=-1><i>Query string: ?ds=frim1&amp;subset=activome&amp;tab=multivariate&amp;type=PCA&amp;fac=stage&amp;frame=off&amp;fup=off&amp;fdwn=off</i></font></li>
+</ul>
+</li>
+</ul>
+<hr>
+
+<p><strong>Data exporting into a spreadsheet</strong> : Finally, an interesting possibility is that you can make a selection of a subset of data and then export it directly into your spreadsheet.</p>
 <p><center>
-<a href="../images/figure9.png" data-lightbox="fig9"><img src="../images/figure9.png" width="600px"></a>
-<br><font size="-1"><i>Export a previously selected data subset.</i></font>
-</center><br><br></p>
+<a href="../images/dataexplorer_4.png" data-lightbox="fig4"><img src="../images/dataexplorer_4.png" width="600px"></a>
+<br><font size="-1"><i>Export a previously selected data subset</i></font>
+</center><br></p>
                 
                   
                 

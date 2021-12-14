@@ -36,7 +36,7 @@
            levelFac <- .C( levels(as.factor(facvals)) )
            l_options <- c('')
            names(l_options) <- c('---')
-           if (length(levelFac)<nbopt_multiselect) {
+           if (length(levelFac)<gv$nbopt_multiselect) {
               l_options <- c( 1:length(levelFac) )
               names(l_options) <- c(as.character(c(levelFac)))
            }
@@ -78,7 +78,7 @@
               levelFac <- .C( levels(as.factor(facvals)) )
               l_options <- c('')
               names(l_options) <- c('---')
-              if (length(levelFac)<nbopt_multiselect) {
+              if (length(levelFac)<gv$nbopt_multiselect) {
                  l_options <- c( 1:length(levelFac) )
                  names(l_options) <- c(as.character(c(levelFac)))
               }
@@ -91,7 +91,7 @@
     observe({ tryCatch({
        input$inDselect
        if ( values$launch>0 ) {
-          if (nrow(g$varnames)>maxVariables) return(NULL)
+          if (nrow(g$varnames)>gv$maxVariables) return(NULL)
           v_options <- c(0, 1:nrow(g$varnames) )
           names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",g$varnames$Description)))
           selVar <- NULL
@@ -125,7 +125,7 @@
                  fvals <- as.character(sprintf(fmt, fvals))
               }
               flevels <- levels(as.factor(fvals))
-              if (length(flevels)<nbopt_multiselect) {
+              if (length(flevels)<gv$nbopt_multiselect) {
                   f_options <- c( 1:length(flevels) )
                   names(f_options) <- c(as.character(c(flevels)))
               }

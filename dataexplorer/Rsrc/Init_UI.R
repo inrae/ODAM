@@ -3,43 +3,68 @@
        collection <- as.data.frame(g$dclist$list)
        setID <- which( g$inDselect == .C(collection$datasetID) )
        urls <- .C(collection$url)
-       theurl <- externalURL
+       theurl <- gv$externalURL
        if (setID>0 && !is.na(urls[setID]) && nchar(urls[setID])>0) { theurl <- urls[setID] }
        theurl
     }
 
+    analysisTab <- function(tabnames, opt) {
+       for (tab in tabnames)
+          if (opt==0) {
+             addCssClass(selector = paste0("a[data-value='",tab,"']"), class = "inactiveItem")
+          } else {
+             removeCssClass(selector = paste0("a[data-value='",tab,"']"), class = "inactiveItem")
+          }
+    }
+
+#       if (opt==0) {
+#          addCssClass(selector = "a[data-value='datatable']", class = "inactiveItem")
+#          addCssClass(selector = "a[data-value='univariate']", class = "inactiveItem")
+#          addCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
+#          addCssClass(selector = "a[data-value='multiunivariate']", class = "inactiveItem")
+#          addCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
+#       } else {
+#          removeCssClass(selector = "a[data-value='datatable']", class = "inactiveItem")
+#          removeCssClass(selector = "a[data-value='univariate']", class = "inactiveItem")
+#          removeCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
+#          removeCssClass(selector = "a[data-value='multiunivariate']", class = "inactiveItem")
+#          removeCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
+#       }
+
     toggleTab <- function(opt) {
-       if (opt==0) { # Collection only
-          js$openTab("collection")
-          removeCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
-          addCssClass(selector = "a[data-value='information']", class = "inactiveItem")
-          addCssClass(selector = "a[data-value='datatable']", class = "inactiveItem")
-          addCssClass(selector = "a[data-value='univariate']", class = "inactiveItem")
-          addCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
-          addCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
-          runjs('$(".div-session").css("display", "none");')
-       }
-       if (opt==1) { # without Collection
-          js$openTab("information")
-          js$hideinDselect()
-          addCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
-       }
-       if (opt==2) { # Collection + Dataset
-          js$openTab("information")
-          removeCssClass(selector = "a[data-value='information']", class = "inactiveItem")
-          removeCssClass(selector = "a[data-value='datatable']", class = "inactiveItem")
-          removeCssClass(selector = "a[data-value='univariate']", class = "inactiveItem")
-          removeCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
-          removeCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
-          runjs('$(".div-session").css("display", "block");')
-       }
-       if (opt==3) { # About only
+       if (opt==0) { # About only
           isolate({updateTabItems(session, "IdMenu", "about")})
           runjs('$(".box-header").css("display", "none");')
           js$hideSidebar()
           js$hideSidebarToggle()
           js$hideinDselect()
           js$hideinDSselect()
+       }
+       if (opt==1) { # Collection only
+          js$openTab("collection")
+          js$showinDselect()
+          js$hideinDSselect()
+          removeCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
+          addCssClass(selector = "a[data-value='information']", class = "inactiveItem")
+          analysisTab(tabnames,0)
+          runjs('$(".div-session").css("display", "none");')
+       }
+       if (opt==2) { # Dataset without Collection
+          js$openTab("information")
+          js$hideinDselect()
+          js$showinDSselect()
+          addCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
+          analysisTab(tabnames,0)
+          runjs('$(".div-session").css("display", "block");')
+       }
+       if (opt==3) { # Collection + Dataset
+          js$openTab("information")
+          js$showinDselect()
+          js$showinDSselect()
+          removeCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
+          removeCssClass(selector = "a[data-value='information']", class = "inactiveItem")
+          analysisTab(tabnames,0)
+          runjs('$(".div-session").css("display", "block");')
        }
     }
 
@@ -52,10 +77,10 @@
           tags$tr(tags$td(tags$strong("Global parameters"))), tags$tr(tags$td(tags$hr())),
           tags$tr(tags$td(width="400px", tags$strong("Nb max variables for a datasubset so that it can be explored"))),
           tags$tr(tags$td(
-              numericInput("maxVariables", NULL, maxVariables, min = 100, max = 1000, step=100))),
+              numericInput("maxVariables", NULL, gv$maxVariables, min = 100, max = 1000, step=100))),
           tags$tr(tags$td(
-              numericInput("msmaxnbopt", "Nb max items when multiselect", nbopt_multiselect, min = 10, max = 1000, step=50))),
-          tags$tr(tags$td(checkboxInput("saveplots", "Save plots (GGM & COR)", saveplots)))
+              numericInput("msmaxnbopt", "Nb max items when multiselect", gv$nbopt_multiselect, min = 10, max = 1000, step=50))),
+          tags$tr(tags$td(checkboxInput("saveplots", "Save plots (GGM & COR)", gv$saveplots)))
         ),
         footer = tagList(
            modalButton("Cancel"), actionButton("okgparams", "Submit")
@@ -65,10 +90,10 @@
 
     # When OK button is pressed, affects the global variables
     observeEvent(input$okgparams, {
-        maxVariables <<- input$maxVariables
-        nbopt_multiselect <<- input$msmaxnbopt
-        saveplots <<- input$saveplots
-        if (saveplots) {
+        gv$maxVariables <<- input$maxVariables
+        gv$nbopt_multiselect <<- input$msmaxnbopt
+        gv$saveplots <<- input$saveplots
+        if (gv$saveplots) {
           SESSTMPDIR <<- file.path(getwd(),'www/tmp',SESSID)
           dir.create(SESSTMPDIR, showWarnings = FALSE)
         } else {
@@ -92,7 +117,7 @@
           for (i in 1:length(p))
              others <- c( others, paste0(V$otherPkgs[[p[i]]]$Package,'_',V$otherPkgs[[p[i]]]$Version) )
           tags$table(
-             tags$tr(tags$td(colspan = 2, tags$strong(paste("Dataexplorer version",idVersion)))),
+             tags$tr(tags$td(colspan = 2, tags$strong(paste("Dataexplorer version",gv$idVersion)))),
              tags$tr(tags$td(colspan = 2, tags$hr())),
              tags$tr(tags$td(colspan = 2, V$R.version$version.string)),
              tags$tr(tags$td(colspan = 2, paste("platform:",V$platform))),
@@ -252,14 +277,14 @@
                  } else {
                      values$initcol <- 1
                  }
-                 toggleTab(0)
+                 toggleTab(1)
               } else { # ... with a dataset
                  g$inDselect <<- ws$dsname
-                 toggleTab(1)
+                 toggleTab(2)
                  values$initds <- 1
               }
            } else { # no query string
-              toggleTab(3)
+              toggleTab(0)
               values$nods <- 1
            }
         }
@@ -314,11 +339,12 @@
               updateSelectInput(session, "inDselect", choices = c("Select a dataset"="",choices), selected = g$inDselect)
               runjs('window.scrollTo(0,0);')
            }
+           toggleTab(2)
            if (nchar(ws$dcname)>0) {
               ws$apiurl <<- getURLfromList()
               values$initds <- which( .C(g$dclist$list$datasetID[order(g$dclist$list$label)]) == g$inDselect )
+              toggleTab(3)
            }
-           toggleTab(2)
            values$initdss <- values$initds
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Dataet Change Obs:\n", e); }) })
@@ -342,7 +368,7 @@
                DSselect <- .S(ws$subset)
                if (! is.varsExist(DSselect)) { values$init <- values$error <- 1 }
            }
-           if ( ui$tab %in% c('datatable','univariate','bivariate','multivariate') ) {
+           if ( ui$tab %in% tabnames ) {
               js$openTab(ui$tab)
               js$hideSidebar()
               if (ui$header %in% c('off')) {
@@ -356,7 +382,7 @@
                                 '$(".content-wrapper").css("min-height","0px");'))
               }
            }
-           if ( nchar(ui$tab)>0 && ! ui$tab %in% c('datatable','univariate','bivariate','multivariate') ) {
+           if ( nchar(ui$tab)>0 && ! ui$tab %in% tabnames ) {
               g$msgError <<- paste0("ERROR: '",ui$tab,"' is not a valid tab name")
               values$init <- values$error <- 1; values$initdss <- 0
            }
@@ -382,8 +408,8 @@
         }
         if (! is.null(g$subsets) && ! is.null(input$inDSselect) && length(input$inDSselect)>0 && g$inDSselect != .J(input$inDSselect)) {
             getVars(.J(input$inDSselect))
-            if (is.wsError()) { values$init <- values$error <- 1; values$initdss <- 0; values$launch <- 0 }
-            else              { values$launch <- length(input$inDSselect) }
+            if (is.wsError()) { values$init <- values$error <- 1; values$initdss <- 0; values$launch <- 0; analysisTab(tabnames,0) }
+            else              { values$launch <- length(input$inDSselect); analysisTab(tabnames,1) }
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Data subset Change Obs:\n", e); }) })
 
@@ -407,7 +433,16 @@
         input$inDselect
         values$launch
         ret <- 0
-        if (values$launch>0 && nrow(g$varnames)>maxVariables) ret <- 1
+        if (values$launch>0) {
+           if (nrow(g$varnames)>gv$maxVariables) ret <- 1
+           if (nrow(g$varnames)<3) { 
+               analysisTab(tabnames,0); 
+               if (nrow(g$varnames)<2)
+                  analysisTab(subtabnames2,1)
+               else
+                  analysisTab(subtabnames,1)
+           }
+        }
         return(ret)
     })
     outputOptions(output, 'nbvarsEvent', suspendWhenHidden=FALSE)

@@ -130,8 +130,8 @@ ui_uniTab <- tabItem(tabName = "univariate", bsAlert("ErrAlertUni"), conditional
       # PLOTS
       column(12,
          conditionalPanel(condition="input.uniVarSelect>0", 
-              conditionalPanel(condition="input.ttest==1", imageOutput("TtestPlot", height="500px")),
-              conditionalPanel(condition="input.ttest==0", plotlyOutput("BoxPlot", height="500px"))
+              conditionalPanel(condition="input.ttest==1", imageOutput("TtestPlot", height="500px") %>% withSpinner(color="brown")),
+              conditionalPanel(condition="input.ttest==0", plotlyOutput("BoxPlot", height="500px") %>% withSpinner(color="brown"))
          )
       ),
       column(12, p("")),
@@ -186,8 +186,9 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),conditiona
               )
          )
       )),
+      # PLOTS
       column(12, conditionalPanel(condition="input.biVarSelect1>0 && input.biVarSelect2>0", 
-             plotlyOutput("ScatterPlot", height="500px")
+         plotlyOutput("ScatterPlot", height="500px")  %>% withSpinner(color="brown")
       )),
       column(12, p("")),
       # DOWN DIV
@@ -200,6 +201,48 @@ ui_scatterTab <- tabItem(tabName = "bivariate", bsAlert("ErrAlertBi"),conditiona
          )
       ))
    ),
+   conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==1", ui_warning),
+   conditionalPanel(condition="output.DSsize==0",
+      h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
+   )
+)))
+
+#----------------------------------------------------
+# Multi-univariate : VolcanoPlot 
+#----------------------------------------------------
+ui_multiuniTab <- tabItem(tabName = "multiunivariate", bsAlert("ErrAlertMuni"), conditionalPanel(condition="output.apierror==0", box(
+   title="Volcano Plot", status = "primary", solidHeader = TRUE, width = 12,
+   conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==0",
+      # UP DIV
+      div(class='div-top', column(12,
+         column(4,
+              selectInput("muniFacX", "Factor for X Axis", c() ),
+              column(12,
+                 column(6, selectInput("ptype", "Method", c("T-test"="0", "Wilcoxon"="1"))),
+                 column(6, selectInput("tadj", "Adj. p-values",
+                           c("None"="none", "Holm"="holm","Benjamini-Hochberg"="BH", "Benjamini-Yekutieli"="BY", "Bonferroni"="bonf"), selected="BH"))
+              )
+         ),
+         column(4,
+              selectInput("SelLev1", "Reference level", c() ),
+              column(12,
+                 column(6, numericInput("pval", "P-value threshold", 0.05, min = 0.01, max = 0.1, step=0.01 )),
+                 column(6, numericInput("foldChange", "FoldChange threshold", 1, min = 1, max = 10, step=0.5))
+              )
+         ),
+         column(4,
+              selectInput("SelLev2", "Level to be compared", c() ),
+              column(12,
+                 column(6, selectInput("onlytop", "Labels", c("All"="0", "Only Top 5"="5", "Only Top 10"="10", "Only Top 25"="25"), selected="10" ))
+              )
+         )
+      )),
+      # PLOTS
+      column(12, conditionalPanel(condition="input.SelLev1>0 && input.SelLev2>0 && input.SelLev1!=input.SelLev2", 
+         plotlyOutput("volcanoPlot", height="600px")  %>% withSpinner(color="brown")
+      )),
+      column(12, p(""))
+   ),   
    conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==1", ui_warning),
    conditionalPanel(condition="output.DSsize==0",
       h3(em("Please, select a Data Subset in the corresponding Drop List above"), style = "color:#a2a2bb")
@@ -273,8 +316,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
               conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'",
                   column(2, checkboxInput('f3D', '3D', FALSE)),
                   column(2, checkboxInput('multiLabels', 'Labels', TRUE)), 
-                  column(3, checkboxInput('shortLabels', 'Short Labels', FALSE)), 
-                  column(3, checkboxInput('GBG', 'Grey Background', FALSE))
+                  column(3, checkboxInput('shortLabels', 'Short Labels', FALSE))
               ),
               conditionalPanel(condition="input.multiType=='COR'",
                   column(4, checkboxInput('fullmatcor', 'Full Matrix', TRUE)),
@@ -294,9 +336,12 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
       # PLOTS
       column(12,
          conditionalPanel(condition="input.multiType != 'None' && input.outType != 'None' && input.listVars[2]", 
-            conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'", plotlyOutput("MultiPlot", height="600px")),
-            conditionalPanel(condition="input.multiType=='COR'", imageOutput("CorrPlot", height="600px")),
-            conditionalPanel(condition="input.multiType=='GGM'", forceNetworkOutput("ggmnet", width="85%", height="800px")),
+            conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'", 
+                    plotlyOutput("MultiPlot", height="600px") %>% withSpinner(color="brown")),
+            conditionalPanel(condition="input.multiType=='COR'", 
+                    imageOutput("CorrPlot", height="600px") %>% withSpinner(color="brown")),
+            conditionalPanel(condition="input.multiType=='GGM'", 
+                    forceNetworkOutput("ggmnet", width="85%", height="800px") %>% withSpinner(color="brown")),
             uiOutput('urlimage')
          )
       ),

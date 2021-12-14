@@ -5,40 +5,50 @@ library(shinyBS)
 library(networkD3)
 library(plotly)
 library(markdown)
+library(dplyr)
+library(shinycssloaders)
 
 options(width=128)
 options(shiny.deprecation.messages=FALSE)
 options(shiny.sanitize.errors = FALSE)
 #options(error=function() { traceback(2); quit("no", status = 1, runLast = FALSE) })
 
-debug_shinyjs <- FALSE
-
-odamdoc_url <- 'https://inrae.github.io/ODAM/'
-
 source("Rsrc/utils.R")
 conffile <- "conf/global.ini"
 conf <- Parse.INI(conffile, section="GLOBAL")
 
-idVersion <- conf$VERSION
+# global variables
+globvars <- list(
 
-# API URL
-externalURL <- conf$GETDATA_URL_PROXY
+  debug_shinyjs = FALSE,
 
-# determines whether curl verifies the authenticity of the peer's certificate
-SSL_VerifyPeer <- conf$SSL_VERIFYPEER
+  odamdoc_url = 'https://inrae.github.io/ODAM/',
 
-# Maximum number of variables in a data subset so that it can be explored interactively
-maxVariables <- conf$MAXVARIABLES
+  idVersion = conf$VERSION,
 
-# Theme colors
-theme <- conf$THEME
+  # API URL
+  externalURL = conf$GETDATA_URL_PROXY,
 
-# Save plots (GGM & COR)
-saveplots <- ifelse(conf$SAVEPLOTS==1, TRUE, FALSE)
+  # determines whether curl verifies the authenticity of the peer's certificate
+  SSL_VerifyPeer = conf$SSL_VERIFYPEER,
 
-# Nb max item when multiselect
-nbopt_multiselect <- 150
+  # Theme colors
+  theme = conf$THEME,
 
-# Value of the pseudo zero to apply a log10
-pseudo_zero <- 0.0001
+  # Number of Cores
+  nbcores = conf$NBCORES,
+
+  # Maximum number of variables in a data subset so that it can be explored interactively
+  maxVariables = conf$MAXVARIABLES,
+
+  # Nb max item when multiselect
+  nbopt_multiselect = 150,
+
+  # Save plots (GGM & COR)
+  saveplots = ifelse(conf$SAVEPLOTS==1, TRUE, FALSE),
+
+  # Value of the pseudo zero to apply a log10
+  pseudo_zero = 0.0001
+
+)
 

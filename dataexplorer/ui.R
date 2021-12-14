@@ -10,7 +10,7 @@ meta <- tags$head(
    '),
    tags$script(type="text/javascript", src = "js/google-analytics.js"),
    tags$script(type="text/javascript", src = "js/utils.js"),
-   tags$link(rel = "stylesheet", type = "text/css", href = paste0(theme,".css"))
+   tags$link(rel = "stylesheet", type = "text/css", href = paste0(globvars$theme,".css"))
 )
 
 busyLogo <- function(busysrc, height = 30, width = 30, alt = NULL) {
@@ -49,6 +49,7 @@ ui <- dashboardPage(skin = "blue",
             menuItem("Data Table",   tabName = "datatable",   icon = icon("bar-chart")),
             menuItem("Univariate",   tabName = "univariate",   icon = icon("bar-chart")),
             menuItem("Bivariate",    tabName = "bivariate",    icon = icon("bar-chart")),
+            menuItem("Multi-univariate", tabName = "multiunivariate", icon = icon("bar-chart")),
             menuItem("Multivariate", tabName = "multivariate", icon = icon("bar-chart")),
             menuItem("About",   tabName = "about",   icon = icon("info-circle"))
         )
@@ -56,7 +57,7 @@ ui <- dashboardPage(skin = "blue",
 
   dashboardBody(
     meta,
-    shinyjs::useShinyjs(debug = debug_shinyjs, html = FALSE),
+    shinyjs::useShinyjs(debug = globvars$debug_shinyjs, html = FALSE),
     shinyjs::inlineCSS(list(.hideElem = "display: none")),
     shinyjs::inlineCSS(list(.dataTables_info="display: inline")),
 
@@ -89,6 +90,10 @@ ui <- dashboardPage(skin = "blue",
       # Bivariate : ScatterPlot 
       #----------------------------------------------------
          ui_scatterTab,
+      #----------------------------------------------------
+      # Multi-Univariate : VolcanoPlot 
+      #----------------------------------------------------
+         ui_multiuniTab,
       #----------------------------------------------------
       # Multivariate : PCA / ICA
       #----------------------------------------------------

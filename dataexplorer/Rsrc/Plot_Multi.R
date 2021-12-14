@@ -44,11 +44,13 @@
              names(v_options) <- c('Variables')
              updateSelectInput(session, "outType", choices = v_options,  selected="VARS")
              values$outtype <- 'VARS'
+             shinyjs::enable("shortLabels")
           } else {
              v_options <- c('IDS','VARS')
              names(v_options) <- c('Identifiers', 'Variables')
              updateSelectInput(session, "outType", choices = v_options,  selected="IDS")
              values$outtype <- 'IDS'
+             shinyjs::disable("shortLabels")
           }
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 1b:\n", e ); }) })
@@ -57,8 +59,14 @@
     observe({ tryCatch({
        input$inDselect
        input$outType
-       if ( values$launch>0 )
+       if ( values$launch>0 ) {
           values$outtype <- .C(input$outType)
+          if (input$outType=='VARS') {
+             shinyjs::enable("shortLabels")
+          } else {
+             shinyjs::disable("shortLabels")
+          }
+       }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 1c:\n", e ); }) })
 
 
@@ -80,10 +88,13 @@
        if ( values$launch>0 ) {
             if (input$f3D==TRUE) {
                 shinyjs::disable("multiLabels")
-                shinyjs::disable("GBG")
             } else {
                 shinyjs::enable("multiLabels")
-                shinyjs::enable("GBG")
+            }
+            if (input$multiLabels==FALSE) {
+                shinyjs::disable("shortLabels")
+            } else {
+                if (values$outtype=='VARS') shinyjs::enable("shortLabels")
             }
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 3:\n", e ); }) })
@@ -92,7 +103,7 @@
     observe({ tryCatch({
        input$inDselect
        if ( values$launch>0) {
-          if (nrow(g$varnames)>maxVariables) return(NULL)
+          if (nrow(g$varnames)>gv$maxVariables) return(NULL)
           # First Factor
           f1_options <- .C(g$facnames[,2])
           names(f1_options) <- .C(g$facnames$Description)
@@ -120,7 +131,7 @@
           levelFac <- .C( levels(as.factor(facvals)) )
           l_options <- c('')
           names(l_options) <- c('---')
-          if (length(levelFac)<nbopt_multiselect) {
+          if (length(levelFac)<gv$nbopt_multiselect) {
               l_options <- c( 1:length(levelFac) )
               names(l_options) <- c(as.character(c(levelFac)))
           }
@@ -153,7 +164,7 @@
                  fvals <- as.character(sprintf(fmt, fvals))
               }
               flevels <- levels(as.factor(fvals))
-              if (length(flevels)<nbopt_multiselect) {
+              if (length(flevels)<gv$nbopt_multiselect) {
                   f_options <- c( 1:length(flevels) )
                   names(f_options) <- c(as.character(c(flevels)))
               }
@@ -198,7 +209,7 @@
                  ## Metadata preparation / Data extraction
                  o <- getDataMulti(F1, .C(input$listLevels), FCOL, selectFCOL, .C(input$listVars), scale=TRUE)
                  X <- unique( as.matrix(o$subdata[, o$variables]) )
-                 if (input$multiLog) X <- log10(abs(X)+pseudo_zero)*sign(X)
+                 if (input$multiLog) X <- log10(abs(X)+gv$pseudo_zero)*sign(X)
                  n <- nrow(X)
                  p <- ncol(X)
 
@@ -292,7 +303,7 @@
            fn <- forceNetwork(Links = Links, Nodes = Nodes, Source = "source", Target = "target", Value = "value", NodeID = "name", Group = "group",
                        Nodesize="size", fontSize=fontSize, linkColour=link_colors, charge=charge, colourScale=JS(colorJS),
                        opacity = 0.99, opacityNoHover = 0.8, zoom = TRUE, bounded=TRUE, legend=TRUE)
-            if (saveplots) saveNetwork(fn, file = outfile)
+            if (gv$saveplots) saveNetwork(fn, file = outfile)
            fn
        }, error=function(e) { ERROR$MsgErrorMulti <- paste("RenderForceNetwork:\n", e ); })
     })
@@ -336,7 +347,7 @@
                tryCatch({
                   getMultiPlot(multiType, F1, .C(input$listLevels), FCOL, selectFCOL, .C(input$listVars), outputVariables=outputVariables,
                                fellipse=input$ellipse, scale=input$scale, blabels=input$multiLabels, slabels=input$shortLabels,
-                               f3D=input$f3D, GBG=input$GBG,conflevel=as.numeric(input$conflevel))
+                               f3D=input$f3D, conflevel=as.numeric(input$conflevel))
                }, error=function(e) { ERROR$MsgErrorMulti <- paste("getMultiPlot :\n", e ); })
            })
        }, error=function(e) { ERROR$MsgErrorMulti <- paste("RenderPlotly:\n", e ); })
@@ -395,7 +406,7 @@
     # Multivariate Plot
     #----------------------------------------------------
     getMultiPlot <- function(Analysis, F1, selectLevels, FCOL, selectFCOL, selectVars,
-                             outputVariables=FALSE, fellipse=TRUE, scale=FALSE, blabels=TRUE, slabels=FALSE, f3D=FALSE, GBG=FALSE, conflevel=0.95)
+                             outputVariables=FALSE, fellipse=TRUE, scale=FALSE, blabels=TRUE, slabels=FALSE, f3D=FALSE, conflevel=0.95)
     {
         FUN <- ''
         if (nchar(Analysis)>0) FUN <- paste0(Analysis,'_fun')
@@ -434,7 +445,7 @@
            MA$fac <- as.factor(MA$fac)
            MA <- unique(MA)
 
-#if (saveplots) write.table(MA, file = file.path(SESSTMPDIR,'MA.txt'), append = FALSE, quote = TRUE, sep = "\t", na = "NA", dec = ".", row.names = FALSE)
+#if (gv$saveplots) write.table(MA, file = file.path(SESSTMPDIR,'MA.txt'), append = FALSE, quote = TRUE, sep = "\t", na = "NA", dec = ".", row.names = FALSE)
 
            if (f3D) { # Use 3D plotly
               symbolset = c('dot', 'cross', 'diamond', 'square', 'triangle-down', 'triangle-left', 'triangle-right', 'triangle-up')
@@ -445,7 +456,7 @@
                        zaxis = list(title = sprintf("%s%d = %6.2f%%",prefix, pc3, evnorm[pc3]))))
            } else { # Use 2D ggplot / plotly
 
-#if (saveplots) MA <- read.table( file.path(SESSTMPDIR,'MA.txt'), header=TRUE, sep="\t", stringsAsFactors = FALSE) 
+#if (gv$aveplots) MA <- read.table( file.path(SESSTMPDIR,'MA.txt'), header=TRUE, sep="\t", stringsAsFactors = FALSE) 
 
               sizeP <- ifelse( blabels, 0, 0 )
               G1 <- ggplot(data=MA,(aes(x=C1,y=C2,colour = fac)))
@@ -460,8 +471,7 @@
               }
               G1 <- G1 + labs(colour=F1name)
               if (fellipse) G1 <- G1 + stat_ellipse(type='norm', level=conflevel, na.rm=TRUE)
-              G1 <- G1 + guides(colour = guide_legend(override.aes = list(size=3)))
-              if (!GBG) G1 <- G1 + theme_bw()
+              G1 <- G1 + theme_bw() + guides(colour = guide_legend(override.aes = list(size=3)))
               gg <- G1 #ggplotly(G1)
            }
 
@@ -540,7 +550,7 @@
         ## Metadata preparation / Data extraction
         o <- getDataMulti(F1, selectLevels, FCOL, selectFCOL, selectVars, scale=FALSE)
         x <- unique( as.matrix(o$subdata[, o$variables]) )
-        if (blog) x <- log10(abs(x)+pseudo_zero)*sign(x)
+        if (blog) x <- log10(abs(x)+gv$pseudo_zero)*sign(x)
 
         ## Correlation
         methcor <- ifelse(!methcor %in% c("pearson","kendall","spearman"), "pearson", methcor)
@@ -607,7 +617,7 @@
        tryCatch({
           if ( values$launch==0 ) return(NULL)
           if ( ! values$multitype %in% c('COR','GGM') ) return(NULL)
-          if ( ! saveplots) return(NULL)
+          if ( ! gv$saveplots) return(NULL)
           #if (! file.exists(file.path(SESSTMPDIR,outfiles[[values$multitype]])) ) return(NULL)
           myurl <- paste0(cdata$url_protocol,'//',cdata$url_hostname,cdata$url_pathname,'tmp/',SESSID,'/', outfiles[[values$multitype]])
           HTML( paste0('<center>',a(href=myurl,"Open in new Tab",target="_blank"),'</center>') )

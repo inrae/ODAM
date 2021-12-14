@@ -17,7 +17,7 @@ For more information/explanation, see <a href="https://inrae.github.io/ODAM/" ta
 <br>
 
 ----
-#### Test online with the <a href="?ds=frim1">FRIM dataset</a>
+#### Test online with the <a href="?ds=frim1">FRIM dataset</a> or the <a href="https://pmb-bordeaux.fr/dataexplorer/?dc=Frimouss">FRIMOUSS collection</a>
 ----
 
 * Test online the getData API through the web <a href="https://pmb-bordeaux.fr/odamsw/" target="_blank">swagger UI</a> (See <a href="https://github.com/inrae/ODAM/tree/master/API" target="_blank">Github ODAM/API</a> )

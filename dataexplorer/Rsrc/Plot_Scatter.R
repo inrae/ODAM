@@ -35,7 +35,7 @@
            levelFac <- .C( levels(as.factor(facvals)) )
            l_options <- c('')
            names(l_options) <- c('---')
-           if (length(levelFac)<nbopt_multiselect) {
+           if (length(levelFac)<gv$nbopt_multiselect) {
               l_options <- c( 1:length(levelFac) )
               names(l_options) <- c(as.character(c(levelFac)))
            }
@@ -88,7 +88,7 @@
                  fvals <- as.character(sprintf(fmt, fvals))
               }
               flevels <- levels(as.factor(fvals))
-              if (length(flevels)<nbopt_multiselect) {
+              if (length(flevels)<gv$nbopt_multiselect) {
                   f_options <- c( 1:length(flevels) )
                   names(f_options) <- c(as.character(c(flevels)))
               }

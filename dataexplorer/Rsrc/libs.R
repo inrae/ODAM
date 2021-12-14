@@ -19,22 +19,22 @@ library(ggdendro)
 library(stringr)
 library(FastGGM)
 library(RcppParallel)
+library(foreach)
+library(doParallel)
+
 
 setThreadOptions(numThreads = 4) # set 4 threads for parallel computing
 
 # ws : Web service connection variables
 ws <- list(
-  keymode=0,           # API key mode : 0 => no API key, 1 => API key in query string, 2 => API key in HTTP header
-  apiurl=externalURL,  # API URL
-  auth='',             # API Key
-  ipclient='',         # the client's originating IP
-  dcname='',           # data collection shortname
-  dsname='',           # dataset shortname
-  subset=''            # data subsets user's preselection
+  keymode=0,             # API key mode : 0 => no API key, 1 => API key in query string, 2 => API key in HTTP header
+  apiurl=gv$externalURL,  # API URL
+  auth='',               # API Key
+  ipclient='',           # the client's originating IP
+  dcname='',             # data collection shortname
+  dsname='',             # dataset shortname
+  subset=''              # data subsets user's preselection
 )
-
-# ui : Unit Interface parameters
-ui <- list( header='', updiv='', downdiv='', tab='', type='', fac1='', fac2='', var1='', var2='' )
 
 # global variables
 g <- list(
@@ -49,12 +49,12 @@ g <- list(
    samplename=NULL,
    samples=NULL,
    S=NULL,
-   identifiers=NULL,
-   varnames=NULL,
-   varsBySubset=NULL,
    setnames=NULL,
+   identifiers=NULL,
    facnames=NULL,
    features=NULL,
+   varnames=NULL,
+   varsBySubset=NULL,
    LABELS=NULL,
    DSL=NULL,
    connectList=NULL,
@@ -67,11 +67,19 @@ g <- list(
    fs=10
 )
 
+# ui : Unit Interface parameters
+ui <- list( header='', updiv='', downdiv='', tab='', type='', fac1='', fac2='', var1='', var2='', lev1='', lev2='' )
+
+# Names of data analysis tabs
+tabnames <- c('datatable','univariate','bivariate','multiunivariate','multivariate')
+subtabnames  <- c('datatable','univariate','bivariate')
+subtabnames2 <- c('datatable','univariate')
+
 # Null image
 imgNull <- list(src = file.path(getwd(),'www/loading.gif'), contentType = 'image/gif', width = 30, height = 10, alt = '')
 
 # Outfile names by category
-outfiles <- list('PCA'='multi.html', 'ICA'='multi.html','COR'='corr.svg','GGM'='ggm.html','TTEST'='ttestbox.svg')
+outfiles <- list('PCA'='multi.html', 'ICA'='multi.html','COR'='corr.svg','GGM'='ggm.html','TTEST'='ttestbox.svg', 'VCP'='volcanoplot.svg')
 
 trim <- function (x) gsub("^\\s+|\\s+$", "", x)
 .N <- function(x) { as.numeric(as.vector(x)) }
@@ -101,7 +109,7 @@ httr_get <- function(ws, query, mode='text', fsplit=TRUE)
     T <- ''
     tryCatch({
        resp <- httr::GET(paste0(ws$apiurl, query), timeout(5),
-                         config = httr::config(ssl_verifypeer = SSL_VerifyPeer),
+                         config = httr::config(ssl_verifypeer = gv$SSL_VerifyPeer),
                          add_headers(.headers = headers))
        T <- httr::content(resp, as=mode)
        if (mode=='text' && fsplit) T <- simplify2array(strsplit(enc2utf8(T),"\n"))
@@ -132,6 +140,8 @@ getURLparams <- function(cdata)
     if (!is.null(params[['var']]))     ui$var1 <<- params[['var']]
     if (!is.null(params[['var1']]))    ui$var1 <<- params[['var1']]
     if (!is.null(params[['var2']]))    ui$var2 <<- params[['var2']]
+    if (!is.null(params[['lev1']]))    ui$lev1 <<- params[['lev1']]
+    if (!is.null(params[['lev2']]))    ui$lev2 <<- params[['lev2']]
 }
 
 # Get 'about.md' content
@@ -204,7 +214,7 @@ getDataCol <- function (ws)
     if (!is.wsError()) {
         if (length(dc$Subset)==1 && dc$Subset=="collection") {
            collection <- getData(ws,'/collection',dcol=1);
-           collection$url[is.na(collection$url)] <- externalURL
+           collection$url[is.na(collection$url)] <- gv$externalURL
            dclist <- list(collection=dc, list=collection)
         } else { g$msgError <<- msgError }
     } else { g$msgError <<- msgError }
@@ -288,7 +298,7 @@ getVars <- function(strNameList, rmvars=FALSE)
 
        # Get DATA
        data <- getData(ws,paste('(',strNameList,')',sep=''))
-       if (! is.wsError() && ncol(data)<=maxVariables)
+       if (! is.wsError() && ncol(data)<=gv$maxVariables)
        {
           # Get quantitative variable features
           varnames <- NULL
@@ -423,9 +433,9 @@ getMetadataLinksAsTable <- function(ws)
   href2 <- paste0('<a href="',ws$apiurl,'query/',ws$dsname,'/metadata/?format=xml" target="_blank">Attributes</a>')
   href3 <- paste0('<a href="',ws$apiurl,'query/',ws$dsname,'/datapackage/?links=1" target="_blank">Datapackage</a>')
   # information links
-  hrefS <- paste0('<a href="',odamdoc_url,'data-preparation/#s_subsetstsv" target="_blank">Data Preparation Protocol - Subsets</a>')
-  hrefA <- paste0('<a href="',odamdoc_url,'data-preparation/#a_attributestsv" target="_blank">Data Preparation Protocol - Attributes</a>')
-  hrefJ <- paste0('<a href="',odamdoc_url,'json-schema/" target="_blank">ODAM datapackage based on JSON-Schema</a>')
+  hrefS <- paste0('<a href="',gv$odamdoc_url,'data-preparation/#s_subsetstsv" target="_blank">Data Preparation Protocol - Subsets</a>')
+  hrefA <- paste0('<a href="',gv$odamdoc_url,'data-preparation/#a_attributestsv" target="_blank">Data Preparation Protocol - Attributes</a>')
+  hrefJ <- paste0('<a href="',gv$odamdoc_url,'json-schema/" target="_blank">ODAM datapackage based on JSON-Schema</a>')
   
   df <- data.frame(rbind( c(href1, 'All metadata related to data subsets', hrefS),
                           c(href2, 'All metadata related to attributes within each data subset', hrefA),

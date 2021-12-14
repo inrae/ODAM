@@ -61,7 +61,11 @@ do {
     }
 
     if (! is_file($ENV['DATADIR']."/$dataset/infos.md")) {
-        $INFOS_TEXT = '## No dataset information';
+        if (is_file($ENV['DATADIR']."/$dataset/collection.txt")) {
+             $INFOS_TEXT = '## No collection information';
+        } else {
+             $INFOS_TEXT = '## No dataset information';
+        }
         break;
     }
 

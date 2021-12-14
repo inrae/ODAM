@@ -2,6 +2,9 @@
 # Define server logic required to draw a histogram
 shinyServer(function(input, output, session) {
 
+    # Import global variables into this session
+    gv <- globvars
+
     #----------------------------------------------------
     # Init
     #----------------------------------------------------
@@ -10,11 +13,12 @@ shinyServer(function(input, output, session) {
     source("Rsrc/Plot_Info.R", local=TRUE)     # Dataset Information
     source("Rsrc/Plot_Uni.R", local=TRUE)      # Univariate
     source("Rsrc/Plot_Scatter.R", local=TRUE)  # Bivariate
+    source("Rsrc/Plot_MultiUni.R", local=TRUE) # Multi-Univariate
     source("Rsrc/Plot_Multi.R", local=TRUE)    # Multivariate
 
     # Reactive values for error management
-    ERROR <- reactiveValues(MsgErrorMain='', MsgErrorInfo='', MsgErrorUni='', 
-                            MsgErrorBi='', MsgErrorMulti='', MsgErrorAbout='' )
+    ERROR <- reactiveValues(MsgErrorMain='', MsgErrorInfo='',  MsgErrorUni='', MsgErrorBi='', 
+                            MsgErrorMuni='', MsgErrorMulti='', MsgErrorAbout='' )
 
     # Reactive values for UI
     values <- reactiveValues(
@@ -25,7 +29,7 @@ shinyServer(function(input, output, session) {
         # multiplot events
         multitype='', outtype='', netData=NULL, 
         # Error events
-        error=0, 
+        error=0
     )
 
     # Shortcut for client session data
@@ -35,7 +39,7 @@ shinyServer(function(input, output, session) {
     SESSID <- paste(sample(c(0:9, letters[1:6]),15, replace=TRUE),collapse="")
 
     # Session temporary directory
-    if (saveplots) {
+    if (gv$saveplots) {
        SESSTMPDIR <- file.path(getwd(),'www/tmp',SESSID)
        dir.create(SESSTMPDIR, showWarnings = FALSE)
     } else {

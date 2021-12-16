@@ -8,7 +8,9 @@
        theurl
     }
 
-    analysisTab <- function(tabnames, opt) {
+    # Toogle (show/hide) analysis tabs
+    analysisTab <- function(tabnames, opt)
+    {
        for (tab in tabnames)
           if (opt==0) {
              addCssClass(selector = paste0("a[data-value='",tab,"']"), class = "inactiveItem")
@@ -17,20 +19,7 @@
           }
     }
 
-#       if (opt==0) {
-#          addCssClass(selector = "a[data-value='datatable']", class = "inactiveItem")
-#          addCssClass(selector = "a[data-value='univariate']", class = "inactiveItem")
-#          addCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
-#          addCssClass(selector = "a[data-value='multiunivariate']", class = "inactiveItem")
-#          addCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
-#       } else {
-#          removeCssClass(selector = "a[data-value='datatable']", class = "inactiveItem")
-#          removeCssClass(selector = "a[data-value='univariate']", class = "inactiveItem")
-#          removeCssClass(selector = "a[data-value='bivariate']", class = "inactiveItem")
-#          removeCssClass(selector = "a[data-value='multiunivariate']", class = "inactiveItem")
-#          removeCssClass(selector = "a[data-value='multivariate']", class = "inactiveItem")
-#       }
-
+    # Toogle (show/hide) some UI elements
     toggleTab <- function(opt) {
        if (opt==0) { # About only
           isolate({updateTabItems(session, "IdMenu", "about")})
@@ -42,6 +31,7 @@
        }
        if (opt==1) { # Collection only
           js$openTab("collection")
+          js$showSidebar()
           js$showinDselect()
           js$hideinDSselect()
           removeCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
@@ -51,6 +41,7 @@
        }
        if (opt==2) { # Dataset without Collection
           js$openTab("information")
+          if (nchar(ui$tab)==0 || ! ui$tab %in% tabnames) js$showSidebar()
           js$hideinDselect()
           js$showinDSselect()
           addCssClass(selector = "a[data-value='collection']", class = "inactiveItem")
@@ -59,6 +50,7 @@
        }
        if (opt==3) { # Collection + Dataset
           js$openTab("information")
+          if (nchar(ui$tab)==0 || ! ui$tab %in% tabnames) js$showSidebar()
           js$showinDselect()
           js$showinDSselect()
           removeCssClass(selector = "a[data-value='collection']", class = "inactiveItem")

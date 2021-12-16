@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y \
     r-cran-shiny r-cran-shinybs r-cran-shinydashboard r-cran-shinyjs r-cran-dt \
     r-cran-knitr r-cran-clipr r-cran-rematch r-cran-readr r-cran-car r-cran-nloptr r-cran-clue \
     r-cran-polynom r-cran-lme4 r-cran-haven r-cran-ggpubr r-cran-ggdendro r-cran-fdrtool \
-    r-cran-shinycssloaders r-cran-doparallel \
+    r-cran-rtsne r-cran-shinycssloaders r-cran-doparallel \
   # locale setting
  && apt-get update && apt-get install -y locales \
  && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \

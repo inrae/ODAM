@@ -260,7 +260,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
       div(class='div-top', column(12,
          column(4,
               selectInput("multiFacX", "Factor for highlighting the classification", c() ),
-              conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'",
+              conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA' || input.multiType=='TSNE'",
               column(12,
                    column(6, checkboxInput('ellipse', 'Ellipses', TRUE)),
                    column(6, selectInput("conflevel", NULL, c("0.8"="0.8", "0.9"="0.9", "0.95"="0.95", "0.99"="0.99"), selected="0.95" ))
@@ -271,15 +271,14 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
               selectInput("multiType", "Analysis Type", 
                      c("----"="None"  , "Principal Component Analysis (PCA)" = "PCA" 
                                       , "Independent Component Analysis (ICA)" = "ICA" 
+                                      , "t-Distributed Stochastic Neighbor Embedding (t-SNE)" = "TSNE"
                                       , "Heatmap of correlation matrix (COR)" = "COR" 
                                       , "Gaussian graphical model (GGM)" = "GGM"
                                       ), selected = "None"),
       
-              conditionalPanel(condition="input.multiType=='PCA'  || input.multiType=='ICA'",
+              conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA' || input.multiType=='TSNE'",
                    column(6,
-                       conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'",
-                            checkboxInput('scale', 'Scale', TRUE)
-                       )
+                       checkboxInput('scale', 'Scale', TRUE)
                    ),
                    column(6, 
                        conditionalPanel(condition="input.multiType=='PCA'",
@@ -288,14 +287,19 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
                        conditionalPanel(condition="input.multiType=='ICA'",
                             selectInput("nbComp", NULL, c("2 Components"="2", "3 Components"="3", "4 Components"="4", 
                                                           "5 Components"="5", "6 Components"="6" ), selected="2" )
-                       )
+                       ),
+                       conditionalPanel(condition="input.multiType=='TSNE'",
+                       column(12,
+                            column(4,  HTML('<b>Perplexity</b>')),
+                            column(8, numericInput("perplexity", NULL, 15, min = 5, max = 50, step=5))
+                       ))
                    )
               ),
               conditionalPanel(condition="input.multiType=='COR'", 
                    column(12,
                        column(2,  HTML('<b>Correlation type</b>')),
                        column(4,
-                           selectInput("methcor", NULL, c("Pearson"="pearson", "Spearman"="spearman", "Kendall"="kendall", selected="pearson" ))
+                            selectInput("methcor", NULL, c("Pearson"="pearson", "Spearman"="spearman", "Kendall"="kendall", selected="pearson" ))
                        )
                    )
               ),
@@ -313,7 +317,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
          column(4,
               selectInput("outType", "Output Type", 
                    c("----"="None", "Identifiers" = "IDS", "Variables" = "VARS"), selected = "None"),
-              conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'",
+              conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA' || input.multiType=='TSNE'",
                   column(2, checkboxInput('f3D', '3D', FALSE)),
                   column(2, checkboxInput('multiLabels', 'Labels', TRUE)), 
                   column(3, checkboxInput('shortLabels', 'Short Labels', FALSE))
@@ -336,7 +340,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
       # PLOTS
       column(12,
          conditionalPanel(condition="input.multiType != 'None' && input.outType != 'None' && input.listVars[2]", 
-            conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA'", 
+            conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA' || input.multiType=='TSNE'", 
                     plotlyOutput("MultiPlot", height="600px") %>% withSpinner(color="brown")),
             conditionalPanel(condition="input.multiType=='COR'", 
                     imageOutput("CorrPlot", height="600px") %>% withSpinner(color="brown")),

@@ -168,6 +168,7 @@
         if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
             selectFCOL <- c()
         }
+        imgObj <- NULL
         if (nchar(F1)>0 &&  nchar(F2)>0 && nchar(input$uniVarSelect)>0 ) {
             varX <- .C(g$varnames$Attribute)[.N(input$uniVarSelect)]
             if (ui$header %in% c('off')) runjs('$(".content-wrapper").css("min-height", "0px");')
@@ -326,7 +327,6 @@
            G1 <- G1 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"), 
                             axis.text.x = element_text(angle = 45, vjust = 1, size = 8, hjust = 1))
            G1 <- G1 + theme_bw()
-           #ggplotly(G1)
            G1
         }
     }
@@ -411,6 +411,5 @@
         G2 <- G2 + theme(plot.title = element_text(size=12, lineheight=.8, face="bold"))
         G2 <- G2 + theme_bw()
         if (bsmooth) G2 <- G2 + stat_smooth(aes(group=colour), size=2, se = FALSE )
-        #ggplotly(G2)
         G2
     }

@@ -52,7 +52,7 @@ ui <- dashboardPage(skin = "blue",
             menuItem("Multi-univariate", tabName = "multiunivariate", icon = icon("bar-chart")),
             menuItem("Multivariate", tabName = "multivariate", icon = icon("bar-chart")),
             menuItem("About",   tabName = "about",   icon = icon("info-circle"))
-        )
+        ), collapsed = TRUE
   ),
 
   dashboardBody(

@@ -13,10 +13,9 @@
     # Observer - Multivariate
     #----------------------------------------------------
     observeEvent ( values$launch, { tryCatch({
-       if ( values$launch>0 && ui$type %in% c('PCA','ICA','TSNE','COR','GGM') ) {
-           v_options <- c('PCA','ICA','TSNE','COR','GGM')
+       if ( values$launch>0 && ui$type %in% c('PCA','ICA','COR','GGM') ) {
+           v_options <- c('PCA','ICA','COR','GGM')
            names(v_options) <- c("Principal Component Analysis (PCA)", "Independent Component Analysis (ICA)",
-                                 "t-Distributed Stochastic Neighbor Embedding (t-SNE)",
                                  "Heatmap of correlation matrix (COR)", "Gaussian graphical model (GGM)")
            updateSelectInput(session, "multiType", choices = v_options,  selected=ui$type)
            values$multitype <- ui$type
@@ -185,65 +184,141 @@
 
 #===================================================================================
 
+
     #----------------------------------------------------
-    # Metadata preparation / Data extraction
+    # GGM
     #----------------------------------------------------
+    observeEvent(c(
+        values$launch,
+        values$multitype,
+        values$outtype,
+        input$shrinkauto,
+        input$lambda,
+        input$multiLog,
+        input$qval,
+        input$multiAnnot,
+        input$multiFacX,
+        input$listFeatures,
+        input$listLevels,
+        input$listVars
+    ),{ tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
+           if (values$launch==0) return(NULL)
+           if (values$multitype != 'GGM') return(NULL)
+           if (values$outtype != 'VARS') return(NULL)
+           FA <- .C(isolate(input$multiAnnot))
+           F1 <- .C(isolate(input$multiFacX))
+           FCOL <- ifelse( FA=="None", '', FA )
+           selectFCOL <- .C(input$listFeatures)
+           if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
+               selectFCOL <- c()
+           }
+           withProgress(message = 'GGM Calculation in progress', detail = '... ', value = 0, {
+              tryCatch({
+                 ## Metadata preparation / Data extraction
+                 o <- getDataMulti(F1, .C(input$listLevels), FCOL, selectFCOL, .C(input$listVars), scale=TRUE)
+                 X <- unique( as.matrix(o$subdata[, o$variables]) )
+                 if (input$multiLog) X <- log10(abs(X)+gv$pseudo_zero)*sign(X)
+                 n <- nrow(X)
+                 p <- ncol(X)
 
-    getDataMulti <- function(F1, selectLevels, FCOL, selectFCOL, selectVars, scale=FALSE )
-    {
-        # Metadata preparation
-        F1name <- as.character(g$LABELS[g$LABELS[,2]==F1,4])
-        variables <-.C(g$varnames[.N(selectVars),]$Attribute)
+                 # Depending on shrink mode, check/estimate  shrinkage intensity lambda
+                 lambda <- input$lambda
+                 if (input$shrinkauto>0 || lambda<0) {
+                     lambda<-sqrt(2*log(p/sqrt(n))/n)
+                 }
 
-        # Remove quantitative variables with all values at zero
-        data <- g$data
-        V <- simplify2array( lapply(variables, function(v) { sum( which(data[, v]!=0) ) }) )
-        if (length(which(V==0))>0) {
-           data <- data[, ! colnames(data) %in% variables[c(which(V==0))] ]
-           variables <- variables[ -c(which(V==0)) ]
-        }
+                 library(RcppParallel)
+                 setThreadOptions(numThreads = 4)
+                 out <- FastGGM_Parallel(X, lambda)
 
-        facvals <- data[ , F1]
-        if (is.numeric(facvals) && sum(facvals-floor(facvals))>0) {
-            fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
-            facvals <- as.character(sprintf(fmt, facvals))
-        }
-        levelFac <- .C( levels(as.factor(facvals)) )
+                 R <-  out$partialCor
+                 colnames(R) <- colnames(X)
+                 rownames(R) <- colnames(X)
 
-        fannot=TRUE
-        if (is.null(FCOL) || nchar(FCOL)==0) { FCOL <- F1; fannot=FALSE; }
-        FCOL <- tryCatch( { if(length(data[, FCOL ])) FCOL  }, error=function(e) { F1 })
-        cfacvals <- as.vector(data[ , FCOL])
-        ofacvals <- order(cfacvals)
-        cfacvals[is.na(cfacvals)] <- "NA"
-        fident <- ifelse( FCOL %in% g$identifiers$Attribute, TRUE, FALSE )
-        if (! fident && is.numeric(cfacvals) && sum(cfacvals-floor(cfacvals))>0) {
-            fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')
-            cfacvals <- as.character(sprintf(fmt, cfacvals))
-        }
+                 # Adjust pvalues
+                 P <- p.adjust(out$p_partialCor,method = 'fdr')
+                 Pm <- matrix(data=P,nrow=nrow(R),ncol=ncol(R),byrow=TRUE)
+                 colnames(Pm) <- colnames(X)
+                 rownames(Pm) <- colnames(X)
+                 P <- Pm
 
-        # Data extraction
-        subdata <- cbind( data[ , c(g$samples,variables)] , facvals, cfacvals )
-        if (fannot && length(selectFCOL)>0)
-            subFCOL <- unique(subdata$cfacvals[ofacvals])[.N(selectFCOL)]
-        #subdata <- na.omit(cbind( data[ , c(g$samples,variables)] , facvals, cfacvals ))
+                 # Upper correlation matrix
+                 cor_mat <- R
+                 cor_mat[ lower.tri(cor_mat, diag=TRUE) ]<- 0
 
-        # Data imputation
-        dataIn <- subdata[, variables ]
-        if (scale) dataIn <- scale( dataIn, center=TRUE, scale=TRUE )
-        resNIPALS <- pca(as.matrix(dataIn), method = "nipals", center = FALSE)
-        subdata[, variables ] <- resNIPALS@completeObs
-        colnames(subdata) <- c ( g$samples, variables, F1, FCOL)
-        subdata <- subdata[ , c(g$samples, F1, FCOL, variables)] 
+                 # Threshold applied on p-values
+                 qval <- input$qval
+                 P[ P > qval ] <- 0
+                 P[ is.na(P) ] <- 0
+                 cor_mat[ P==0 ] <- 0
 
-        # Data selection
-        subdata <- subdata[subdata[ , F1 ] %in% levelFac[.N(selectLevels)], ]
-        if (fannot && length(selectFCOL)>0) subdata <- subdata[subdata[ , FCOL ] %in% subFCOL, ]
-        subdata <- unique(subdata)
-        list( subdata=subdata, variables=variables, F1name=F1name, fannot=fannot )
-    }
+                 # Generate the full correlation graph
+                 graph <- graph.adjacency(cor_mat!=0, weighted=TRUE, mode="upper")
+
+                 # Init. features of edges
+                 E(graph)$weight<-t(cor_mat)[t(cor_mat)!=0]
+                 E(graph)[ weight<0 ]$color <- "green"
+                 E(graph)[ weight>0 ]$color <- "red"
+
+                 # Init. features of vertices
+                 VS <- 1
+                 V(graph)$size<-rep(VS,length(V(graph)))
+                 V(graph)$label<- V(graph)$name
+
+                 values$netData <<- data.frame(source=as_edgelist(graph)[,1], target=as_edgelist(graph)[,2], Corr=t(cor_mat)[t(cor_mat)!=0])
+             }, error=function(e) { ERROR$MsgErrorMulti <- paste("FastGGM :\n", e ); })
+           })
+        }, error=function(e) { ERROR$MsgErrorMulti <- paste("observeEvent:\n", e ); })
+    })
+
+    output$ggmnet <- renderForceNetwork({
+       tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
+           if (values$launch==0) return(NULL)
+           if (values$multitype != 'GGM') return(NULL)
+           if (values$outtype != 'VARS') return(NULL)
+           values$netData
+           input$gravite
+           netData <- values$netData
+           Vertices <- unique(sort(c( unique(sort(as.vector(netData[,1]))),  unique(sort(as.vector(netData[,2]))) )))
+           V_size <- length(Vertices)
+           E_size <- nrow(netData)
+           Nodesize <- simplify2array(lapply( 1:V_size, function(x) { sum(Vertices[x] == c(as.vector(netData[,1]), as.vector(netData[,2])))^2 }))
+
+           # Groups for Nodes based on data subsets
+           dsSel <- names(g$varsBySubset)
+           dsnames <- rep(dsSel[1], length(Vertices))
+           if (length(dsSel)>1) {
+                for(i in 2:length(dsSel))
+                    dsnames[ Vertices %in% g$varsBySubset[[i]] ] <- dsSel[i]
+           }
+
+           # Change default colors
+           jsCols <- paste(sapply(c('#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'),
+                           function(x) { paste0("d3.rgb(", paste(c(col2rgb(x), 0.5), collapse = "," ), ")") }), collapse = ", ")
+           colorJS <- paste0('d3.scale.ordinal().range([', jsCols, '])')
+
+           L1<-simplify2array(lapply( 1:E_size, function(x) { which( as.vector(netData[,1])[x]==Vertices) }))
+           L2<-simplify2array(lapply( 1:E_size, function(x) { which( as.vector(netData[,2])[x]==Vertices) }))
+           Links <- data.frame( source=(L1-1), target=(L2-1), value=10*( abs(netData$Corr)-0.3 ) )
+           Nodes <- data.frame( name=Vertices, group=dsnames, size=Nodesize )
+           LS <- 1
+           link_colors <- rep('Red', E_size); link_colors[which(netData$Corr<0)] <- 'Green'
+           fontSize <- 10+5*(LS-1)
+           logcharge <- 10*input$gravite-7
+           charge <- sign(logcharge)*10^(abs(logcharge))
+
+           outfile <- file.path(SESSTMPDIR,outfiles[[values$multitype]])
+           fn <- forceNetwork(Links = Links, Nodes = Nodes, Source = "source", Target = "target", Value = "value", NodeID = "name", Group = "group",
+                       Nodesize="size", fontSize=fontSize, linkColour=link_colors, charge=charge, colourScale=JS(colorJS),
+                       opacity = 0.99, opacityNoHover = 0.8, zoom = TRUE, bounded=TRUE, legend=TRUE)
+            if (gv$saveplots) saveNetwork(fn, file = outfile)
+           fn
+       }, error=function(e) { ERROR$MsgErrorMulti <- paste("RenderForceNetwork:\n", e ); })
+    })
+
 
 #===================================================================================
+
 
     #----------------------------------------------------
     # renderUI - Multivariate : PCA / ICA / TSNE
@@ -315,7 +390,7 @@
     ICA_fun <- function(x)
     {
         nbc <- as.numeric(input$nbComp)
-        out.ica <- JADE::JADE(x, nbc, maxiter = 200)
+        out.ica <- JADE(x, nbc, maxiter = 200)
         Score <- out.ica$S
         M <- t(x)%*%Score
         colnames(Score)<-colnames(M)<-paste("IC", 1:nbc,sep="")
@@ -325,7 +400,7 @@
         # KSord <- order(KS,decreasing = Kurtosis_order)
         # pc1 <- KSord[1]
         # pc2 <- KSord[2]
-        # pc3 <- ifelse(input$nbComp>2, KSord[3], pc1 )
+        # pc3 <- ifelse(nbc>2, KSord[3], pc1 )
 
         evnorm <- NULL
         for (i in 1:nbc) {
@@ -334,7 +409,7 @@
         evord <- order(evnorm, decreasing=T)
         pc1 <- evord[1]
         pc2 <- evord[2]
-        pc3 <- ifelse(input$nbComp>2, evord[3], pc1 )
+        pc3 <- ifelse(nbc>2, evord[3], pc1 )
 
         list(Score=Score, Loadings=M, pc1=pc1, pc2=pc2, pc3=pc3, evnorm=evnorm, prefix='IC' )
     }
@@ -352,10 +427,10 @@
 
         ## Metadata preparation / Data extraction
         o <- getDataMulti(F1, selectLevels, FCOL, selectFCOL, selectVars, scale=F)
-        subdata<-o$subdata; variables<-o$variables; F1name<-o$F1name; fannot<-o$fannot;
-        facvals <- subdata[, F1]
+        subdata<-o$subdata; variables<-o$variables; F1name <- o$F1name; fannot<-o$fannot
+        facvals<-subdata[, F1name]
 
-#if (gv$saveplots) write.table(subdata, file = file.path(SESSTMPDIR,'MA.txt'), append = FALSE, quote = TRUE, sep = "\t", na = "NA", dec = ".", row.names = FALSE)
+if (gv$saveplots) write.table(subdata, file = file.path(SESSTMPDIR,'MA.txt'), append = FALSE, quote = TRUE, sep = "\t", na = "NA", dec = ".", row.names = FALSE)
 
         x <- subdata[, variables ]
         if (scale) x <- scale(x)
@@ -386,6 +461,8 @@
            MA$fac <- as.factor(MA$fac)
            MA <- unique(MA)
 
+#if (gv$saveplots) write.table(MA, file = file.path(SESSTMPDIR,'MA.txt'), append = FALSE, quote = TRUE, sep = "\t", na = "NA", dec = ".", row.names = FALSE)
+
            if (f3D) { # Use 3D plotly
               symbolset = c('dot', 'cross', 'diamond', 'square', 'triangle-down', 'triangle-left', 'triangle-right', 'triangle-up')
               gg <- plot_ly(MA, x = ~C1, y = ~C2, z = ~C3, color = ~fac,
@@ -394,6 +471,9 @@
                        yaxis = list(title = sprintf("%s%d = %6.2f%%",prefix, pc2, evnorm[pc2])),
                        zaxis = list(title = sprintf("%s%d = %6.2f%%",prefix, pc3, evnorm[pc3]))))
            } else { # Use 2D ggplot / plotly
+
+#if (gv$aveplots) MA <- read.table( file.path(SESSTMPDIR,'MA.txt'), header=TRUE, sep="\t", stringsAsFactors = FALSE) 
+
               sizeP <- ifelse( blabels, 0, 0 )
               G1 <- ggplot(data=MA,(aes(x=C1,y=C2,colour = fac)))
               if (!blabels) G1 <- G1 + geom_point(size=sizeP)
@@ -452,13 +532,12 @@
         ## Metadata preparation / Data extraction
         o <- getDataMulti(F1, selectLevels, FCOL, selectFCOL, selectVars, scale=F)
         subdata<-o$subdata; variables<-o$variables; F1name <- o$F1name; fannot<-o$fannot
-        facvals<-subdata[, F1]
-
+        facvals<-subdata[, F1name]
         X <- subdata[, variables ]
         if (scale) X <- scale(X)
 
-        tSNE_fit <- Rtsne::Rtsne(X, dims = ifelse(f3D, 3, 2), initial_dims = 10, normalize = TRUE, 
-                         perplexity = perplexity, theta = 0.5, check_duplicates = FALSE,
+        tSNE_fit <- Rtsne(X, dims = ifelse(f3D, 3, 2), initial_dims = 10, normalize = TRUE, 
+                         perplexity = perplexity, theta = 0.5, check_duplicates = TRUE,
                          pca = TRUE, pca_center = TRUE, pca_scale = FALSE, partial_pca = FALSE,
                          max_iter = 1000, verbose = TRUE, 
                          num_threads = 1)
@@ -492,6 +571,7 @@
               type="scatter3d", marker=list(size = 4), text= ~IDS ) %>%
               layout(scene = list(xaxis = list(title = 'C1'), yaxis = list(title = 'C2'), zaxis = list(title = 'C3')))
         } else { # Use 2D ggplot / plotly
+
            sizeP <- ifelse( blabels, 0, 0 )
            G1 <- ggplot(data=MA,(aes(x=C1,y=C2,colour = fac)))
            if (!blabels) G1 <- G1 + geom_point(size=sizeP)
@@ -605,139 +685,6 @@
 
 #===================================================================================
 
-    #----------------------------------------------------
-    # GGM
-    #----------------------------------------------------
-    observeEvent(c(
-        values$launch,
-        values$multitype,
-        values$outtype,
-        input$shrinkauto,
-        input$lambda,
-        input$multiLog,
-        input$qval,
-        input$multiAnnot,
-        input$multiFacX,
-        input$listFeatures,
-        input$listLevels,
-        input$listVars
-    ),{ tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
-           if (values$launch==0) return(NULL)
-           if (values$multitype != 'GGM') return(NULL)
-           if (values$outtype != 'VARS') return(NULL)
-           FA <- .C(isolate(input$multiAnnot))
-           F1 <- .C(isolate(input$multiFacX))
-           FCOL <- ifelse( FA=="None", '', FA )
-           selectFCOL <- .C(input$listFeatures)
-           if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
-               selectFCOL <- c()
-           }
-           withProgress(message = 'GGM Calculation in progress', detail = '... ', value = 0, {
-              tryCatch({
-                 ## Metadata preparation / Data extraction
-                 o <- getDataMulti(F1, .C(input$listLevels), FCOL, selectFCOL, .C(input$listVars), scale=TRUE)
-                 X <- unique( as.matrix(o$subdata[, o$variables]) )
-                 if (input$multiLog) X <- log10(abs(X)+gv$pseudo_zero)*sign(X)
-                 n <- nrow(X)
-                 p <- ncol(X)
-
-                 # Depending on shrink mode, check/estimate  shrinkage intensity lambda
-                 lambda <- input$lambda
-                 if (input$shrinkauto>0 || lambda<0) {
-                     lambda<-sqrt(2*log(p/sqrt(n))/n)
-                 }
-
-                 library(RcppParallel)
-                 setThreadOptions(numThreads = 4)
-                 out <- FastGGM::FastGGM_Parallel(X, lambda)
-
-                 R <-  out$partialCor
-                 colnames(R) <- colnames(X)
-                 rownames(R) <- colnames(X)
-
-                 # Adjust pvalues
-                 P <- p.adjust(out$p_partialCor,method = 'fdr')
-                 Pm <- matrix(data=P,nrow=nrow(R),ncol=ncol(R),byrow=TRUE)
-                 colnames(Pm) <- colnames(X)
-                 rownames(Pm) <- colnames(X)
-                 P <- Pm
-
-                 # Upper correlation matrix
-                 cor_mat <- R
-                 cor_mat[ lower.tri(cor_mat, diag=TRUE) ]<- 0
-
-                 # Threshold applied on p-values
-                 qval <- input$qval
-                 P[ P > qval ] <- 0
-                 P[ is.na(P) ] <- 0
-                 cor_mat[ P==0 ] <- 0
-
-                 # Generate the full correlation graph
-                 graph <- graph.adjacency(cor_mat!=0, weighted=TRUE, mode="upper")
-
-                 # Init. features of edges
-                 E(graph)$weight<-t(cor_mat)[t(cor_mat)!=0]
-                 E(graph)[ weight<0 ]$color <- "green"
-                 E(graph)[ weight>0 ]$color <- "red"
-
-                 # Init. features of vertices
-                 VS <- 1
-                 V(graph)$size<-rep(VS,length(V(graph)))
-                 V(graph)$label<- V(graph)$name
-
-                 values$netData <<- data.frame(source=as_edgelist(graph)[,1], target=as_edgelist(graph)[,2], Corr=t(cor_mat)[t(cor_mat)!=0])
-             }, error=function(e) { ERROR$MsgErrorMulti <- paste("FastGGM :\n", e ); })
-           })
-        }, error=function(e) { ERROR$MsgErrorMulti <- paste("observeEvent:\n", e ); })
-    })
-
-    output$ggmnet <- renderForceNetwork({
-       tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
-           if (values$launch==0) return(NULL)
-           if (values$multitype != 'GGM') return(NULL)
-           if (values$outtype != 'VARS') return(NULL)
-           values$netData
-           input$gravite
-           netData <- values$netData
-           Vertices <- unique(sort(c( unique(sort(as.vector(netData[,1]))),  unique(sort(as.vector(netData[,2]))) )))
-           V_size <- length(Vertices)
-           E_size <- nrow(netData)
-           Nodesize <- simplify2array(lapply( 1:V_size, function(x) { sum(Vertices[x] == c(as.vector(netData[,1]), as.vector(netData[,2])))^2 }))
-
-           # Groups for Nodes based on data subsets
-           dsSel <- names(g$varsBySubset)
-           dsnames <- rep(dsSel[1], length(Vertices))
-           if (length(dsSel)>1) {
-                for(i in 2:length(dsSel))
-                    dsnames[ Vertices %in% g$varsBySubset[[i]] ] <- dsSel[i]
-           }
-
-           # Change default colors
-           jsCols <- paste(sapply(c('#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'),
-                           function(x) { paste0("d3.rgb(", paste(c(col2rgb(x), 0.5), collapse = "," ), ")") }), collapse = ", ")
-           colorJS <- paste0('d3.scale.ordinal().range([', jsCols, '])')
-
-           L1<-simplify2array(lapply( 1:E_size, function(x) { which( as.vector(netData[,1])[x]==Vertices) }))
-           L2<-simplify2array(lapply( 1:E_size, function(x) { which( as.vector(netData[,2])[x]==Vertices) }))
-           Links <- data.frame( source=(L1-1), target=(L2-1), value=10*( abs(netData$Corr)-0.3 ) )
-           Nodes <- data.frame( name=Vertices, group=dsnames, size=Nodesize )
-           LS <- 1
-           link_colors <- rep('Red', E_size); link_colors[which(netData$Corr<0)] <- 'Green'
-           fontSize <- 10+5*(LS-1)
-           logcharge <- 10*input$gravite-7
-           charge <- sign(logcharge)*10^(abs(logcharge))
-
-           outfile <- file.path(SESSTMPDIR,outfiles[[values$multitype]])
-           fn <- forceNetwork(Links = Links, Nodes = Nodes, Source = "source", Target = "target", Value = "value", NodeID = "name", Group = "group",
-                       Nodesize="size", fontSize=fontSize, linkColour=link_colors, charge=charge, colourScale=JS(colorJS),
-                       opacity = 0.99, opacityNoHover = 0.8, zoom = TRUE, bounded=TRUE, legend=TRUE)
-            if (gv$saveplots) saveNetwork(fn, file = outfile)
-           fn
-       }, error=function(e) { ERROR$MsgErrorMulti <- paste("RenderForceNetwork:\n", e ); })
-    })
-
-
-#===================================================================================
 
     #----------------------------------------------------
     # renderUI - URL link 
@@ -754,4 +701,65 @@
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - urlimage \n", e ); })
     })
 
+
+#===================================================================================
+
+
+    ## Metadata preparation / Data extraction
+    getDataMulti <- function(F1, selectLevels, FCOL, selectFCOL, selectVars, scale=FALSE ) {
+        # Metadata preparation
+        F1name <- as.character(g$LABELS[g$LABELS[,2]==F1,4])
+        variables <-.C(g$varnames[.N(selectVars),]$Attribute)
+
+        # Remove quantitative variables with all values at zero
+        data <- g$data
+        V <- simplify2array( lapply(variables, function(v) { sum( which(data[, v]!=0) ) }) )
+        if (length(which(V==0))>0) {
+           data <- data[, ! colnames(data) %in% variables[c(which(V==0))] ]
+           variables <- variables[ -c(which(V==0)) ]
+        }
+
+        facvals <- data[ , F1]
+        if (is.numeric(facvals) && sum(facvals-floor(facvals))>0) {
+            fmt <- paste('%0',round(log10(max(abs(facvals)))+0.5)+3,'.2f',sep='')
+            facvals <- as.character(sprintf(fmt, facvals))
+        }
+        levelFac <- .C( levels(as.factor(facvals)) )
+
+        fannot=TRUE
+        if (is.null(FCOL) || nchar(FCOL)==0) { FCOL <- F1; fannot=FALSE; }
+        FCOL <- tryCatch( { if(length(data[, FCOL ])) FCOL  }, error=function(e) { F1 })
+        cfacvals <- as.vector(data[ , FCOL])
+        ofacvals <- order(cfacvals)
+        cfacvals[is.na(cfacvals)] <- "NA"
+        fident <- ifelse( FCOL %in% g$identifiers$Attribute, TRUE, FALSE )
+        if (! fident && is.numeric(cfacvals) && sum(cfacvals-floor(cfacvals))>0) {
+            fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')
+            cfacvals <- as.character(sprintf(fmt, cfacvals))
+        }
+
+        # Data extraction
+        subdata <- cbind( data[ , c(g$samples,variables)] , facvals, cfacvals )
+        if (fannot && length(selectFCOL)>0)
+            subFCOL <- unique(subdata$cfacvals[ofacvals])[.N(selectFCOL)]
+        #subdata <- na.omit(cbind( data[ , c(g$samples,variables)] , facvals, cfacvals ))
+
+        # Data imputation
+        dataIn <- subdata[, variables ]
+        if (scale) dataIn <- scale( dataIn, center=TRUE, scale=TRUE )
+        resNIPALS <- pca(as.matrix(dataIn), method = "nipals", center = FALSE)
+        subdata[, variables ] <- resNIPALS@completeObs
+        colnames(subdata) <- c ( g$samples, variables, F1, FCOL)
+
+        # Data selection
+        subdata <- subdata[subdata[ , F1 ] %in% levelFac[.N(selectLevels)], ]
+        if (fannot && length(selectFCOL)>0) subdata <- subdata[subdata[ , FCOL ] %in% subFCOL, ]
+        facvals <- subdata[, F1 ]
+
+        MA <- cbind(subdata[,1], facvals, subdata[, variables ]);
+        colnames(MA) <- c(g$samples,F1name, variables)
+        MA <- unique(MA)
+
+        list( subdata=MA, variables=variables, F1name=F1name, fannot=fannot )
+    }
 

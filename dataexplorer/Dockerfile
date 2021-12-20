@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y \
     r-cran-shiny r-cran-shinybs r-cran-shinydashboard r-cran-shinyjs r-cran-dt \
     r-cran-knitr r-cran-clipr r-cran-rematch r-cran-readr r-cran-car r-cran-nloptr r-cran-clue \
     r-cran-polynom r-cran-lme4 r-cran-haven r-cran-ggpubr r-cran-ggdendro r-cran-fdrtool \
-    r-cran-rtsne r-cran-shinycssloaders r-cran-doparallel \
+    r-cran-plyr r-cran-rtsne r-cran-shinycssloaders r-cran-doparallel \
   # locale setting
  && apt-get update && apt-get install -y locales \
  && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
@@ -50,7 +50,8 @@ RUN wget --no-verbose http://download3.rstudio.org/ubuntu-12.04/x86_64/VERSION -
 # R packages installed in /usr/local/lib/R/site-library/
 RUN R -e "install.packages(c('svglite', 'JADE'), repos='http://cran.rstudio.com/')" \
  && R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz', repos=NULL)" \
- && R -e "remotes::install_github('wt2015-github/FastGGM')"
+ && R -e "remotes::install_github('wt2015-github/FastGGM')" \
+ && R -e "remotes::install_github('jokergoo/ComplexHeatmap')"
 
 ADD ./ /srv/shiny-server
 

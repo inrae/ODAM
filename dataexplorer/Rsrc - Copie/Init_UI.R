@@ -395,9 +395,8 @@
            }
            if ( nchar(ui$tab)>0 && ! ui$tab %in% tabnames ) {
               g$msgError <<- paste0("ERROR: '",ui$tab,"' is not a valid tab name")
-              values$error <- 1; values$initdss <- 0
+              values$init <- values$error <- 1; values$initdss <- 0
            }
-           values$init <- 1
 
            #----------------------------------------------------
            # dynamically building of the UI of each analysis tab depending on the selected data subset

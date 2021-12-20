@@ -19,7 +19,7 @@ ui_collection <- tabItem(tabName = "collection", bsAlert("ErrAlertInfo"),
 # Information
 #----------------------------------------------------
 ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
-   box(title="Dataset", status = "primary", solidHeader = TRUE, width = 12, collapsible = FALSE,
+   box(title="Dataset", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
      conditionalPanel(condition="uiloaded==0",
         h3( tags$p('Please wait while loading ...'), tags$img(src = "loading.gif"), style = "color:#bf6f85")
      ),
@@ -28,11 +28,11 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
      )
    ),
    conditionalPanel(condition="output.apierror==0",
-      box(
+     box(
          title="Data Graph", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
          diagonalNetworkOutput("Net", width="75%", height="600px")
-      ),
-      conditionalPanel(condition="output.DSsize==0", 
+     ),
+     conditionalPanel(condition="output.DSsize==0", 
          box(
             title="Metadata", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
             dataTableOutput("metadata")
@@ -65,15 +65,14 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
 # Intersection
 #----------------------------------------------------
 ui_intersection <- tabItem(tabName = "intersection", bsAlert("ErrAlertInfo"),
-   conditionalPanel(condition="output.apierror==0",
    box(
-      title="Intersection of Data subsets", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+      title="Intersection of Data subsets", status = "primary", solidHeader = TRUE, width = 12, collapsible = FALSE,
       column(6, selectInput("interSubset", "Data subset giving the identifier used as reference for distinct intersections", c())),
       # PLOTS
       column(12, conditionalPanel(condition="!(input.interSubset == 0)",
          plotOutput("UpSetPlot", height="500px") %>% withSpinner(color="brown")
       ))
-   ))
+   )
 )
 
 ui_warning <- h3(tags$img(height = 50, width = 50, src = "https://www.freeiconspng.com/uploads/status-warning-icon-png-29.png"),

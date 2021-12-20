@@ -45,13 +45,14 @@ ui <- dashboardPage(skin = "blue",
         sidebarMenu(
             id="IdMenu",
             menuItem("Collection",   tabName = "collection",   icon = icon("eye")),
-            menuItem("Subset Information",   tabName = "information",   icon = icon("eye")),
+            menuItem("Subset information",   tabName = "information",   icon = icon("eye")),
+            menuItem("Subset intersection",   tabName = "intersection",   icon = icon("bar-chart")),
             menuItem("Data Table",   tabName = "datatable",   icon = icon("bar-chart")),
             menuItem("Univariate",   tabName = "univariate",   icon = icon("bar-chart")),
             menuItem("Bivariate",    tabName = "bivariate",    icon = icon("bar-chart")),
             menuItem("Multi-univariate", tabName = "multiunivariate", icon = icon("bar-chart")),
             menuItem("Multivariate", tabName = "multivariate", icon = icon("bar-chart")),
-            menuItem("About",   tabName = "about",   icon = icon("info-circle"))
+            menuItem("About ODAM",   tabName = "about",   icon = icon("info-circle"))
         ), collapsed = TRUE
   ),
 
@@ -78,6 +79,10 @@ ui <- dashboardPage(skin = "blue",
       # Information
       #----------------------------------------------------
          ui_infoTab,
+      #----------------------------------------------------
+      # Intersection
+      #----------------------------------------------------
+         ui_intersection,
       #----------------------------------------------------
       # Data table
       #----------------------------------------------------

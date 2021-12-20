@@ -225,8 +225,8 @@
     # https://www.quantargo.com/help/r/latest/packages/ComplexHeatmap/2.6.2/UpSet
     # 
     output$UpSetPlot <- renderPlot({
-       values$initdss
        input$interSubset
+#       if (input$IdMenu != 'intersection') return(NULL)
        tryCatch({
            setIDS <- c( g$subsets$SetID[ g$subsets$Subset == .C(input$interSubset) ] )
            for (k in 1:nrow(g$subsets))
@@ -268,6 +268,7 @@
        if (nchar(input$ipclient)==0) return(NULL)
        if (input$IdMenu != 'information') return(NULL)
        tryCatch({ 
+           if (values$init==0) values$init <- 1
            if (length(g$subsetNames)>0) {
                 diagonalNetwork(List = g$dn, fontSize = g$fs, fontFamily = "serif", 
                     linkColour = '#B2B3D0', nodeColour = "#fff", nodeStroke = "red", textColour = "darkblue",

@@ -19,7 +19,7 @@ ui_collection <- tabItem(tabName = "collection", bsAlert("ErrAlertInfo"),
 # Information
 #----------------------------------------------------
 ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
-   box(title="Dataset", status = "primary", solidHeader = TRUE, width = 12, collapsible = FALSE,
+   box(title="Dataset", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
      conditionalPanel(condition="uiloaded==0",
         h3( tags$p('Please wait while loading ...'), tags$img(src = "loading.gif"), style = "color:#bf6f85")
      ),
@@ -73,6 +73,10 @@ ui_intersection <- tabItem(tabName = "intersection", bsAlert("ErrAlertInfo"),
       column(12, conditionalPanel(condition="!(input.interSubset == 0)",
          plotOutput("UpSetPlot", height="500px") %>% withSpinner(color="brown")
       ))
+   ),
+   box(
+      title="Data Graph", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+      diagonalNetworkOutput("Net2", width="75%", height="600px")
    ))
 )
 

@@ -262,11 +262,9 @@
     #----------------------------------------------------
     # renderUI - Subsets Graph with d3js
     #----------------------------------------------------
-    output$Net <- renderDiagonalNetwork({
-       values$initdss
-       input$IdMenu
+    netReactive <- eventReactive(list(values$initdss,input$IdMenu), {
        if (nchar(input$ipclient)==0) return(NULL)
-       if (input$IdMenu != 'information') return(NULL)
+       if (! input$IdMenu %in% c('information','intersection')) return(NULL)
        tryCatch({ 
            if (length(g$subsetNames)>0) {
                 diagonalNetwork(List = g$dn, fontSize = g$fs, fontFamily = "serif", 
@@ -275,6 +273,9 @@
            }
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderNetwork:\n", e ); })
     })
+
+    output$Net <-  renderDiagonalNetwork({  netReactive()  })
+    output$Net2 <- renderDiagonalNetwork({  netReactive()  })
 
 
     #----------------------------------------------------

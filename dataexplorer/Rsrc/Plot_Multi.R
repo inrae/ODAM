@@ -47,6 +47,7 @@
              values$outtype <- 'IDS'
              shinyjs::disable("shortLabels")
              updateCheckboxInput(session, "ellipse", label = 'Ellipses', value = TRUE)
+             values$ellipse <- TRUE
           }
           if ( values$multitype %in% c('TSNE') ) {
              v_options <- c('IDS')
@@ -55,6 +56,7 @@
              values$outtype <- 'IDS'
              shinyjs::disable("shortLabels")
              updateCheckboxInput(session, "ellipse", label = 'Ellipses', value = FALSE)
+             values$ellipse <- FALSE
           }
           if ( values$multitype %in% c('COR','GGM') ) {
              v_options <- c('VARS')
@@ -65,6 +67,12 @@
           }
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 1b:\n", e ); }) })
+
+    # ellipse event
+    observe({ tryCatch({
+       input$ellipse
+       values$ellipse <- input$ellipse
+    }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 1d:\n", e ); }) })
 
     # outType event
     observe({ tryCatch({
@@ -282,11 +290,11 @@
                tryCatch({
                if (values$multitype %in% c('PCA','ICA'))
                   getMultiPlot(multiType, F1, .C(input$listLevels), FCOL, selectFCOL, .C(input$listVars), outputVariables=outputVariables,
-                               fellipse=input$ellipse, scale=input$scale, blabels=input$multiLabels, slabels=input$shortLabels,
+                               fellipse=values$ellipse, scale=input$scale, blabels=input$multiLabels, slabels=input$shortLabels,
                                f3D=input$f3D, conflevel=as.numeric(input$conflevel))
                else
                   getTSNEPlot(multiType, F1, .C(input$listLevels), FCOL, selectFCOL, .C(input$listVars), outputVariables=outputVariables,
-                               fellipse=input$ellipse, scale=input$scale, perplexity=input$perplexity, blabels=input$multiLabels,
+                               fellipse=values$ellipse, scale=input$scale, perplexity=input$perplexity, blabels=input$multiLabels,
                                f3D=input$f3D, conflevel=as.numeric(input$conflevel))
                }, error=function(e) { ERROR$MsgErrorMulti <- paste("getMultiPlot :\n", e ); })
            })

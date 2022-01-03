@@ -195,7 +195,11 @@
     #----------------------------------------------------
     output$downloadTSV <- downloadHandler(
         filename = function() {
-            paste('data_', .C(g$subsetNames[g$subsetNames %in% input$inDSselect]),'_', Sys.Date(), '.tsv', sep='')
+            if (length(input$inDSselect)>1) {
+               paste('data_', paste(g$subsets$SetID[g$subsetNames %in% input$inDSselect], collapse='-'), '_', Sys.Date(), '.tsv', sep='')
+            } else {
+               paste('data_', .C(g$subsetNames[g$subsetNames %in% input$inDSselect]),'_', Sys.Date(), '.tsv', sep='')
+            }
         },
         content = function(con) {
             setName <- .C(g$subsets[ g$subsets$Subset %in% input$inDSselect, ][1,1])
@@ -256,7 +260,28 @@
                               annotation_name_side = "top",
                               axis_param = list(side = "top"))
            ))
-       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderPlot:\n", e ); })
+       }, error=function(e) { ERROR$MsgErrorInfo <- paste("UpSetPlot:\n", e ); })
+    })
+
+    #----------------------------------------------------
+    # renderPlot - Venn Diagram
+    #----------------------------------------------------
+    # https://statisticsglobe.com/ggvenn-r-package
+    #
+    output$VennPlot <- renderPlot({
+       values$initdss
+       tryCatch({
+           if (length(input$inDSselect)<2 || length(input$inDSselect)>4) return(NULL)
+           refID <- g$samples
+           L <- list()
+           for (setName in input$inDSselect) {
+               data <- getData(ws, paste('(',setName,')',sep=''))
+               L[[setName]] <- unique(sort(data[, refID]))
+           }
+           gg <- ggvenn(L, show_percentage = FALSE, set_name_size = 5,
+                        fill_color = c("#F4FAFE", "#4981BF", "blue", "darkblue"))
+           gg
+       }, error=function(e) { ERROR$MsgErrorInfo <- paste("VennPlot:\n", e ); })
     })
 
     #----------------------------------------------------
@@ -275,7 +300,6 @@
     })
 
     output$Net <-  renderDiagonalNetwork({  netReactive()  })
-    output$Net2 <- renderDiagonalNetwork({  netReactive()  })
 
 
     #----------------------------------------------------
@@ -319,6 +343,11 @@
                   "# Show all factors defined in the data subset\n","ds$facnames\n","\n",
                   "# Show all quantitative variables defined in the data subset\n","ds$varnames\n","\n",
                   "# Show all qualitative variables defined in the data subset\n","ds$qualnames\n","\n",
+                  sep=""
+               )
+               if (length(input$inDSselect)>1)
+                  cat("# Show qualitative variables by data subset\n","ds$varsBySubset\n","\n", sep="")
+               cat(
                   "# Boxplot of all variables defined in ds$varnames\n",
                   "Rank <- simplify2array(lapply(ds$varnames, function(x) { round(mean(log10(ds$data[ , x]), na.rm=T)) }))\n",
                   "Rank[!is.finite(Rank)] <- 0\n",

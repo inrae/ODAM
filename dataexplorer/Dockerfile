@@ -52,6 +52,8 @@ RUN R -e "install.packages(c('svglite', 'JADE'), repos='http://cran.rstudio.com/
  && R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz', repos=NULL)" \
  && R -e "remotes::install_github('wt2015-github/FastGGM')" \
  && R -e "remotes::install_github('jokergoo/ComplexHeatmap')"
+ 
+RUN R -e "install.packages('ggvenn', repos='http://cran.rstudio.com/')"
 
 ADD ./ /srv/shiny-server
 

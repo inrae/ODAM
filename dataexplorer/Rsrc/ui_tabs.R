@@ -28,10 +28,10 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
      )
    ),
    conditionalPanel(condition="output.apierror==0",
-      box(
-         title="Data Graph", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
-         diagonalNetworkOutput("Net", width="75%", height="600px")
-      ),
+#      box(
+#         title="Data Graph", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+#         diagonalNetworkOutput("Net", width="75%", height="600px")
+#      ),
       conditionalPanel(condition="output.DSsize==0", 
          box(
             title="Metadata", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
@@ -50,6 +50,33 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
             title="Attributes", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
             dataTableOutput("infos")
          )
+      )
+   )
+)
+
+#----------------------------------------------------
+# Intersection
+#----------------------------------------------------
+ui_intersection <- tabItem(tabName = "intersection", bsAlert("ErrAlertInfo"),
+   conditionalPanel(condition="output.apierror==0",
+      box(
+         title="Data Graph", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+         diagonalNetworkOutput("Net", width="75%", height="600px"),
+         tags$p(tags$i("Note: the number of quantitative variables is given in parentheses"))
+      ),
+      box(
+         title="Data subset intersection", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+         column(6, selectInput("interSubset", "Data subset giving the identifier used as reference for distinct intersections", c())),
+         # PLOTS
+         column(12, conditionalPanel(condition="!(input.interSubset == 0)",
+            plotOutput("UpSetPlot", height="500px") %>% withSpinner(color="brown")
+         ))
+      ),
+      conditionalPanel(condition="output.DSsize>1 && output.DSsize<5 && output.nbvarsEvent==0", 
+         box(
+            title="Intersection of the selected data subsets", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+            plotOutput("VennPlot", height="500px") %>% withSpinner(color="brown")
+         )
       ),
       div(class='div-session', box(
          title="Rodam session example", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
@@ -59,25 +86,6 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
          )
       ))
    )
-)
-
-#----------------------------------------------------
-# Intersection
-#----------------------------------------------------
-ui_intersection <- tabItem(tabName = "intersection", bsAlert("ErrAlertInfo"),
-   conditionalPanel(condition="output.apierror==0",
-   box(
-      title="Intersection of Data subsets", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
-      column(6, selectInput("interSubset", "Data subset giving the identifier used as reference for distinct intersections", c())),
-      # PLOTS
-      column(12, conditionalPanel(condition="!(input.interSubset == 0)",
-         plotOutput("UpSetPlot", height="500px") %>% withSpinner(color="brown")
-      ))
-   ),
-   box(
-      title="Data Graph", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
-      diagonalNetworkOutput("Net2", width="75%", height="600px")
-   ))
 )
 
 ui_warning <- h3(tags$img(height = 50, width = 50, src = "https://www.freeiconspng.com/uploads/status-warning-icon-png-29.png"),

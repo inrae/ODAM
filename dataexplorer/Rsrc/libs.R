@@ -23,6 +23,7 @@ library(pcaMethods)
 library(igraph)
 library(ComplexHeatmap)
 library(RColorBrewer)
+library(ggvenn)
 
 
 setThreadOptions(numThreads = 4) # set 4 threads for parallel computing
@@ -51,7 +52,6 @@ g <- list(
    samplename=NULL,
    samples=NULL,
    S=NULL,
-   setnames=NULL,
    identifiers=NULL,
    facnames=NULL,
    features=NULL,
@@ -226,7 +226,8 @@ getDataCol <- function (ws)
 
 # Build a tree of relations between data subsets
 fillDN <- function( dn, indx) {
-    dn$name <- g$subsetNames[ indx ]
+    #dn$name <- g$subsetNames[ indx ]
+    dn$name <- paste0( g$subsetNames[ indx ], ' (', g$subsets$nbvars[indx], ')' )
     L <- as.vector(g$connectList[ g$connectList[,1]==indx, 2])
     if (length(L)>0) {
        dn$children <- list()
@@ -260,16 +261,22 @@ getInit <- function()
        g$subsets <<- g$subsets[order(g$subsets$SetID),]
        g$subsetNames <<- .C(g$subsets$Subset)
        g$connectList <<- cbind( g$subsets[g$subsets$LinkID>0, ]$LinkID , g$subsets[g$subsets$LinkID>0, ]$SetID )
+
+       # Get the quantitative variables for each data subset
+       nq <- simplify2array(lapply(g$subsetNames, function (x) { V <- as.vector(getData(ws,paste('(',x,')/quantitative',sep=''))[,1]); length(V[V==x]); }))
+       g$subsets$nbvars <<- nq
+
        # Filtering of subset depending on quantitative attributes
-       g$setnames <<- as.vector(g$subsets[,'Subset'])
-       nq <- simplify2array(lapply(g$setnames, function (x) { V <- as.vector(getData(ws,paste('(',x,')/quantitative',sep=''))[,1]); length(V[V==x]); }))
-       g$setnames <<- g$setnames[ nq>0 ]
-       g$subsets2 <<- g$subsets[ g$subsets[, 'Subset'] %in% g$setnames, ]
+       g$subsets2 <<- g$subsets[ g$subsets[, 'Subset'] %in% g$subsetNames[ nq>0 ], ]
        g$subsets2 <<- g$subsets2[ , ! colnames(g$subsets2) %in% c('SetID','LinkID') ]
        g$DSL <<- .C(g$subsets2$Subset)
        names(g$DSL) <<- .C(g$subsets2$Description)
+
+       # Put "NA" for CV_Term not available
        g$subsets[,5] <<- sapply(.C(g$subsets[,5]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
        g$subsets[,6] <<- sapply(.C(g$subsets[,6]), function(x) { ifelse( ! is.na(x), x, "NA" ); })
+
+       # Build a tree of relations between data subsets
        g$dn <<- fillDN(g$dn, min(g$connectList[,1]))
        Lev <- NULL; Lev <- cntLevelDN(Lev, g$dn , 1);
        N <- min(max(Lev),25); N <- (trunc(N/5)+1*(N %% 5 >0))*5

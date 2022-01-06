@@ -169,63 +169,47 @@
        tryCatch({ if (nchar(g$msgError)==0) {
            if ( !is.DS(cdata) || values$init==0) return(NULL)
            if ( is.null(g$subsets2) ) return(NULL)
+           #tsets <- g$subsets2[g$subsets2$Subset %in% input$inDSselect, ]
            tsets <- g$subsets2
            setinfo <- NULL
            authstr <- ifelse( ws$keymode<2 && nchar(ws$auth)>0, paste0('auth=', ws$auth,'&'), '' );
-           runjs('arrDS=Array(0);')
            for( i in 1:nrow(tsets)) {
-               ds <- .C(tsets[i,1])
-               urlSubset <- paste0(ws$apiurl,'query/', ws$dsname, '/(',ds,')?', authstr, 'format=xml');
+               urlSubset <- paste0(ws$apiurl,'query/', ws$dsname, '/(',.C(tsets[i,1]) ,')?', authstr, 'format=xml');
                linkSubset <- ifelse( ws$keymode<2, 
-                   paste0("<a href='",urlSubset,"' target='_blank'>",ds,"</a>"),
-                   paste0("<a class=\"jlink\" onclick=\"javascript:openXML('",urlSubset,"');\">",ds,"</a>") )
-               linkOnto <- paste0("<a href='",.C(tsets[i,5]),"' target='_blank'>[", basename(.C(tsets[i,5])),'] ', .C(tsets[i,6]),"</a>") 
-               onclickStr <- paste0('if ($(\'#check_',i,'\').is(\':checked\')){arrDS[arrDS.length]=\'',ds,'\'; arrDS=arrDS.filter(function(e){return e});}
-                                     else{arrDS=arrDS.filter(function(e){return e !== \'',ds,'\'});};
-                                     if(arrDS.length){Shiny.onInputChange(\'dwnld_button\', arrDS.join(\',\'));}
-                                     else{Shiny.onInputChange(\'dwnld_button\',\'\');}')
-               checkDwn <- paste0('<input type="checkbox" id="check_',i,'" onclick="',onclickStr,'">')
-               setinfo <- rbind( setinfo , c( linkSubset, .C(tsets[i,c(2:4)]), linkOnto, checkDwn ) )
+                   paste0("<a href='",urlSubset,"' target='_blank'>",.C(tsets[i,1]),"</a>"),
+                   paste0("<a class=\"jlink\" onclick=\"javascript:openXML('",urlSubset,"');\">",.C(tsets[i,1]),"</a>") )
+               linkOnto <- paste0("<a href='",.C(tsets[i,5]),"' target='_blank'>[", basename(.C(tsets[i,5])),'] ', .C(tsets[i,6]),"</a>")
+               buttonDwn <- as.character(actionButton(paste0('button_',i), label = "TSV", 
+                                         onclick = 'Shiny.setInputValue(\'dwnld_button\', this.id, {priority: \"event\"})' ))
+               setinfo <- rbind( setinfo , c( linkSubset, .C(tsets[i,c(2:4)]), linkOnto, buttonDwn ) )
            }
            df <- as.data.frame(setinfo)
-           names(df) <- c("Subset","Description","Identifier", "WSEntry", "CV_Term", "Export in TSV")
+           names(df) <- c("Subset","Description","Identifier", "WSEntry", "CV_Term", "Download")
            df
        }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Subsets \n", e ); })
     }, options = list(searching=FALSE, paging=FALSE, lengthChange = FALSE, info = FALSE), escape=c(2:4))
 
-    output$dwnButton <- reactive({
-       input$dwnld_button
-       ret=0
-       if (nchar(input$dwnld_button)>0) ret=1
-       return(ret)
+    observeEvent(input$dwnld_button, {
+      authstr <- ifelse( ws$keymode<2 && nchar(ws$auth)>0, paste0('auth=', ws$auth,'&'), '' );
+      selectedRow <- as.numeric(strsplit(input$dwnld_button, "_")[[1]][2])
+      urlSubset <- paste0(ws$apiurl,'query/', ws$dsname, '/(',.C(g$subsets2[selectedRow,1]) ,')?', authstr, 'format=tsv');
+      runjs(paste("window.open(\"",urlSubset,"\", \"_blank\");"))
     })
-    outputOptions(output, 'dwnButton', suspendWhenHidden=FALSE)
-    outputOptions(output, 'dwnButton', priority=1)
 
     #----------------------------------------------------
     # Export the selected Data subsets
     #----------------------------------------------------
     output$downloadTSV <- downloadHandler(
         filename = function() {
-            inDSselect <- .S(input$dwnld_button)
-            if (length(inDSselect)>1) {
-               paste('data_', paste(g$subsets$SetID[g$subsetNames %in% inDSselect], collapse='-'), '_', Sys.Date(), '.tsv', sep='')
+            if (length(input$inDSselect)>1) {
+               paste('data_', paste(g$subsets$SetID[g$subsetNames %in% input$inDSselect], collapse='-'), '_', Sys.Date(), '.tsv', sep='')
             } else {
-               paste('data_', .C(g$subsetNames[g$subsetNames %in% inDSselect]),'_', Sys.Date(), '.tsv', sep='')
+               paste('data_', .C(g$subsetNames[g$subsetNames %in% input$inDSselect]),'_', Sys.Date(), '.tsv', sep='')
             }
         },
         content = function(con) {
-            runjs('$(\'div[name="downldButton"]\').css(\'display\',\'inline-block\')');
-            # Get data subsets based on selection and write to console
-            tryCatch({
-               strNameList <- .J(g$subsets[ g$subsetNames %in% .S(input$dwnld_button), ]$Subset)
-               data <- getData(ws,paste('(',strNameList,')',sep=''))
-               write.table(data, con, sep="\t", row.names=FALSE, col.names=TRUE)
-            }, error=function(e) { runjs(paste0("alert('intersection of the data subsets ",strNameList," seems empty');")) })
-            runjs('$(\'div[name="downldButton"]\').css(\'display\',\'none\')');
-            # reset selection
-            #for( i in 1:nrow(g$subsets2)) runjs(paste0('$(\'#check_',i,'\').prop(\'checked\',false)'));
-            #runjs("arrDS=Array(0); Shiny.setInputValue('dwnld_button','',{priority: 'event'});}")
+            setName <- .C(g$subsets[ g$subsets$Subset %in% input$inDSselect, ][1,1])
+            write.table(g$data, con, sep="\t", row.names=FALSE, col.names=TRUE)
         }
     )
 

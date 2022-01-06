@@ -51,6 +51,11 @@ a {
   font-weight: bold;
 }
 
+.btndt {
+  font-size: 12px;
+  line-height: 0.9;
+}
+
 .form-group .shiny-input-container {
   margin-bottom: 0px;
 }
@@ -161,4 +166,3 @@ a {
   padding-right: 5px;
   padding-left: 5px;
 }
-

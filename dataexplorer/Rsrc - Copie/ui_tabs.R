@@ -28,6 +28,10 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
      )
    ),
    conditionalPanel(condition="output.apierror==0",
+#      box(
+#         title="Data Graph", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+#         diagonalNetworkOutput("Net", width="75%", height="600px")
+#      ),
       conditionalPanel(condition="output.DSsize==0", 
          box(
             title="Metadata", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
@@ -37,12 +41,15 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
       box(
          title="Data Subsets", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
          dataTableOutput("subsets"),
-         conditionalPanel(condition="output.dwnButton>0", 
-             tags$div(style="white-space: nowrap;", column(12,
-                 downloadButton('downloadTSV', label = "Export the selected data subsets as a merged one", class = NULL),
-                 tags$div(style="display: none", name="downldButton", tags$img(src='busy.gif', height = 20, width = 30))
-             ))
+         conditionalPanel(condition="output.DSsize>0", 
+               downloadButton('downloadTSV', label = "Export the selected data subsets as a merged one", class = NULL)
          )
+      #),
+      #conditionalPanel(condition="output.DSsize>0 && output.nbvarsEvent==0", 
+      #   box(
+      #      title="Attributes", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+      #      dataTableOutput("infos")
+      #   )
       )
    )
 )

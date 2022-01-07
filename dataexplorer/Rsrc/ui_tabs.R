@@ -360,6 +360,13 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
       )),
       # PLOTS
       column(12,
+        conditionalPanel(
+            condition="output.nbvarsEvent2==1 && (input.multiType=='GGM' || input.multiType=='COR')", 
+                   h3(tags$img(height = 50, width = 50, src = "https://www.freeiconspng.com/uploads/status-warning-icon-png-29.png"),
+                      em("Too many variables for an understandable graph!"),br(),br(),
+                      em("Either upload the data subset or use the Rodam package (see 'About' tab)"),
+                      style = "color:#bf6f85")
+         ),
          conditionalPanel(condition="input.multiType != 'None' && input.outType != 'None' && input.listVars[2]", 
             conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA' || input.multiType=='TSNE'", 
                     plotlyOutput("MultiPlot", height="600px") %>% withSpinner(color="brown")),

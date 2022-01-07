@@ -41,10 +41,16 @@ globvars <- list(
   # Maximum number of variables in a data subset so that it can be explored interactively
   maxVariables = conf$MAXVARIABLES,
 
+  # Retain the first 'maxVariables' in case of greater
+  subsetVars = FALSE,
+
   # Nb max item when multiselect
   nbopt_multiselect = 150,
 
-  # Save plots (GGM & COR)
+  # Nb max variables for COR && GGM analyses
+  max_multivars = 150,
+
+  # Save plots (GGM & COR) 
   saveplots = ifelse(conf$SAVEPLOTS==1, TRUE, FALSE),
 
   # Value of the pseudo zero to apply a log10

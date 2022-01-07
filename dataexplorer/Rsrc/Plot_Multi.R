@@ -525,9 +525,10 @@
     # Render COR Plot
     output$CorrPlot <- renderImage ({
        tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
-           if (values$launch==0) return(imgNull)
-           if (! values$multitype %in% c('COR')) return(imgNull)
-           if (! values$outtype %in% c('VARS')) return(imgNull)
+           if (values$launch==0) return(NULL)
+           if (! values$multitype %in% c('COR')) return(NULL)
+           if (! values$outtype %in% c('VARS')) return(NULL)
+           if (nrow(g$varnames)>gv$max_multivars) return(NULL)
            input$listVars
            input$listLevels
            input$listFeatures
@@ -635,6 +636,7 @@
            if (values$launch==0) return(NULL)
            if (values$multitype != 'GGM') return(NULL)
            if (values$outtype != 'VARS') return(NULL)
+           if (nrow(g$varnames)>gv$max_multivars) return(NULL)
            FA <- .C(isolate(input$multiAnnot))
            F1 <- .C(isolate(input$multiFacX))
            FCOL <- ifelse( FA=="None", '', FA )
@@ -706,6 +708,7 @@
            if (values$launch==0) return(NULL)
            if (values$multitype != 'GGM') return(NULL)
            if (values$outtype != 'VARS') return(NULL)
+           if (nrow(g$varnames)>gv$max_multivars) return(NULL)
            values$netData
            input$gravite
            netData <- values$netData

@@ -156,10 +156,10 @@
     output$TtestPlot <- renderImage ({
       values$launch
       tryCatch({
-        if (values$launch==0 || values$ttest==0) return( imgNull )
+        if (values$launch==0 || values$ttest==0) return( NULL )
         F1 <- isolate(input$uniFacX)
         F2 <- isolate(input$uniFacY)
-        if (F1 != F2) return( imgNull )
+        if (F1 != F2) return( NULL )
         SelFacX <- input$SelFacX
         SelFacY <- input$SelFacY
         FA <- isolate(input$uniAnnot)

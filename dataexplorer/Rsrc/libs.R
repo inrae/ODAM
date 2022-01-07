@@ -77,9 +77,6 @@ tabnames <- c('datatable','univariate','bivariate','multiunivariate','multivaria
 subtabnames  <- c('datatable','univariate','bivariate')
 subtabnames2 <- c('datatable','univariate')
 
-# Null image
-imgNull <- list(src = file.path(getwd(),'www/loading.gif'), contentType = 'image/gif', width = 30, height = 10, alt = '')
-
 # Outfile names by category
 outfiles <- list('PCA'='multi.html', 'ICA'='multi.html', 'COR'='corr.svg', 'GGM'='ggm.html', 
                  'TTEST'='ttestbox.svg', 'VCP'='volcanoplot.svg' )
@@ -308,7 +305,7 @@ getVars <- function(strNameList, rmvars=FALSE)
 
        # Get DATA
        data <- getData(ws,paste('(',strNameList,')',sep=''))
-       if (! is.wsError() && ncol(data)<=gv$maxVariables)
+       if (! is.wsError() && ( gv$subsetVars || ncol(data)<=gv$maxVariables ))
        {
           # Get quantitative variable features
           varnames <- NULL
@@ -330,6 +327,11 @@ getVars <- function(strNameList, rmvars=FALSE)
           # Gather all qualitative features
           features <- rbind(identifiers, facnames, qualnames)
           g$features  <<- features
+
+          if(gv$subsetVars && ncol(data)>gv$maxVariables) {
+              varnames <- varnames[sample(1:length(varnames$Attribute), gv$maxVariables), ]
+              data <- data[ , c(features$Attribute, varnames$Attribute) ]
+          }
 
           # Get Samples: attribute features, list of identifiers
           L <- NULL
@@ -356,7 +358,6 @@ getVars <- function(strNameList, rmvars=FALSE)
           # Merge all labels
           LABELS <- rbind(
              matrix( c( as.matrix(identifiers)[,c(1:4)], replicate(nrow(identifiers),'Identifier' ), as.matrix(identifiers)[,c(6:7)]), ncol=7, byrow=FALSE  ),
-             #matrix( c( as.matrix(samplename)[,c(1:4)], 'Identifier', as.matrix(samplename)[,c(6:7)]), ncol=7, byrow=FALSE  ),
              matrix( c( as.matrix(facnames)[,c(1:4)], replicate(nrow(facnames),'Factor'  ), as.matrix(facnames)[,c(6:7)] ), ncol=7, byrow=FALSE  ),
              matrix( c( as.matrix(varnames)[,c(1:4)], replicate(nrow(varnames),'Variable'), as.matrix(varnames)[,c(6:7)] ), ncol=7, byrow=FALSE  )
           )

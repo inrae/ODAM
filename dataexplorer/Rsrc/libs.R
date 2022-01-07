@@ -329,7 +329,7 @@ getVars <- function(strNameList, rmvars=FALSE)
           g$features  <<- features
 
           if(gv$subsetVars && ncol(data)>gv$maxVariables) {
-              varnames <- varnames[sample(1:length(varnames$Attribute), gv$maxVariables), ]
+              varnames <- varnames[1:gv$maxVariables, ]
               data <- data[ , c(features$Attribute, varnames$Attribute) ]
           }
 

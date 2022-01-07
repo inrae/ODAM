@@ -57,6 +57,7 @@ g <- list(
    features=NULL,
    varnames=NULL,
    varsBySubset=NULL,
+   subsetVars=FALSE,
    LABELS=NULL,
    DSL=NULL,
    connectList=NULL,
@@ -331,6 +332,7 @@ getVars <- function(strNameList, rmvars=FALSE)
           if(gv$subsetVars && ncol(data)>gv$maxVariables) {
               varnames <- varnames[1:gv$maxVariables, ]
               data <- data[ , c(features$Attribute, varnames$Attribute) ]
+              g$subsetVars <<- TRUE
           }
 
           # Get Samples: attribute features, list of identifiers

@@ -427,8 +427,8 @@
             getVars(.J(input$inDSselect))
             if (is.wsError()) { values$init <- values$error <- 1; values$initdss <- 0; values$launch <- 0; analysisTab(tabnames,0) }
             else              { values$launch <- length(input$inDSselect); analysisTab(tabnames,1) }
-        if (values$launch && gv$subsetVars)
-            runjs(paste0("alert('Warning: only the first variables limited to the maximum allowed, i.e ",gv$maxVariables,"');"))
+        if (values$launch && g$subsetVars)
+            runjs(paste0("alert('Warning: only the first ",gv$maxVariables," variables will be taken into account');"))
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Data subset Change Obs:\n", e); }) })
 

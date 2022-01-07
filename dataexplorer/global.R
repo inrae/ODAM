@@ -41,8 +41,8 @@ globvars <- list(
   # Maximum number of variables in a data subset so that it can be explored interactively
   maxVariables = conf$MAXVARIABLES,
 
-  # Retain the first 'maxVariables' in case of greater
-  subsetVars = FALSE,
+  # Keep only the first 'maxVariables' in case of greater size
+  subsetVars = TRUE,
 
   # Nb max item when multiselect
   nbopt_multiselect = 150,

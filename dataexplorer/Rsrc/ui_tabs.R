@@ -28,16 +28,14 @@ ui_infoTab <- tabItem(tabName = "information", bsAlert("ErrAlertInfo"),
      )
    ),
    conditionalPanel(condition="output.apierror==0",
-      conditionalPanel(condition="output.DSsize==0", 
-         box(
-            title="Metadata", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
-            dataTableOutput("metadata")
-         )
+      box(
+         title="Metadata", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+         dataTableOutput("metadata")
       ),
       box(
          title="Data Subsets", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
          dataTableOutput("subsets"),
-         conditionalPanel(condition="output.dwnButton>0", 
+         conditionalPanel(condition="output.dwnButton>0",
              tags$div(style="white-space: nowrap;", column(12,
                  downloadButton('downloadTSV', label = "Export the selected data subsets as a merged one", class = NULL),
                  tags$div(style="display: none", name="downldButton", tags$img(src='busy.gif', height = 20, width = 30))

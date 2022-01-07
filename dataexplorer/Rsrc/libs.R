@@ -447,9 +447,9 @@ getMetadataLinksAsTable <- function(ws)
   hrefA <- paste0('<a href="',gv$odamdoc_url,'data-preparation/#a_attributestsv" target="_blank">Data Preparation Protocol - Attributes</a>')
   hrefJ <- paste0('<a href="',gv$odamdoc_url,'json-schema/" target="_blank">ODAM datapackage based on JSON-Schema</a>')
 
-  button1 <- as.character(actionButton('button_1', label = "TSV", class="btndt",
+  button1 <- as.character(actionButton('button_1', label = "TSV", class="btn-dt",
                           onclick = paste0('window.open(\"',ws$apiurl,'query/',ws$dsname,'?format=tsv\", \"_blank\");' )))
-  button2 <- as.character(actionButton('button_2', label = "TSV", class="btndt",
+  button2 <- as.character(actionButton('button_2', label = "TSV", class="btn-dt",
                           onclick = paste0('window.open(\"',ws$apiurl,'query/',ws$dsname,'/metadata/?format=tsv\", \"_blank\");' )))
 
   df <- data.frame(rbind( c(href1, 'All metadata related to data subsets', hrefS, button1),

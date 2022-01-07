@@ -51,11 +51,6 @@ a {
   font-weight: bold;
 }
 
-.btndt {
-  font-size: 12px;
-  line-height: 0.9;
-}
-
 .form-group .shiny-input-container {
   margin-bottom: 0px;
 }
@@ -148,6 +143,11 @@ a {
   color: white; 
   background-color: brown; 
   border-color: white;
+}
+
+.btn-dt {
+  font-size: 12px;
+  line-height: 0.9;
 }
 
 .dataTables_info {

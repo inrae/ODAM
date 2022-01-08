@@ -125,10 +125,10 @@ getURLparams <- function(cdata)
 {
     params <- parseQueryString(cdata$url_search)
     # -----
-    if (!is.null(params[['dc']]))      ws$dcname <<- params[['dc']]
-    if (!is.null(params[['ds']]))      ws$dsname <<- params[['ds']]
-    if (!is.null(params[['auth']])){   ws$auth <<- params[['auth']]; ws$keymode <<- 1 }
+    if (!is.null(params[['dc']]))      ws$dcname <<- gsub("\\?.*",'', params[['dc']])
+    if (!is.null(params[['ds']]))      ws$dsname <<- gsub("\\?.*",'', params[['ds']])
     if (!is.null(params[['subset']]))  ws$subset <<- params[['subset']]
+    if (!is.null(params[['auth']]))    { ws$auth <<- params[['auth']]; ws$keymode <<- 1 }
     # -----
     if (!is.null(params[['tab']]))     ui$tab <<- params[['tab']]
     if (!is.null(params[['frame']]))   ui$header <<- params[['frame']]

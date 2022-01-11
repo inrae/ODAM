@@ -25,7 +25,7 @@
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 0:\n", e ); }) })
 
 
-    # multiType event
+    # multiType
     observe({ tryCatch({
        input$inDselect
        input$multiType
@@ -68,13 +68,13 @@
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 1b:\n", e ); }) })
 
-    # ellipse event
+    # ellipse
     observe({ tryCatch({
        input$ellipse
        values$ellipse <- input$ellipse
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 1d:\n", e ); }) })
 
-    # outType event
+    # outType
     observe({ tryCatch({
        input$inDselect
        input$outType
@@ -89,6 +89,7 @@
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 1c:\n", e ); }) })
 
 
+    # f3D
     observe({ tryCatch({
        input$inDselect
        if ( values$launch>0 ) {
@@ -102,6 +103,7 @@
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 2:\n", e ); }) })
 
 
+    # Short labels
     observe({ tryCatch({
        input$inDselect
        if ( values$launch>0 ) {
@@ -119,6 +121,7 @@
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 3:\n", e ); }) })
 
 
+    # multiFacX / listVars
     observe({ tryCatch({
        input$inDselect
        if ( values$launch>0) {
@@ -139,6 +142,7 @@
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 4:\n", e ); }) })
 
 
+    # listLevels
     observeEvent( list(input$inDselect, input$multiFacX), { tryCatch({
        input$inDselect
        if (values$launch>0 && ! is.null(input$multiFacX) && nchar(.C(input$multiFacX))>0) {
@@ -158,6 +162,7 @@
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 5:\n", e ); }) })
 
+    # multiAnnot
     observe({ tryCatch({
        input$inDselect
        if ( values$launch>0) {
@@ -169,6 +174,7 @@
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 6:\n", e ); }) })
 
 
+    # listFeatures
     observe({ tryCatch({
        input$inDselect
        if (values$launch>0 && ! is.null(input$multiAnnot) && nchar(input$multiAnnot)>0) {
@@ -183,7 +189,7 @@
               }
               flevels <- levels(as.factor(fvals))
               if (length(flevels)<gv$nbopt_multiselect) {
-                  f_options <- c( 1:length(flevels) )
+                  f_options <- c(as.character(c(flevels)))
                   names(f_options) <- c(as.character(c(flevels)))
               }
           }
@@ -223,7 +229,6 @@
         if (is.null(FCOL) || nchar(FCOL)==0) { FCOL <- F1; fannot=FALSE; }
         FCOL <- tryCatch( { if(length(data[, FCOL ])) FCOL  }, error=function(e) { F1 })
         cfacvals <- as.vector(data[ , FCOL])
-        ofacvals <- order(cfacvals)
         cfacvals[is.na(cfacvals)] <- "NA"
         fident <- ifelse( FCOL %in% g$identifiers$Attribute, TRUE, FALSE )
         if (! fident && is.numeric(cfacvals) && sum(cfacvals-floor(cfacvals))>0) {
@@ -233,8 +238,6 @@
 
         # Data extraction
         subdata <- cbind( data[ , c(g$samples,variables)] , facvals, cfacvals )
-        if (fannot && length(selectFCOL)>0)
-            subFCOL <- unique(subdata$cfacvals[ofacvals])[.N(selectFCOL)]
 
         # Data imputation
         dataIn <- subdata[, variables ]
@@ -246,7 +249,7 @@
 
         # Data selection
         subdata <- subdata[subdata[ , F1 ] %in% selectLevels, ]
-        if (fannot && length(selectFCOL)>0) subdata <- subdata[subdata[ , FCOL ] %in% subFCOL, ]
+        if (fannot && length(selectFCOL)>0) subdata <- subdata[cfacvals %in% gsub("^0", '', selectFCOL), ]
         subdata <- unique(subdata)
         list( subdata=subdata, variables=variables, F1name=F1name, fannot=fannot )
     }
@@ -280,7 +283,6 @@
            F1 <- .C(isolate(input$multiFacX))
            selectFCOL <- .C(isolate(input$listFeatures))
            outputVariables <- ifelse( values$outtype == 'IDS', FALSE, TRUE )
-           selectFCOL <- .C(input$listFeatures)
            FCOL <- ifelse( FA=="None", '', FA )
            if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
                selectFCOL <- c()

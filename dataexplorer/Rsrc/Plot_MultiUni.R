@@ -175,8 +175,11 @@
 
 #if (gv$saveplots) write.table(dat, file = file.path(SESSTMPDIR,'volcano.txt'), append = FALSE, quote = TRUE, sep = "\t", na = "NA", dec = ".", row.names = FALSE)
 
-             dat$diffexpr <- factor(dat$diffexpr, levels=c("down", "up", "mid", "ns"), labels=c("Down", "Up", "p-values only", "NS"))
-             diffexprcol <- c('brown2', 'chartreuse3', 'goldenrod1', 'darkviolet')
+             # Define the color set depending on diffexpr content
+             colorset <- c('brown2', 'darkviolet', 'goldenrod1', 'chartreuse3')
+             levelset <- c('down' %in% dat$diffexpr, 'ns' %in% dat$diffexpr, 'mid' %in% dat$diffexpr, 'up' %in% dat$diffexpr)
+             dat$diffexpr <- factor(dat$diffexpr, levels=c("down", "ns", "mid", "up")[levelset], labels=c("Down", "NS", "p-values only", "Up")[levelset])
+             diffexprcol <- colorset[levelset]
              linethrescol <- "darkgrey"
              # Build Plot
              p <- ggplot(data=dat, aes(x=log2(FoldChange), y=-log10(pvalue), label=Vars, name=Name, col=diffexpr), group=subsets) + 

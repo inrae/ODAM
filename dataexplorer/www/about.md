@@ -20,7 +20,7 @@ For more information/explanation, see <a href="https://inrae.github.io/ODAM/" ta
 #### Test online with the <a href="?ds=frim1">FRIM dataset</a> or the <a href="https://pmb-bordeaux.fr/dataexplorer/?dc=Frimouss">FRIMOUSS collection</a>
 ----
 
-* Test online the getData API through the web <a href="https://pmb-bordeaux.fr/odamsw/" target="_blank">swagger UI</a> (See <a href="https://github.com/inrae/ODAM/tree/master/API" target="_blank">Github ODAM/API</a> )
+* Test online the getData API through the web <a href="https://pmb-bordeaux.fr/odamsw/" target="_blank">swagger UI</a>
 
 * For open data access throught web services 
       - with R : see  the <a href="https://cran.r-project.org/web/packages/Rodam/vignettes/Rodam.html" target="_blank">R ODAM package and How to use it</a>

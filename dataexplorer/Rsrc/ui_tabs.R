@@ -313,7 +313,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
                        conditionalPanel(condition="input.multiType=='TSNE'",
                        column(12,
                             column(4,  HTML('<b>Perplexity</b>')),
-                            column(8, numericInput("perplexity", NULL, 15, min = 5, max = 50, step=5))
+                            column(8, numericInput("perplexity", NULL, 5, min = 5, max = 50, step=5))
                        ))
                    )
               ),

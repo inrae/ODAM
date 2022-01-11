@@ -158,8 +158,8 @@
            tryCatch({
              # Prepare Data
              dat <- volcanoData()
-             idlabels <- ifelse (input$shortLabels2, 2, 4)
-             dat$Vars <- gsub(" \\(.+\\)","",as.character(g$LABELS[g$LABELS[,2] %in% dat$Vars,idlabels]))
+             if (!input$shortLabels2)
+                 dat$Vars <- gsub(" \\(.+\\)","",as.character(g$LABELS[g$LABELS[,2] %in% dat$Vars,4]))
 
              # clean Data
              dat <- dat[ is.finite(dat$FoldChange), ]

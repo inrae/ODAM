@@ -254,8 +254,7 @@ ui_multiuniTab <- tabItem(tabName = "multiunivariate", bsAlert("ErrAlertMuni"), 
          column(4,
               selectInput("SelLev2", "Level to be compared", c() ),
               column(12,
-                 column(6, selectInput("onlytop", "Labels", c("All"="0", "Only Top 5"="5", "Only Top 10"="10", "Only Top 25"="25"), selected="10" )),
-                 column(3, tags$br(), checkboxInput('shortLabels2', 'Short Labels', FALSE))
+                 column(6, selectInput("onlytop", "Labels", c("All"="0", "Only Top 5"="5", "Only Top 10"="10", "Only Top 25"="25"), selected="10" ))
               )
          )
       )),

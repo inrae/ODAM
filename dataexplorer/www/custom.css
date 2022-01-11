@@ -51,6 +51,11 @@ a {
   font-weight: bold;
 }
 
+.selectize-dropdown [data-selectable] .highlight {
+    background: rgba(255, 0, 0);
+    color: rgba(255, 255, 255);
+}
+
 .form-group .shiny-input-container {
   margin-bottom: 0px;
 }

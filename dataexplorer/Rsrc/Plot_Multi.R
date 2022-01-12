@@ -184,7 +184,7 @@
               fvals <- g$data[ , input$multiAnnot]
               fident <- ifelse( input$multiAnnot %in% g$identifiers$Attribute, TRUE, FALSE)
               if (!fident && is.numeric(fvals) && sum(is.na(fvals))==0 && sum(fvals-floor(fvals))>0) {
-                 fmt <- paste('%0',round(log10(max(abs(fvals)))+0.5)+3,'.2f',sep='')
+                 fmt <- paste('%',round(log10(max(abs(fvals)))+0.5)+3,'.2f',sep='')
                  fvals <- as.character(sprintf(fmt, fvals))
               }
               flevels <- levels(as.factor(fvals))
@@ -229,10 +229,14 @@
         if (is.null(FCOL) || nchar(FCOL)==0) { FCOL <- F1; fannot=FALSE; }
         FCOL <- tryCatch( { if(length(data[, FCOL ])) FCOL  }, error=function(e) { F1 })
         cfacvals <- as.vector(data[ , FCOL])
-        cfacvals[is.na(cfacvals)] <- "NA"
+        if (is.numeric(cfacvals)) {
+           cfacvals[is.na(cfacvals)] <- NA
+        } else {
+           cfacvals[is.na(cfacvals)] <- "NA"
+        }
         fident <- ifelse( FCOL %in% g$identifiers$Attribute, TRUE, FALSE )
-        if (! fident && is.numeric(cfacvals) && sum(cfacvals-floor(cfacvals))>0) {
-            fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')
+        if (! fident && is.numeric(cfacvals) && sum(na.omit(cfacvals)-floor(na.omit(cfacvals)))>0) {
+            fmt <- paste('%',round(log10(max(abs(na.omit(cfacvals))))+0.5)+3,'.2f',sep='')
             cfacvals <- as.character(sprintf(fmt, cfacvals))
         }
 
@@ -249,7 +253,7 @@
 
         # Data selection
         subdata <- subdata[subdata[ , F1 ] %in% selectLevels, ]
-        if (fannot && length(selectFCOL)>0) subdata <- subdata[cfacvals %in% gsub("^0", '', selectFCOL), ]
+        if (fannot && length(selectFCOL)>0) subdata <- subdata[cfacvals %in% selectFCOL, ]
         subdata <- unique(subdata)
         list( subdata=subdata, variables=variables, F1name=F1name, fannot=fannot )
     }

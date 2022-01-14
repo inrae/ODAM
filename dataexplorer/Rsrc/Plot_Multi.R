@@ -287,11 +287,11 @@
                if (values$multitype %in% c('PCA','ICA'))
                   getMultiPlot(multiType, F1, FL, FCOL, selectFCOL, .C(input$listVars), outputVariables=outputVariables,
                                fellipse=input$ellipse, scale=input$scale, blabels=input$multiLabels, slabels=input$shortLabels,
-                               f3D=input$f3D, conflevel=as.numeric(input$conflevel))
+                               f3D=input$f3D, conflevel=as.numeric(input$conflevel), ps=as.numeric(input$ptsize))
                else
                   getTSNEPlot(multiType, F1, FL, FCOL, selectFCOL, .C(input$listVars), outputVariables=outputVariables,
                                fellipse=input$ellipse, scale=input$scale, perplexity=input$perplexity, blabels=input$multiLabels,
-                               f3D=input$f3D, conflevel=as.numeric(input$conflevel))
+                               f3D=input$f3D, conflevel=as.numeric(input$conflevel), ps=as.numeric(input$ptsize))
                }, error=function(e) { ERROR$MsgErrorMulti <- paste("getMultiPlot :\n", e ); })
            })
        }, error=function(e) { ERROR$MsgErrorMulti <- paste("RenderPlotly:\n", e ); })
@@ -350,7 +350,7 @@
     # Multivariate Plot
     #----------------------------------------------------
     getMultiPlot <- function(Analysis, F1, selectLevels, FCOL, selectFCOL, selectVars,
-                             outputVariables=FALSE, fellipse='none', scale=FALSE, blabels=TRUE, slabels=FALSE, f3D=FALSE, conflevel=0.95)
+                             outputVariables=FALSE, fellipse='none', scale=FALSE, blabels=TRUE, slabels=FALSE, f3D=FALSE, conflevel=0.95, ps=1)
     {
         FUN <- ''
         if (nchar(Analysis)>0) FUN <- paste0(Analysis,'_fun')
@@ -395,7 +395,7 @@
            if (f3D) { # Use 3D plotly
               symbolset = c('dot', 'cross', 'diamond', 'square', 'triangle-down', 'triangle-left', 'triangle-right', 'triangle-up')
               gg <- plot_ly(MA, x = ~C1, y = ~C2, z = ~C3, color = ~fac,
-                 type="scatter3d", marker=list(size = 4), text= ~IDS ) %>%
+                 type="scatter3d", marker=list(size = 4*ps), text= ~IDS ) %>%
                  layout(scene = list(xaxis = list(title = sprintf("%s%d = %6.2f%%",prefix, pc1, evnorm[pc1])),
                        yaxis = list(title = sprintf("%s%d = %6.2f%%",prefix, pc2, evnorm[pc2])),
                        zaxis = list(title = sprintf("%s%d = %6.2f%%",prefix, pc3, evnorm[pc3]))))
@@ -458,7 +458,7 @@
     # TSNE Plot
     #----------------------------------------------------
     getTSNEPlot <- function(Analysis, F1, selectLevels, FCOL, selectFCOL, selectVars,
-                             outputVariables=FALSE, perplexity=15, fellipse='none', scale=FALSE, blabels=TRUE, f3D=FALSE, conflevel=0.95)
+                             outputVariables=FALSE, perplexity=15, fellipse='none', scale=FALSE, blabels=TRUE, f3D=FALSE, conflevel=0.95, ps=1)
     {
         ## Metadata preparation / Data extraction
         o <- getDataMulti(F1, selectLevels, FCOL, selectFCOL, selectVars, scale=F)
@@ -500,7 +500,7 @@
         if (f3D) { # Use 3D plotly
            symbolset = c('dot', 'cross', 'diamond', 'square', 'triangle-down', 'triangle-left', 'triangle-right', 'triangle-up')
            gg <- plot_ly(MA, x = ~C1, y = ~C2, z = ~C3, color = ~fac,
-              type="scatter3d", marker=list(size = 4), text= ~IDS ) %>%
+              type="scatter3d", marker=list(size = 4*ps), text= ~IDS ) %>%
               layout(scene = list(xaxis = list(title = 'C1'), yaxis = list(title = 'C2'), zaxis = list(title = 'C3')))
         } else { # Use 2D ggplot / plotly
            sizeP <- ifelse( blabels, 0, 0 )

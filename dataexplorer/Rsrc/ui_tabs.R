@@ -344,7 +344,10 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
               conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA' || input.multiType=='TSNE'",
                   column(2, checkboxInput('f3D', '3D', FALSE)),
                   column(2, checkboxInput('multiLabels', 'Labels', TRUE)), 
-                  column(3, checkboxInput('shortLabels', 'Short Labels', FALSE))
+                  column(3, checkboxInput('shortLabels', 'Short Labels', FALSE)),
+                  column(5, conditionalPanel(condition="input.f3D==1",
+                       selectInput("ptsize", NULL, c("Point size 1"="1", "Point size 2"="2", "Point size 3"="3"), selected="1")
+                  ))
               ),
               conditionalPanel(condition="input.multiType=='COR'",
                   column(4, checkboxInput('fullmatcor', 'Full Matrix', TRUE)),

@@ -284,11 +284,13 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
               selectInput("multiFacX", "Factor for highlighting the classification", c() ),
               conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA' || input.multiType=='TSNE'",
               column(12,
-                   column(6, checkboxInput('ellipse', 'Ellipses', TRUE)),
-                   column(6, selectInput("conflevel", NULL, c("0.8"="0.8", "0.9"="0.9", "0.95"="0.95", "0.99"="0.99"), selected="0.95" ))
-              )),
+                   column(6, selectInput("ellipse", NULL, c("No contour"="none", "Ellipses"="ellipse", "Polygons"="polygon"), selected="none")),
+                   conditionalPanel(condition="input.ellipse=='ellipse'",
+                       column(6, selectInput("conflevel", NULL, c("0.8"="0.8", "0.9"="0.9", "0.95"="0.95", "0.99"="0.99"), selected="0.95" ))
+                   )
+              ),
               selectInput("listLevels", "Select Factor Levels", c(), multiple = TRUE, , selectize=TRUE )
-         ),
+         )),
          column(4,
               selectInput("multiType", "Analysis Type", 
                      c("----"="None"  , "Principal Component Analysis (PCA)" = "PCA" 

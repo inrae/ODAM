@@ -27,7 +27,7 @@ shinyServer(function(input, output, session) {
         # uniplot events
         ttest=0,
         # multiplot events
-        multitype='', outtype='', netData=NULL, ellipse=FALSE,
+        multitype='', outtype='', netData=NULL,
         # Error events
         error=0
     )

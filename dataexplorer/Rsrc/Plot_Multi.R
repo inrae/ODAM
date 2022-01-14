@@ -46,8 +46,6 @@
              updateSelectInput(session, "outType", choices = v_options,  selected="IDS")
              values$outtype <- 'IDS'
              shinyjs::disable("shortLabels")
-             updateCheckboxInput(session, "ellipse", label = 'Ellipses', value = TRUE)
-             values$ellipse <- TRUE
           }
           if ( values$multitype %in% c('TSNE') ) {
              v_options <- c('IDS')
@@ -55,8 +53,6 @@
              updateSelectInput(session, "outType", choices = v_options,  selected="IDS")
              values$outtype <- 'IDS'
              shinyjs::disable("shortLabels")
-             updateCheckboxInput(session, "ellipse", label = 'Ellipses', value = FALSE)
-             values$ellipse <- FALSE
           }
           if ( values$multitype %in% c('COR','GGM') ) {
              v_options <- c('VARS')
@@ -67,12 +63,6 @@
           }
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 1b:\n", e ); }) })
-
-    # ellipse
-    observe({ tryCatch({
-       input$ellipse
-       values$ellipse <- input$ellipse
-    }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 1d:\n", e ); }) })
 
     # outType
     observe({ tryCatch({
@@ -296,11 +286,11 @@
                tryCatch({
                if (values$multitype %in% c('PCA','ICA'))
                   getMultiPlot(multiType, F1, FL, FCOL, selectFCOL, .C(input$listVars), outputVariables=outputVariables,
-                               fellipse=values$ellipse, scale=input$scale, blabels=input$multiLabels, slabels=input$shortLabels,
+                               fellipse=input$ellipse, scale=input$scale, blabels=input$multiLabels, slabels=input$shortLabels,
                                f3D=input$f3D, conflevel=as.numeric(input$conflevel))
                else
                   getTSNEPlot(multiType, F1, FL, FCOL, selectFCOL, .C(input$listVars), outputVariables=outputVariables,
-                               fellipse=values$ellipse, scale=input$scale, perplexity=input$perplexity, blabels=input$multiLabels,
+                               fellipse=input$ellipse, scale=input$scale, perplexity=input$perplexity, blabels=input$multiLabels,
                                f3D=input$f3D, conflevel=as.numeric(input$conflevel))
                }, error=function(e) { ERROR$MsgErrorMulti <- paste("getMultiPlot :\n", e ); })
            })
@@ -360,7 +350,7 @@
     # Multivariate Plot
     #----------------------------------------------------
     getMultiPlot <- function(Analysis, F1, selectLevels, FCOL, selectFCOL, selectVars,
-                             outputVariables=FALSE, fellipse=TRUE, scale=FALSE, blabels=TRUE, slabels=FALSE, f3D=FALSE, conflevel=0.95)
+                             outputVariables=FALSE, fellipse='none', scale=FALSE, blabels=TRUE, slabels=FALSE, f3D=FALSE, conflevel=0.95)
     {
         FUN <- ''
         if (nchar(Analysis)>0) FUN <- paste0(Analysis,'_fun')
@@ -422,7 +412,12 @@
                   G1 <- G1 + ylab(sprintf("%s%d",prefix, pc2))
               }
               G1 <- G1 + labs(colour=F1name)
-              if (fellipse) G1 <- G1 + stat_ellipse(type='norm', level=conflevel, na.rm=TRUE)
+              if (fellipse=='ellipse') G1 <- G1 + stat_ellipse(type='norm', level=conflevel, na.rm=TRUE)
+              if (fellipse=='polygon') {
+                  find_hull <- function(MA) MA[chull(MA[,'C1'], MA[,'C2']), ]
+                  hulls <- plyr::ddply(MA, "fac", find_hull)
+                  G1 <- G1 + geom_polygon(data = hulls, aes(C1, C2, fill=factor(fac)), alpha = 0.2, show.legend=FALSE)
+              }
               G1 <- G1 + theme_bw() + guides(colour = guide_legend(override.aes = list(size=3)))
               gg <- G1 #ggplotly(G1)
            }
@@ -463,7 +458,7 @@
     # TSNE Plot
     #----------------------------------------------------
     getTSNEPlot <- function(Analysis, F1, selectLevels, FCOL, selectFCOL, selectVars,
-                             outputVariables=FALSE, perplexity=15, fellipse=TRUE, scale=FALSE, blabels=TRUE, f3D=FALSE, conflevel=0.95)
+                             outputVariables=FALSE, perplexity=15, fellipse='none', scale=FALSE, blabels=TRUE, f3D=FALSE, conflevel=0.95)
     {
         ## Metadata preparation / Data extraction
         o <- getDataMulti(F1, selectLevels, FCOL, selectFCOL, selectVars, scale=F)
@@ -514,7 +509,12 @@
            if (blabels) G1 <- G1 + geom_text(aes(label=IDS),hjust=0.5,vjust=0.5)
            G1 <- G1 + xlab('C1') + ylab('C2')
            G1 <- G1 + labs(colour=F1name)
-           if (fellipse) G1 <- G1 + stat_ellipse(type='norm', level=conflevel, na.rm=TRUE)
+           if (fellipse=='ellipse') G1 <- G1 + stat_ellipse(type='norm', level=conflevel, na.rm=TRUE)
+           if (fellipse=='polygon') {
+               find_hull <- function(MA) MA[chull(MA[,'C1'], MA[,'C2']), ]
+               hulls <- plyr::ddply(MA, "fac", find_hull)
+               G1 <- G1 + geom_polygon(data = hulls, aes(C1, C2, fill=factor(fac)), alpha = 0.2, show.legend=FALSE)
+           }
            G1 <- G1 + theme_bw() + guides(colour = guide_legend(override.aes = list(size=3)))
            gg <- G1
         }

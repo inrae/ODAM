@@ -329,8 +329,40 @@ getVars <- function(strNameList, rmvars=FALSE)
           features <- rbind(identifiers, facnames, qualnames)
           g$features  <<- features
 
+          varsBySubset <- list()
+          for(setName in setNameList)
+               varsBySubset[[setName]] <- .C( varnames$Attribute[ varnames$Subset==setName ] )
+
+          # Selects a subset of variables in the allowed limit 
           if(gv$subsetVars && ncol(data)>gv$maxVariables) {
-              varnames <- varnames[1:gv$maxVariables, ]
+              # If a single subset of data
+              if (length(setNameList)==1) {
+                  varnames <- varnames[1:gv$maxVariables, ]
+              } else {
+              # If several subsets of data
+                  # sets the limit for each subset of data
+                  nbvarmax <- round(gv$maxVariables/length(setNameList))
+                  vars <- NULL
+                  nbvars <- 0
+                  setNameList2 <- NULL
+                  # If this limit is not exceeded for some subsets of data then take all their variables
+                  for(setName in setNameList)
+                     if (length(varsBySubset[[setName]])<nbvarmax) {
+                        vars <- rbind( vars, varnames[ varnames$Attribute %in% varsBySubset[[setName]], ] )
+                        nbvars <- nbvars + length(varsBySubset[[setName]])
+                        setNameList2 <- c( setNameList2, setName )
+                     }
+                  # Based on what is left, distribute the variables equally over the remaining subsets of data
+                  if (nbvars>0) {
+                     setNameList3 <- setNameList[ ! setNameList %in% setNameList2 ]
+                     nbvarmax <- round((gv$maxVariables - nbvars)/length(setNameList3))
+                  } else { 
+                     setNameList3 <- setNameList
+                  }
+                  for(setName in setNameList3)
+                     vars <- rbind(vars, varnames[ varnames$Attribute %in% varsBySubset[[setName]][1:nbvarmax], ])
+              }
+              varnames <- vars
               data <- data[ , c(features$Attribute, varnames$Attribute) ]
               g$subsetVars <<- TRUE
           }
@@ -373,7 +405,8 @@ getVars <- function(strNameList, rmvars=FALSE)
 
           varsBySubset <- list()
           for(setName in setNameList)
-               varsBySubset[[setName]] <- .C(varnames$Attribute[ varnames$Attribute %in% LABELS[ LABELS$Subset==setName, ]$Attribute ])
+               varsBySubset[[setName]] <- .C( varnames$Attribute[ varnames$Subset==setName ] )
+               #varsBySubset[[setName]] <- .C(varnames$Attribute[ varnames$Attribute %in% LABELS[ LABELS$Subset==setName, ]$Attribute ])
           g$varsBySubset <<- varsBySubset
 
           for( i in 1:nrow(varnames)) { if (.C(varnames$Type[i]) == 'numeric') data[,.C(varnames$Attribute[i])] <- .N(data[,.C(varnames$Attribute[i])]); }

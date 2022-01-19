@@ -424,11 +424,14 @@
              g$inDSselect <<- ws$subset <<- ''; values$initds <- values$initdss <- values$launch <- 0
         }
         if (! is.null(g$subsets) && ! is.null(input$inDSselect) && length(input$inDSselect)>0 && g$inDSselect != .J(input$inDSselect)) {
+            shinyjs::disable("inDSselect")
             getVars(.J(input$inDSselect))
             if (is.wsError()) { values$init <- values$error <- 1; values$initdss <- 0; values$launch <- 0; analysisTab(tabnames,0) }
             else              { values$launch <- length(input$inDSselect); analysisTab(tabnames,1) }
-        if (values$launch && g$subsetVars)
-            runjs(paste0("alert('Warning: only the first ",gv$maxVariables," variables will be taken into account');"))
+            if (values$launch && g$subsetVars)
+               runjs(paste0("alert('Warning: only the first ",gv$maxVariables," variables will be taken into account');"))
+            g$subsetVars <<- FALSE
+            #shinyjs::enable("inDSselect") # See Plot_Multi.R : Observer listFeatures
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Data subset Change Obs:\n", e); }) })
 

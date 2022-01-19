@@ -337,7 +337,7 @@ getVars <- function(strNameList, rmvars=FALSE)
           if(gv$subsetVars && ncol(data)>gv$maxVariables) {
               # If a single subset of data
               if (length(setNameList)==1) {
-                  varnames <- varnames[1:gv$maxVariables, ]
+                  vars <- varnames[1:gv$maxVariables, ]
               } else {
               # If several subsets of data
                   # sets the limit for each subset of data

@@ -184,6 +184,7 @@
               }
           }
           updateSelectInput(session, "listFeatures", choices = f_options, selected=f_options)
+          shinyjs::enable("inDSselect") # We put here beacause it is the last one to be updated - See Init_UI.R : Observer - if data subset change
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 7:\n", e ); }) })
 

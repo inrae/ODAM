@@ -24,6 +24,8 @@
        }
     }, error=function(e) { ERROR$MsgErrorUni <- paste("Observer 1a:\n", e ); }) })
 
+    updateFlg <- TRUE
+
     observe({ tryCatch({
        input$inDselect
        if (values$launch>0 && 
@@ -40,6 +42,8 @@
               l_options <- c( 1:length(levelFac) )
               names(l_options) <- c(as.character(c(levelFac)))
            }
+           if (isolate(input$uniFacY != input$uniFacX) && isolate(input$uniVarSelect>0))
+              updateFlg <<- FALSE
            updateSelectInput(session, "SelFacX", choices = l_options, selected=l_options)
            # Second Factor
            if (nchar(ui$fac2)==0) {
@@ -65,6 +69,7 @@
 
     observe({ tryCatch({
        input$inDselect
+       input$uniFacX
        if (values$launch>0 && 
            ! is.null(input$uniFacY) && nchar(input$uniFacY)>0 && input$uniFacY %in% colnames(g$data)) {
            if (input$uniFacY == input$uniFacX) {
@@ -155,16 +160,20 @@
     # Render T.test Plot
     output$TtestPlot <- renderImage ({
       values$launch
+      input$SelFacX
+      input$SelFacY
+      input$uniFeatures
       tryCatch({
         if (values$launch==0 || values$ttest==0) return( NULL )
+        if (!updateFlg) { updateFlg <<- TRUE; return( NULL ) }
         F1 <- isolate(input$uniFacX)
         F2 <- isolate(input$uniFacY)
         if (F1 != F2) return( NULL )
-        SelFacX <- input$SelFacX
-        SelFacY <- input$SelFacY
+        SelFacX <- isolate(input$SelFacX)
+        SelFacY <- isolate(input$SelFacY)
         FA <- isolate(input$uniAnnot)
         FCOL <- ifelse( FA=="None", '', FA )
-        selectFCOL <- input$uniFeatures
+        selectFCOL <- isolate(input$uniFeatures)
         if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
             selectFCOL <- c()
         }
@@ -188,13 +197,17 @@
     #----------------------------------------------------
     output$BoxPlot <- renderPlotly ({
       values$launch
+      input$SelFacX
+      input$SelFacY
+      input$uniFeatures
       tryCatch({
         if (values$launch==0 || values$ttest==1) return( NULL )
-        SelFacX <- input$SelFacX
-        SelFacY <- input$SelFacY
+        if (!updateFlg) { updateFlg <<- TRUE; return( NULL ) }
+        SelFacX <- isolate(input$SelFacX)
+        SelFacY <- isolate(input$SelFacY)
         FA <- isolate(input$uniAnnot)
         FCOL <- ifelse( FA=="None", '', FA )
-        selectFCOL <- input$uniFeatures
+        selectFCOL <- isolate(input$uniFeatures)
         if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
             selectFCOL <- c()
         }
@@ -236,7 +249,11 @@
         FCOL <- tryCatch( { if(length(g$data[, FCOL ])) FCOL  }, error=function(e) { F1 })
         cfacvals <- as.vector(g$data[ , FCOL])
         ofacvals <- order(cfacvals)
-        cfacvals[is.na(cfacvals)] <- "NA"
+        if (is.numeric(cfacvals)) {
+           cfacvals[is.na(cfacvals)] <- NA
+        } else {
+           cfacvals[is.na(cfacvals)] <- "NA"
+        }
         fident <- ifelse( FCOL %in% g$identifiers$Attribute, TRUE, FALSE )
         if (! fident && is.numeric(cfacvals) && sum(cfacvals-floor(cfacvals))>0) {
             fmt <- paste('%0',round(log10(max(abs(cfacvals)))+0.5)+3,'.2f',sep='')

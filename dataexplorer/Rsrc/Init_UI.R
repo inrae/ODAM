@@ -185,16 +185,6 @@
     })
 
     #----------------------------------------------------
-    # Observer - loading is complete
-    #----------------------------------------------------
-    observe ({
-        values$init
-        values$initds
-        values$initcol
-        if (values$init>0) runjs(paste0("uiloaded=1; ipclient='",input$ipclient,"'; apikey='",ws$auth,"';"))
-    })
-
-    #----------------------------------------------------
     # Observer - ERROR
     #----------------------------------------------------
     observe ({
@@ -202,6 +192,17 @@
        if (nchar(ERROR$MsgErrorMain)>0) {
           createAlert(session, "ErrAlertMain", "ErrAlertMainId", title = "", content = ERROR$MsgErrorMain, append = FALSE, style='danger')
        }
+    })
+
+
+    #----------------------------------------------------
+    # Observer - loading is complete
+    #----------------------------------------------------
+    observe ({
+        values$init
+        values$initds
+        values$initcol
+        if (values$init>0) runjs(paste0("uiloaded=1; ipclient='",input$ipclient,"'; apikey='",ws$auth,"';"))
     })
 
     #----------------------------------------------------

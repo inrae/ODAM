@@ -436,6 +436,7 @@
            }
 
            idlabels <- ifelse (slabels, 2, 4)
+           strmode <- ifelse( blabels==TRUE, "text", "markers" )
            MA <- as.data.frame(M[, c(pc1,pc2)])
            MA <- cbind( MA, rownames(M) )
            names(MA) <- c( 'C1','C2', 'VARS' )
@@ -447,7 +448,6 @@
               MA <- cbind( MA, MA$LABELS ); fshow <- FALSE
            }
            names(MA) <- c( 'C1','C2', 'VARS', 'LABELS', 'COLORS' )
-           strmode <- ifelse( blabels==TRUE, "text", "markers" )
            gg <- plot_ly(MA, x = ~C1, y = ~C2, color = ~COLORS, type="scatter", mode=strmode, text= ~LABELS ) %>%
                  layout(showlegend = fshow, scene = list(xaxis = list(title = sprintf("%s%d",prefix, pc1)),yaxis = list(title = sprintf("%s%d",prefix, pc2))))
         }

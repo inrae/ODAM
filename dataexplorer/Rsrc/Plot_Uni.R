@@ -42,8 +42,9 @@
               l_options <- c( 1:length(levelFac) )
               names(l_options) <- c(as.character(c(levelFac)))
            }
-           if (isolate(input$uniFacY != input$uniFacX) && isolate(input$uniVarSelect>0))
+           if (isolate(input$uniFacY != input$uniFacX) && isolate(input$uniVarSelect>0)) {
               updateFlg <<- FALSE
+           }
            updateSelectInput(session, "SelFacX", choices = l_options, selected=l_options)
            # Second Factor
            if (nchar(ui$fac2)==0) {

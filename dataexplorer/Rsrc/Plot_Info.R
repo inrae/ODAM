@@ -187,20 +187,16 @@
                checkDwn <- paste0('<input type="checkbox" id="check_',i,'" onclick="',onclickStr,'">')
                setinfo <- rbind( setinfo , c( linkSubset, .C(tsets[i,c(2:4)]), linkOnto, checkDwn ) )
            }
+           shinyjs::disable("downloadTSV")
            df <- as.data.frame(setinfo)
            names(df) <- c("Subset","Description","Identifier", "WSEntry", "CV_Term", "Export in TSV")
            df
        }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Subsets \n", e ); })
     }, options = list(searching=FALSE, paging=FALSE, lengthChange = FALSE, info = FALSE), escape=c(2:4))
 
-    output$dwnButton <- reactive({
-       input$dwnld_button
-       ret=0
-       if (nchar(input$dwnld_button)>0) ret=1
-       return(ret)
+    observeEvent ( input$dwnld_button, {
+       if (nchar(input$dwnld_button)>0) { shinyjs::enable("downloadTSV") } else { shinyjs::disable("downloadTSV") }
     })
-    outputOptions(output, 'dwnButton', suspendWhenHidden=FALSE)
-    outputOptions(output, 'dwnButton', priority=1)
 
     #----------------------------------------------------
     # Export the selected Data subsets
@@ -224,8 +220,9 @@
             }, error=function(e) { runjs(paste0("alert('intersection of the data subsets ",strNameList," seems empty');")) })
             runjs('$(\'div[name="downldButton"]\').css(\'display\',\'none\')');
             # reset selection
-            #for( i in 1:nrow(g$subsets2)) runjs(paste0('$(\'#check_',i,'\').prop(\'checked\',false)'));
-            #runjs("arrDS=Array(0); Shiny.setInputValue('dwnld_button','',{priority: 'event'});}")
+            for( i in 1:nrow(g$subsets2)) runjs(paste0('$(\'#check_',i,'\').prop(\'checked\',false)'))
+            shinyjs::disable("downloadTSV")
+            runjs("arrDS=Array(0);")
         }
     )
 

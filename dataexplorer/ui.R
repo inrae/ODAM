@@ -39,7 +39,7 @@ header <-  dashboardHeader( title = globvars$Title, disable = FALSE, # titleWidt
 )
 
 # Put the title with a URL link
-header$children[[2]]$children[[1]] <- tags$a( class="alogo", href = globvars$URL_Title, globvars$Title, target = '_blank' )
+header$children[[2]]$children[[1]] <- tags$a( class="logo alogo", href = globvars$URL_Title, globvars$Title, target = '_blank' )
 header$children[[2]]$children[[2]] <- ''
 
 ui <- dashboardPage(skin = "blue", header,

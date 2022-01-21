@@ -24,14 +24,6 @@ a {
   cursor: pointer;
 }
 
-.alogo {
-  color: brown;
-}
-
-.alogo:hover {
-  color: white;
-}
-
 #ipclient {
   display: none;
 }
@@ -83,15 +75,23 @@ a {
   color: brown;
 }
 
+.skin-blue .main-header .logo:hover {
+  background-color:brown;
+  color: white;
+}
+
+.skin-blue .main-header .logo .alogo { 
+  color: brown;
+}
+
+.skin-blue .main-header .logo .alogo:hover {
+  color: white;
+}
+
 .skin-blue .main-header .navbar .sidebar-toggle {
   background-color: white;
   font-size: 18px;
   color: brown;
-}
-
-.skin-blue .main-header .logo:hover {
-  background-color:brown;
-  color: white;
 }
 
 .skin-blue .main-header .navbar .sidebar-toggle:hover {

@@ -1,11 +1,23 @@
 
     getURLfromList <- function() {
        collection <- as.data.frame(g$dclist$list)
-       setID <- which( g$inDselect == .C(collection$datasetID) )
+       setID <- which( .C(collection$datasetID) == g$inDselect )
        urls <- .C(collection$url)
        theurl <- gv$externalURL
        if (setID>0 && !is.na(urls[setID]) && nchar(urls[setID])>0) { theurl <- urls[setID] }
        theurl
+    }
+
+    getDatasetFromCollection <- function() {
+       choices <- c()
+       if (length(which(g$dclist$list$datatype == "dataset"))>0) {
+          collect <- g$dclist$list[ g$dclist$list$datatype == "dataset", ]
+          listlabels <- collect$label
+          indx <- order(listlabels)
+          choices <- .C(collect$datasetID[indx])
+          names(choices) <- .C(listlabels[indx])
+       }
+       choices
     }
 
     # Toogle (show/hide) analysis tabs
@@ -315,13 +327,10 @@
         input$ipclient
         values$initcol
         if (nchar(input$ipclient)>0 && values$initcol==1 && ! is.null(g$dclist)) {
-            listlabels <- g$dclist$list$label
-            indx <- order(listlabels)
-            choices <- .C(g$dclist$list$datasetID[indx])
-            names(choices) <- .C(listlabels[indx])
+            choices <- getDatasetFromCollection()
+            updateSelectInput(session, "inDselect", choices = c("Select a dataset"="",choices), selected = '')
             g$inDselect <<- ''
             values$init <- 1
-            updateSelectInput(session, "inDselect", choices = c("Select a dataset"="",choices), selected = g$inDselect)
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Collection Obs:\n", e ); }) })
 
@@ -349,10 +358,7 @@
         if ( ! is.null(g$inDselect) && nchar(g$inDselect)>0 ) {
            if (ws$dsname != g$inDselect) {
               ws$dsname <<- g$inDselect
-              listlabels <- g$dclist$list$label
-              indx <- order(listlabels)
-              choices <- .C(g$dclist$list$datasetID[indx])
-              names(choices) <- .C(listlabels[indx])
+              choices <- getDatasetFromCollection()
               updateSelectInput(session, "inDselect", choices = c("Select a dataset"="",choices), selected = g$inDselect)
               runjs('window.scrollTo(0,0);')
            }

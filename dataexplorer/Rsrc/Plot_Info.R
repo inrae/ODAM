@@ -82,13 +82,14 @@
     output$out1 <- renderText({ 
        input$keyEvent
        tryCatch({
-          paste(sep = "",
+          paste(
             "protocol: ", cdata$url_protocol, "\n",
             "hostname: ", cdata$url_hostname, "\n",
             "pathname: ", cdata$url_pathname, "\n",
             "port: ",     cdata$url_port,     "\n",
             "search: ",   cdata$url_search,   "\n",
             "key press: ",input$keyEvent,     "\n",
+             sep = ""
           )
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - out1 \n", e ); })
     })
@@ -117,16 +118,23 @@
        if (nchar(input$ipclient)==0) return(NULL)
        if (nchar(ws$dcname)==0) return(NULL)
        tryCatch({ if (nchar(g$msgError)==0) {
-          collect <- as.data.frame(g$dclist$list)
-          V <- .C(collect$datasetID)
-          collect$datasetID <- sapply(V, function(ds) { 
-                   paste0("<a onclick=\"Shiny.onInputChange('inDselect','",ds,"');\">",ds,"</a>") })
           ws0 <- ws
-          collect$url <- sapply( V, function(ds) { ws0$dsname <- ds; nrow(getData(ws0)) })
-          names(collect) <- c("Dataset", "Label", "Data subsets", "Description")
+          collect <- as.data.frame(g$dclist$list)
+          # dataset
+          V1 <- .C(collect[ .C(collect$datatype) == 'dataset', ]$datasetID)
+          collect[ .C(collect$datatype) == 'dataset', ]$datasetID <- sapply(V1, function(ds) { 
+                   paste0("<a onclick=\"Shiny.onInputChange('inDselect','",ds,"');\">",ds,"</a>") })
+          collect[ .C(collect$datatype) == 'dataset', ]$url <- sapply( V1, function(ds) { ws0$dsname <- ds; nrow(getData(ws0)) })
+          # collection
+          V2 <- .C(collect[ .C(collect$datatype) == 'collection', ]$datasetID)
+          collect[ .C(collect$datatype) == 'collection', ]$datasetID <- sapply(V2, function(dc) { 
+                   paste0("<a href=\"?dc=",dc,"\" target=\"_blank\">",dc,"</a>") })
+          collect[ .C(collect$datatype) == 'collection', ]$url <- rep( '-',length(V2))
+
+          names(collect) <- c("Datatype", "Dataset", "Label", "Data subsets", "Description")
           collect
        }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - datasets \n", e ); })
-    }, options = list(searching=TRUE, paging=TRUE), escape=c(2:4))
+    }, options = list(searching=TRUE, paging=TRUE, autoWidth = TRUE), escape=c(1,3:5))
 
 
 
@@ -165,6 +173,7 @@
     #----------------------------------------------------
     output$subsets <- renderDataTable({
        values$initdss
+       shinyjs::hide("downloadTSV")
        if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({ if (nchar(g$msgError)==0) {
            if ( !is.DS(cdata) || values$init==0) return(NULL)
@@ -187,6 +196,7 @@
                checkDwn <- paste0('<input type="checkbox" id="check_',i,'" onclick="',onclickStr,'">')
                setinfo <- rbind( setinfo , c( linkSubset, .C(tsets[i,c(2:4)]), linkOnto, checkDwn ) )
            }
+           shinyjs::show("downloadTSV")
            shinyjs::disable("downloadTSV")
            df <- as.data.frame(setinfo)
            names(df) <- c("Subset","Description","Identifier", "WSEntry", "CV_Term", "Export in TSV")

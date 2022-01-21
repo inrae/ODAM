@@ -13,6 +13,7 @@ meta <- tags$head(
    tags$link(rel = "stylesheet", type = "text/css", href = paste0(globvars$theme,".css"))
 )
 
+# Busy Logo
 busyLogo <- function(busysrc, height = 30, width = 30, alt = NULL) {
   tagList(
     tags$head(
@@ -22,20 +23,26 @@ busyLogo <- function(busysrc, height = 30, width = 30, alt = NULL) {
   )
 }
 
-ui <- dashboardPage(skin = "blue",
-  dashboardHeader(title = "ODAM - Data Explorer", disable = FALSE, # titleWidth = 350, 
-         # Collection / Dataset name
-            tags$li(h2(textOutput("datasetname"), align = "center"), class = "dropdown"),
-            tags$li(img(src="img_00.gif",height = 10, width = 10), class = "dropdown"),
-         # Dataset selection
-            tags$li(selectInput("inDselect", "", c() ), class = "dropdown inDselect"),
-            tags$li(img(src="img_00.gif",height = 10, width = 5), class = "dropdown"),
-         # Data subset selection
-            tags$li(selectInput("inDSselect", "", c(), multiple = TRUE, width="600px" ), class = "dropdown inDSselect"),
-            tags$li(img(src="img_00.gif",height = 10, width = 20), class = "dropdown"),
-         # Busy logo
-            tags$li(busyLogo('busy.gif'), class = "dropdown")
-  ),
+# Dashboard Header
+header <-  dashboardHeader( title = globvars$Title, disable = FALSE, # titleWidth = 350,
+  # Collection / Dataset name
+     tags$li(h2(textOutput("datasetname"), align = "center"), class = "dropdown"),
+     tags$li(img(src="img_00.gif",height = 10, width = 10), class = "dropdown"),
+  # Dataset selection
+     tags$li(selectInput("inDselect", "", c() ), class = "dropdown inDselect"),
+     tags$li(img(src="img_00.gif",height = 10, width = 5), class = "dropdown"),
+  # Data subset selection
+     tags$li(selectInput("inDSselect", "", c(), multiple = TRUE, width="600px" ), class = "dropdown inDSselect"),
+     tags$li(img(src="img_00.gif",height = 10, width = 20), class = "dropdown"),
+  # Busy logo
+     tags$li(busyLogo('busy.gif'), class = "dropdown")
+)
+
+# Put the title with a URL link
+header$children[[2]]$children[[1]] <- tags$a( class="alogo", href = globvars$URL_Title, globvars$Title, target = '_blank' )
+header$children[[2]]$children[[2]] <- ''
+
+ui <- dashboardPage(skin = "blue", header,
 
   dashboardSidebar(
     #----------------------------------------------------

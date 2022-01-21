@@ -16,6 +16,9 @@ shinyServer(function(input, output, session) {
     source("Rsrc/Plot_MultiUni.R", local=TRUE) # Multi-Univariate
     source("Rsrc/Plot_Multi.R", local=TRUE)    # Multivariate
 
+    # Put the rigth title
+    runjs(paste0("document.title = '",gv$Title,"';"))
+
     # Reactive values for error management
     ERROR <- reactiveValues(MsgErrorMain='', MsgErrorInfo='',  MsgErrorUni='', MsgErrorBi='', 
                             MsgErrorMuni='', MsgErrorMulti='', MsgErrorAbout='' )

@@ -24,6 +24,11 @@ globvars <- list(
 
   odamdoc_url = 'https://inrae.github.io/ODAM/',
 
+  # Title & URL
+  Title = conf$TITLE,
+  URL_Title = conf$URL_TITLE,
+
+  # Version
   idVersion = conf$VERSION,
 
   # API URL

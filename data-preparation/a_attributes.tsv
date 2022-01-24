@@ -1,0 +1,6 @@
+subset	attribute	entry	category	type	description	CV_term_id	CV_term_name
+collection	datatype	datatype	qualitative	string	Data type	http://semanticscience.org/resource/SIO_000089	dataset
+collection	datasetID	dataset	identifier	string	Dataset name	http://semanticscience.org/resource/SIO_000089	dataset
+collection	label	label	qualitative	string	Dataset lable	http://semanticscience.org/resource/SIO_000179	label
+collection	url		qualitative	string	Dataset URL	http://edamontology.org/data_1052	URL
+collection	description		qualitative	string	Dataset description	http://semanticscience.org/resource/SIO_000136	description

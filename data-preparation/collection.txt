@@ -1,0 +1,6 @@
+datatype	datasetID	label	url	description
+collection	collection1	My collection 1		Short description of the collection 1
+collection	collection2	My collection 1		Short description of the collection 2
+dataset	dataset1	My dataset 1		Short description of the dataset 1
+dataset	dataset2	My datatset2		Short description of the dataset 2
+dataset	dataset3	My dataset 3		Short description of the dataset 3

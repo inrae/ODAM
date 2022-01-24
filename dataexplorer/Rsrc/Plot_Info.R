@@ -101,9 +101,9 @@
     #----------------------------------------------------
     output$colinfos <- renderText({
        values$initcol
-       input$inDselect
        if (nchar(input$ipclient)==0) return(NULL)
        if (nchar(ws$dcname)==0) return(NULL)
+       if (nchar(ws$dcname)==1) return(NULL)
        tryCatch({
           getInfosToHTML(ws,1)
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - Collection info \n", e ); })
@@ -117,6 +117,7 @@
        values$init
        if (nchar(input$ipclient)==0) return(NULL)
        if (nchar(ws$dcname)==0) return(NULL)
+       if (nchar(ws$dcname)==1) return(NULL)
        tryCatch({ if (nchar(g$msgError)==0) {
           ws0 <- ws
           collect <- as.data.frame(g$dclist$list)
@@ -147,7 +148,7 @@
        input$inDselect
        if (nchar(input$ipclient)==0) return(NULL)
        tryCatch({
-          getInfosToHTML(ws,0) 
+          getInfosToHTML(ws,0)
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - Data info \n", e ); })
     })
 

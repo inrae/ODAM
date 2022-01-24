@@ -52,7 +52,7 @@ ui <- dashboardPage(skin = "blue", header,
         sidebarMenu(
             id="IdMenu",
             menuItem("Collection",   tabName = "collection",   icon = icon("eye")),
-            menuItem("Subset information",   tabName = "information",   icon = icon("eye")),
+            menuItem("Dataset information",   tabName = "information",   icon = icon("eye")),
             menuItem("Data graph & intersection",   tabName = "intersection",   icon = icon("bar-chart")),
             menuItem("Data Table",   tabName = "datatable",   icon = icon("bar-chart")),
             menuItem("Univariate",   tabName = "univariate",   icon = icon("bar-chart")),

@@ -1,5 +1,6 @@
 
-    getURLfromList <- function() {
+    getURLfromList <- function()
+    {
        collection <- as.data.frame(g$dclist$list)
        setID <- which( .C(collection$datasetID) == g$inDselect )
        urls <- .C(collection$url)
@@ -8,7 +9,8 @@
        theurl
     }
 
-    getDatasetFromCollection <- function() {
+    getDatasetFromCollection <- function()
+    {
        choices <- c()
        if (length(which(g$dclist$list$datatype == "dataset"))>0) {
           collect <- g$dclist$list[ g$dclist$list$datatype == "dataset", ]
@@ -32,7 +34,8 @@
     }
 
     # Toogle (show/hide) some UI elements
-    toggleTab <- function(opt) {
+    toggleTab <- function(opt)
+    {
        if (opt==0) { # About only
           isolate({updateTabItems(session, "IdMenu", "about")})
           runjs('$(".box-header").css("display", "none");')
@@ -78,7 +81,8 @@
     #----------------------------------------------------
     # Modal dialog UI for global parameters
     #----------------------------------------------------
-    gparamsModal <- function() {
+    gparamsModal <- function()
+    {
       modalDialog(
         tags$table(
           tags$tr(tags$td(tags$strong("Global parameters"))), tags$tr(tags$td(tags$hr())),
@@ -115,7 +119,8 @@
     #----------------------------------------------------
     # Modal dialog UI for Packages information
     #----------------------------------------------------
-    sessInfoModal <- function() {
+    sessInfoModal <- function()
+    {
       modalDialog({
           V <- sessionInfo();
           p <- ls(V$loadedOnly)
@@ -158,7 +163,8 @@
     #----------------------------------------------------
     # Modal dialog UI for API Key
     #----------------------------------------------------
-    apiKeyModal <- function(failed = FALSE) {
+    apiKeyModal <- function(failed = FALSE)
+    {
       addCssClass(selector = "a[data-value='intersection']", class = "inactiveItem")
       modalDialog(
         tags$table(tags$tr( 
@@ -354,6 +360,7 @@
         values$initds
         if (! is.null(input$inDselect) && nchar(input$inDselect)>0 && g$inDselect != input$inDselect) {
            g$inDselect <<- input$inDselect
+           g$msgError <<- ''
         }
         if ( ! is.null(g$inDselect) && nchar(g$inDselect)>0 ) {
            if (ws$dsname != g$inDselect) {

@@ -671,7 +671,14 @@
 <p>A collection in the sense of ODAM is a set of datasets. The link between datasets can be very varied, either a project, a theme, or anything else. For example, if you have produced several datasets within the same project, it can be interesting to manage them by creating a link between them. This link is precisely what in ODAM we call a collection.</p>
 <p>In ODAM, a collection has exactly the same structure as a dataset, i.e. there are data files (only one in fact) and the two metadata files (s_subsets.tsv &amp; a_attributes.tsv) previously described in the main section (see <a href="../#2-data-structure-and-organization">Data preparation</a>). By keeping the same structure as a dataset, it means that we can use the same API for both a collection and a datatset.</p>
 <p>You can see <a href="https://pmb-bordeaux.fr/dataexplorer/?dc=Frimouss" target="_blank">an example of a collection</a> accessible online via the data explorer.</p>
-<p><br></p>
+<p><strong>Remarks</strong>:</p>
+<ul>
+<li>You can not only manage collections of datsets but also collections of collections and thus manage a hierarchy in your datasets.</li>
+<li>A dataset or collection can be declared as a member of several collections.</li>
+</ul>
+<p><center>
+<a href="../../images/media/Image16.png" data-lightbox="Img16"><img src="../../images/media/Image16.png" width="500px"></a>
+</center><br><br></p>
 <h3 id="content-of-the-collection">Content of the collection<a class="headerlink" href="#content-of-the-collection" title="Permanent link">&para;</a></h3>
 <p>only one file is used to describe the content of the collection. Here is its structure :</p>
 <p><br></p>
@@ -705,13 +712,7 @@
 <li>the allowed characters are: 0-9 a-z A-Z , : + * () [] {} - % ! | / . ?</li>
 </ul>
 <p></font></p>
-<p><br></p>
-<p><strong>Remarks</strong>:</p>
-<ul>
-<li>You can not only manage collections of datsets but also collections of collections and thus manage a hierarchy in your datasets.</li>
-<li>A dataset or collection can be declared as a member of several collections.</li>
-</ul>
-<p><br></p>
+<p><br><br></p>
 <h3 id="metadata-of-the-collection">Metadata of the collection<a class="headerlink" href="#metadata-of-the-collection" title="Permanent link">&para;</a></h3>
 <p>In addition to the file describing the content of the collection, it is necessary, as with any ODAM dataset, to attach the two metadata files previously described in the main section, namely <strong>s_subsets.tsv</strong> and <strong>a_attributes.tsv</strong> (see <a href="../#2-data-structure-and-organization">Data preparation</a>). The difference is that for a collection these two files are already predefined for any collection and very little modification is required.</p>
 <h4 id="s_subsetstsv">s_subsets.tsv<a class="headerlink" href="#s_subsetstsv" title="Permanent link">&para;</a></h4>

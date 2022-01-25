@@ -39,7 +39,7 @@
 * Management of large data tables in the data explorer
     * When loading, keep only the first variables within the maximum allowed (1000 by default).
     * Thus just put the most significant and/or interesting variables first in the attributes table.
-    * Creation of the script to sort the variables in the file a_attributes.tsv according to their significance
+    * Creation of the script to sort the variables in the file a_attributes.tsv according to their significance (see scripts/odam_reorder_vars.R)
 
 * Numerous improvements / corrections
     * Numerical Identifiers & Numerical  factors better managed

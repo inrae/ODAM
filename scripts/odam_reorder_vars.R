@@ -31,14 +31,14 @@
 
 # source("C:/Workdir/Projects/dataexplorer/Rscripts/odam_reorder_vars.R")
 
-# odam_reorder_vars('metabofla1', 'NMR_buckets', 'taratata')
-# odam_reorder_vars('metabofla1', 'NMR_buckets', 'taratata', opt=list(selvars=150))
+# odam_reorder_vars('metabofla1', 'NMR_buckets')
+# odam_reorder_vars('metabofla1', 'NMR_buckets', opt=list(selvars=150))
 
-# odam_reorder_vars('Atacama', 'lcms_esi_neg', 'taratata')
-# odam_reorder_vars('Atacama', 'lcms_esi_pos', 'taratata')
+# odam_reorder_vars('Atacama', 'lcms_esi_neg')
+# odam_reorder_vars('Atacama', 'lcms_esi_pos')
 
 # -- Example with messages ---
-## > system.time( odam_reorder_vars('metabofla1', 'NMR_buckets', 'taratata', opt=list(selvars=150)) )
+## > system.time( odam_reorder_vars('metabofla1', 'NMR_buckets', opt=list(selvars=150)) )
 ## Initialize the 'ODAM' object ...OK
 ## Get data subset NMR_buckets ...OK 284 variables
 ## Compute ANOVA for each factor: Cultivar Leaf_position_status Plant_Response Infected_insect FactorialGroup OK

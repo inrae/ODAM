@@ -56,4 +56,7 @@
 * Adding an authorization mechanism by key, possibly associated with an IP number.
     * Parametrization within a file authkeys.tsv to be added in the dataset directory
 
+* API with XML format - XSLT transformation: 
+    * Merge the two columns "CV_Term_Name" and "CV_Term_ID" into one 'CV_Term' with a link : <a href="CV_Term_ID">CV_Term_name</>
+
 * Upgrade to PHP 7.2

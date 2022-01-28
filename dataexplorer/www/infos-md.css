@@ -1,25 +1,25 @@
-h1 {
+.infos h1 {
   color: #3c8dbc;
   max-width: 1000px;
 }
 
-h2 {
+.infos h2 {
   color: brown;
   max-width: 1000px;
 }
 
-h3 {
+.infos h3 {
   color: brown;
   max-width: 1000px;
 }
 
-h4 {
+.infos h4 {
   color: #353d41;
   font-weight: bold;
   max-width: 1000px;
 }
 
-p {
+.infos p {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, freesans, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
@@ -32,4 +32,10 @@ p {
   box-sizing: border-box;
   margin-left: 20px;
   margin-right: auto;
+}
+
+.infos ul li {
+  font-size: 14px;
+  line-height: 1.6;
+  max-width: 1000px;
 }

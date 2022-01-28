@@ -448,12 +448,14 @@ getLabels <- function() {
 # Get 'about.md' content and transforme it to HTML
 getAboutToHTML <- function()
 {
-    markdownToHTML(text=getAbout(), fragment.only = TRUE, title = "", 
-         options = c("use_xhtml", "smartypants", "base64_images", "mathjax", "highlight_code" ),
-         extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", 
-                         "strikethrough", "lax_spacing", "space_headers", "superscript", "latex_math"),
-         encoding = c("latin1")
+    out <- markdownToHTML(text=getAbout(), fragment.only = FALSE, title = "", 
+       options = c("use_xhtml", "smartypants", "base64_images", "mathjax", "highlight_code" ),
+       stylesheet = file.path(getwd(),'www/infos-md.css'),
+       extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", 
+                      "strikethrough", "lax_spacing", "space_headers", "superscript", "latex_math"),
+       encoding = c("latin1")
     )
+    gsub('</body>',' </div></body>', gsub('<body>', '<body><div class=\"infos\">', out))
 }
 
 # Get 'infos.md' content and transforme it to HTML
@@ -465,10 +467,11 @@ getInfosToHTML <- function(ws, dcol=0)
       T <- paste('##',g$msgError)
    }
    out <- markdownToHTML(text=T, fragment.only = FALSE,  title = "", 
-            options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
-         stylesheet = file.path(getwd(),'www/infos-md.css'),
-         extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
-                       'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
+             options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
+             stylesheet = file.path(getwd(),'www/infos-md.css'),
+             extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
+                           'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
+   out <- gsub('</body>',' </div></body>', gsub('<body>', '<body><div class=\"infos\">', out))
    gsub('href=', 'target="_blank" href=', out)
 }
 

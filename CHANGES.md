@@ -46,7 +46,7 @@
     * Addition of the type of correlation in Multivariate / Correlation
     * Addition of polygons encirclement for PCA/ICA/t-SNE
 
-* Add a CSS file (www/info-md.css) dedicated to the formatting of dataset information (infos.md)
+* Added the possibility to format the datasets information page (infos.md) with a specific CSS file.
 
 * Upgrade to R 4.0
 

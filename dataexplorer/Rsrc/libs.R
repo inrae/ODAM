@@ -450,7 +450,7 @@ getAboutToHTML <- function()
 {
     out <- markdownToHTML(text=getAbout(), fragment.only = FALSE, title = "", 
        options = c("use_xhtml", "smartypants", "base64_images", "mathjax", "highlight_code" ),
-       stylesheet = file.path(getwd(),'www/infos-md.css'),
+       stylesheet = file.path(getwd(),'www/css/infos-md.css'),
        extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", 
                       "strikethrough", "lax_spacing", "space_headers", "superscript", "latex_math"),
        encoding = c("latin1")
@@ -468,7 +468,7 @@ getInfosToHTML <- function(ws, dcol=0)
    }
    out <- markdownToHTML(text=T, fragment.only = FALSE,  title = "", 
              options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
-             stylesheet = file.path(getwd(),'www/infos-md.css'),
+             stylesheet = file.path(getwd(),'www/css/infos-md.css'),
              extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
                            'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
    out <- gsub('</body>',' </div></body>', gsub('<body>', '<body><div class=\"infos\">', out))
@@ -487,9 +487,9 @@ getMetadataLinksAsTable <- function(ws)
   hrefA <- paste0('<a href="',gv$odamdoc_url,'data-preparation/#a_attributestsv" target="_blank">Data Preparation Protocol - Attributes</a>')
   hrefJ <- paste0('<a href="',gv$odamdoc_url,'json-schema/" target="_blank">ODAM datapackage based on JSON-Schema</a>')
 
-  button1 <- as.character(actionButton('button_1', label = "TSV", class="btn-dt",
+  button1 <- as.character(actionButton('button_1', label = "TSV", icon = icon("download"), class="btn-dt",
                           onclick = paste0('window.open(\"',ws$apiurl,'query/',ws$dsname,'?format=tsv\", \"_blank\");' )))
-  button2 <- as.character(actionButton('button_2', label = "TSV", class="btn-dt",
+  button2 <- as.character(actionButton('button_2', label = "TSV", icon = icon("download"), class="btn-dt",
                           onclick = paste0('window.open(\"',ws$apiurl,'query/',ws$dsname,'/metadata/?format=tsv\", \"_blank\");' )))
 
   df <- data.frame(rbind( c(href1, 'All metadata related to data subsets', hrefS, button1),

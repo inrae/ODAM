@@ -46,6 +46,8 @@
     * Addition of the type of correlation in Multivariate / Correlation
     * Addition of polygons encirclement for PCA/ICA/t-SNE
 
+* Add a CSS file (www/info-md.css) dedicated to the formatting of dataset information (infos.md)
+
 * Upgrade to R 4.0
 
 ### API getdata v1.4 (Nov 2021)

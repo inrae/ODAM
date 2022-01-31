@@ -55,6 +55,8 @@ RUN R -e "install.packages(c('svglite', 'JADE'), repos='http://cran.rstudio.com/
  
 RUN R -e "install.packages('ggvenn', repos='http://cran.rstudio.com/')"
 
+RUN apt-get update && apt-get install -y  r-cran-ppcor
+
 ADD ./ /srv/shiny-server
 
 RUN rm -rf /var/lib/apt/lists/* && \ 

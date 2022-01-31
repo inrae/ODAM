@@ -91,6 +91,9 @@
               numericInput("maxVariables", NULL, gv$maxVariables, min = 100, max = 1000, step=100))),
           tags$tr(tags$td(width="400px",
               checkboxInput('subsetVars', 'Keep only the first variables limited to the maximum allowed in case of greater size', gv$subsetVars))),
+          tags$tr(tags$td(width="400px", tags$strong("Nb max variables for COR && GGM analyses"))),
+          tags$tr(tags$td(
+              numericInput("max_multivars", NULL, gv$max_multivars, min = 10, max = 200, step=50))),
           tags$tr(tags$td(
               numericInput("msmaxnbopt", "Nb max items when multiselect", gv$nbopt_multiselect, min = 10, max = 1000, step=50))),
           tags$tr(tags$td(checkboxInput("saveplots", "Save plots (GGM & COR)", gv$saveplots)))
@@ -104,6 +107,7 @@
     # When OK button is pressed, affects the global variables
     observeEvent(input$okgparams, {
         gv$maxVariables <<- input$maxVariables
+        gv$max_multivars <<- input$max_multivars
         gv$subsetVars <<- input$subsetVars
         gv$nbopt_multiselect <<- input$msmaxnbopt
         gv$saveplots <<- input$saveplots
@@ -494,15 +498,3 @@
     })
     outputOptions(output, 'nbvarsEvent', suspendWhenHidden=FALSE)
     outputOptions(output, 'nbvarsEvent', priority=1)
-
-    output$nbvarsEvent2 <- reactive({
-        input$inDselect
-        values$launch
-        ret <- 0
-        if (values$launch>0) {
-           if (nrow(g$varnames)>gv$max_multivars) ret <- 1
-        }
-        return(ret)
-    })
-    outputOptions(output, 'nbvarsEvent2', suspendWhenHidden=FALSE)
-    outputOptions(output, 'nbvarsEvent2', priority=1)

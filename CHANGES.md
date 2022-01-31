@@ -31,6 +31,12 @@
     * t-SNE: "r t-sne plot"
         * Added in the "Mutivariate" section
 
+    * HeatMap && GGM
+       * limitation to 150 variables based on the most significant correlations 
+
+    * Graphes
+       * Add partial correlations as a graph
+
 * Intersection between data subsets
     * Integration of the UpSetR tool
     * Either For all data subsets (UpSetR tool)

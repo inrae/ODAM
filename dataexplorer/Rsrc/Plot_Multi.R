@@ -17,7 +17,7 @@
            v_options <- c('PCA','ICA','TSNE','COR','GGM')
            names(v_options) <- c("Principal Component Analysis (PCA)", "Independent Component Analysis (ICA)",
                                  "t-Distributed Stochastic Neighbor Embedding (t-SNE)",
-                                 "Heatmap of correlation matrix (COR)", "Gaussian graphical model (GGM)")
+                                 "Heatmap of correlation matrix (COR)", "Partial correlation (PCOR) / Gaussian graphical model (GGM)")
            updateSelectInput(session, "multiType", choices = v_options,  selected=ui$type)
            values$multitype <- ui$type
            ui$type <<- ''
@@ -282,15 +282,22 @@
            if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
                selectFCOL <- c()
            }
+           if (length(input$listVars)>0) { 
+               listVars <- input$listVars
+           } else {
+               listVars <- g$varnames
+           }
            multiType <- values$multitype
+           values$infomulti <<- FALSE
+           shinyjs::enable("listVars")
            withProgress(message = paste0(values$multitype,' Calculation in progress'), detail = '... ', value = 0, {
                tryCatch({
                if (values$multitype %in% c('PCA','ICA'))
-                  getMultiPlot(multiType, F1, FL, FCOL, selectFCOL, .C(input$listVars), outputVariables=outputVariables,
+                  getMultiPlot(multiType, F1, FL, FCOL, selectFCOL, .C(listVars), outputVariables=outputVariables,
                                fellipse=input$ellipse, scale=input$scale, blabels=input$multiLabels, slabels=input$shortLabels,
                                f3D=input$f3D, conflevel=as.numeric(input$conflevel), ps=as.numeric(input$ptsize))
                else
-                  getTSNEPlot(multiType, F1, FL, FCOL, selectFCOL, .C(input$listVars), outputVariables=outputVariables,
+                  getTSNEPlot(multiType, F1, FL, FCOL, selectFCOL, .C(listVars), outputVariables=outputVariables,
                                fellipse=input$ellipse, scale=input$scale, perplexity=input$perplexity, blabels=input$multiLabels,
                                f3D=input$f3D, conflevel=as.numeric(input$conflevel), ps=as.numeric(input$ptsize))
                }, error=function(e) { ERROR$MsgErrorMulti <- paste("getMultiPlot :\n", e ); })
@@ -524,6 +531,32 @@
 
 #===================================================================================
 
+    getThreshold <- function(M, NMAX)
+    {
+        if (! c('matrix') %in% class(M) ) M <- as.matrix(M)
+        diag(M) <- 0
+        V <- simplify2array(as.list(abs(M)))
+        cormax <- max(V[ V>0 ])
+        cormin <- min(V[ V>0 ])
+
+        fcrit <- function(threshold, M) {
+          M[ abs(M)<threshold ] <- 0
+          nbvars <- sum(apply(M, 2, function(v) { sum(abs(v)>0) })>0)
+          abs(nbvars - NMAX)/NMAX
+        }
+        best <- stats::optimize(fcrit, interval = c(cormin, cormax), maximum = FALSE, M=M)
+        best$minimum
+    }
+
+    getSelectVars <- function(M, threshold)
+    {
+        if (! c('matrix') %in% class(M) ) M <- as.matrix(M)
+        diag(M) <- 0
+        M[ abs(M)<threshold ] <- 0
+        vars <- colnames(M)[ which( apply(M, 2, function(v) { sum(abs(v)>0) })>0 ) ]
+    }
+
+#===================================================================================
 
     #----------------------------------------------------
     # renderUI - Multivariate : COR
@@ -535,7 +568,6 @@
            if (values$launch==0) return(NULL)
            if (! values$multitype %in% c('COR')) return(NULL)
            if (! values$outtype %in% c('VARS')) return(NULL)
-           if (nrow(g$varnames)>gv$max_multivars) return(NULL)
            input$listVars
            input$listLevels
            input$listFeatures
@@ -547,10 +579,17 @@
            if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
                selectFCOL <- c()
            }
+           if (length(input$listVars)>0) { 
+               listVars <- input$listVars
+           } else {
+               listVars <- g$varnames
+           }
+           shinyjs::enable("listVars")
+
            imgObj <- NULL
            withProgress(message = 'CORR Calculation in progress', detail = '... ', value = 0, {
                tryCatch({
-                  imgObj <- getCorrPlot(F1, selectLevels=FL, FCOL=FCOL, selectFCOL=selectFCOL, selectVars=.C(input$listVars),
+                  imgObj <- getCorrPlot(F1, selectLevels=FL, FCOL=FCOL, selectFCOL=selectFCOL, selectVars=.C(listVars),
                              methcor=input$methcor, blog=input$multiLog, full=input$fullmatcor, reorder=input$reordermatcor)
                }, error=function(e) { ERROR$MsgErrorMulti <- paste("getCorrPlot :\n", e ); })
            })
@@ -571,18 +610,30 @@
         ## Correlation
         methcor <- ifelse(!methcor %in% c("pearson","kendall","spearman"), "pearson", methcor)
         cormat <- round(cor(x, method=methcor),2)
+
+        # If number of variables are greater than the limit then apply a threshold on the correlation matrix
+        values$infomulti <<- FALSE
+        if (nrow(g$varnames)>gv$max_multivars) {
+            threshold <- getThreshold(cormat, gv$max_multivars)
+            vars <- getSelectVars( cormat, threshold )
+            cormat <- cormat[ vars, vars ]
+            g$selvars <<- vars; g$threshold <<- threshold
+            values$infomulti <<- TRUE
+        }
+
         ## Reorder by clustering
         if (reorder) {
            dd <- as.dist((1-cormat)/2)
            hc <- hclust(dd)
            cormat <-cormat[hc$order, hc$order]
         }
+
         if (!full) cormat[lower.tri(cormat)]<- NA
         melted_cormat <- melt(cormat, na.rm = TRUE)
 
         ##  Coloring the axis tick text by multiple colors - Seems not working with the R plotly package
         ## https://stackoverflow.com/questions/57486547/coloring-the-axis-tick-text-by-multiple-colors/58643916#58643916
-        labcolors <- rep('black', length(o$variables))
+        labcolors <- rep('black', length(rownames(cormat)))
         dsSel <- names(g$varsBySubset)
         if (length(dsSel)>1) {
             cols <- c('red','blue','orange','magenta','brown')
@@ -639,12 +690,13 @@
         input$multiFacX,
         input$listFeatures,
         input$listLevels,
-        input$listVars
+        input$listVars,
+        input$ggmType,
+        input$methpcor
     ),{ tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
            if (values$launch==0) return(NULL)
            if (values$multitype != 'GGM') return(NULL)
            if (values$outtype != 'VARS') return(NULL)
-           if (nrow(g$varnames)>gv$max_multivars) return(NULL)
            FA <- .C(isolate(input$multiAnnot))
            F1 <- .C(isolate(input$multiFacX))
            FL <- .C(input$listLevels)
@@ -653,31 +705,57 @@
            if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
                selectFCOL <- c()
            }
-           withProgress(message = 'GGM Calculation in progress', detail = '... ', value = 0, {
+           if (length(input$listVars)>0) { 
+               listVars <- input$listVars
+           } else {
+               listVars <- g$varnames
+           }
+           shinyjs::enable("listVars")
+
+           withProgress(message = 'GGM/PCOR Calculation in progress', detail = '... ', value = 0, {
               tryCatch({
                  ## Metadata preparation / Data extraction
-                 o <- getDataMulti(F1, FL, FCOL, selectFCOL, .C(input$listVars), scale=TRUE)
+                 o <- getDataMulti(F1, FL, FCOL, selectFCOL, .C(listVars), scale=TRUE)
                  X <- unique( as.matrix(o$subdata[, o$variables]) )
+
+                 # If number of variables are greater than the limit then select variables based on correlation before
+                 values$infomulti <<- FALSE
+                 if (nrow(g$varnames)>gv$max_multivars) {
+                     method <- ifelse( input$ggmType=="PCOR", input$methpcor, 'pearson' )
+                     cormat <- round(cor(X, method=method),2)
+                     threshold <- getThreshold(cormat, gv$max_multivars)
+                     vars <- getSelectVars( cormat, threshold )
+                     X <- X[, vars]
+                     g$selvars <<- vars; g$threshold <<- threshold
+                     values$infomulti <<- TRUE
+                 }
+
                  if (input$multiLog) X <- log10(abs(X)+gv$pseudo_zero)*sign(X)
                  n <- nrow(X)
                  p <- ncol(X)
 
-                 # Depending on shrink mode, check/estimate  shrinkage intensity lambda
-                 lambda <- input$lambda
-                 if (input$shrinkauto>0 || lambda<0) {
-                     lambda<-sqrt(2*log(p/sqrt(n))/n)
+                 if( input$ggmType=='GGM') {
+                     # Depending on shrink mode, check/estimate  shrinkage intensity lambda
+                     lambda <- input$lambda
+                     if (input$shrinkauto>0 || lambda<0) {
+                         lambda<-sqrt(2*log(p/sqrt(n))/n)
+                     }
+                     setThreadOptions(numThreads = 4)
+                     out <- FastGGM::FastGGM_Parallel(X, lambda)
+                     R <-  out$partialCor
+                     p.values <- out$p_partialCor
+                 } else {
+                     PCOR <- ppcor::pcor(X, method=input$methpcor)
+                     mcor <- PCOR$estimate
+                     R <- as.matrix(mcor)
+                     p.values <- 2 * pnorm(-abs(PCOR$statistic))
                  }
 
-                 library(RcppParallel)
-                 setThreadOptions(numThreads = 4)
-                 out <- FastGGM::FastGGM_Parallel(X, lambda)
-
-                 R <-  out$partialCor
                  colnames(R) <- colnames(X)
                  rownames(R) <- colnames(X)
 
                  # Adjust pvalues
-                 P <- p.adjust(out$p_partialCor,method = 'fdr')
+                 P <- p.adjust(p.values,method = 'fdr')
                  Pm <- matrix(data=P,nrow=nrow(R),ncol=ncol(R),byrow=TRUE)
                  colnames(Pm) <- colnames(X)
                  rownames(Pm) <- colnames(X)
@@ -717,7 +795,6 @@
            if (values$launch==0) return(NULL)
            if (values$multitype != 'GGM') return(NULL)
            if (values$outtype != 'VARS') return(NULL)
-           if (nrow(g$varnames)>gv$max_multivars) return(NULL)
            values$netData
            input$gravite
            netData <- values$netData
@@ -770,10 +847,23 @@
           if ( values$launch==0 ) return(NULL)
           if ( ! values$multitype %in% c('COR','GGM') ) return(NULL)
           if ( ! gv$saveplots) return(NULL)
-          #if (! file.exists(file.path(SESSTMPDIR,outfiles[[values$multitype]])) ) return(NULL)
           myurl <- paste0(cdata$url_protocol,'//',cdata$url_hostname,cdata$url_pathname,'tmp/',SESSID,'/', outfiles[[values$multitype]])
           HTML( paste0('<center>',a(href=myurl,"Open in new Tab",target="_blank"),'</center>') )
-       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - urlimage \n", e ); })
+       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderUI - urlimage \n", e ); })
     })
 
+    output$infomulti <- renderUI ({
+       tryCatch({
+          if ( values$launch==0 ) return(NULL)
+          if ( ! values$multitype %in% c('COR','GGM') ) return(NULL)
+          if (values$infomulti) {
+              shinyjs::disable("listVars")
+              HTML( paste("<b>Note</b>: Number of selected variables =", length(g$selvars),
+                          " based on correlation threshold =", round(g$threshold,4),"<br><br>") )
+          } else {
+              shinyjs::enable("listVars")
+              HTML("<br><br>")
+          }
+       }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderUI - infomulti \n", e ); })
+    })
 

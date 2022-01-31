@@ -280,21 +280,28 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
          column(4,
               selectInput("multiFacX", "Factor for highlighting the classification", c() ),
               conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA' || input.multiType=='TSNE'",
-              column(12,
-                   column(6, selectInput("ellipse", NULL, c("No contour"="none", "Ellipses"="ellipse", "Polygons"="polygon"), selected="none")),
-                   conditionalPanel(condition="input.ellipse=='ellipse'",
+                 column(12,
+                     column(6, selectInput("ellipse", NULL, c("No contour"="none", "Ellipses"="ellipse", "Polygons"="polygon"), selected="none")),
+                     conditionalPanel(condition="input.ellipse=='ellipse'",
                        column(6, selectInput("conflevel", NULL, c("0.8"="0.8", "0.9"="0.9", "0.95"="0.95", "0.99"="0.99"), selected="0.95" ))
-                   )
+                     )
+                 ),
+                 selectInput("listLevels", "Select Factor Levels", c(), multiple = TRUE, , selectize=TRUE )
               ),
-              selectInput("listLevels", "Select Factor Levels", c(), multiple = TRUE, , selectize=TRUE )
-         )),
+              conditionalPanel(condition="input.multiType=='GGM'",
+                 column(6, selectInput("ggmType", NULL, c("Gaussian graphical model" = "GGM", "Partial Correlation" = "PCOR"), , selected = "PCOR")),
+                 conditionalPanel(condition="input.ggmType=='PCOR'",
+                    column(6, selectInput("methpcor", NULL, c("Pearson"="pearson", "Spearman"="spearman"), selected="pearson" ))
+                 )
+              )
+         ),
          column(4,
               selectInput("multiType", "Analysis Type", 
                      c("----"="None"  , "Principal Component Analysis (PCA)" = "PCA" 
                                       , "Independent Component Analysis (ICA)" = "ICA" 
                                       , "t-Distributed Stochastic Neighbor Embedding (t-SNE)" = "TSNE"
                                       , "Heatmap of correlation matrix (COR)" = "COR" 
-                                      , "Gaussian graphical model (GGM)" = "GGM"
+                                      , "Partial correlation (PCOR) / Gaussian graphical model (GGM)" = "GGM"
                                       ), selected = "None"),
       
               conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA' || input.multiType=='TSNE'",
@@ -320,7 +327,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
                    column(12,
                        column(2,  HTML('<b>Correlation type</b>')),
                        column(4,
-                            selectInput("methcor", NULL, c("Pearson"="pearson", "Spearman"="spearman", "Kendall"="kendall", selected="pearson" ))
+                            selectInput("methcor", NULL, c("Pearson"="pearson", "Spearman"="spearman", "Kendall"="kendall"), selected="pearson" )
                        )
                    )
               ),
@@ -350,7 +357,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
                   column(4, checkboxInput('fullmatcor', 'Full Matrix', TRUE)),
                   column(4, checkboxInput('reordermatcor', 'Reorder Matrix', TRUE))
               ),
-              conditionalPanel(condition="input.multiType=='GGM'",
+              conditionalPanel(condition="input.multiType=='GGM' && input.ggmType=='GGM'",
                  column(4, checkboxInput('shrinkauto', 'Shrinkage Auto', TRUE)),
                  column(4, conditionalPanel(condition="input.shrinkauto==0", 
                        numericInput("lambda", NULL, 0.3, min = 0.0001, max = 1, step=0.1)
@@ -363,13 +370,6 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
       )),
       # PLOTS
       column(12,
-        conditionalPanel(
-            condition="output.nbvarsEvent2==1 && (input.multiType=='GGM' || input.multiType=='COR')", 
-                   h3(tags$img(height = 50, width = 50, src = "https://www.freeiconspng.com/uploads/status-warning-icon-png-29.png"),
-                      em("Too many variables for an understandable graph!"),br(),br(),
-                      em("Either upload the data subset or use the Rodam package (see 'About' tab)"),
-                      style = "color:#bf6f85")
-         ),
          conditionalPanel(condition="input.multiType != 'None' && input.outType != 'None' && input.listVars[2]", 
             conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA' || input.multiType=='TSNE'", 
                     plotlyOutput("MultiPlot", height="600px") %>% withSpinner(color="brown")),
@@ -377,7 +377,8 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
                     imageOutput("CorrPlot", height="600px") %>% withSpinner(color="brown")),
             conditionalPanel(condition="input.multiType=='GGM'", 
                     forceNetworkOutput("ggmnet", width="85%", height="800px") %>% withSpinner(color="brown")),
-            uiOutput('urlimage')
+            uiOutput('urlimage'),
+            uiOutput('infomulti'),
          )
       ),
       column(12, p("")),

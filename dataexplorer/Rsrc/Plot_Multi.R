@@ -676,7 +676,7 @@
 #===================================================================================
 
     #----------------------------------------------------
-    # GGM
+    # GGM / PCOR
     #----------------------------------------------------
     observeEvent(c(
         values$launch,
@@ -711,31 +711,37 @@
                listVars <- g$varnames
            }
            shinyjs::enable("listVars")
+           values$netData <<- NULL
+           values$infomulti <<- FALSE
+
+           # Metadata preparation / Data extraction
+           o <- getDataMulti(F1, FL, FCOL, selectFCOL, .C(listVars), scale=TRUE)
+           X <- unique( as.matrix(o$subdata[, o$variables]) )
+
+           # If number of variables are greater than the limit then select variables based on correlation before
+           g$selvars <<- c(g$varnames$Attribute)
+           if (nrow(g$varnames)>gv$max_multivars) {
+               method <- ifelse( input$ggmType=="PCOR", input$methpcor, 'pearson' )
+               cormat <- round(cor(X, method=method),2)
+               threshold <- getThreshold(cormat, gv$max_multivars)
+               vars <- getSelectVars( cormat, threshold )
+               X <- X[, vars]
+               g$selvars <<- vars; g$threshold <<- threshold
+               values$infomulti <<- TRUE
+           }
+           if (input$ggmType=='PCOR' && length(g$selvars)>nrow(g$data)) {
+               if (length(g$selvars)<nrow(g$varnames)) values$infomulti <<- TRUE
+               return(NULL)
+           }
 
            withProgress(message = 'GGM/PCOR Calculation in progress', detail = '... ', value = 0, {
               tryCatch({
-                 ## Metadata preparation / Data extraction
-                 o <- getDataMulti(F1, FL, FCOL, selectFCOL, .C(listVars), scale=TRUE)
-                 X <- unique( as.matrix(o$subdata[, o$variables]) )
-
-                 # If number of variables are greater than the limit then select variables based on correlation before
-                 values$infomulti <<- FALSE
-                 if (nrow(g$varnames)>gv$max_multivars) {
-                     method <- ifelse( input$ggmType=="PCOR", input$methpcor, 'pearson' )
-                     cormat <- round(cor(X, method=method),2)
-                     threshold <- getThreshold(cormat, gv$max_multivars)
-                     vars <- getSelectVars( cormat, threshold )
-                     X <- X[, vars]
-                     g$selvars <<- vars; g$threshold <<- threshold
-                     values$infomulti <<- TRUE
-                 }
-
                  if (input$multiLog) X <- log10(abs(X)+gv$pseudo_zero)*sign(X)
-                 n <- nrow(X)
-                 p <- ncol(X)
 
                  if( input$ggmType=='GGM') {
                      # Depending on shrink mode, check/estimate  shrinkage intensity lambda
+                     n <- nrow(X)
+                     p <- ncol(X)
                      lambda <- input$lambda
                      if (input$shrinkauto>0 || lambda<0) {
                          lambda<-sqrt(2*log(p/sqrt(n))/n)
@@ -743,27 +749,28 @@
                      setThreadOptions(numThreads = 4)
                      out <- FastGGM::FastGGM_Parallel(X, lambda)
                      R <-  out$partialCor
-                     p.values <- out$p_partialCor
+                     pvalues <- out$p_partialCor
                  } else {
-                     PCOR <- ppcor::pcor(X, method=input$methpcor)
-                     mcor <- PCOR$estimate
+                     out <- ppcor::pcor(X, method=input$methpcor)
+                     mcor <- out$estimate
                      R <- as.matrix(mcor)
-                     p.values <- 2 * pnorm(-abs(PCOR$statistic))
+                     pvalues <- out$p.value # 2 * pnorm(-abs(out$statistic))
                  }
 
+                 diag(R) <- 0
                  colnames(R) <- colnames(X)
                  rownames(R) <- colnames(X)
-
-                 # Adjust pvalues
-                 P <- p.adjust(p.values,method = 'fdr')
-                 Pm <- matrix(data=P,nrow=nrow(R),ncol=ncol(R),byrow=TRUE)
-                 colnames(Pm) <- colnames(X)
-                 rownames(Pm) <- colnames(X)
-                 P <- Pm
 
                  # Upper correlation matrix
                  cor_mat <- R
                  cor_mat[ lower.tri(cor_mat, diag=TRUE) ]<- 0
+
+                 # Adjust pvalues
+                 P <- p.adjust(pvalues,method = 'fdr')
+                 Pm <- matrix(data=P,nrow=nrow(R),ncol=ncol(R),byrow=TRUE)
+                 colnames(Pm) <- colnames(X)
+                 rownames(Pm) <- colnames(X)
+                 P <- Pm
 
                  # Threshold applied on p-values
                  qval <- input$qval
@@ -785,7 +792,7 @@
                  V(graph)$label<- V(graph)$name
 
                  values$netData <<- data.frame(source=as_edgelist(graph)[,1], target=as_edgelist(graph)[,2], Corr=t(cor_mat)[t(cor_mat)!=0])
-             }, error=function(e) { ERROR$MsgErrorMulti <- paste("FastGGM :\n", e ); })
+             }, error=function(e) { ERROR$MsgErrorMulti <- paste("PCOR/GGM :\n", e ); })
            })
         }, error=function(e) { ERROR$MsgErrorMulti <- paste("observeEvent:\n", e ); })
     })
@@ -795,7 +802,7 @@
            if (values$launch==0) return(NULL)
            if (values$multitype != 'GGM') return(NULL)
            if (values$outtype != 'VARS') return(NULL)
-           values$netData
+           if (is.null(values$netData)) return(NULL)
            input$gravite
            netData <- values$netData
            Vertices <- unique(sort(c( unique(sort(as.vector(netData[,1]))),  unique(sort(as.vector(netData[,2]))) )))
@@ -857,12 +864,17 @@
           if ( values$launch==0 ) return(NULL)
           if ( ! values$multitype %in% c('COR','GGM') ) return(NULL)
           if (values$infomulti) {
-              shinyjs::disable("listVars")
-              HTML( paste("<b>Note</b>: Number of selected variables =", length(g$selvars),
-                          " based on correlation threshold =", round(g$threshold,4),"<br><br>") )
+              if (isolate(input$ggmType)=='PCOR' && length(g$selvars)>nrow(g$data)) {
+                  HTML(paste0("<br><h4 style=\"color: red;\">Error: Number of variables (",length(g$selvars),") ",
+                              "is greater than the number of samples (",nrow(g$data),")</h4><br>"))
+              } else {
+                 shinyjs::disable("listVars")
+                 HTML( paste("<br><b>Note</b>: Number of selected variables =", length(g$selvars),
+                           " based on correlation threshold =", round(g$threshold,4),"<br><br>") )
+              }
           } else {
               shinyjs::enable("listVars")
-              HTML("<br><br>")
+              HTML("<br>")
           }
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderUI - infomulti \n", e ); })
     })

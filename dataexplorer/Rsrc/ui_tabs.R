@@ -289,7 +289,7 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
                  selectInput("listLevels", "Select Factor Levels", c(), multiple = TRUE, , selectize=TRUE )
               ),
               conditionalPanel(condition="input.multiType=='GGM'",
-                 column(6, selectInput("ggmType", NULL, c("Gaussian graphical model" = "GGM", "Partial Correlation" = "PCOR"), , selected = "PCOR")),
+                 column(6, selectInput("ggmType", NULL, c("Gaussian graphical model" = "GGM", "Partial Correlation" = "PCOR"), , selected = "GGM")),
                  conditionalPanel(condition="input.ggmType=='PCOR'",
                     column(6, selectInput("methpcor", NULL, c("Pearson"="pearson", "Spearman"="spearman"), selected="pearson" ))
                  )
@@ -371,14 +371,14 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
       # PLOTS
       column(12,
          conditionalPanel(condition="input.multiType != 'None' && input.outType != 'None' && input.listVars[2]", 
+            uiOutput('infomulti'),
             conditionalPanel(condition="input.multiType=='PCA' || input.multiType=='ICA' || input.multiType=='TSNE'", 
                     plotlyOutput("MultiPlot", height="600px") %>% withSpinner(color="brown")),
             conditionalPanel(condition="input.multiType=='COR'", 
                     imageOutput("CorrPlot", height="600px") %>% withSpinner(color="brown")),
             conditionalPanel(condition="input.multiType=='GGM'", 
                     forceNetworkOutput("ggmnet", width="85%", height="800px") %>% withSpinner(color="brown")),
-            uiOutput('urlimage'),
-            uiOutput('infomulti'),
+            uiOutput('urlimage')
          )
       ),
       column(12, p("")),

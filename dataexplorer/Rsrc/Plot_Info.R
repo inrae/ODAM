@@ -314,6 +314,14 @@
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("VennPlot:\n", e ); })
     })
 
+    output$infoVenn <- renderUI ({
+       values$initdss
+       input$inDSselect
+       tryCatch({
+           HTML(paste("<center><h4>Total number of variables =",nrow(g$varnames),"</h4></center>"))
+       }, error=function(e) { ERROR$MsgErrorInfo <- paste("VennPlot:\n", e ); })
+    })
+
     #----------------------------------------------------
     # renderUI - Subsets Graph with d3js
     #----------------------------------------------------

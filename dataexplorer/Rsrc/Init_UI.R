@@ -449,7 +449,7 @@
             if (values$launch && g$subsetVars)
                runjs(paste0("alert('Warning: only the first ",gv$maxVariables," variables will be taken into account');"))
             g$subsetVars <<- FALSE
-            #shinyjs::enable("inDSselect") # See Plot_Multi.R : Observer listFeatures
+            shinyjs::enable("inDSselect")
         }
     }, error=function(e) { ERROR$MsgErrorMain <- paste("Data subset Change Obs:\n", e); }) })
 

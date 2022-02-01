@@ -111,7 +111,7 @@
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 3:\n", e ); }) })
 
 
-    # multiFacX / listVars
+    # multiFacX
     observe({ tryCatch({
        input$inDselect
        if ( values$launch>0) {
@@ -124,13 +124,24 @@
               selFacX <- g$facnames[g$facnames[,3]==ui$fac1,2]
           if (nrow(g$varnames)>2)
               updateSelectInput(session, "multiFacX", choices = f1_options, selected=selFacX)
-          # Select the variables to be included in the analysis
-          v_options <- c( 1:nrow(g$varnames) )
-          names(v_options) <- c(.C(gsub(" \\(.+\\)","",.C(g$varnames$Description))))
-          updateSelectInput(session, "listVars", choices = v_options, selected=v_options)
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 4:\n", e ); }) })
 
+    # listVars
+    observe({ tryCatch({
+       input$inDselect
+       if ( values$launch>0 ) {
+          if (nrow(g$varnames)<gv$nbopt_multiselect) {
+              # Select the variables to be included in the analysis
+              v_options <- c( 1:nrow(g$varnames) )
+              names(v_options) <- c(.C(gsub(" \\(.+\\)","",.C(g$varnames$Description))))
+          } else {
+              v_options <- c( 'none','1','2' )
+              names(v_options) <- c('---', ' ',' ')
+          }
+          updateSelectInput(session, "listVars", choices = v_options, selected=v_options)
+       }
+    }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 4b:\n", e ); }) })
 
     # listLevels
     observeEvent( list(input$inDselect, input$multiFacX), { tryCatch({
@@ -184,7 +195,6 @@
               }
           }
           updateSelectInput(session, "listFeatures", choices = f_options, selected=f_options)
-          shinyjs::enable("inDSselect") # We put here beacause it is the last one to be updated - See Init_UI.R : Observer 'if data subset change'
        }
     }, error=function(e) { ERROR$MsgErrorMulti <- paste("Observer 7:\n", e ); }) })
 
@@ -282,14 +292,15 @@
            if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
                selectFCOL <- c()
            }
-           if (length(input$listVars)>0) { 
+           if (length(input$listVars)>2 && input$listVars[1] != 'none') {
                listVars <- input$listVars
+               shinyjs::enable("listVars")
            } else {
-               listVars <- g$varnames
+               listVars <- c(1:nrow(g$varnames))
+               shinyjs::disable("listVars")
            }
            multiType <- values$multitype
            values$infomulti <<- FALSE
-           shinyjs::enable("listVars")
            withProgress(message = paste0(values$multitype,' Calculation in progress'), detail = '... ', value = 0, {
                tryCatch({
                if (values$multitype %in% c('PCA','ICA'))
@@ -579,12 +590,13 @@
            if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
                selectFCOL <- c()
            }
-           if (length(input$listVars)>0) { 
+           if (length(input$listVars)>2 && input$listVars[1] != 'none') {
                listVars <- input$listVars
+               shinyjs::enable("listVars")
            } else {
-               listVars <- g$varnames
+               listVars <- c(1:nrow(g$varnames))
+               shinyjs::disable("listVars")
            }
-           shinyjs::enable("listVars")
 
            imgObj <- NULL
            withProgress(message = 'CORR Calculation in progress', detail = '... ', value = 0, {
@@ -604,20 +616,20 @@
     {
         ## Metadata preparation / Data extraction
         o <- getDataMulti(F1, selectLevels, FCOL, selectFCOL, selectVars, scale=FALSE)
-        x <- unique( as.matrix(o$subdata[, o$variables]) )
-        if (blog) x <- log10(abs(x)+gv$pseudo_zero)*sign(x)
+        X <- unique( as.matrix(o$subdata[, o$variables]) )
+        if (blog) X <- log10(abs(X)+gv$pseudo_zero)*sign(X)
 
         ## Correlation
         methcor <- ifelse(!methcor %in% c("pearson","kendall","spearman"), "pearson", methcor)
-        cormat <- round(cor(x, method=methcor),2)
+        cormat <- round(cor(X, method=methcor),2)
 
         # If number of variables are greater than the limit then apply a threshold on the correlation matrix
         values$infomulti <<- FALSE
+        g$selvars <<- c(g$varnames$Attribute); g$nbrows <<- nrow(X)
         if (nrow(g$varnames)>gv$max_multivars) {
-            threshold <- getThreshold(cormat, gv$max_multivars)
-            vars <- getSelectVars( cormat, threshold )
-            cormat <- cormat[ vars, vars ]
-            g$selvars <<- vars; g$threshold <<- threshold
+            g$threshold <<- getThreshold(cormat, gv$max_multivars)
+            g$selvars <<- getSelectVars( cormat, g$threshold )
+            cormat <- cormat[ g$selvars, g$selvars ]
             values$infomulti <<- TRUE
         }
 
@@ -705,12 +717,13 @@
            if (nchar(FCOL)>0 && ( length(selectFCOL)==0 || (length(selectFCOL)==1 && selectFCOL[1]==FA) ) ) {
                selectFCOL <- c()
            }
-           if (length(input$listVars)>0) { 
+           if (length(input$listVars)>2 && input$listVars[1] != 'none') {
                listVars <- input$listVars
+               shinyjs::enable("listVars")
            } else {
-               listVars <- g$varnames
+               listVars <- c(1:nrow(g$varnames))
+               shinyjs::disable("listVars")
            }
-           shinyjs::enable("listVars")
            values$netData <<- NULL
            values$infomulti <<- FALSE
 
@@ -719,18 +732,17 @@
            X <- unique( as.matrix(o$subdata[, o$variables]) )
 
            # If number of variables are greater than the limit then select variables based on correlation before
-           g$selvars <<- c(g$varnames$Attribute)
+           g$selvars <<- c(g$varnames$Attribute); g$nbrows <<- nrow(X)
            if (nrow(g$varnames)>gv$max_multivars) {
                method <- ifelse( input$ggmType=="PCOR", input$methpcor, 'pearson' )
                cormat <- round(cor(X, method=method),2)
-               threshold <- getThreshold(cormat, gv$max_multivars)
-               vars <- getSelectVars( cormat, threshold )
-               X <- X[, vars]
-               g$selvars <<- vars; g$threshold <<- threshold
+               g$threshold <<- getThreshold(cormat, gv$max_multivars)
+               g$selvars <<- getSelectVars( cormat, g$threshold )
+               X <- X[, g$selvars]
                values$infomulti <<- TRUE
            }
-           if (input$ggmType=='PCOR' && length(g$selvars)>nrow(g$data)) {
-               if (length(g$selvars)<nrow(g$varnames)) values$infomulti <<- TRUE
+           if (input$ggmType=='PCOR' && length(g$selvars)>g$nbrows) {
+               if (length(g$selvars)==nrow(g$varnames)) values$infomulti <<- TRUE
                return(NULL)
            }
 
@@ -798,7 +810,7 @@
     })
 
     output$ggmnet <- renderForceNetwork({
-       tryCatch({ ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
+       tryCatch({ #ERROR$MsgErrorMulti <- ''; closeAlert(session, "ErrAlertMultiId")
            if (values$launch==0) return(NULL)
            if (values$multitype != 'GGM') return(NULL)
            if (values$outtype != 'VARS') return(NULL)
@@ -864,9 +876,9 @@
           if ( values$launch==0 ) return(NULL)
           if ( ! values$multitype %in% c('COR','GGM') ) return(NULL)
           if (values$infomulti) {
-              if (isolate(input$ggmType)=='PCOR' && length(g$selvars)>nrow(g$data)) {
+              if (values$multitype=='GGM' && isolate(input$ggmType)=='PCOR' && length(g$selvars)>g$nbrows) {
                   HTML(paste0("<br><h4 style=\"color: red;\">Error: Number of variables (",length(g$selvars),") ",
-                              "is greater than the number of samples (",nrow(g$data),")</h4><br>"))
+                              "is greater than the number of samples (",g$nbrows,")</h4><br>"))
               } else {
                  shinyjs::disable("listVars")
                  HTML( paste("<br><b>Note</b>: Number of selected variables =", length(g$selvars),

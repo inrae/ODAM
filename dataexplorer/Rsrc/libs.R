@@ -64,6 +64,11 @@ g <- list(
    connectList=NULL,
    dn=NULL,
 
+   # GGM / PCOR
+   selvars=0,
+   nbrows=0,
+   threshold=0,
+
    # Error message return by the API
    msgError='',
 
@@ -425,6 +430,8 @@ getVars <- function(strNameList, rmvars=FALSE)
           g$data <<- data
           g$LABELS <<- LABELS
           g$varnames  <<- varnames
+          g$selvars <<- varnames$Attribute
+          g$nbrows <<- nrow(data)
        } else {
           g$varnames <<- t(data[1:2,])
        }
@@ -432,7 +439,8 @@ getVars <- function(strNameList, rmvars=FALSE)
 }
 
 # Convert/Format LABELS (metadata) as a data.frame along their url links
-getLabels <- function() {
+getLabels <- function()
+{
     labelinfo <- NULL
     LABELS <- g$LABELS
     for( i in 1:nrow(LABELS)) {

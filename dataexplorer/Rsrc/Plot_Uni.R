@@ -96,7 +96,8 @@
 
     observe({ tryCatch({
        input$inDselect
-       if ( values$launch>0 ) {
+       input$IdMenu
+       if ( input$IdMenu=="univariate" && values$launch>0) {
           if (nrow(g$varnames)>gv$maxVariables) return(NULL)
           v_options <- c(0, 1:nrow(g$varnames) )
           names(v_options) <- c('---',.C(gsub(" \\(.+\\)","",g$varnames$Description)))

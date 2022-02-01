@@ -63,7 +63,8 @@ ui_intersection <- tabItem(tabName = "intersection", bsAlert("ErrAlertInfo"),
       conditionalPanel(condition="output.DSsize>1 && output.DSsize<5 && output.nbvarsEvent==0", 
          box(
             title="Intersection of the selected data subsets", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
-            plotOutput("VennPlot", height="500px") %>% withSpinner(color="brown")
+            plotOutput("VennPlot", height="500px") %>% withSpinner(color="brown"),
+            uiOutput('infoVenn')
          )
       ),
       div(class='div-session', box(

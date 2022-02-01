@@ -46,7 +46,8 @@
 
     observe({ tryCatch({
        input$inDselect
-       if ( values$launch>0 ) {
+       input$IdMenu
+       if ( input$IdMenu=="bivariate" && values$launch>0) {
           # Select the variable to be analysed
           v_options <- c()
           if ("data.frame" %in% class(g$varnames)) {

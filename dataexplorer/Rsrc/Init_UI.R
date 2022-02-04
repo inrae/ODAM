@@ -444,8 +444,19 @@
         if (! is.null(g$subsets) && ! is.null(input$inDSselect) && length(input$inDSselect)>0 && g$inDSselect != .J(input$inDSselect)) {
             shinyjs::disable("inDSselect")
             getVars(.J(input$inDSselect))
-            if (is.wsError()) { values$init <- values$error <- 1; values$initdss <- 0; values$launch <- 0; analysisTab(tabnames,0) }
-            else              { values$launch <- length(input$inDSselect); analysisTab(tabnames,1) }
+            if(is.wsNoData()) {
+               DSselect <- .S(g$inDSselect)
+               runjs(paste0("alert(\"ERROR: the intersection between data subsets is empty.\\r\\n",
+                                    "So the data subset ",DSselect[length(DSselect)]," is going to be withdraw\");"))
+               DSselect <- DSselect[ 1:(length(DSselect)-1)]
+               ws$subset <<- .J(DSselect)
+               updateSelectInput(session, "inDSselect", label=NULL, choices = c("Select one or more data subset"="", g$DSL), selected = DSselect )
+               values$launch <- values$launch - 1
+            } else if (is.wsError()) {
+               values$init <- values$error <- 1; values$initdss <- 0; values$launch <- 0; analysisTab(tabnames,0)
+            } else {
+               values$launch <- length(input$inDSselect); analysisTab(tabnames,1)
+            }
             if (values$launch && g$subsetVars)
                runjs(paste0("alert('Warning: only the first ",gv$maxVariables," variables will be taken into account');"))
             g$subsetVars <<- FALSE

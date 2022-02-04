@@ -99,6 +99,8 @@ is.wsError <- function() return( ifelse(nchar(g$msgError)>0, TRUE, FALSE ) )
 
 is.wsNoAuth <- function() return( ifelse(length(grep("invalid authorization key", g$msgError)), TRUE, FALSE ) )
 
+is.wsNoData <- function() return( ifelse(length(grep("NO DATA", g$msgError)), TRUE, FALSE ) )
+
 # Is a dataset / data collection specified in the query string ?
 is.DS <- function(cdata)
 {
@@ -118,8 +120,12 @@ httr_get <- function(ws, query, mode='text', fsplit=TRUE)
        resp <- httr::GET(paste0(ws$apiurl, query), timeout(5),
                          config = httr::config(ssl_verifypeer = gv$SSL_VerifyPeer),
                          add_headers(.headers = headers))
-       T <- httr::content(resp, as=mode)
-       if (mode=='text' && fsplit) T <- simplify2array(strsplit(enc2utf8(T),"\n"))
+       if (length(resp$content)>0) {
+          T <- httr::content(resp, as=mode)
+          if (mode=='text' && fsplit) T <- simplify2array(strsplit(enc2utf8(T),"\n"))
+       } else {
+          T <- NULL
+       }
     }, error=function(e) {
        T <- "## ERROR : the API host is not responding; it is either not found or does not exist"
     })
@@ -165,7 +171,7 @@ getInfos <- function (ws, dcol=0)
 {
     ds <- ifelse(dcol>0, ws$dcname, ws$dsname)
     T <- httr_get(ws, paste0('infos/', ds))
-    if (!is.wsError() && !is.wsNoAuth() && ws$keymode>0) {
+    if (!is.wsError() && !is.wsNoAuth() && !is.null(T) && ws$keymode>0) {
        # Images
        P <- na.omit(str_extract(T, pattern="https?:[^:]+\\.(png|jpg)"))
        if (length(P)>0) for (i in 1:length(P)) {
@@ -199,7 +205,10 @@ getData <- function (ws, query='', dcol=0)
        g$msgError <<- ''
        ds <- ifelse(dcol>0, ws$dcname, ws$dsname)
        T <- httr_get(ws, paste0('tsv/',ds,'/',query))
-       if (length(grep("ERROR", T[1]))) {
+       if (is.null(T)) {
+          g$msgError <<- "NO DATA"
+          break
+       } else if (length(grep("ERROR", T[1]))) {
           g$msgError <<- T[1]
           break
        }
@@ -312,7 +321,7 @@ getVars <- function(strNameList, rmvars=FALSE)
 
        # Get DATA
        data <- getData(ws,paste('(',strNameList,')',sep=''))
-       if (! is.wsError() && ( gv$subsetVars || ncol(data)<=gv$maxVariables ))
+       if (!is.wsError() && !is.null(data) && ( gv$subsetVars || ncol(data)<=gv$maxVariables ))
        {
           # Get quantitative variable features
           varnames <- NULL

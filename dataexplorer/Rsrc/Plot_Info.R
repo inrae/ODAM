@@ -227,8 +227,10 @@
             tryCatch({
                strNameList <- .J(g$subsets[ g$subsetNames %in% .S(input$dwnld_button), ]$Subset)
                data <- getData(ws,paste('(',strNameList,')',sep=''))
+               if(is.wsNoData())
+                  showModal(messageModal("Intersection of the data subsets seems empty"))
                write.table(data, con, sep="\t", row.names=FALSE, col.names=TRUE)
-            }, error=function(e) { runjs(paste0("alert('intersection of the data subsets ",strNameList," seems empty');")) })
+            }, error=function(e) { ERROR$MsgErrorInfo <- paste("Download:", e ); })
             runjs('$(\'div[name="downldButton"]\').css(\'display\',\'none\')');
             # reset selection
             for( i in 1:nrow(g$subsets2)) runjs(paste0('$(\'#check_',i,'\').prop(\'checked\',false)'))

@@ -79,6 +79,17 @@
     }
 
     #----------------------------------------------------
+    # Modal dialog UI for Message Warning / Error
+    #----------------------------------------------------
+    messageModal <- function(msg, type="Warning")
+    {
+      modalDialog(
+        tags$table( tags$tr(tags$td(tags$strong(type))), tags$tr(tags$td(tags$hr())), tags$tr(tags$td(msg)) ),
+        footer = modalButton("Ok"), size="s", easyClose = FALSE
+      )
+    }
+
+    #----------------------------------------------------
     # Modal dialog UI for global parameters
     #----------------------------------------------------
     gparamsModal <- function()
@@ -446,8 +457,8 @@
             getVars(.J(input$inDSselect))
             if(is.wsNoData()) {
                DSselect <- .S(g$inDSselect)
-               runjs(paste0("alert(\"ERROR: the intersection between data subsets is empty.\\r\\n",
-                                    "So the data subset ",DSselect[length(DSselect)]," is going to be withdraw\");"))
+               showModal(messageModal(paste0("The intersection between data subsets is empty.\r\n",
+                                    "So the data subset ",DSselect[length(DSselect)]," is going to be withdraw")))
                DSselect <- DSselect[ 1:(length(DSselect)-1)]
                ws$subset <<- .J(DSselect)
                updateSelectInput(session, "inDSselect", label=NULL, choices = c("Select one or more data subset"="", g$DSL), selected = DSselect )
@@ -458,7 +469,7 @@
                values$launch <- length(input$inDSselect); analysisTab(tabnames,1)
             }
             if (values$launch && g$subsetVars)
-               runjs(paste0("alert('Warning: only the first ",gv$maxVariables," variables will be taken into account');"))
+               showModal(messageModal(paste0("Only the first ",gv$maxVariables," variables will be taken into account")))
             g$subsetVars <<- FALSE
             shinyjs::enable("inDSselect")
         }

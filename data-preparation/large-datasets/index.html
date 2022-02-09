@@ -661,7 +661,7 @@
 <p>2 - Limiting the number of data tables</p>
 <p>A possible alternative is to see if it would be possible to split the dataset into two or even three datasets then build a collection, <em>i)</em> depending on the type of data, or <em>ii)</em> if there are data that could be put in a sort of "annex" dataset.</p>
 <h3 id="large-datasets-in-the-data-explorer">Large datasets in the data explorer<a class="headerlink" href="#large-datasets-in-the-data-explorer" title="Permanent link">&para;</a></h3>
-<p>The number of variables has been limited to <strong>1000</strong> in the data explorer in order to remain fluid in the interaction with the data.</p>
+<p>The number of variables has been limited to <strong>1000</strong> in the data explorer in order to remain fluid while interacting with the data.</p>
 <p>The chosen approach consists in reordering the variables concerning the large subsets of data with decreasing significance. A selection of the most significant variables can be made, e.g. using ANOVA. Thus, the first 1000 variables selected in the data explorer will be the most significant ones related to the experimental design. To do this, an <a href="https://github.com/inrae/ODAM/blob/master/scripts/odam_reorder_vars.R" target="_blank">R script</a> has been written and put in the github repository. You can easily update it to perform the selection based on other statistical approaches. This operation must be carried out once all the data has been formatted and deposited in the ODAM repository.</p>
 <p>Note that this is only a rearrangement of variables, so no variables need to be removed from the data subset and it can therefore be downloaded in its entirety either by API or by the data explorer.</p>
 <p><br><br><br></p>

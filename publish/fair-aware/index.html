@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.2.2">
     
     
       
@@ -689,17 +689,17 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: justify">A data(set) should be assigned a globally unique persistent and resolvable identifier when deposited with a data repository</td>
+<td>A data(set) should be assigned a globally unique persistent and resolvable identifier when deposited with a data repository{:style="text-align: justify"}</td>
 <td>Dataverse</td>
 <td>Once the data set is created, DATA INRAE generates a <a href="https://en.wikipedia.org/wiki/Digital_object_identifier" target="_blank">DOI</a>.</td>
 </tr>
 <tr>
-<td style="text-align: justify">When you deposit a data(set) in a data repository, you will need to provide discovery metadata in order to make the data(set) findable, understandable and reusable to others</td>
+<td>When you deposit a data(set) in a data repository, you will need to provide discovery metadata in order to make the data(set) findable, understandable and reusable to others{:style="text-align: justify"}</td>
 <td>Dataverse</td>
 <td>DATA INRAE allows you to describe <a href="https://ist.blogs.inrae.fr/datainrae-guide/metadonnees-controlees-par-une-liste-de-valeurs/" target="_blank">many metadata</a> that can be used as search criteria to find the dataset</td>
 </tr>
 <tr>
-<td style="text-align: justify">The data repository providing access to your data(set) should make the metadata describing your data(set) available in a format readable by machines as well as humans</td>
+<td>The data repository providing access to your data(set) should make the metadata describing your data(set) available in a format readable by machines as well as humans{:style="text-align: justify"}</td>
 <td>Dataverse<br>ODAM</td>
 <td>Both repository allow you to export metadata in <a href="https://json-schema.org/" target="_blank">JSON format</a> and in <a href="https://en.wikipedia.org/wiki/Tab-separated_values" target="_blank">TSV format</a> (ODAM) for structural metadata</td>
 </tr>
@@ -716,12 +716,12 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: justify">Access to your data(set) may need to be controlled and that metadata should include licence information under which the data(set) can be reused</td>
+<td>Access to your data(set) may need to be controlled and that metadata should include licence information under which the data(set) can be reused{:style="text-align: justify"}</td>
 <td>Dataverse<br>ODAM</td>
 <td>Both repository allow you to control the access of the dataset (see <a href="../../api/#authorization-mechanism" target="_blank">Authorization mechanism</a>). Idem for the licence information.</td>
 </tr>
 <tr>
-<td style="text-align: justify">Metadata should remain available over time, even if the data(set) is no longer accessible</td>
+<td>Metadata should remain available over time, even if the data(set) is no longer accessible{:style="text-align: justify"}</td>
 <td>Dataverse</td>
 <td>This is why it is preferable to deposit the structural metadata file (<a href="../../json-schema/" target="_blank">datapackage.json</a>) instead of the data, which can be accessed directly from the <a href="../../api/" target="_blank">ODAM API</a> or via its <a href="../../data-explorer/" target="_blank">dataexplorer</a>.</td>
 </tr>
@@ -738,7 +738,7 @@
 </thead>
 <tbody>
 <tr>
-<td style="text-align: justify">The metadata describing your data(set) should use controlled vocabularies</td>
+<td>The metadata describing your data(set) should use controlled vocabularies{:style="text-align: justify"}</td>
 <td>Dataverse<br>ODAM</td>
 <td>DATA INRAE proposes to annotate descriptive metadata using controlled vocabularies based on ontologies. In the same way ODAM allows the annotation of each data subset as well as each variable by <a href="https://data.inrae.fr/dataverse/lovinra" target="_blank">open vocabulary</a> (thesaurus and/or ontologies). (See <a href="../../data-preparation/" target="_blank">Data preparation</a>).</td>
 </tr>
@@ -755,22 +755,22 @@
 </thead>
 <tbody>
 <tr>
-<td style="width: 300px; text-align: justify">Provenance information about the collection and/or generation of data should be included in the metadata</td>
+<td>Provenance information about the collection and/or generation of data should be included in the metadata{:style="width: 300px; text-align: justify"}</td>
 <td>ODAM</td>
 <td>ODAM allows you to add additional information either as text in markdown format or as PDF files (see <a href="../../data-preparation/#4-additional-information" target="_blank">Additional information</a>)</td>
 </tr>
 <tr>
-<td style="text-align: justify">Metadata describing your data(set) should follow the specifications of a community-endorsed standard</td>
+<td>Metadata describing your data(set) should follow the specifications of a community-endorsed standard{:style="text-align: justify"}</td>
 <td>Dataverse<br>ODAM</td>
 <td>DATA INRAE follows the <a href="https://json-ld.org/" target="_blank">JSON-LD</a> specification for descriptive metadata while ODAM follows the <a href="https://specs.frictionlessdata.io/data-package/" target="_blank">Data Packages</a> specification for structural metadata.</td>
 </tr>
 <tr>
-<td style="text-align: justify">Your data(set) should be deposited preferably in a file format that is open and supported by the data repository for long-term preservation</td>
+<td>Your data(set) should be deposited preferably in a file format that is open and supported by the data repository for long-term preservation{:style="text-align: justify"}</td>
 <td>ODAM</td>
 <td>The data must have been recorded in <a href="https://en.wikipedia.org/wiki/Tab-separated_values" target="_blank">TSV format</a> as well as the structural metadata. (See <a href="../../data-preparation/" target="_blank">Data preparation</a>).</td>
 </tr>
 <tr>
-<td style="text-align: justify">Keeping your data(set) FAIR over time requires professional data curation and digital preservation</td>
+<td>Keeping your data(set) FAIR over time requires professional data curation and digital preservation{:style="text-align: justify"}</td>
 <td>Dataverse<br>ODAM</td>
 <td>DATA INRAE is managed by a service directly attached to the management of the institute (<a href="https://www6.inrae.fr/dipso/" target="_blank">DipSO</a>). It is also preferable to install the ODAM application on an institutional server. Nevertheless, it is better if you can rely on people with data management skills i.e knowing how to collect data and information from producers and then how to prepare them for publication according to FAIR principles.</td>
 </tr>

@@ -14,7 +14,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.2.2, mkdocs-material-7.2.2">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-7.2.2">
     
     
       
@@ -693,7 +693,8 @@
 <a href="../images/media/Image1.png" data-lightbox="Img1"><img src="../images/media/Image1.png" width="500px"></a>
 </center><br><br></p>
 <p>There must therefore be a link between each file, i.e. information that connects them together. In most cases (if not all), this information corresponds to <strong>identifiers</strong><sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup> that make it possible to precisely reference within the experiment each of the elements belonging to the same observation <strong>entity</strong><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup> forming a coherent observation unit. For example, each plant, each sample has its own identifier, and each of these entities corresponds to a separate data file.</p>
-<p><hr><font style="font-family: system-ui; font-size: 0.9em;"></p>
+<hr>
+<p><font style="font-family: system-ui; font-size: 0.9em;"></p>
 <p>Well organized data means that each data table must be correctly structured, i.e.:</p>
 <ul>
 <li>Each variable forms a column,</li>
@@ -729,7 +730,8 @@
 <a href="../images/media/Image7.png" data-lightbox="Img7"><img src="../images/media/Image7.png" width="600px"></a>
 <br><p class="plegend center">a data entity (data subset 'samples') consisting of its attributes (columns) divided by category (identifier, factor, quantitative, qualitative)</p>
 </center></p>
-<p><hr><font style="font-family: system-ui; font-size: 0.9em;">
+<hr>
+<p><font style="font-family: system-ui; font-size: 0.9em;">
 <strong>The four categories</strong></p>
 <ul>
 <li>
@@ -749,7 +751,6 @@
 <br></p>
 <p>In order to allow data to be ODAM-compliant, we need two specific files (subsets &amp; attributes) to describe the structural metadata of the whole dataset, i.e. some minimal but relevant metadata. For that, <strong>two metadata files are required</strong>, namely <strong>s_subsets.tsv</strong> and <strong>a_attributes.tsv</strong>.</p>
 <p><b>(1)</b>The subset metadata file (s_subsets.tsv) makes it possible to associate each data subset with a key concept corresponding to the main entity of the subset, each subset being stored as a file (the grey rectangle). It also defines for each subset the link to the subset it originates. <b>(2)</b> The attribute metadata file (a_attributes.tsv) allows to annotate each attribute (concept/variable) with some minimal but relevant metadata, such as: its description with its unit, the data type, but also its category. The category defined by controlled vocabulary (CV) is used to specify the type of each variable. In each of these two files (subsets and attributes), it is possible to annotate each of the terms with unambiguous definitions through links to accessible definitions (standardized CV terms).</p>
-
 <p>Thus constructed, this metadata constitutes a dictionary describing each file (subsets) as well as all the columns of the tables (attributes) offering a better guarantee in the correct (re)use of the data for users who have not produced these data. These metadata lets therefore non-expert users explore and visualize your data. By making data interoperable and reusable by both humans and machines, it also encourages data dissemination according to FAIR principles.</p>
 
 <p><br><hr><br></p>
@@ -928,13 +929,11 @@
 <p>It is also possible to add images. To do this, you must create a directory named '<strong>images</strong>'. To reference these images in the infos.md file, use the @@IMAGE@@ macro as a path. This macro will be automatically replaced by the correct URL when the page is loaded. An example is given below :</p>
 <div class="highlight"><pre><span></span><code>![frim1](@@IMAGE@@/tomato_icon.png) &lt;font size=&quot;+3&quot;&gt; [Tomato][1] &lt;/font&gt;
 </code></pre></div>
-
 </li>
 <li>
 <p>In the same way, it is also possible to add links to PDF files. To do this, you must create a directory named '<strong>pdf</strong>'. To add links to PDF files in the infos.md file, use the @@PDF@@ macro as a path. This macro will be automatically replaced by the correct URL when the page is loaded. An example is given below :</p>
 <div class="highlight"><pre><span></span><code>* [Protocol](@@PDF@@/protocol.pdf)
 </code></pre></div>
-
 </li>
 </ul>
 <p><br><br></p>
@@ -975,7 +974,7 @@ check and summarized below:</p>
 </tr>
 <tr>
 <td><strong>6</strong></td>
-<td>Be careful in the spelling: 1) for data subset file names (col. E in s_subsets.tsv), identifier name (col. D in s_subsets.tsv), attribute names (col. B in a_attributes.tsv), subset short names (col. C in s_subsets.tsv and col. A in a_attributes.tsv) and entry names (col. C in a_attributes.tsv), only the alphanumerical characters and the underscore are allowed (i.e. 'a-z', 'A-Z', '0-9' and '_'). Moreover, these names should not start with a digit! 2) for categorical names (col. D in a_attributes.tsv), the number of terms and their spelling are fixed, namely: 'identifier', 'factor', 'quantitative’, 'qualitative'. 3) for type (col. E in a_attributes.tsv), the allowed names are restricted to 'numeric' or 'string'. 4) for description, the allowed characters are: 0-9 a-z A-Z , : + * () [] </td>
+<td>Be careful in the spelling: 1) for data subset file names (col. E in s_subsets.tsv), identifier name (col. D in s_subsets.tsv), attribute names (col. B in a_attributes.tsv), subset short names (col. C in s_subsets.tsv and col. A in a_attributes.tsv) and entry names (col. C in a_attributes.tsv), only the alphanumerical characters and the underscore are allowed (i.e. 'a-z', 'A-Z', '0-9' and '_'). Moreover, these names should not start with a digit! 2) for categorical names (col. D in a_attributes.tsv), the number of terms and their spelling are fixed, namely: 'identifier', 'factor', 'quantitative’, 'qualitative'. 3) for type (col. E in a_attributes.tsv), the allowed names are restricted to 'numeric' or 'string'. 4) for description, the allowed characters are: 0-9 a-z A-Z , : + * () [] {} - % ! | / . ?</td>
 </tr>
 <tr>
 <td><strong>7</strong></td>

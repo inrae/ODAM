@@ -366,7 +366,7 @@
             odamws_params <- paste0("'",ws$apiurl,"', '",ws$dsname,"'", authstr);
             cat("\noptions(width=256)\n", "options(warn=-1)\n","options(stringsAsFactors=FALSE)\n","\n",
                 "library(Rodam)\n","\n",
-                "# Initialize the 'ODAM' object \n", "dh <- new('odamws',",odamws_params,")\n","\n",
+                "# Initialize the 'ODAM' object \n", "dh <- new('odamws',",odamws_params,", maxtime=30)\n","\n",
                 "# Get the Data Tree\n","show(dh)\n","\n",
                 "# Get the data subsets list\n","dh$subsetNames\n","\n",
                 sep=""
@@ -381,7 +381,7 @@
                   "# Get '",g$inDSselect,"' data subset\n", "ds <- dh$getSubsetByName(",setName,")\n", "\n",
                   "# Show the first 50 variable descriptions\n", "head(ds$LABELS, n=50)\n","\n",
                   "# Show all factors defined in the data subset\n","ds$facnames\n","\n",
-                  "# Show all quantitative variables defined in the data subset\n","ds$varnames\n","\n",
+                  "# Show the first 150 quantitative variables defined in the data subset\n","head(ds$varnames, 150)\n","\n",
                   "# Show all qualitative variables defined in the data subset\n","ds$qualnames\n","\n",
                   sep=""
                )

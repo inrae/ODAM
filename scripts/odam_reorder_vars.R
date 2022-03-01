@@ -130,9 +130,9 @@ odam_reorder_vars <- function(dataset, datasubset, apikey='', apiurl=APIURL, dat
     # Initialize the 'ODAM' object 
       cat("Initialize the 'ODAM' object ...")
       if (nchar(apikey)>0) {
-         dh <- new('odamws',apiurl, dataset, apikey)
+         dh <- new('odamws',apiurl, dataset, apikey, maxtime=30)
       } else {
-         dh <- new('odamws',apiurl, dataset)
+         dh <- new('odamws',apiurl, dataset, maxtime=30)
       }
       cat("OK\n")
 
@@ -161,7 +161,7 @@ odam_reorder_vars <- function(dataset, datasubset, apikey='', apiurl=APIURL, dat
 
        # Select the more significant variables
          cat("Select the more significant variables ...")
-         nbsel <- min(round(1.5*params$selvars), length(ds$varnames))
+         nbsel <- min(nrow(aov.vec), min(round(1.5*params$selvars), length(ds$varnames)))
          selvars <- unique(aov.vec[order(aov.vec[,2]), ][1:nbsel, 1])
          selvars <- selvars[ 1:min(length(selvars),params$selvars) ]
          cat("OK\n")
@@ -187,7 +187,7 @@ odam_reorder_vars <- function(dataset, datasubset, apikey='', apiurl=APIURL, dat
        # Save the new a_attributes.tsv file corresponding to the dataset
          cat("Save the new a_attributes.tsv file ...")
          attributs[attributs[,1]==datasubset, ] <- subattrib2
-         write.table(attributs, attribute_file, col.names=T, row.names=F, sep="\t")
+         write.table(attributs, attribute_file, col.names=T, row.names=F, sep="\t", quote = FALSE, eol = "\n", na = "", dec = ".")
          cat("OK\n")
          ret <- 1
       } else {

@@ -26,7 +26,7 @@ RUN apt-get update && apt-get install -y \
     r-cran-shiny r-cran-shinybs r-cran-shinydashboard r-cran-shinyjs r-cran-dt \
     r-cran-knitr r-cran-clipr r-cran-rematch r-cran-readr r-cran-car r-cran-nloptr r-cran-clue \
     r-cran-polynom r-cran-lme4 r-cran-haven r-cran-ggpubr r-cran-ggdendro r-cran-fdrtool \
-    r-cran-plyr r-cran-rtsne r-cran-shinycssloaders r-cran-doparallel \
+    r-cran-plyr r-cran-rtsne r-cran-shinycssloaders r-cran-doparallel r-cran-ppcor \
   # locale setting
  && apt-get update && apt-get install -y locales \
  && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen \
@@ -41,22 +41,17 @@ ENV LC_ALL en_US.UTF-8
 ENV LANG en_US.UTF-8
 
 # Download and install shiny server
-RUN wget --no-verbose http://download3.rstudio.org/ubuntu-12.04/x86_64/VERSION -O "version.txt" && \
+RUN wget --no-verbose http://download3.rstudio.org/ubuntu-14.04/x86_64/VERSION -O "version.txt" && \
     VERSION=$(cat version.txt)  && \
-    wget --no-verbose "http://download3.rstudio.org/ubuntu-12.04/x86_64/shiny-server-$VERSION-amd64.deb" -O ss-latest.deb && \
+    wget --no-verbose "http://download3.rstudio.org/ubuntu-14.04/x86_64/shiny-server-$VERSION-amd64.deb" -O ss-latest.deb && \
     gdebi -n ss-latest.deb && \
     rm -f version.txt ss-latest.deb
 
 # R packages installed in /usr/local/lib/R/site-library/
-RUN R -e "install.packages(c('svglite', 'JADE'), repos='http://cran.rstudio.com/')" \
- && R -e "install.packages('https://cran.r-project.org/src/contrib/Archive/networkD3/networkD3_0.2.13.tar.gz', repos=NULL)" \
+RUN R -e "install.packages(c('svglite','JADE','networkD3','ggvenn'), repos='http://cran.rstudio.com/')" \
  && R -e "remotes::install_github('wt2015-github/FastGGM')" \
  && R -e "remotes::install_github('jokergoo/ComplexHeatmap')"
  
-RUN R -e "install.packages('ggvenn', repos='http://cran.rstudio.com/')"
-
-RUN apt-get update && apt-get install -y  r-cran-ppcor
-
 ADD ./ /srv/shiny-server
 
 RUN rm -rf /var/lib/apt/lists/* && \ 

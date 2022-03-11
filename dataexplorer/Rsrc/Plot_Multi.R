@@ -697,6 +697,7 @@
         input$shrinkauto,
         input$lambda,
         input$multiLog,
+        input$rmNegLinks,
         input$qval,
         input$multiAnnot,
         input$multiFacX,
@@ -789,6 +790,7 @@
                  P[ P > qval ] <- 0
                  P[ is.na(P) ] <- 0
                  cor_mat[ P==0 ] <- 0
+                 if (input$rmNegLinks) cor_mat[ cor_mat<0 ] <- 0
 
                  # Generate the full correlation graph
                  graph <- graph.adjacency(cor_mat!=0, weighted=TRUE, mode="upper")
@@ -831,9 +833,9 @@
            }
 
            # Change default colors
-           jsCols <- paste(sapply(c('#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf'),
-                           function(x) { paste0("d3.rgb(", paste(c(col2rgb(x), 0.5), collapse = "," ), ")") }), collapse = ", ")
-           colorJS <- paste0('d3.scale.ordinal().range([', jsCols, '])')
+           Cols <- c('#1f77b4','#ff7f0e','#2ca02c','#d62728','#9467bd','#8c564b','#e377c2','#7f7f7f','#bcbd22','#17becf')
+           colorJS <- paste0('d3.scaleOrdinal().domain(["',paste(dsSel,collapse='","'),'"])',
+                                              '.range(["',paste(Cols[1:length(dsSel)],collapse='","'),'"]);')
 
            L1<-simplify2array(lapply( 1:E_size, function(x) { which( as.vector(netData[,1])[x]==Vertices) }))
            L2<-simplify2array(lapply( 1:E_size, function(x) { which( as.vector(netData[,2])[x]==Vertices) }))
@@ -844,11 +846,11 @@
            fontSize <- 10+5*(LS-1)
            logcharge <- 10*input$gravite-7
            charge <- sign(logcharge)*10^(abs(logcharge))
-
+#if (gv$saveplots) save(Links, Nodes, fontSize, link_colors, charge, colorJS, dsSel, dsnames, file = file.path(SESSTMPDIR,"data.RData"))
            outfile <- file.path(SESSTMPDIR,outfiles[[values$multitype]])
            fn <- forceNetwork(Links = Links, Nodes = Nodes, Source = "source", Target = "target", Value = "value", NodeID = "name", Group = "group",
-                       Nodesize="size", fontSize=fontSize, linkColour=link_colors, charge=charge, colourScale=JS(colorJS),
-                       opacity = 0.99, opacityNoHover = 0.8, zoom = TRUE, bounded=TRUE, legend=TRUE)
+                       Nodesize="size", fontSize=fontSize, linkColour=link_colors, charge=charge,
+                       opacity = 0.99, opacityNoHover = 0.8, zoom = TRUE, bounded=TRUE, legend=TRUE, colourScale=JS(colorJS))
             if (gv$saveplots) saveNetwork(fn, file = outfile)
            fn
        }, error=function(e) { ERROR$MsgErrorMulti <- paste("RenderForceNetwork:\n", e ); })

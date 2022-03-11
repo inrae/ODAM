@@ -117,10 +117,10 @@
 
     # When OK button is pressed, affects the global variables
     observeEvent(input$okgparams, {
-        gv$maxVariables <<- input$maxVariables
-        gv$max_multivars <<- input$max_multivars
+        gv$maxVariables <<- min(input$maxVariables,1000)
+        gv$max_multivars <<- min(input$max_multivars,150)
         gv$subsetVars <<- input$subsetVars
-        gv$nbopt_multiselect <<- input$msmaxnbopt
+        gv$nbopt_multiselect <<- min(input$msmaxnbopt,500)
         gv$saveplots <<- input$saveplots
         if (gv$saveplots) {
           SESSTMPDIR <<- file.path(getwd(),'www/tmp',SESSID)

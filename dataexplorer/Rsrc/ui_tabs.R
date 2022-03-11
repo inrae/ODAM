@@ -358,15 +358,18 @@ ui_multiTab <- tabItem(tabName = "multivariate", bsAlert("ErrAlertMulti"), condi
                   column(4, checkboxInput('fullmatcor', 'Full Matrix', TRUE)),
                   column(4, checkboxInput('reordermatcor', 'Reorder Matrix', TRUE))
               ),
+              conditionalPanel(condition="input.multiType=='GGM'",
+                 column(3, checkboxInput('rmNegLinks', 'Remove Neg. Links', FALSE))
+              ),
               conditionalPanel(condition="input.multiType=='GGM' && input.ggmType=='GGM'",
-                 column(4, checkboxInput('shrinkauto', 'Shrinkage Auto', TRUE)),
-                 column(4, conditionalPanel(condition="input.shrinkauto==0", 
+                 column(3, checkboxInput('shrinkauto', 'Shrinkage Auto', TRUE)),
+                 column(3, conditionalPanel(condition="input.shrinkauto==0", 
                        numericInput("lambda", NULL, 0.3, min = 0.0001, max = 1, step=0.1)
                  ))
               ),
               conditionalPanel(condition="input.multiType=='GGM' || input.multiType=='COR'",
-                 column(4, checkboxInput('multiLog', 'Log10', FALSE))
-              )
+                 column(3, checkboxInput('multiLog', 'Log10', FALSE))
+              ),
          )
       )),
       # PLOTS

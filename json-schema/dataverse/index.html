@@ -595,74 +595,91 @@
 <ul>
 <li><a href="https://cran.r-project.org/web/packages/dataverse/vignettes/A-introduction.html" target="_blank">https://cran.r-project.org/web/packages/dataverse/vignettes/A-introduction.html</a></li>
 </ul>
-<p>```r tab="Code"
-packages &lt;- c('httr', 'jsonlite', 'jsonvalidate', 'dataverse' )
-if (length(setdiff(packages, rownames(installed.packages()))) &gt; 0) {
-  install.packages(setdiff(packages, rownames(installed.packages())), 
-                    repos='<a href="http://cran.rstudio.com">http://cran.rstudio.com</a>')
-}</p>
-<p>library(dataverse)
-library(httr)
-library(jsonvalidate)
-library(jsonlite)</p>
-<h1 id="user-parameters">User Parameters<a class="headerlink" href="#user-parameters" title="Permanent link">&para;</a></h1>
-<p>dataverse_server &lt;- "data.inra.fr"
-dataset_keyword &lt;- "tomato"</p>
-<p>url_schema  &lt;- '<a href="https://inrae.github.io/ODAM/json-schema/odam-data-package.json">https://inrae.github.io/ODAM/json-schema/odam-data-package.json</a>'</p>
-<h1 id="define-the-dataverse-server-as-an-env-variable">Define the dataverse server as an env. variable<a class="headerlink" href="#define-the-dataverse-server-as-an-env-variable" title="Permanent link">&para;</a></h1>
-<p>Sys.setenv("DATAVERSE_SERVER" = dataverse_server)</p>
-<h1 id="data-search">Data Search<a class="headerlink" href="#data-search" title="Permanent link">&para;</a></h1>
-<p>ds &lt;- dataverse::dataverse_search(dataset_keyword, "dataset")</p>
-<h1 id="check-if-a-dataset-found-with-the-right-type">Check if a dataset found with the right type<a class="headerlink" href="#check-if-a-dataset-found-with-the-right-type" title="Permanent link">&para;</a></h1>
-<p>if ( dim(ds)<a href="https://dataverse.org/">1</a>==0 ) 
-   stop("No dataset found")</p>
-<p>if ( length("dataset" %in% ds$type)==0 )
-   stop("No dataset found with the right type")</p>
-<h1 id="get-list-of-files">Get list of files<a class="headerlink" href="#get-list-of-files" title="Permanent link">&para;</a></h1>
-<p>ds &lt;- ds[ ds$type == "dataset", ]</p>
-<h1 id="search-for-datapackagejson">search for 'datapackage.json'<a class="headerlink" href="#search-for-datapackagejson" title="Permanent link">&para;</a></h1>
-<p>ids &lt;- c()
-for (i in ds<span class="arithmatex"><span class="MathJax_Preview">global_id) {
-     if (length(dataverse::dataset_files(i))==0)
-         next
-     dflist &lt;-  as.data.frame(t(simplify2array(dataverse::dataset_files(i))))
-     if (sum(dflist</span><script type="math/tex">global_id) {
-     if (length(dataverse::dataset_files(i))==0)
-         next
-     dflist <-  as.data.frame(t(simplify2array(dataverse::dataset_files(i))))
-     if (sum(dflist</script></span>label  %in% "datapackage.json"))
-         ids &lt;- c(ids,i)
-}</p>
-<h1 id="check-if-successful-search">check if successful search<a class="headerlink" href="#check-if-successful-search" title="Permanent link">&para;</a></h1>
-<p>if ( length(ids)==0 )
-   stop("No datapackage found")</p>
-<h1 id="if-many-take-the-first">if many, take the first<a class="headerlink" href="#if-many-take-the-first" title="Permanent link">&para;</a></h1>
-<p>id &lt;- ids<a href="https://dataverse.org/">1</a>
-cat(" Dataset found : ",id,"\n")
-dflist &lt;-  as.data.frame(t(simplify2array(dataverse::dataset_files(id))))</p>
-<h1 id="get-the-datapackagejson-content-file">Get the datapackage.json content file<a class="headerlink" href="#get-the-datapackagejson-content-file" title="Permanent link">&para;</a></h1>
-<p>idx &lt;- which("datapackage.json" %in% dflist<span class="arithmatex"><span class="MathJax_Preview">label)
-file_id &lt;- dflist</span><script type="math/tex">label)
-file_id <- dflist</script></span>dataFile[[idx]]$id
-dp_json &lt;- rawToChar(dataverse::get_file(file_id))</p>
-<p>if (is.null(dp_json))
-   stop("the datapackage returned as null")</p>
-<h1 id="get-the-odam-data-package-schema">Get the ODAM data package schema<a class="headerlink" href="#get-the-odam-data-package-schema" title="Permanent link">&para;</a></h1>
-<p>response &lt;- httr::GET(url_schema, config(sslversion=6,ssl_verifypeer=1))
-if (response$status_code != 200)
-   stop("Error while getting the ODAM data package schema")</p>
-<p>schema &lt;- httr::content(response, as ='text')</p>
-<h1 id="validate-the-json-against-the-odam-data-package-schema">Validate the JSON against the ODAM data package schema<a class="headerlink" href="#validate-the-json-against-the-odam-data-package-schema" title="Permanent link">&para;</a></h1>
-<p>if (! jsonvalidate::json_validate(dp_json, schema) )
-    stop("the returned datapackage is not a valid ODAM datapackage")</p>
-<h1 id="parse-the-json-object-to-a-dataframe">Parse the JSON object to a data.frame<a class="headerlink" href="#parse-the-json-object-to-a-dataframe" title="Permanent link">&para;</a></h1>
-<p>dp &lt;- jsonlite::fromJSON(dp_json)</p>
-<h1 id="view-metadata">View metadata<a class="headerlink" href="#view-metadata" title="Permanent link">&para;</a></h1>
-<p>sapply( ls(dflist), function(x){ dflist[[as.character(x)]][[idx]] })</p>
-<h1 id="do-something-with-dp">Do something with dp ...<a class="headerlink" href="#do-something-with-dp" title="Permanent link">&para;</a></h1>
-<p>dp$resources[ c('name', 'title', 'cv_term') ]</p>
-<div class="highlight"><pre><span></span><code>``` tab=&quot;Output&quot;
-$`categories`
+<div class="tabbed-set" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><label for="__tabbed_1_1">Code</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code><span class="n">packages</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#39;httr&#39;</span><span class="p">,</span> <span class="s">&#39;jsonlite&#39;</span><span class="p">,</span> <span class="s">&#39;jsonvalidate&#39;</span><span class="p">,</span> <span class="s">&#39;dataverse&#39;</span> <span class="p">)</span>
+<span class="nf">if </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="nf">setdiff</span><span class="p">(</span><span class="n">packages</span><span class="p">,</span> <span class="nf">rownames</span><span class="p">(</span><span class="nf">installed.packages</span><span class="p">())))</span> <span class="o">&gt;</span> <span class="m">0</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nf">install.packages</span><span class="p">(</span><span class="nf">setdiff</span><span class="p">(</span><span class="n">packages</span><span class="p">,</span> <span class="nf">rownames</span><span class="p">(</span><span class="nf">installed.packages</span><span class="p">())),</span> 
+                    <span class="n">repos</span><span class="o">=</span><span class="s">&#39;http://cran.rstudio.com&#39;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">library</span><span class="p">(</span><span class="n">dataverse</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">httr</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">jsonvalidate</span><span class="p">)</span>
+<span class="nf">library</span><span class="p">(</span><span class="n">jsonlite</span><span class="p">)</span>
+
+<span class="c1"># User Parameters</span>
+<span class="n">dataverse_server</span> <span class="o">&lt;-</span> <span class="s">&quot;data.inra.fr&quot;</span>
+<span class="n">dataset_keyword</span> <span class="o">&lt;-</span> <span class="s">&quot;tomato&quot;</span>
+
+<span class="n">url_schema</span>  <span class="o">&lt;-</span> <span class="s">&#39;https://inrae.github.io/ODAM/json-schema/odam-data-package.json&#39;</span>
+
+<span class="c1"># Define the dataverse server as an env. variable</span>
+<span class="nf">Sys.setenv</span><span class="p">(</span><span class="s">&quot;DATAVERSE_SERVER&quot;</span> <span class="o">=</span> <span class="n">dataverse_server</span><span class="p">)</span>
+
+<span class="c1"># Data Search </span>
+<span class="n">ds</span> <span class="o">&lt;-</span> <span class="n">dataverse</span><span class="o">::</span><span class="nf">dataverse_search</span><span class="p">(</span><span class="n">dataset_keyword</span><span class="p">,</span> <span class="s">&quot;dataset&quot;</span><span class="p">)</span>
+
+<span class="c1"># Check if a dataset found with the right type</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">dim</span><span class="p">(</span><span class="n">ds</span><span class="p">)[</span><span class="m">1</span><span class="p">]</span><span class="o">==</span><span class="m">0</span> <span class="p">)</span> 
+   <span class="nf">stop</span><span class="p">(</span><span class="s">&quot;No dataset found&quot;</span><span class="p">)</span>
+
+<span class="nf">if </span><span class="p">(</span> <span class="nf">length</span><span class="p">(</span><span class="s">&quot;dataset&quot;</span> <span class="o">%in%</span> <span class="n">ds</span><span class="o">$</span><span class="n">type</span><span class="p">)</span><span class="o">==</span><span class="m">0</span> <span class="p">)</span>
+   <span class="nf">stop</span><span class="p">(</span><span class="s">&quot;No dataset found with the right type&quot;</span><span class="p">)</span>
+
+
+<span class="c1"># Get list of files </span>
+<span class="n">ds</span> <span class="o">&lt;-</span> <span class="n">ds</span><span class="p">[</span> <span class="n">ds</span><span class="o">$</span><span class="n">type</span> <span class="o">==</span> <span class="s">&quot;dataset&quot;</span><span class="p">,</span> <span class="p">]</span>
+
+<span class="c1"># search for &#39;datapackage.json&#39;</span>
+<span class="n">ids</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">()</span>
+<span class="nf">for </span><span class="p">(</span><span class="n">i</span> <span class="n">in</span> <span class="n">ds</span><span class="o">$</span><span class="n">global_id</span><span class="p">)</span> <span class="p">{</span>
+     <span class="nf">if </span><span class="p">(</span><span class="nf">length</span><span class="p">(</span><span class="n">dataverse</span><span class="o">::</span><span class="nf">dataset_files</span><span class="p">(</span><span class="n">i</span><span class="p">))</span><span class="o">==</span><span class="m">0</span><span class="p">)</span>
+         <span class="n">next</span>
+     <span class="n">dflist</span> <span class="o">&lt;-</span>  <span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">t</span><span class="p">(</span><span class="nf">simplify2array</span><span class="p">(</span><span class="n">dataverse</span><span class="o">::</span><span class="nf">dataset_files</span><span class="p">(</span><span class="n">i</span><span class="p">))))</span>
+     <span class="nf">if </span><span class="p">(</span><span class="nf">sum</span><span class="p">(</span><span class="n">dflist</span><span class="o">$</span><span class="n">label</span>  <span class="o">%in%</span> <span class="s">&quot;datapackage.json&quot;</span><span class="p">))</span>
+         <span class="n">ids</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1"># check if successful search</span>
+<span class="nf">if </span><span class="p">(</span> <span class="nf">length</span><span class="p">(</span><span class="n">ids</span><span class="p">)</span><span class="o">==</span><span class="m">0</span> <span class="p">)</span>
+   <span class="nf">stop</span><span class="p">(</span><span class="s">&quot;No datapackage found&quot;</span><span class="p">)</span>
+
+<span class="c1"># if many, take the first</span>
+<span class="n">id</span> <span class="o">&lt;-</span> <span class="n">ids</span><span class="p">[</span><span class="m">1</span><span class="p">]</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">&quot; Dataset found : &quot;</span><span class="p">,</span><span class="n">id</span><span class="p">,</span><span class="s">&quot;\n&quot;</span><span class="p">)</span>
+<span class="n">dflist</span> <span class="o">&lt;-</span>  <span class="nf">as.data.frame</span><span class="p">(</span><span class="nf">t</span><span class="p">(</span><span class="nf">simplify2array</span><span class="p">(</span><span class="n">dataverse</span><span class="o">::</span><span class="nf">dataset_files</span><span class="p">(</span><span class="n">id</span><span class="p">))))</span>
+
+<span class="c1"># Get the datapackage.json content file</span>
+<span class="n">idx</span> <span class="o">&lt;-</span> <span class="nf">which</span><span class="p">(</span><span class="s">&quot;datapackage.json&quot;</span> <span class="o">%in%</span> <span class="n">dflist</span><span class="o">$</span><span class="n">label</span><span class="p">)</span>
+<span class="n">file_id</span> <span class="o">&lt;-</span> <span class="n">dflist</span><span class="o">$</span><span class="n">dataFile</span><span class="p">[[</span><span class="n">idx</span><span class="p">]]</span><span class="o">$</span><span class="n">id</span>
+<span class="n">dp_json</span> <span class="o">&lt;-</span> <span class="nf">rawToChar</span><span class="p">(</span><span class="n">dataverse</span><span class="o">::</span><span class="nf">get_file</span><span class="p">(</span><span class="n">file_id</span><span class="p">))</span>
+
+<span class="nf">if </span><span class="p">(</span><span class="nf">is.null</span><span class="p">(</span><span class="n">dp_json</span><span class="p">))</span>
+   <span class="nf">stop</span><span class="p">(</span><span class="s">&quot;the datapackage returned as null&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get the ODAM data package schema</span>
+<span class="n">response</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">GET</span><span class="p">(</span><span class="n">url_schema</span><span class="p">,</span> <span class="nf">config</span><span class="p">(</span><span class="n">sslversion</span><span class="o">=</span><span class="m">6</span><span class="p">,</span><span class="n">ssl_verifypeer</span><span class="o">=</span><span class="m">1</span><span class="p">))</span>
+<span class="nf">if </span><span class="p">(</span><span class="n">response</span><span class="o">$</span><span class="n">status_code</span> <span class="o">!=</span> <span class="m">200</span><span class="p">)</span>
+   <span class="nf">stop</span><span class="p">(</span><span class="s">&quot;Error while getting the ODAM data package schema&quot;</span><span class="p">)</span>
+
+<span class="n">schema</span> <span class="o">&lt;-</span> <span class="n">httr</span><span class="o">::</span><span class="nf">content</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">as</span> <span class="o">=</span><span class="s">&#39;text&#39;</span><span class="p">)</span>
+
+<span class="c1"># Validate the JSON against the ODAM data package schema</span>
+<span class="nf">if </span><span class="p">(</span><span class="o">!</span> <span class="n">jsonvalidate</span><span class="o">::</span><span class="nf">json_validate</span><span class="p">(</span><span class="n">dp_json</span><span class="p">,</span> <span class="n">schema</span><span class="p">)</span> <span class="p">)</span>
+    <span class="nf">stop</span><span class="p">(</span><span class="s">&quot;the returned datapackage is not a valid ODAM datapackage&quot;</span><span class="p">)</span>
+
+<span class="c1"># Parse the JSON object to a data.frame</span>
+<span class="n">dp</span> <span class="o">&lt;-</span> <span class="n">jsonlite</span><span class="o">::</span><span class="nf">fromJSON</span><span class="p">(</span><span class="n">dp_json</span><span class="p">)</span>
+
+<span class="c1"># View metadata</span>
+<span class="nf">sapply</span><span class="p">(</span> <span class="nf">ls</span><span class="p">(</span><span class="n">dflist</span><span class="p">),</span> <span class="nf">function</span><span class="p">(</span><span class="n">x</span><span class="p">){</span> <span class="n">dflist</span><span class="p">[[</span><span class="nf">as.character</span><span class="p">(</span><span class="n">x</span><span class="p">)]][[</span><span class="n">idx</span><span class="p">]]</span> <span class="p">})</span>
+
+<span class="c1"># Do something with dp ...</span>
+<span class="n">dp</span><span class="o">$</span><span class="n">resources</span><span class="p">[</span> <span class="nf">c</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span> <span class="s">&#39;title&#39;</span><span class="p">,</span> <span class="s">&#39;cv_term&#39;</span><span class="p">)</span> <span class="p">]</span>
+</code></pre></div>
+</div>
+<input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><label for="__tabbed_1_2">Output</label><div class="tabbed-content">
+<div class="highlight"><pre><span></span><code>$`categories`
 [1] &quot;data&quot;        &quot;datapackage&quot; &quot;odam&quot;        &quot;TSV&quot;        
 
 $dataFile
@@ -734,6 +751,8 @@ $version
 11         lipids_AG                               Lipids AG  chemical entity http://purl.obolibrary.org/obo/CHEBI_24431
 12         AminoAcid                             Amino Acids  chemical entity http://purl.obolibrary.org/obo/CHEBI_24431
 </code></pre></div>
+</div>
+</div>
 <p><br><br><br><br></p>
                 
                   
@@ -811,7 +830,7 @@ $version
     <div class="md-dialog" data-md-component="dialog">
       <div class="md-dialog__inner md-typeset"></div>
     </div>
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["content.code.annotate"], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "../../assets/javascripts/workers/search.709b4209.min.js", "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.806c4996.min.js"></script>

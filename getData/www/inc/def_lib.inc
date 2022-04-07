@@ -823,7 +823,11 @@ if %size% LSS %maxbytesize% (
         $json .= ']';
     # sources
         if (strlen($urlroot)>0) {
-            $json .=', "sources":[{"title":"ODAM Dataexplorer", "path":"'.dirname($urlroot).'/dataexplorer/?ds='.$this->dsname.'"}]';
+            $type = 'ds';
+            $arr = $this->hDataset;
+            if (count($arr)==2 && array_key_exists('collection', $arr) && $arr['collection']['cv_term_name']=='data collection')
+                 $type = 'dc';
+            $json .=', "sources":[{"title":"ODAM Dataexplorer", "path":"'.dirname($urlroot).'/dataexplorer/?'.$type.'='.$this->dsname.'"}]';
         }
         $json .= '}';
         return $json;

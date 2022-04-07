@@ -742,17 +742,21 @@ if %size% LSS %maxbytesize% (
     }
     function getJSONDataTable($urlroot='', $format='tsv')
     {
-        $subsets = array_keys($this->hDataset);
+        $hDataset = $this->hDataset;
+        $dstype = count($hDataset)==2 && array_key_exists('collection', $hDataset) && $hDataset['collection']['cv_term_name']=='data collection' ? 'dc' : 'ds';
+        $subsets = array_keys($hDataset);
     # name / profile / datapackage_version / keywords / licenses
         $json  ='{"name":"'.$this->dsname.'",';
         $json .='"profile":"'.$this->DPKG_INFOS['URL_JSONDEF'].'odam-data-package.json",';
-        $json .='"datapackage_version":"'.$this->DPKG_INFOS['DATAPACKAGE_VERSION'].'", "keywords":["Experimental Data Tables", "ODAM"],';
+        $json .='"datapackage_version":"'.$this->DPKG_INFOS['DATAPACKAGE_VERSION'].'",';
+        $kw1 = $dstype=='ds' ? 'Experimental Data Tables' : 'Data collection';
+        $json .='"keywords":["'.$kw1.'", "ODAM"],';
         $license = explode(',', $this->DPKG_INFOS['LICENSE']);
         $json .='"licenses":[{"name":"'.trim($license[0]).'", "path":"'.trim($license[1]).'", "title":"'.trim($license[2]).'"}],';
     # resources
         $json .='"resources":[';
         $flg=0;
-        foreach ($this->hDataset as $subset => $arr ) {
+        foreach ($hDataset as $subset => $arr ) {
             if ($subset=='_dstree_') continue;
             if (is_array($arr) && isset($arr['name'])) {
                 if ($flg) $json .=',';
@@ -823,11 +827,7 @@ if %size% LSS %maxbytesize% (
         $json .= ']';
     # sources
         if (strlen($urlroot)>0) {
-            $type = 'ds';
-            $arr = $this->hDataset;
-            if (count($arr)==2 && array_key_exists('collection', $arr) && $arr['collection']['cv_term_name']=='data collection')
-                 $type = 'dc';
-            $json .=', "sources":[{"title":"ODAM Dataexplorer", "path":"'.dirname($urlroot).'/dataexplorer/?'.$type.'='.$this->dsname.'"}]';
+            $json .=', "sources":[{"title":"ODAM Dataexplorer", "path":"'.dirname($urlroot).'/dataexplorer/?'.$dstype.'='.$this->dsname.'"}]';
         }
         $json .= '}';
         return $json;

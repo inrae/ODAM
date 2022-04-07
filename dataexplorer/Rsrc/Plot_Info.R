@@ -152,6 +152,18 @@
        }, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderText - Data info \n", e ); })
     })
 
+    #----------------------------------------------------
+    # renderUI - Collection Metadata
+    #----------------------------------------------------
+    output$colmetadata <- renderDataTable({
+       values$initdss
+       if (nchar(input$ipclient)==0) return(NULL)
+       tryCatch({ if (nchar(g$msgError)==0) {
+           if ( !is.DS(cdata) || values$init==0) return(NULL)
+           getMetadataLinksAsTable2(ws)
+       }}, error=function(e) { ERROR$MsgErrorInfo <- paste("RenderDataTable - Collection Metadata \n", e ); })
+    }, options = list(searching=FALSE, paging=FALSE, lengthChange = FALSE, info = FALSE), escape=c(2))
+
 
 
     #----------------------------------------------------

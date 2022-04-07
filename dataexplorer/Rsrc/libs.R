@@ -493,7 +493,7 @@ getInfosToHTML <- function(ws, dcol=0)
    gsub('href=', 'target="_blank" href=', out)
 }
 
-# Get metadata links as a data.frame
+# Dataset : Get metadata links as a data.frame
 getMetadataLinksAsTable <- function(ws)
 {
   # metadata links
@@ -512,6 +512,30 @@ getMetadataLinksAsTable <- function(ws)
 
   df <- data.frame(rbind( c(href1, 'All metadata related to data subsets', hrefS, button1),
                           c(href2, 'All metadata related to attributes within each data subset', hrefA, button2),
+                          c(href3, 'All metadata as a JSON datapackage', hrefJ, '-')
+                   ))
+  colnames(df) <- c('Metadata Type','Description','Information','Download')
+  df
+}
+
+# Collection : Get metadata links as a data.frame
+getMetadataLinksAsTable2 <- function(ws)
+{
+  # metadata links
+  href1 <- paste0('<a href="',ws$apiurl,'query/',ws$dcname,'/collection?format=xml" target="_blank">Datasets</a>')
+  href2 <- paste0('<a href="',ws$apiurl,'query/',ws$dcname,'/metadata/?format=xml" target="_blank">Attributes</a>')
+  href3 <- paste0('<a href="',ws$apiurl,'query/',ws$dcname,'/datapackage/?links=1" target="_blank">Datapackage</a>')
+  # information links
+  hrefS <- paste0('<a href="',gv$odamdoc_url,'data-preparation/collection/" target="_blank">Data Preparation Protocol - Collection</a>')
+  hrefJ <- paste0('<a href="',gv$odamdoc_url,'json-schema/" target="_blank">ODAM datapackage based on JSON-Schema</a>')
+
+  button1 <- as.character(actionButton('button_1', label = "TSV", icon = icon("download"), class="btn-dt",
+                          onclick = paste0('window.open(\"',ws$apiurl,'query/',ws$dcname,'/collection?format=tsv\", \"_blank\");' )))
+  button2 <- as.character(actionButton('button_2', label = "TSV", icon = icon("download"), class="btn-dt",
+                          onclick = paste0('window.open(\"',ws$apiurl,'query/',ws$dcname,'/metadata/?format=tsv\", \"_blank\");' )))
+
+  df <- data.frame(rbind( c(href1, 'All metadata related to datasets', hrefS, button1),
+                          c(href2, 'All metadata related to the collection attributes', hrefS, button2),
                           c(href3, 'All metadata as a JSON datapackage', hrefJ, '-')
                    ))
   colnames(df) <- c('Metadata Type','Description','Information','Download')

@@ -2,13 +2,20 @@
 # Collection
 #----------------------------------------------------
 ui_collection <- tabItem(tabName = "collection", bsAlert("ErrAlertInfo"),
-   box(title="Data Collection", status = "primary", solidHeader = TRUE, width = 12, collapsible = FALSE,
-     conditionalPanel(condition="uiloaded==0",
+   conditionalPanel(condition="uiloaded==0",
         h3( tags$p('Please wait while loading ...'), tags$img(src = "loading.gif"), style = "color:#bf6f85")
-     ),
-     conditionalPanel(condition="uiloaded==1",
+   ),
+   conditionalPanel(condition="uiloaded==1",
+      box(title="Data Collection", status = "primary", solidHeader = TRUE, width = 12, collapsible = FALSE,
          #tags$hr(), verbatimTextOutput('out1'),
-         htmlOutput("colinfos", class="mddiv"),
+         htmlOutput("colinfos", class="mddiv")
+      ),
+      box(
+         title="Metadata", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
+         dataTableOutput("colmetadata")
+      ),
+      box(
+         title="Data of the collection", status = "primary", solidHeader = TRUE, width = 12, collapsible = TRUE,
          tags$hr(), dataTableOutput("datasets"),
          tags$script('$(document).on("keypress", function (e) { Shiny.onInputChange("keyEvent", e.which); });')
      )

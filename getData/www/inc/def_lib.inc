@@ -236,9 +236,9 @@ class def_lib
                 $arr_tmp = array();
                 $k=$i;
                 while ($k>0) {
-                    if (($father_rank[$k]-1)>=0)
+                    if ($father_rank[$k]>0)
                        array_push($arr_tmp, $subsets[$father_rank[$k]-1]);
-                    $k = $father_rank[$father_rank[$k]-1];
+                    $k = $father_rank[$k]-1;
                 }
                 $arr_tmp = array_reverse($arr_tmp);
                 array_push($arr_tmp, $subsets[$i]);
@@ -246,7 +246,6 @@ class def_lib
                 if ($i>0) $this->hDataset[$subsets[$i]]['joinkey'] = $this->hDataset[$subsets[$father_rank[$i]-1]]['identifier'];
                 $i--;
             }
-
             # Parsing of the attribute definition file
             $fo=fopen($this->attrs_file,"r");
             while ( ($data = fgetcsv($fo,0,"\t") ) !== FALSE ) {

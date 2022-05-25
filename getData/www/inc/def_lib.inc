@@ -569,6 +569,39 @@ if %size% LSS %maxbytesize% (
     }
 
 /********************************************************
+* verif_checksum: Check if checksum for each file is OK
+********************************************************/
+    function verif_checksum() {
+       $stderr = $this->ENV['TMPDIR'].'/'.$this->ENV['SESSID'].'.err';
+       $extfile = $this->ENV['EXTFILES'];
+       $checksum = $this->dir_input.'/'.$this->ENV['CHECKSUM'];
+       $retval = 0;
+       if (file_exists($checksum)) {
+         $lines = explode("\n",file_get_contents($checksum));
+         $nf = count($lines);
+         $scan = scandir($this->dir_input);
+         $cnt=0;
+         foreach($scan as $file) {
+            if (is_dir($this->dir_input.'/'.$file) || ! preg_match("/\.$extfile/", $file)>0) continue;
+            $md5 = md5_file($this->dir_input.'/'.$file);
+            if ($cnt>=$nf) {
+                 $this->error_msg = "Error: $file seems a new file - No checksum found";
+                `echo $this->error_msg >> $stderr`;
+               $retval=1;
+               break;
+            } else if ($md5 != $lines[$cnt]) {
+                 $this->error_msg = "Error: $file seems to be modified - checksum is not the same";
+                `echo $this->error_msg >> $stderr`;
+               $retval=1;
+               break;
+            }
+            $cnt++;
+         }
+       }
+       return $retval;
+    }
+
+/********************************************************
 * build_sqlite_db: build the sqlite3 db into the data folder
 ********************************************************/
     function build_sqlite_db($dbindex,$debug=0)
@@ -580,6 +613,9 @@ if %size% LSS %maxbytesize% (
        $SQLOPT = $this->ENV['SQLOPT'];
        $extfile = $this->ENV['EXTFILES'];
        $db = $this->dir_input.'/'.$this->ENV['DBNAME'];
+       $checksum = $this->dir_input.'/'.$this->ENV['CHECKSUM'];
+
+       if (file_exists($checksum)) unlink($checksum);
 
      # SQL statements for creating tables
        $scan = scandir($this->dir_input);
@@ -587,6 +623,9 @@ if %size% LSS %maxbytesize% (
            if (is_dir($this->dir_input.'/'.$file) || ! preg_match("/\.$extfile/", $file)>0) continue;
            $line = ".import $file ".basename($file,".$extfile");
            `echo $line >> $dbcmd`;
+           # Compute then save checksum
+           $md5 = md5_file($this->dir_input.'/'.$file);
+           `echo $md5 >> $checksum`;
        }
      # SQL statements for creating indexes
        if ($dbindex) foreach ($this->hDataset as $subset => $arr ) {

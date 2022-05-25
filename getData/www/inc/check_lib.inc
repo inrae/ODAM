@@ -26,6 +26,8 @@ class check_lib extends def_lib
 
     var $status_tag = array( 'ok' => 'ok', 'bad' => 'Error', 'warning' => 'Warning');
 
+    var $bad_names = array( 'group');
+
     var $ds_items = array( 'directory'    => array( 'msg' => 'the dataset directory', 
                                             'info'=>'', 'status' => 'not checked', 'cat'=>'General' ),
                    'subsetdef'    => array( 'msg' => 'the subset definition file',
@@ -49,7 +51,7 @@ class check_lib extends def_lib
          4 => "1) all subsets in the a_attributes.tsv file (col 1) should be declared in the s_subsets.tsv file (col 3)\\n 2) all subsets in the s_subsets.tsv file (col 3) should be declared in the a_attributes.tsv file (col 1)\\n 3) all attribute names in the a_attributes.tsv file (col 2) should be available as a column in the corresponding data subset file declared in the s_subsets.tsv file (col 5)",
          6 => "Be careful in the spelling: \\n 1) for data subset file names (col 5 in s_subsets.tsv), identifier name (col 2 in s_subsets.tsv), attribute names (col 2 in a_attributes.tsv), subset shortnames (col 3 in s_subsets.tsv and col 1 in a_attributes.tsv) and entry names (col 3 in a_attributes.tsv), only the alphanumerical characters and the underscore are allowed (i.e 'a-z', 'A-Z', '0-9' and '_'). Moreover, these names should not start with a digit!\\n 2) for categorical names (col 4 in a_attributes.tsv), the number of terms and their spelling are fixed, namely: 'identifier','factor','quantitative','qualitative'. \\n 3) for type (col 5 in a_attributes.tsv), the allowed names are restrited to 'numeric' or 'string'. \\n 4) for descritpion, the allowed characters are : 0-9 a-z A-Z , : + * () [] {} - % ! | / . ?",
          7=> "Identifiers declared in the s_subsets.tsv file (col 2)\\n 1) should be declared as 'identifier' in the 'category' column in the a_attributes.tsv file (col 4) \\n 2) should be available as an column item in the corresponding data subset file \\n 3) should be the only one attribute declared as identifier for the corresponding data subset file in the a_attributes.tsv file (col 4)",
-         8=> "Each subset having a 'father_rank' greater than 0 in the s_subsets.tsv file (col 2)\\n 1) should include in its data file a column corresponding to the identifier of the subset to which it is linked (i.e. corresponding to the father_rank in col 1)\\n 2) should have the linked subset identifier with no category (i.e. empty) in the a-attributes.tsv file (col 4), except if the subset and the linked subset have the same identifier"
+         8=> "Each subset having a 'father_rank' greater than 0 in the s_subsets.tsv file (col 2)\\n 1) should include in its data file a column corresponding to the identifier of the subset to which it is linked (i.e. corresponding to the father_rank in col 1)\\n 2) should have the linked subset identifier with no category (i.e. empty) in the a-attributes.tsv file (col 4), except if the subset and the linked subset have the same identifier",
     );
 
 /********************************************************
@@ -62,6 +64,7 @@ class check_lib extends def_lib
     {
         parent::__construct($ENV, $dsname);
         if (!strlen($dsname)) $this->check_flag=0;
+        $this->ref_notes['9']="the name: '".implode(', ', $this->bad_names)."' should not be used as a file name or as a shortname for subsets";
     }
 
 # Check dataset directory
@@ -72,7 +75,7 @@ class check_lib extends def_lib
             if (! is_dir($this->dir_input)) {
                $this->ds_items['directory']['info'] = "Not available; See note (1)";
                $this->ds_items['directory']['status'] = $this->status_tag['bad'];
-               $this->ref_notes[$this->idx_refnotes++] = $this->list_notes[1];
+               #$this->ref_notes[$this->idx_refnotes++] = $this->list_notes[1];
                $ret=1;
                break;
             }
@@ -183,12 +186,12 @@ class check_lib extends def_lib
             while ( ($data = fgetcsv($f1,0,"\t") ) !== FALSE )
                   if ($data[$s_colfname] == $subsetfile) { $arr_subset = $data; break; }
             fclose($f1);
-
             if ( count($arr_subset) != count($this->def_infos['s_subsets']) ) {
-               $this->retmsg = "the shortname '$subsetfile' seems not to be declared in the s_subsets.tsv file, See note (4.1)";
+               $this->retmsg = "the file '$subsetfile' seems not to be declared in the s_subsets.tsv file, See note (4.1)";
                $ret=1;
                break;
             }
+
             $a_colshort=0; $a_name=1; $a_entry=2; $a_cat=3; $a_type=4;
             $arr_msg = array();
             $f2=fopen($this->attrs_file,"r");
@@ -230,11 +233,13 @@ class check_lib extends def_lib
         foreach ($this->FILES as $id => $file) {
              if (is_file($this->dir_input."/$file")) { $NB_FILES++; }
              else $fileinfo .="$file is missing, See note (3)\\n";
+             if ( in_array( strtolower(substr($file, 0, strrpos($file, "."))), $this->bad_names) )
+                 $fileinfo .= "the name '$file' is bad. See note (9)\\n";
         }
-        $IS_FILES = ($NB_FILES == count($this->FILES)) ? 1 : 0 ;
-        $this->ds_items['subsetfiles']['info'] = $IS_FILES ? "all availables (".$NB_FILES.")" : $fileinfo ;
-        $this->ds_items['subsetfiles']['status'] = $IS_FILES ? $this->status_tag['ok'] : $this->status_tag['bad'] ;
-        if (! $IS_FILES) $ret=1;
+        $OK_FILES = ($NB_FILES == count($this->FILES) && strlen($fileinfo)==0) ? 1 : 0 ;
+        $this->ds_items['subsetfiles']['info'] = $OK_FILES ? "all availables (".$NB_FILES.")" : $fileinfo ;
+        $this->ds_items['subsetfiles']['status'] = $OK_FILES ? $this->status_tag['ok'] : $this->status_tag['bad'] ;
+        if (! $OK_FILES) $ret=1;
         return $ret;
     }
 
@@ -284,6 +289,10 @@ class check_lib extends def_lib
                  array_push($arr_msg, "the shortname '$subset' seems not to be declared in the s_subsets.tsv file., See note (4.1)");
                  $ret=1;
              }
+             if ( in_array(strtolower($subset), $this->bad_names)  ) {
+                 array_push($arr_msg, "the shortname '$subset' is bad. See note (9)");
+                 $ret=1;
+            }
         }
         fclose($f1);
         $msg = 'Check if subset names are consistent';
@@ -354,15 +363,25 @@ class check_lib extends def_lib
     }
 */
 
+
 # Check if the database is correctly built
     function check_SQL_db()
     {
         $db = $this->dir_input.'/'.$this->ENV['DBNAME'];
         $msg = 'Check if the database has been created';
         $ret = is_file($db) ? 0 : 1;
-        $info = "The file ".$this->ENV['DBNAME']." is ";
-        $info .= $ret==0 ? 'present' : 'not present';
-        $status = $ret==0 ? $this->status_tag['ok'] : $this->status_tag['warning'] ;
+        $ret2 = $this->verif_checksum();
+        $info = "The file ".$this->ENV['DBNAME']." ";
+        if ($ret==0 && $ret2==0) {
+           $info .= 'is present';
+           $status = $this->status_tag['ok'];
+        } elseif ($ret==0 && $ret2!=0) {
+           $info .= 'must be rebuilt';
+           $status = $this->status_tag['bad'];
+        } else {
+           $info .= 'is not present';
+           $status = $this->status_tag['warning'];
+        }
         $this->ds_items['database'] = array( 'msg' => $msg, 'info' => $info, 'status' => $status, 'cat' => 'database' );
         return $ret;
     }

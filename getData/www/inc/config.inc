@@ -55,6 +55,10 @@ if ($OS=='LINUX') {
 # By default, metadata has to be available to satisfy the FAIR principes
 $METADATA_ACCESS = isset($set->METADATA_ACCESS) ? $set->METADATA_ACCESS : 1;
 
+# Allow API to use the IP of the client passed through the header for authentication
+$IP_IN_HEADER = isset($set->VPN) ? $set->VPN : 0;
+$IP_IN_HEADER = getenv("VPN", true) ? getenv("VPN") : $IP_IN_HEADER;
+
 #---------------------------
 # Get authorization key code
 #---------------------------
@@ -82,15 +86,23 @@ elseif (isset($_SERVER['HTTP_X_API_KEY']))
 else
    $auth_msg='authorization fixed by rules';
 
+#---------------------------
+# X_Forwarded - get the IP
+#---------------------------
+$X_Forwarded = '';
+if ($IP_IN_HEADER && isset($_SERVER['HTTP_X_API_IP']) && strlen($_SERVER['HTTP_X_API_IP']))
+   $X_Forwarded=$_SERVER['HTTP_X_API_IP'];
+elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && strlen($_SERVER['HTTP_X_FORWARDED_FOR']))
+   $X_Forwarded=$_SERVER['HTTP_X_FORWARDED_FOR'];
+elseif (isset($_SERVER['HTTP_X_FORWARDED_HOST']) && strlen($_SERVER['HTTP_X_FORWARDED_HOST']))
+   $X_Forwarded=$_SERVER['HTTP_X_FORWARDED_HOST'];
+elseif (isset($_SERVER['HTTP_X_FORWARDED_SERVER']) && strlen($_SERVER['HTTP_X_FORWARDED_SERVER']))
+   $X_Forwarded=$_SERVER['HTTP_X_FORWARDED_SERVER'];
 
-#---------------------------
-# X_Forwarded - get first IP
-#---------------------------
-if (strpos($_SERVER['HTTP_X_FORWARDED_FOR'], ',')) {
-   $arr = explode(',',$_SERVER['HTTP_X_FORWARDED_FOR']);
+if (strpos($X_Forwarded, ',')) {
+   $arr = explode(',',$X_Forwarded);
    $X_Forwarded = trim($arr[0]);
-} else
-   $X_Forwarded = $_SERVER['HTTP_X_FORWARDED_FOR'];
+}
 
 # Internal Session Identifier
 $SESSID  = md5(uniqid(rand(),true));

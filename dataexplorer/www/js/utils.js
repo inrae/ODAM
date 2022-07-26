@@ -5,7 +5,7 @@ var openPDF = function(url) {
    $.ajax({
       url: url,
       cache: false,
-      headers: { "x-api-key": apikey, 'x-forwarded-for': ipclient },
+      headers: { "x-api-key": apikey, 'x-forwarded-for': ipclient, 'x-api-ip': ipclient },
       xhrFields: { responseType: 'blob' },
       success: function(blob) {
          console.log('PDF size ='+blob.size+', Mine type : '+blob.type);
@@ -29,7 +29,7 @@ var openXML = function(url) {
      url: url,
      cache: false,
      dataType: 'xml',
-     headers: { "x-api-key": apikey, 'x-forwarded-for': ipclient },
+     headers: { "x-api-key": apikey, 'x-forwarded-for': ipclient, 'x-api-ip': ipclient },
      success: function(response) {
         var xml = response;
 
@@ -59,7 +59,7 @@ var openXML = function(url) {
             myWindow.document.open();
             myWindow.document.write(transformed);
             myWindow.document.close();
-            myWindow.location.href=url;
+            myWindow.history.pushState('', '', url);
             myWindow.document.title = url;
         });
      }

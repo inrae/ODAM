@@ -113,7 +113,8 @@ is.DS <- function(cdata)
 # Low level routine allowing to retrieve data or metadata from  a query formatted according the API specifications
 httr_get <- function(ws, query, mode='text', fsplit=TRUE)
 {
-    headers <- c( 'X-Forwarded-For' = ws$ipclient )
+    headers <- c( 'X-Forwarded-For' = ws$ipclient)
+    if (gv$VPN>0) headers <- c( headers, 'X-API-IP' = ws$ipclient )
     if (nchar(ws$auth)>0) headers <- c( headers, 'X-Api-Key' = ws$auth )
     T <- ''
     tryCatch({
@@ -171,7 +172,7 @@ getInfos <- function (ws, dcol=0)
 {
     ds <- ifelse(dcol>0, ws$dcname, ws$dsname)
     T <- httr_get(ws, paste0('infos/', ds))
-    if (!is.wsError() && !is.wsNoAuth() && !is.null(T) && ws$keymode>0) {
+    if (!is.wsError() && !is.null(T) && (gv$VPN>0 || (!is.wsNoAuth() && ws$keymode>0))) {
        # Images
        P <- na.omit(str_extract(T, pattern="https?:[^:]+\\.(png|jpg)"))
        if (length(P)>0) for (i in 1:length(P)) {

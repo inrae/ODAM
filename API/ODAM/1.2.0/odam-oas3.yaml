@@ -55,6 +55,16 @@ components:
       schema:
         type: integer
       example: 10
+    linkParam:
+      in: query
+      name: links
+      required: false
+      schema:
+        type: integer
+        enum: [0, 1]
+      default: 1
+      example: 0
+      description: links as an absolute URL
     debugParam:
       in: query
       name: debug
@@ -137,6 +147,24 @@ paths:
       parameters:
         - $ref: '#/components/parameters/datasetParam'
         - $ref: '#/components/parameters/formatParam'
+      responses:
+        '200':
+          description: search results matching criteria
+        '400':
+          description: bad input parameter
+  '/getdata/query/{dataset}/datapackage':
+    get:
+      security:
+        - ApiKeyAuth: []
+      tags:
+        - developers
+      summary: Get ODAM datapackage
+      operationId: pack
+      description: |
+        Get ODAM datapackage based on JSON-Schema of a dataset
+      parameters:
+        - $ref: '#/components/parameters/datasetParam'
+        - $ref: '#/components/parameters/linkParam'
       responses:
         '200':
           description: search results matching criteria

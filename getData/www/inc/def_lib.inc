@@ -783,12 +783,14 @@ if %size% LSS %maxbytesize% (
         $hDataset = $this->hDataset;
         $dstype = count($hDataset)==2 && array_key_exists('collection', $hDataset) && $hDataset['collection']['cv_term_name']=='data collection' ? 'dc' : 'ds';
         $subsets = array_keys($hDataset);
-    # name / profile / datapackage_version / keywords / licenses
+    # name / profile / datapackage_version
         $json  ='{"name":"'.$this->dsname.'",';
         $json .='"profile":"'.$this->DPKG_INFOS['URL_JSONDEF'].'odam-data-package.json",';
         $json .='"datapackage_version":"'.$this->DPKG_INFOS['DATAPACKAGE_VERSION'].'",';
+    # keywords
         $kw1 = $dstype=='ds' ? 'Experimental Data Tables' : 'Data collection';
         $json .='"keywords":["'.$kw1.'", "ODAM"],';
+    # licenses
         $license = explode(',', $this->DPKG_INFOS['LICENSE']);
         $json .='"licenses":[{"name":"'.trim($license[0]).'", "path":"'.trim($license[1]).'", "title":"'.trim($license[2]).'"}],';
     # resources

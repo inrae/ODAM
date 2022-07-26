@@ -37,6 +37,9 @@ globvars <- list(
   # determines whether curl verifies the authenticity of the peer's certificate
   SSL_VerifyPeer = conf$SSL_VERIFYPEER,
 
+  # Indicate if we are behind a VPN
+  VPN = conf$VPN,
+
   # Theme colors
   theme = conf$THEME,
 

@@ -199,8 +199,8 @@
                ds <- .C(tsets[i,1])
                urlSubset <- paste0(ws$apiurl,'query/', ws$dsname, '/(',ds,')?', authstr, 'format=xml');
                linkSubset <- ifelse( ws$keymode<2 && gv$VPN==0,
-                   paste0("<a href='",urlSubset,"' target='_blank'>",ds,"</a>"),
-                   paste0("<a href=\"javascript:void(0)\" onclick=\"openXML('",urlSubset,"');\", target=\"_blank\">",ds,"</a>") )
+                   paste0("<a href=\"",urlSubset,"\" target=\"_blank\">",ds,"</a>"),
+                   paste0("<a href=\"javascript:void(0)\" onclick=\"openXML('",urlSubset,"');\">",ds,"</a>") )
                linkOnto <- paste0("<a href='",.C(tsets[i,5]),"' target='_blank'>[", basename(.C(tsets[i,5])),'] ', .C(tsets[i,6]),"</a>") 
                onclickStr <- paste0('if ($(\'#check_',i,'\').is(\':checked\')){arrDS[arrDS.length]=\'',ds,'\'; arrDS=arrDS.filter(function(e){return e});}
                                      else{arrDS=arrDS.filter(function(e){return e !== \'',ds,'\'});};

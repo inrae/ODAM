@@ -31,7 +31,7 @@ class def_lib
            4=> array('name'=>'identifier',   'type'=>'string'),
            5=> array('name'=>'file',         'type'=>'string'),
            6=> array('name'=>'description',  'type'=>'string'),
-           7=> array('name'=>'CV_term_id',   'type'=>'string'),
+           7=> array('name'=>'CV_term_id',   'type'=>'url'),
            8=> array('name'=>'CV_term_name', 'type'=>'string') ),
         'a_attributes' => array(
            1=> array('name'=>'subset',       'type'=>'string'),
@@ -40,7 +40,7 @@ class def_lib
            4=> array('name'=>'category',     'type'=>'string'),
            5=> array('name'=>'type',         'type'=>'string'),
            6=> array('name'=>'description',  'type'=>'string'),
-           7=> array('name'=>'CV_term_id',   'type'=>'string'),
+           7=> array('name'=>'CV_term_id',   'type'=>'url'),
            8=> array('name'=>'CV_term_name', 'type'=>'string') )
      );
      /* Datapackage information */
@@ -155,7 +155,7 @@ class def_lib
                          array_push($arr_msg, "Col '".$arr_col[$i]['name']."', Line $j: the value must be a numeric"); $ret=1;
                          $ret=1;
                     }
-                    if ( $arr_col[$i]['type'] == 'url' && ( ! is_string($data[$i-1]) || ! preg_match('/^http:\/\//', $data[$i-1]) ) ) {
+                    if ( $arr_col[$i]['type'] == 'url' && strlen($data[$i-1])>0 && ( ! is_string($data[$i-1]) || ! preg_match('/^http[s]?:\/\//', $data[$i-1]) ) ) {
                          array_push($arr_msg, "Col '".$arr_col[$i]['name']."', Line $j: the value must be a URL"); $ret=1;
                          $ret=1;
                     }
@@ -164,7 +164,11 @@ class def_lib
                          $ret=1;
                     }
                     if ( $arr_col[$i]['name'] == 'subset' && ! preg_match("/^[a-zA-Z][a-zA-Z0-9_]+$/", $data[$i-1])) {
-                         array_push($arr_msg, "subste '".$data[$i-1]."' should follow the naming convention described in note (6.1)");
+                         array_push($arr_msg, "subset '".$data[$i-1]."' should follow the naming convention described in note (6.1)");
+                         $ret=1;
+                    }
+                    if ( $i==1 && $arr_col[1]['name'] == 'rank' && $arr_col[2]['name'] == 'father_rank' && $data[0]==$data[1] ) {
+                         array_push($arr_msg, "subset '".$data[2]."' should not have as father rank its own rank");
                          $ret=1;
                     }
                 }

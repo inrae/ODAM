@@ -205,6 +205,9 @@
             "$ref": "#/definitions/tableSchemaCategory"
           },
           "description": "An `array` of Table Schema Category objects."
+        },
+        "missingValues": {
+            "$ref": "#/definitions/tableSchemaMissingValues"
         }
       }
     },
@@ -319,7 +322,7 @@
         "type": "string"
       },
       "default": [
-        "", "NA"
+        ""
       ]
     }
   },
@@ -365,9 +368,6 @@
      },
      "mediatype": {
         "$ref": "#/definitions/mediatype"
-     },
-     "missingValues": {
-        "$ref": "#/definitions/tableSchemaMissingValues"
      }
   },
   "required": [ "path", "name", "title", "identifier", "schema", "dialect", "format" ]

@@ -12,12 +12,12 @@ GETDATA_DATAREPOS=/opt/DataRepos
 
 # GetData Container
 GETDATA_PORT=8081
-GETDATA_IMAGE=docker.io/odam/getdata
+GETDATA_IMAGE=docker.io/djacob65/getdata
 GETDATA_CONTAINER=gdata
 
 # Dataexplorer Container
 DATAEXPLORER_PORT=8080
-DATAEXPLORER_IMAGE=docker.io/odam/dataexplorer
+DATAEXPLORER_IMAGE=docker.io/djacob65/dataexplorer
 DATAEXPLORER_CONTAINER=dataexplorer
 
 CMD=$1

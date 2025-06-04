@@ -23,7 +23,7 @@ For more information/explanation, see <a href="https://inrae.github.io/ODAM/" ta
 * Test online the getData API through the web <a href="https://pmb-bordeaux.fr/odamsw/" target="_blank">swagger UI</a>
 
 * For open data access throught web services 
-      - with R : see  the <a href="https://cran.r-project.org/web/packages/Rodam/vignettes/Rodam.html" target="_blank">R ODAM package and How to use it</a>
+      - with R : see  the <a href="Rodam.html" target="_blank">R ODAM package and How to use it</a>
       - within Jupyter notebook : see  the <a href="https://nbviewer.jupyter.org/github/djacob65/binder_odam/tree/master/" target="_blank">Examples with R and Python using Jupyter nbviewer</a>
 
 <br>

@@ -377,6 +377,10 @@
                 authstr <- ifelse( ws$keymode==2, ", 'YOUR_SECRET_API_KEY'", paste0(", '", ws$auth,"'") );
             odamws_params <- paste0("'",ws$apiurl,"', '",ws$dsname,"'", authstr);
             cat("\noptions(width=256)\n", "options(warn=-1)\n","options(stringsAsFactors=FALSE)\n","\n",
+                "if (! \"Rodam\" %in% .packages(all.available = TRUE)) {","\n",
+                "    require(devtools)","\n",
+                "    install_github(\"inrae/Rodam\")","\n",
+                "}","\n",
                 "library(Rodam)\n","\n",
                 "# Initialize the 'ODAM' object \n", "dh <- new('odamws',",odamws_params,", maxtime=30)\n","\n",
                 "# Get the Data Tree\n","show(dh)\n","\n",

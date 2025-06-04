@@ -99,8 +99,13 @@
          dimnames(folds) <- list(rownames(means),colnames(means))
 
          # Perform the comparison of means (T-test / Wilcoxon)
-         cl <- makeCluster(gv$nbcores, type  ="PSOCK" )
-         registerDoParallel(cl)
+         # parallel computing if more than 100 variables
+         if (length(varnames)>100) {
+             cl <- parallel::makeCluster(gv$nbcores, type  ="PSOCK" )
+             doParallel::registerDoParallel(cl)
+         } else {
+             foreach::registerDoSEQ()
+         }
          pvals <- matrix(nrow=ncol(datavar), ncol=1)
          pvals[,1] <- foreach(k=1:nrow(pvals), .combine=c) %dopar% {
               tryCatch({
@@ -118,7 +123,7 @@
               }, error=function(e) { v <- 0.9999 })
               v
          }
-         stopCluster(cl); rm(cl) ; gc()
+         if (length(varnames)>100) { stopCluster(cl); rm(cl); gc() }
 
          # Build the matrix for plotting the volcano
          subsets <- names(g$varsBySubset)

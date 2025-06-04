@@ -28,7 +28,7 @@ var openPDF = function(url) {
          link.type = 'application/pdf';
          link.click();
          link.onclick = function() { window.URL.revokeObjectURL(this.href); }
-         myWindow.location.href=url;
+         myWindow.history.pushState(null, '', url);
          myWindow.document.title = url;
       }
    });

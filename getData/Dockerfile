@@ -6,9 +6,10 @@ RUN apt-get update -qq && apt-get dist-upgrade -y
 
 RUN apt-get install -y \
 # Install some packages
-    python-minimal vim \
+    python-minimal vim wget \
     libfreetype6-dev libjpeg62-turbo-dev libmcrypt-dev libpng-dev \
     software-properties-common locales \
+    sqlite3 libsqlite3-dev tclsh \
 # Install & configure mcrypt & gd for PHP
  && pecl install mcrypt \
  && docker-php-ext-enable mcrypt  \
@@ -16,9 +17,8 @@ RUN apt-get install -y \
  && docker-php-ext-install gd \
  && rm -f /usr/src/php.tar.* \
 # Install & configure sqlite3 without column limit
- && apt-get install -y sqlite3 libsqlite3-dev tclsh \
  && cd /home \
- && curl https://www.sqlite.org/src/tarball/sqlite.tar.gz -o sqlite.tar.gz \
+ && wget https://www.sqlite.org/src/tarball/sqlite.tar.gz -O sqlite.tar.gz \
  && tar xvzf ./sqlite.tar.gz \
  && cd sqlite \
  && sed -i -e "s/SQLITE_MAX_COLUMN 2000/SQLITE_MAX_COLUMN 32767/" ./src/sqliteLimit.h \
@@ -29,13 +29,13 @@ RUN apt-get install -y \
  && rm -f /usr/local/lib/libsqlite3.*
 
 # Install nodejs && csvtojson
-RUN curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - \
  && apt-get install -y nodejs build-essential \
  && npm install -g csvtojson
 
 # Install q-text-as-data
 RUN cd /home \
- && curl -L https://github.com/harelba/q/releases/download/2.0.19/q-text-as-data_2.0.19-2_amd64.deb -o q-text-as-data.deb \
+ && wget https://github.com/harelba/q/releases/download/2.0.19/q-text-as-data_2.0.19-2_amd64.deb -O q-text-as-data.deb \
  && dpkg -i q-text-as-data.deb \
  && rm -f q-text-as-data.deb
 

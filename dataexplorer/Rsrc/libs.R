@@ -148,6 +148,7 @@ getURLparams <- function(cdata)
     if (!is.null(params[['fup']]))     ui$updiv <<- params[['fup']]
     if (!is.null(params[['fdwn']]))    ui$downdiv <<- params[['fdwn']]
     if (!is.null(params[['type']]))    ui$type <<- params[['type']]
+    if (!is.null(params[['contour']])) ui$contour <<- params[['contour']]
     if (!is.null(params[['fac']]))     ui$fac1 <<- params[['fac']]
     if (!is.null(params[['fac1']]))    ui$fac1 <<- params[['fac1']]
     if (!is.null(params[['fac2']]))    ui$fac2 <<- params[['fac2']]
@@ -470,8 +471,8 @@ getAboutToHTML <- function()
     out <- markdownToHTML(text=getAbout(), fragment.only = FALSE, title = "", 
        options = c("use_xhtml", "smartypants", "base64_images", "mathjax", "highlight_code" ),
        stylesheet = file.path(getwd(),'www/css/infos-md.css'),
-       extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", 
-                      "strikethrough", "lax_spacing", "space_headers", "superscript", "latex_math"),
+       #extensions = c("no_intra_emphasis", "tables", "fenced_code", "autolink", 
+       #               "strikethrough", "lax_spacing", "space_headers", "superscript", "latex_math"),
        encoding = c("latin1")
     )
     gsub('</body>',' </div></body>', gsub('<body>', '<body><div class=\"infos\">', out))
@@ -487,9 +488,9 @@ getInfosToHTML <- function(ws, dcol=0)
    }
    out <- markdownToHTML(text=T, fragment.only = FALSE,  title = "", 
              options = c('use_xhtml', 'smartypants', 'base64_images', 'mathjax', 'highlight_code' ),
-             stylesheet = file.path(getwd(),'www/css/infos-md.css'),
-             extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
-                           'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
+             stylesheet = file.path(getwd(),'www/css/infos-md.css'))
+             #extensions = c('no_intra_emphasis', 'tables', 'fenced_code', 'autolink', 'strikethrough',
+             #              'lax_spacing', 'space_headers', 'superscript', 'latex_math'))
    out <- gsub('</body>',' </div></body>', gsub('<body>', '<body><div class=\"infos\">', out))
    gsub('href=', 'target="_blank" href=', out)
 }

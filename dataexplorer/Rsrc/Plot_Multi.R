@@ -301,15 +301,16 @@
            }
            multiType <- values$multitype
            values$infomulti <<- FALSE
+           contour <- ifelse(is.null(ui$contour), input$ellipse, ui$contour)
            withProgress(message = paste0(values$multitype,' Calculation in progress'), detail = '... ', value = 0, {
                tryCatch({
                if (values$multitype %in% c('PCA','ICA'))
                   getMultiPlot(multiType, F1, FL, FCOL, selectFCOL, .C(listVars), outputVariables=outputVariables,
-                               fellipse=input$ellipse, scale=input$scale, blabels=input$multiLabels, slabels=input$shortLabels,
+                               fellipse=contour, scale=input$scale, blabels=input$multiLabels, slabels=input$shortLabels,
                                f3D=input$f3D, conflevel=as.numeric(input$conflevel), ps=as.numeric(input$ptsize))
                else
                   getTSNEPlot(multiType, F1, FL, FCOL, selectFCOL, .C(listVars), outputVariables=outputVariables,
-                               fellipse=input$ellipse, scale=input$scale, perplexity=input$perplexity, blabels=input$multiLabels,
+                               fellipse=contour, scale=input$scale, perplexity=input$perplexity, blabels=input$multiLabels,
                                f3D=input$f3D, conflevel=as.numeric(input$conflevel), ps=as.numeric(input$ptsize))
                }, error=function(e) { ERROR$MsgErrorMulti <- paste("getMultiPlot :\n", e ); })
            })

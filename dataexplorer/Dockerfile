@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 
 MAINTAINER "Daniel Jacob" daniel.jacob@u-bordeaux.fr
 
@@ -9,10 +9,10 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 RUN apt-get update && apt-get install -y \
     sudo ca-certificates wget curl git vim ed unzip\
     libcurl4-gnutls-dev libcairo2-dev libv8-dev libssl-dev \
-    openssl gdebi-core \
+    openssl gdebi-core pkgconf \
     build-essential  software-properties-common \
  # Install Repositories
- && sh -c 'echo "deb https://cloud.r-project.org/bin/linux/ubuntu bionic-cran40/" >> /etc/apt/sources.list' \
+ && sh -c 'echo "deb https://cloud.r-project.org/bin/linux/ubuntu focal-cran40/" >> /etc/apt/sources.list' \
  && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9 \
  && add-apt-repository ppa:c2d4u.team/c2d4u4.0+ \
   # Install R / ...
@@ -63,4 +63,3 @@ RUN rm -rf /var/lib/apt/lists/* && \
 EXPOSE 3838
 
 CMD ["/usr/local/bin/launch-server.sh"]
-

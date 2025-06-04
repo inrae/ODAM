@@ -861,11 +861,12 @@ if %size% LSS %maxbytesize% (
                     $json .='{"name":"'.$cat.'",';
                     $json .='"fields":["'.join('","',$subarr).'"]}';
                 }
-                $json .=']},';
+          # schema - missingValues
+                $json .='], "missingValues":[""]},';
           # dialect
                 $json .='"dialect": {"caseSensitiveHeader": true, "delimiter":"\t", "decimalChar":".", "lineTerminator":"\n", "header":true, "doubleQuote": false, "skipInitialSpace": true, "commentChar":"#" },';
-          # encoding / mediatype / missingValues
-                $json .='"encoding":"utf-8", "format":"csv", "mediatype":"text/tab-separated-values", "missingValues":[""]}';
+          # encoding / mediatype
+                $json .='"encoding":"utf-8", "format":"csv", "mediatype":"text/tab-separated-values"}';
             }
         }
         $json .= ']';

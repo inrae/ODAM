@@ -526,11 +526,11 @@
                 
                 <h1 id="odam-datapackage-based-on-json-schema">ODAM datapackage based on JSON-Schema<a class="headerlink" href="#odam-datapackage-based-on-json-schema" title="Permanent link">&para;</a></h1>
 <hr />
-<p>A data package is a simple container format based on <a href="https://json-schema.org/" target="_blank">JSON Schema specifications</a> used to describe and package a collection of data. Defining an explicit schema for structural metadata allows machines to better interpret the data for reuse. Thus, when disseminating data, a file named <a href="https://datahub.io/docs/data-packages" target="_blank">datapackage.json</a> by convention can be added to the collection of your data files. This <a href="https://datahub.io/docs/data-packages" target="_blank">datapackage.json</a> file contains all structural metadata along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions.</p>
-<p>ODAM data package schema is very close to the <a href="https://frictionlessdata.io/" target="_blank">Frictionless Data</a> framework.</p>
+<p>A data package is a simple container format based on <a href="https://json-schema.org/" target="_blank">JSON Schema specifications</a> used to describe and package a collection of data. Defining an explicit schema for structural metadata allows machines to better interpret the data for reuse. Thus, when disseminating data, a file named <i>datapackage.json</i> by convention can be added to the collection of your data files. This <i>datapackage.json</i> file contains all structural metadata along with unambiguous definitions of all internal elements (e.g. column definitions, units of measurement), through links to accessible (standard) definitions.</p>
+<p>ODAM data package schema is very close to the <a href="https://specs.frictionlessdata.io/" target="_blank">Frictionless Data</a> framework (v1).</p>
 <p><center></p>
 <div class="mermaid">graph TD
- A(Data Source)
+ A(Data Resource)
  H(Table Schema)
  B(ODAM Table Schema)
  C(CSV Data Descriptor)
@@ -563,7 +563,7 @@
 <li><a href="odam-data-resource">odam-data-resource.json</a> : JSON Schema for ODAM dataresource</li>
 </ul>
 <p><br></p>
-<p>Based on structural metadata previously defined using the <a href="../data-preparation">Data preparation protocol for ODAM compliance</a>, the <a href="https://datahub.io/docs/data-packages" target="_blank">datapackage.json</a> file can be generated directly from the <a href="../api/">ODAM API</a> by specifying '<i><b>/datapackage</b></i>' at the end of the request. By default, the reference to the data files is relative. To have a URL as reference for the data files, it is necessary to add at the end of the request '<i><b>?links=1</b></i>'</p>
+<p>Based on structural metadata previously defined using the <a href="../data-preparation">Data preparation protocol for ODAM compliance</a>, the <a href="https://specs.frictionlessdata.io/" target="_blank">datapackage.json</a> file can be generated directly from the <a href="../api/">ODAM API</a> by specifying '<i><b>/datapackage</b></i>' at the end of the request. By default, the reference to the data files is relative. To have a URL as reference for the data files, it is necessary to add at the end of the request '<i><b>?links=1</b></i>'</p>
 <p><center>
 <a href="../images/ODAM-datapackage.png" data-lightbox="fod1"><img src="../images/ODAM-datapackage.png" width="500px"></a>
 </center><br></p>
@@ -586,7 +586,7 @@
 <p><strong>Frictionless Data Specifications</strong></p>
 <ul>
 <li><a href="http://specs.frictionlessdata.io/" target="_blank">http://specs.frictionlessdata.io/</a></li>
-<li><a href="https://github.com/frictionlessdata/specs/tree/master/schemas" target="_blank">https://github.com/frictionlessdata/specs/tree/master/schemas</a></li>
+<li><a href="https://github.com/frictionlessdata/datapackage/tree/main/profiles" target="_blank">https://github.com/frictionlessdata/datapackage/tree/main/profiles</a></li>
 </ul>
 <p><br><br><br><br></p>
 <!--https://frictionlessdata.io/reproducible-research/#fair-data-->
